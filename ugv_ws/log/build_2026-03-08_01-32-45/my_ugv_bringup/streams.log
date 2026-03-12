@@ -1,0 +1,15 @@
+[1.534s] Invoking command in '/home/ground/ugv_ws/build/my_ugv_bringup': AMENT_PREFIX_PATH=/home/ground/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/my_ugv_description:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_ws/build/my_ugv_bringup/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ground/ugv_ws/install/my_ugv_bringup/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_bringup:/home/ground/ugv_ws/install/my_ugv_bringup/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ground/ugv_ws/build/my_ugv_bringup/build --no-deps symlink_data
+[2.085s] running develop
+[2.439s] running egg_info
+[2.467s] writing my_ugv_bringup.egg-info/PKG-INFO
+[2.467s] writing dependency_links to my_ugv_bringup.egg-info/dependency_links.txt
+[2.470s] writing requirements to my_ugv_bringup.egg-info/requires.txt
+[2.472s] writing top-level names to my_ugv_bringup.egg-info/top_level.txt
+[2.547s] reading manifest file 'my_ugv_bringup.egg-info/SOURCES.txt'
+[2.548s] writing manifest file 'my_ugv_bringup.egg-info/SOURCES.txt'
+[2.579s] running build_ext
+[2.579s] Creating /home/ground/ugv_ws/install/my_ugv_bringup/lib/python3.12/site-packages/my-ugv-bringup.egg-link (link to .)
+[2.580s] 
+[2.580s] Installed /home/ground/ugv_ws/build/my_ugv_bringup
+[2.580s] running symlink_data
+[2.703s] Invoked command in '/home/ground/ugv_ws/build/my_ugv_bringup' returned '0': AMENT_PREFIX_PATH=/home/ground/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/my_ugv_description:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_ws/build/my_ugv_bringup/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ground/ugv_ws/install/my_ugv_bringup/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_bringup:/home/ground/ugv_ws/install/my_ugv_bringup/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ground/ugv_ws/build/my_ugv_bringup/build --no-deps symlink_data

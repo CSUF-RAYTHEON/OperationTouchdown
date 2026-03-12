@@ -1,0 +1,24 @@
+[1.534s] Invoking command in '/home/ground/ugv_ws/build/my_ugv_hardware': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_ws/build/my_ugv_hardware/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ground/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ground/ugv_ws/build/my_ugv_hardware/build --no-deps symlink_data
+[2.085s] running develop
+[2.440s] running egg_info
+[2.440s] creating my_ugv_hardware.egg-info
+[2.468s] writing my_ugv_hardware.egg-info/PKG-INFO
+[2.468s] writing dependency_links to my_ugv_hardware.egg-info/dependency_links.txt
+[2.469s] writing entry points to my_ugv_hardware.egg-info/entry_points.txt
+[2.469s] writing requirements to my_ugv_hardware.egg-info/requires.txt
+[2.469s] writing top-level names to my_ugv_hardware.egg-info/top_level.txt
+[2.469s] writing manifest file 'my_ugv_hardware.egg-info/SOURCES.txt'
+[2.543s] reading manifest file 'my_ugv_hardware.egg-info/SOURCES.txt'
+[2.544s] writing manifest file 'my_ugv_hardware.egg-info/SOURCES.txt'
+[2.574s] running build_ext
+[2.574s] Creating /home/ground/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my-ugv-hardware.egg-link (link to .)
+[2.575s] Installing motor_driver script to /home/ground/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+[2.575s] 
+[2.575s] Installed /home/ground/ugv_ws/build/my_ugv_hardware
+[2.575s] running symlink_data
+[2.575s] creating /home/ground/ugv_ws/install/my_ugv_hardware/share/ament_index
+[2.576s] creating /home/ground/ugv_ws/install/my_ugv_hardware/share/ament_index/resource_index
+[2.576s] creating /home/ground/ugv_ws/install/my_ugv_hardware/share/ament_index/resource_index/packages
+[2.576s] symbolically linking /home/ground/ugv_ws/build/my_ugv_hardware/resource/my_ugv_hardware -> /home/ground/ugv_ws/install/my_ugv_hardware/share/ament_index/resource_index/packages
+[2.576s] symbolically linking /home/ground/ugv_ws/build/my_ugv_hardware/package.xml -> /home/ground/ugv_ws/install/my_ugv_hardware/share/my_ugv_hardware
+[2.687s] Invoked command in '/home/ground/ugv_ws/build/my_ugv_hardware' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_ws/build/my_ugv_hardware/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ground/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ground/ugv_ws/build/my_ugv_hardware/build --no-deps symlink_data

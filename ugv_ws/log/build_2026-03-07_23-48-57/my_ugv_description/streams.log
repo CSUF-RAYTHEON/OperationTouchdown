@@ -1,0 +1,38 @@
+[0.060s] Invoking command in '/home/ground/ugv_ws/build/my_ugv_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_ws/src/my_ugv_description -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_ws/install/my_ugv_description
+[0.254s] -- The C compiler identification is GNU 13.3.0
+[0.385s] -- The CXX compiler identification is GNU 13.3.0
+[0.434s] -- Detecting C compiler ABI info
+[0.670s] -- Detecting C compiler ABI info - done
+[0.684s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.684s] -- Detecting C compile features
+[0.685s] -- Detecting C compile features - done
+[0.705s] -- Detecting CXX compiler ABI info
+[0.961s] -- Detecting CXX compiler ABI info - done
+[0.975s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.976s] -- Detecting CXX compile features
+[0.977s] -- Detecting CXX compile features - done
+[1.006s] -- Found ament_cmake: 2.5.5 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[1.357s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[1.585s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[1.767s] -- Found urdf: 2.10.0 (/opt/ros/jazzy/share/urdf/cmake)
+[1.917s] -- Found TinyXML2 via Config file: /usr/lib/aarch64-linux-gnu/cmake/tinyxml2
+[1.970s] -- Found xacro: 2.1.1 (/opt/ros/jazzy/share/xacro/cmake)
+[1.985s] [31mCMake Error at CMakeLists.txt:12 (find_package):
+[1.985s]   By not providing "Findjoint_state_publisher.cmake" in CMAKE_MODULE_PATH
+[1.985s]   this project has asked CMake to find a package configuration file provided
+[1.986s]   by "joint_state_publisher", but CMake did not find one.
+[1.986s] 
+[1.986s]   Could not find a package configuration file provided by
+[1.986s]   "joint_state_publisher" with any of the following names:
+[1.986s] 
+[1.986s]     joint_state_publisherConfig.cmake
+[1.986s]     joint_state_publisher-config.cmake
+[1.986s] 
+[1.986s]   Add the installation prefix of "joint_state_publisher" to CMAKE_PREFIX_PATH
+[1.986s]   or set "joint_state_publisher_DIR" to a directory containing one of the
+[1.987s]   above files.  If "joint_state_publisher" provides a separate development
+[1.987s]   package or SDK, be sure it has been installed.
+[1.987s] 
+[1.987s] [0m
+[1.987s] -- Configuring incomplete, errors occurred!
+[2.011s] Invoked command in '/home/ground/ugv_ws/build/my_ugv_description' returned '1': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_ws/src/my_ugv_description -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_ws/install/my_ugv_description

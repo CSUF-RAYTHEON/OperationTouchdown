@@ -1,0 +1,49 @@
+[0.040s] Invoking command in '/home/ground/ugv_ws/build/my_ugv_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_ws/src/my_ugv_description -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_ws/install/my_ugv_description
+[0.175s] -- The C compiler identification is GNU 13.3.0
+[0.290s] -- The CXX compiler identification is GNU 13.3.0
+[0.339s] -- Detecting C compiler ABI info
+[0.547s] -- Detecting C compiler ABI info - done
+[0.563s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.563s] -- Detecting C compile features
+[0.564s] -- Detecting C compile features - done
+[0.579s] -- Detecting CXX compiler ABI info
+[0.813s] -- Detecting CXX compiler ABI info - done
+[0.832s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.833s] -- Detecting CXX compile features
+[0.833s] -- Detecting CXX compile features - done
+[0.840s] -- Found ament_cmake: 2.5.5 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[1.142s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[1.283s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[1.384s] -- Found urdf: 2.10.0 (/opt/ros/jazzy/share/urdf/cmake)
+[1.467s] -- Found TinyXML2 via Config file: /usr/lib/aarch64-linux-gnu/cmake/tinyxml2
+[1.492s] -- Found xacro: 2.1.1 (/opt/ros/jazzy/share/xacro/cmake)
+[1.497s] -- Found ament_lint_auto: 0.17.4 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[1.744s] -- Added test 'lint_cmake' to check CMake code style
+[1.746s] -- Added test 'xmllint' to check XML markup files
+[1.749s] -- Configuring done (1.7s)
+[1.754s] -- Generating done (0.0s)
+[1.756s] -- Build files have been written to: /home/ground/ugv_ws/build/my_ugv_description
+[1.768s] Invoked command in '/home/ground/ugv_ws/build/my_ugv_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_ws/src/my_ugv_description -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_ws/install/my_ugv_description
+[1.771s] Invoking command in '/home/ground/ugv_ws/build/my_ugv_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_ws/build/my_ugv_description -- -j4 -l4
+[1.867s] Invoked command in '/home/ground/ugv_ws/build/my_ugv_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_ws/build/my_ugv_description -- -j4 -l4
+[1.888s] Invoking command in '/home/ground/ugv_ws/build/my_ugv_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_ws/build/my_ugv_description
+[1.909s] -- Install configuration: ""
+[1.911s] -- Execute custom install script
+[1.915s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share//urdf/ugv.urdf.xacro
+[1.946s] -- Up-to-date symlink: /home/ground/ugv_ws/install/my_ugv_description/share//urdf/ugv.urdf.xacro
+[1.946s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/ament_index/resource_index/package_run_dependencies/my_ugv_description
+[1.965s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/ament_index/resource_index/parent_prefix_path/my_ugv_description
+[1.984s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/my_ugv_description/environment/ament_prefix_path.sh
+[2.005s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/my_ugv_description/environment/ament_prefix_path.dsv
+[2.040s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/my_ugv_description/environment/path.sh
+[2.059s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/my_ugv_description/environment/path.dsv
+[2.078s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/my_ugv_description/local_setup.bash
+[2.096s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/my_ugv_description/local_setup.sh
+[2.134s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/my_ugv_description/local_setup.zsh
+[2.153s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/my_ugv_description/local_setup.dsv
+[2.172s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/my_ugv_description/package.dsv
+[2.190s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/ament_index/resource_index/packages/my_ugv_description
+[2.226s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/my_ugv_description/cmake/my_ugv_descriptionConfig.cmake
+[2.247s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/my_ugv_description/cmake/my_ugv_descriptionConfig-version.cmake
+[2.265s] -- Symlinking: /home/ground/ugv_ws/install/my_ugv_description/share/my_ugv_description/package.xml
+[2.288s] Invoked command in '/home/ground/ugv_ws/build/my_ugv_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_ws/build/my_ugv_description
