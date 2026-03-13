@@ -3,6 +3,12 @@ from test_change_flight_mode import change_flight_mode
 import time
 
 def arm_drone(master):
+    # 1. Setting some arming parameters for the drone, these parameters dicate under what conditions the drone will arm.
+    #    These are not all of the parameters however, so if for some reason other parameters are changed then it could fail
+    #    to arm. The ARMING_REQUIRE is a parameter for planes, not for drones, this distinction is important as changing
+    #    parameters for a plane can result in the drone not arming. So we set ARMING_REQUIRE = 1 which is its default value.
+    #    This is to ensure it is always 1 whenever we arm to prevent being unable to arm. We also print out the values it
+    #    becomes and the associated parameter. Both are printed to the termal for logging purposes.  
     print(f"Entered arm_drone() & Setting Arming Parameters for Target System: {master.target_system} & Target Component: {master.target_component}")
     params = {"ARMING_REQUIRE": 1, "ARMING_CHECK": 1, "ARMING_ACCTHRESH": 0.255, "ARMING_MAGTHRESH": 50, "ARMING_NEED_LOC": 0}
     for name, value in params.items():
@@ -19,18 +25,26 @@ def arm_drone(master):
             print(f"Failed to set {name}: {e}", end=" ")
     print("\nParameters set. You may need to reboot FCU for sensors to reinit.")
 
+    # 2. Here we arm the drone using  the built-in helper function from pymavlink/mavutil library
     print("Arming Drone Motors")
     master.arducopter_arm()
+
+    # 3. 
     print("Reading message buffer to catch up to arming change...")
     start_time = time.time()
-    while time.time() - start_time < 3: # Continously read messages for up to 3 seconds
-        msg = master.recv_match(type='COMMAND_ACK', blocking=True, timeout=1) # Recieve a message and block up to 1 second
-        if msg and master.flightmode == flight_mode:
-            print(f"SUCCESS! Pymavlink caught up and sees: {master.flightmode} flight mode & Base Mode(MAV_MODE_FLAGS): {master.base_mode}\n")
-            break
+    while time.time() - start_time < 3: # Continously read command acknowledgements for 3 seconds
+        command_ack_msg = master.recv_match(type=['COMMAND_ACK'], blocking=True, timeout=2) # Receive a command acknowledgement message and block up to 2 seconds
+        if command_ack_msg is not None:
+            if command_ack_msg.command == 400 and command_ack_msg.result == 0:
+                print(f"Command Acknowledgment received for MAV_CMD_COMPONENT_ARM_DISARM(CMD #400) with result MAV_RESULT_ACCEPTED(0)")
+                print(f"{command_ack_msg.get_type()}: {command_ack_msg.to_dict()}\n")
+                break
     else:
-        # If the loop finishes the 3 seconds without breaking, it timed out
-        print(f"FAILURE! Timed out waiting for {flight_mode}. Current mode seen: {master.flightmode} & Base Mode(MAV_MODE_FLAGS): {master.base_mode}\n")
+        if command_ack_msg is not None:
+            print(f"Command Acknowledgment received but timed out with wrong command or result: CMD #{command_ack_msg.command} & CMD Result #{command_ack_msg.result}")
+            print(f"{command_ack_msg.get_type()}: {command_ack_msg.to_dict()}")
+        else:
+            print("Timed out waiting for command acknowledgement message")
 
 
 if __name__ == "__main__":
