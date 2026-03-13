@@ -29,7 +29,9 @@ def arm_drone(master):
     print("Arming Drone Motors")
     master.arducopter_arm()
 
-    # 3. 
+    # 3. Flush the buffer until we catch the correct command acknowledement(cmd ack) by pulling the next cmd ack from the queue continously.
+    #    This is for logging purposes to confirm that the arming command was sent and accepted by the flight controller. It also serves to 
+    #    clear the buffer of any old messages until we catch the correct one that shows the drone is armed.
     print("Reading message buffer to catch up to arming change...")
     start_time = time.time()
     while time.time() - start_time < 3: # Continously read command acknowledgements for 3 seconds

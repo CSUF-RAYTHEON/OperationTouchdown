@@ -28,6 +28,8 @@ def change_flight_mode(master, flight_mode):
     master.set_mode(flight_mode)
 
     # 3. Flush the buffer until we catch the correct command acknowledement(cmd ack) by pulling the next cmd ack from the queue. 
+    #    This is for logging purposes to confirm that the mode change command was sent and accepted by the flight controller. It also 
+    #    serves to clear the buffer of any old messages until we catch the correct one that shows the drone is in the specified mode.
     print("Reading message buffer to catch command acknowledgment...")
     start_time = time.time()
     while time.time() - start_time < 3: # Continously read command acknowledgements for 3 seconds
