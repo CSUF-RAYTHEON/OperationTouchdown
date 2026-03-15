@@ -5,9 +5,6 @@ from pymavlink import mavutil
 import time
 
 def change_flight_mode(master, flight_mode):
-    print("Waiting for heartbeat from Pixhawk...")
-    master.wait_heartbeat()
-    print("Heartbeat Received")
     print(f"Entered change_flight_mode() for Target System: {master.target_system} & Target Component: {master.target_component}")
 
     # 1. ArduPilot will actively reject a flight mode switch if its (EKF) hasn't secured a solid GPS lock 
@@ -20,8 +17,9 @@ def change_flight_mode(master, flight_mode):
     start_time = time.time()
     while time.time() - start_time < 3:
         master.recv_match(blocking=False) # Grab any waiting message and immediately discard it
-        time.sleep(0.1) # A tiny 0.1s sleep keep CPU from maxing out at 100%
-    print("Done waiting!\n")
+        time.sleep(0.1)
+    master.wait_heartbeat()
+    print("Done waiting\n")
 
     # 2. Switch flight mode using the built-in helper function from pymavlink/mavutil library
     print(f"Switching to {flight_mode} flight mode...")
@@ -53,11 +51,11 @@ def change_flight_mode(master, flight_mode):
     start_time = time.time()
     while time.time() - start_time < 3: # Continously read heartbeats for 3 seconds
         heartbeat_msg = master.recv_match(type=['HEARTBEAT'], blocking=True, timeout=2) # Recieve a heartbeat message and block up to 2 second
-        if heartbeat_msg and master.flightmode == flight_mode:
-            print(f"SUCCESS! Pymavlink caught up and sees: {master.flightmode} flight mode & Base Mode(MAV_MODE_FLAGS): {master.base_mode}\n")
+        if (heartbeat_msg is not None) and (master.flightmode == flight_mode):
+            print(f"Succesfully switched to: {master.flightmode} flight mode & Base Mode(MAV_MODE_FLAGS): {master.base_mode}\n")
             break
     else:
-        print(f"FAILURE! Timed out waiting for {flight_mode}. Current mode seen: {master.flightmode} & Base Mode(MAV_MODE_FLAGS): {master.base_mode}\n")
+        print(f"Timed out waiting for {flight_mode}. Current mode seen: {master.flightmode} & Base Mode(MAV_MODE_FLAGS): {master.base_mode}\n")
 
 if __name__ == "__main__":
     serial_port = '/dev/serial0'
@@ -65,9 +63,12 @@ if __name__ == "__main__":
     source_system = 1
     source_component = 191
 
-    print("\nConnecting to Pixhawk...")
+    print("\nConnecting to Pixhawk & Waiting for Heartbeat")
     master = mavutil.mavlink_connection(serial_port, baud=baudrate, source_system=source_system, source_component=source_component)
     master.target_system = 1 # Send messages to system 1(drone/vehicle #1)
     master.target_component = 1 # Send messages to flight controller "autopilot"
+    master.wait_heartbeat()
+    print("Heartbeat Received & Connection Established")
+    print(f"Source System: {master.source_system}, Source Component: {master.source_component}, Target System: {master.target_system}, Target Component: {master.target_component}, Connection Type: {serial_port}, Baudrate: {baudrate}")
 
     change_flight_mode(master, "GUIDED")
