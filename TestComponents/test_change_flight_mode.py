@@ -69,6 +69,6 @@ if __name__ == "__main__":
     master.target_component = 1 # Send messages to flight controller "autopilot"
     master.wait_heartbeat()
     print("Heartbeat Received & Connection Established")
-    print(f"Source System: {master.source_system}, Source Component: {master.source_component}, Target System: {master.target_system}, Target Component: {master.target_component}, Connection Type: {serial_port}, Baudrate: {baudrate}")
+    print(f"Source System: {master.source_system}, Source Component: {master.source_component}, Target System: {master.target_system}, Target Component: {master.target_component}, Connection Type: {serial_port}, Baudrate: {baudrate}\n")
 
     change_flight_mode(master, "GUIDED")
