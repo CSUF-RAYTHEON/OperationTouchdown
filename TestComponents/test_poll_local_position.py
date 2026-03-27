@@ -8,7 +8,13 @@ import time
 
 def test_poll_local_position(master):
     print(f"Entered test_poll_local_position() for Target System: {master.target_system} & Target Component: {master.target_component}")
-
+    master.mav.request_data_stream_send(
+    master.target_system,
+    master.target_component,
+    mavutil.mavlink.MAV_DATA_STREAM_POSITION,
+    1,  # Hz
+    1    # start
+    )
     # 1. We initialize the variables to 9999.0, this is because we want to have a default value in case we fail to read the LOCAL_POSITION_NED messages, 
     #    so that we can still print out the values to the terminal for logging purposes. This is important because if we fail to read the LOCAL_POSITION_NED messages
     #    then we want to know that we failed and what the values are, rather than just having an error or no output at all. So this is a way to ensure that we have 
