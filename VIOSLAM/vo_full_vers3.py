@@ -561,7 +561,7 @@ def main():
                 sync = pipeline.create(dai.node.Sync)
 
                 # Stereo settings
-                stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.HIGH_DENSITY)
+                stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.FAST_DENSITY)
                 stereo.setLeftRightCheck(True)
                 stereo.setSubpixel(True)
                 stereo.setDepthAlign(dai.StereoDepthConfig.AlgorithmControl.DepthAlign.RECTIFIED_LEFT)
@@ -585,8 +585,7 @@ def main():
                 stereo.rectifiedLeft.link(sync.inputs["left"])
                 stereo.depth.link(sync.inputs["depth"])
 
-                # Start pipeline
-                pipeline.start()
+                
 
                 # Calibration
                 calib = device.getCalibration()
@@ -606,6 +605,9 @@ def main():
                 # Get output queues / handles
                 sync_q = sync.out.createOutputQueue()
                 imu_q = imu.out.createOutputQueue(maxSize=50, blocking=False)
+
+                # Start pipeline
+                pipeline.start()
 
                 while pipeline.isRunning():
                     now = time.time()
