@@ -1,3 +1,9 @@
+# This code tests the arming of the drone. It first sets some arming parameters to ensure that the drone can arm, then it sends the arming command, 
+# and finally it checks if the drone is armed. It also prints out various messages to the terminal for logging purposes. It also goes through the
+# process of clearing the messae buffer to ensure that we get the correct command acknowledement and heartbeat messages that confirm the drone is armed. 
+# This is important because if the buffer is not cleared then we can get old messages that do not reflect the current state of the drone, which can 
+# lead to confusion and incorrect assumptions about whether the drone is armed or not. So we actively read and clear the buffer until we catch the correct
+# messages that confirm the drone is armed. So it also shows how to read command acknowledement messages and heartbeat messages.
 from pymavlink import mavutil
 from test_change_flight_mode import change_flight_mode
 import time
@@ -51,9 +57,9 @@ def arm_drone(master):
             print("Timed out waiting for command acknowledgement message")
 
     # 4. Here we check if the drone is armed using the built-in helper function from pymavlink/mavutil library to ensure that the drone is armed. This is because sometimes 
-    # the drone can fail to arm due to various reasons such as bad parameters, bad GPS lock, or bad sensor readings. So this is a backup to ensure that the drone 
-    # is armed and ready to fly. The previous step is more for logging purposes to confirm that the arming command was sent and accepted by the flight controller, 
-    # but this step is to ensure that the drone is actually armed. And we also print out the result to the terminal for logging purposes.
+    #    the drone can fail to arm due to various reasons such as bad parameters, bad GPS lock, or bad sensor readings. So this is a backup to ensure that the drone 
+    #    is armed and ready to fly. The previous step is more for logging purposes to confirm that the arming command was sent and accepted by the flight controller, 
+    #    but this step is to ensure that the drone is actually armed. And we also print out the result to the terminal for logging purposes.
     print("Checking if drone armed...")
     start_time = time.time()
     while time.time() - start_time < 3: # Wait for up too 3 seconds for confirmation that the motors armed

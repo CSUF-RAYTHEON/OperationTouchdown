@@ -8,11 +8,11 @@ def change_flight_mode(master, flight_mode):
     print(f"Entered change_flight_mode() for Target System: {master.target_system} & Target Component: {master.target_component}")
 
     # 1. ArduPilot will actively reject a flight mode switch if its (EKF) hasn't secured a solid GPS lock 
-    # and stabilized its sensors. So this loop waits for 5 seconds to allow for this to happen.
-    # It will also reject a switch/delete newest messeges that the Pixhawk sends to the Pi, this is because
-    # the message buffer overflows. We solve the overflow issue by using the recv_match() helper function from
-    # the pymavlink/mavutil library to read any incoming messages and clear the buffer.
-    # IMPORTANT: SIMPLY DOING TIME.SLEEP() WILL NOT WORK AS WE NEED TO ALSO READ/CLEAR THE BUFFER
+    #    and stabilized its sensors. So this loop waits for 5 seconds to allow for this to happen.
+    #    It will also reject a switch/delete newest messeges that the Pixhawk sends to the Pi, this is because
+    #    the message buffer overflows. We solve the overflow issue by using the recv_match() helper function from
+    #    the pymavlink/mavutil library to read any incoming messages and clear the buffer.
+    #    IMPORTANT: SIMPLY DOING TIME.SLEEP() WILL NOT WORK AS WE NEED TO ALSO READ/CLEAR THE BUFFER
     print("Waiting 3 seconds for sensors, GPS, and reading message queue...")
     start_time = time.time()
     while time.time() - start_time < 3:
@@ -45,8 +45,8 @@ def change_flight_mode(master, flight_mode):
             print("Timed out waiting for command acknowledgement message")
 
     # 4. Flush the buffer until we catch the updated heartbeat by pulling the next heartbeat from the queue. Pymavlink caches the flight mode based
-    # on the LAST heartbeat it read. If we print the mode immediately, it will falsely print the wrong mode. To solve this we must actively pull 
-    # new heartbeats from the queue until we catch up to the message that proves the flight controller actually did switch modes.
+    #    on the LAST heartbeat it read. If we print the mode immediately, it will falsely print the wrong mode. To solve this we must actively pull 
+    #    new heartbeats from the queue until we catch up to the message that proves the flight controller actually did switch modes.
     print("Reading message buffer to get latest heartbeat...")
     start_time = time.time()
     while time.time() - start_time < 3: # Continously read heartbeats for 3 seconds
