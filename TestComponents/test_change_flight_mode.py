@@ -8,7 +8,7 @@ def change_flight_mode(master, flight_mode):
     print(f"Entered change_flight_mode() for Target System: {master.target_system} & Target Component: {master.target_component}")
 
     # 1. ArduPilot will actively reject a flight mode switch if its (EKF) hasn't secured a solid GPS lock 
-    #    and stabilized its sensors. So this loop waits for 5 seconds to allow for this to happen.
+    #    and stabilized its sensors. So this loop waits for 3 seconds to allow for this to happen.
     #    It will also reject a switch/delete newest messeges that the Pixhawk sends to the Pi, this is because
     #    the message buffer overflows. We solve the overflow issue by using the recv_match() helper function from
     #    the pymavlink/mavutil library to read any incoming messages and clear the buffer.
