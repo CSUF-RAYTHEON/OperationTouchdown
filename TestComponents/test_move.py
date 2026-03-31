@@ -3,6 +3,8 @@
 import global_variables
 from test_local_position import test_update_local_position
 import time
+from pymavlink import mavutil
+
 
 def test_takeoff(master, height):
     print(f"Entered test_takeoff() for Target System: {master.target_system} & Target Component: {master.target_component}")
@@ -45,4 +47,4 @@ def test_hold_position(master, x, y, z, duration):
     start_time = time.time()
     while time.time() - start_time < duration:
         test_goto(master, x, y, z)
-        time.sleep(0.5)
+        time.sleep(0.05)

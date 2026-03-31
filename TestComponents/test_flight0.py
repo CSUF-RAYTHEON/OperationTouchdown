@@ -24,5 +24,5 @@ if __name__ == "__main__":
     test_local_position.test_set_origin_local_position(master)
     test_local_position.test_update_local_position(master)
     test_move.test_takeoff(master, 5)
-    test_move.test_move(master, 5, 5, 5)
+    test_move.test_move(master, 5, 5, -5)
     test_move.test_land_current_position(master)
