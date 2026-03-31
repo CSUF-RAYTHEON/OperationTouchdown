@@ -24,7 +24,7 @@ def test_move(master, x, y, z):
     print(f"Entered test_move() for Target System: {master.target_system} & Target Component: {master.target_component}")
 
     # 1. Tell drone to move to specified position relative to current position using custom origin coordinates reference frame, until within 0.8 meters of target position
-    while(abs(global_variables.current_position_custom_x - x) > 0.8 and abs(global_variables.current_position_custom_y - y) > 0.8 and abs(global_variables.current_position_custom_z - z) > 0.8):
+    while(abs(global_variables.current_position_custom_x - x) > 0.8 or abs(global_variables.current_position_custom_y - y) > 0.8 or abs(global_variables.current_position_custom_z - z) > 0.8):
         test_hold_position(master, global_variables.origin_drone_x + x, global_variables.origin_drone_y + y, global_variables.origin_drone_z + z, 2)
         test_update_local_position(master)
 
