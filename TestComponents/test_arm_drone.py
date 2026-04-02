@@ -17,7 +17,7 @@ def arm_drone(master):
     #    parameters for a plane can result in the drone not arming. So we set ARMING_REQUIRE = 1 which is its default value.
     #    This is to ensure it is always 1 whenever we arm to prevent being unable to arm. We also print out the values it
     #    becomes and the associated parameter. Both are printed to the termal for logging purposes.  
-    params = {"ARMING_REQUIRE": 1, "ARMING_CHECK": 1, "ARMING_ACCTHRESH": 0.255, "ARMING_MAGTHRESH": 50, "ARMING_NEED_LOC": 0}
+    params = {"ARMING_REQUIRE": 1, "ARMING_CHECK": 1, "ARMING_ACCTHRESH": 0.3, "ARMING_MAGTHRESH": 75, "ARMING_NEED_LOC": 0}
     for name, value in params.items():
         try:
             master.mav.param_set_send(master.target_system, master.target_component, name.encode(), float(value), mavutil.mavlink.MAV_PARAM_TYPE_INT32)

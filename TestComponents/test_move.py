@@ -9,16 +9,18 @@ from pymavlink import mavutil
 def test_takeoff(master, height):
     print(f"Entered test_takeoff() for Target System: {master.target_system} & Target Component: {master.target_component}")
 
-    # 1. Takeoff to specified height (negative value for NED frame)
-    test_move(master, 0, 0, -height)
+    # 1. Takeoff to specified height (positive value for takeoff command) this command using latitude and longitude however if set to 0 
+    #    for both then it will ignore them and instead takeoff from current position. This allows the code to work for gps and non-gps implementations.
+    master.mav.command_long_send(master.target_system, master.target_component, mavutil.mavlink.MAV_CMD_NAV_TAKEOFF,0, 0, 0, 0, 0, 0, 0, height)
+    time.sleep(5) # Wait for 5 seconds to allow the drone to takeoff and stabilize at the new height
 
 def test_land_current_position(master):
     print(f"Entered test_land_current_position() for Target System: {master.target_system} & Target Component: {master.target_component}")
 
     # 1. Land by using land command, this command using latitude and longitude however if set to 0 for both then it will ignore them
     #    and instead land at current position. This allows the code to work for gps and non-gps implementations. 
-    master.mav.command_long_send(master.target_system, master.target_component, mavutil.mavlink.MAV_CMD_NAV_LAND,
-    0, 0, 0, 0, 0, 0, 0, 0)
+    master.mav.command_long_send(master.target_system, master.target_component, mavutil.mavlink.MAV_CMD_NAV_LAND, 0, 0, 0, 0, 0, 0, 0, 0)
+    time.sleep(5) # Wait for 5 seconds to allow the drone to land and stabilize at the landing position
 
 def test_move(master, x, y, z):
     print(f"Entered test_move() for Target System: {master.target_system} & Target Component: {master.target_component}")
@@ -37,9 +39,9 @@ def test_goto(master, x, y, z):
         mavutil.mavlink.POSITION_TARGET_TYPEMASK_AX_IGNORE | mavutil.mavlink.POSITION_TARGET_TYPEMASK_AY_IGNORE | mavutil.mavlink.POSITION_TARGET_TYPEMASK_AZ_IGNORE |
         mavutil.mavlink.POSITION_TARGET_TYPEMASK_YAW_IGNORE | mavutil.mavlink.POSITION_TARGET_TYPEMASK_YAW_RATE_IGNORE),
         x, y, z, # X, Y, Z (NED)
-        0, 0, 0,
-        0, 0, 0,
-        0, 0)
+        0, 0, 0, # VX, VY, VZ (not used)
+        0, 0, 0, # AX, AY, AZ (not used)
+        0, 0) # YAW, YAW_RATE (not used)
 
 
 def test_hold_position(master, x, y, z, duration):
