@@ -26,7 +26,7 @@ MAX_VELOCITY = 0.3
 DISARM_ALTITUDE_THRESHOLD = 0.05
 
 # Takeoff to 3 meters for testing
-TAKEOFF_ALTITUDE = 3.0
+TAKEOFF_ALTITUDE = 4.0
 
 
 class StationaryLandingController:
@@ -162,7 +162,7 @@ class StationaryLandingController:
             if alt >= TAKEOFF_ALTITUDE * 0.95:
                 print(f"[INFO] Target altitude reached: {alt:.2f} m")
                 break
-            time.sleep(0.2)
+            time.sleep(5)
 
     def send_velocity(self, vx, vy, vz):
         # Send the velocity command to the Pixhawk using MAVLink
@@ -224,8 +224,18 @@ class StationaryLandingController:
             0,
             0,0,0,0,0,0,0
         )
-        time.sleep(1)  # give it a moment to send
+        time.sleep(2)  # give it a moment to send
+    '''
     
+    alans api
+def test_land_current_position(master):
+    print(f"Entered test_land_current_position() for Target System: {master.target_system} & Target Component: {master.target_component}")
+
+    # 1. Land by using land command, this command using latitude and longitude however if set to 0 for both then it will ignore them
+    #    and instead land at current position. This allows the code to work for gps and non-gps implementations. 
+    master.mav.command_long_send(master.target_system, master.target_component, mavutil.mavlink.MAV_CMD_NAV_LAND, 0, 0, 0, 0, 0, 0, 0, 0)
+    time.sleep(5) # Wait for 5 seconds to allow the drone to land and stabilize at the landing position
+'''
     def land_and_disarm(self, body_z):
         """
         Land and automatically disarm once below threshold
