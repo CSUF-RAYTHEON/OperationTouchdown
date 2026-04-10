@@ -1,0 +1,1 @@
+/home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/HandLandmark.msg

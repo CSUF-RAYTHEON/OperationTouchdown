@@ -1,0 +1,1 @@
+/home/ground/ugv_ws/src/rplidar_ros/launch/install/setup.zsh

@@ -1,0 +1,1 @@
+/home/ground/ugv_ws/build/depthai_ros_msgs/rosidl_generator_cpp/depthai_ros_msgs/srv/detail/set_local_transform__type_support.hpp

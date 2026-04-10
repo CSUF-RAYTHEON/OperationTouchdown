@@ -17,15 +17,11 @@ setup(
     maintainer_email='ground@todo.todo',
     description='TODO: Package description',
     license='TODO: License declaration',
-    extras_require={
-        'test': [
-            'pytest',
-        ],
-    },
+    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-		'motor_driver = my_ugv_hardware.roboteq_bridge:main',
-        'virtual_odom = my_ugv_hardware.virtual_odom:main',
+            'virtual_odom = my_ugv_hardware.virtual_odom:main',
+            'lora_bridge = my_ugv_hardware.lora_bridge:main',
         ],
     },
 )

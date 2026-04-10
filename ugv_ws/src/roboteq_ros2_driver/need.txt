@@ -1,0 +1,4 @@
+colcon build --packages-select roboteq_ros2_driver
+source install/setup.bash
+ ros2 pkg executables roboteq_ros2_driver
+

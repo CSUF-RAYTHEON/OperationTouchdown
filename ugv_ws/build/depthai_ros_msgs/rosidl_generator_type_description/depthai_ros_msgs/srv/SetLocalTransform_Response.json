@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "depthai_ros_msgs/srv/SetLocalTransform_Response",
+      "fields": [
+        {
+          "name": "success",
+          "type": {
+            "type_id": 15,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "depthai_ros_msgs/srv/SetLocalTransform_Response",
+      "hash_string": "RIHS01_2f5618e92b63ed5923fdc71d2a748c2fe22eb35c94d9c3242a3adcc2fbdc290b"
+    }
+  ]
+}

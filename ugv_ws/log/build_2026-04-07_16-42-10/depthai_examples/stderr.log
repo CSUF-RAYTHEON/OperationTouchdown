@@ -1,0 +1,18 @@
+[31mCMake Error at CMakeLists.txt:27 (file):
+  file DOWNLOAD cannot compute hash on failed download
+
+    status: [28;"Timeout was reached"]
+
+[0m
+[31mCMake Error at CMakeLists.txt:34 (file):
+  file DOWNLOAD cannot compute hash on failed download
+
+    status: [28;"Timeout was reached"]
+
+[0m
+[31mCMake Error at CMakeLists.txt:41 (file):
+  file DOWNLOAD cannot compute hash on failed download
+
+    status: [28;"Timeout was reached"]
+
+[0m

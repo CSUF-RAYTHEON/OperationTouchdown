@@ -1,0 +1,23 @@
+running develop
+running egg_info
+creating my_ugv_hardware.egg-info
+writing my_ugv_hardware.egg-info/PKG-INFO
+writing dependency_links to my_ugv_hardware.egg-info/dependency_links.txt
+writing entry points to my_ugv_hardware.egg-info/entry_points.txt
+writing requirements to my_ugv_hardware.egg-info/requires.txt
+writing top-level names to my_ugv_hardware.egg-info/top_level.txt
+writing manifest file 'my_ugv_hardware.egg-info/SOURCES.txt'
+reading manifest file 'my_ugv_hardware.egg-info/SOURCES.txt'
+writing manifest file 'my_ugv_hardware.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/ground/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my-ugv-hardware.egg-link (link to .)
+Installing lora_bridge script to /home/ground/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+Installing virtual_odom script to /home/ground/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+
+Installed /home/ground/ugv_ws/build/my_ugv_hardware
+running symlink_data
+creating /home/ground/ugv_ws/install/my_ugv_hardware/share/ament_index
+creating /home/ground/ugv_ws/install/my_ugv_hardware/share/ament_index/resource_index
+creating /home/ground/ugv_ws/install/my_ugv_hardware/share/ament_index/resource_index/packages
+symbolically linking /home/ground/ugv_ws/build/my_ugv_hardware/resource/my_ugv_hardware -> /home/ground/ugv_ws/install/my_ugv_hardware/share/ament_index/resource_index/packages
+symbolically linking /home/ground/ugv_ws/build/my_ugv_hardware/package.xml -> /home/ground/ugv_ws/install/my_ugv_hardware/share/my_ugv_hardware

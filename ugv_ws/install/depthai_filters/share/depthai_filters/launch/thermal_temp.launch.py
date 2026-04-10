@@ -1,0 +1,1 @@
+/home/ground/ugv_ws/src/depthai-ros/depthai_filters/launch/thermal_temp.launch.py

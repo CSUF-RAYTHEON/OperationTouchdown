@@ -1,0 +1,1 @@
+/home/ground/ugv_ws/src/rplidar_ros/launch/rplidar_s1_launch.py

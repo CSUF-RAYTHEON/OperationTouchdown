@@ -1,0 +1,65 @@
+[0.028s] Invoking command in '/home/ground/ugv_ws/build/depthai_bridge': CMAKE_PREFIX_PATH=/home/ground/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_ws/install/rplidar_ros:/home/ground/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_ws/install/my_ugv_description:/home/ground/ugv_ws/install/depthai-ros:/home/ground/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages /usr/bin/cmake /home/ground/ugv_ws/src/depthai-ros/depthai_bridge -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_ws/install/depthai_bridge
+[0.180s] -- The CXX compiler identification is GNU 13.3.0
+[0.284s] -- The C compiler identification is GNU 13.3.0
+[0.324s] -- Detecting CXX compiler ABI info
+[0.553s] -- Detecting CXX compiler ABI info - done
+[0.568s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.569s] -- Detecting CXX compile features
+[0.570s] -- Detecting CXX compile features - done
+[0.585s] -- Detecting C compiler ABI info
+[0.788s] -- Detecting C compiler ABI info - done
+[0.805s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.806s] -- Detecting C compile features
+[0.808s] -- Detecting C compile features - done
+[0.816s] -- Found ament_index_cpp: 1.8.2 (/opt/ros/jazzy/share/ament_index_cpp/cmake)
+[0.823s] -- Found camera_info_manager: 5.1.7 (/opt/ros/jazzy/share/camera_info_manager/cmake)
+[1.140s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[1.294s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[1.519s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[1.554s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[1.589s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.638s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.788s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[1.796s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[1.984s] -- Found OpenSSL: /usr/lib/aarch64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[2.023s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[2.060s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[2.295s] -- Setting yaml-cpp_DIR to: '/opt/ros/jazzy/share/yaml_cpp_vendor/cmake/../../../opt/yaml_cpp_vendor/share/cmake/yaml-cpp'
+[2.369s] -- Found cv_bridge: 4.1.0 (/opt/ros/jazzy/share/cv_bridge/cmake)
+[2.391s] -- Found depthai_ros_msgs: 3.1.0 (/home/ground/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake)
+[2.690s] -- Found image_transport: 5.1.7 (/opt/ros/jazzy/share/image_transport/cmake)
+[2.755s] -- Found nav_msgs: 5.3.6 (/opt/ros/jazzy/share/nav_msgs/cmake)
+[2.796s] -- Found stereo_msgs: 5.3.6 (/opt/ros/jazzy/share/stereo_msgs/cmake)
+[2.841s] -- Found tf2_ros: 0.36.19 (/opt/ros/jazzy/share/tf2_ros/cmake)
+[3.081s] -- Found tf2_geometry_msgs: 0.36.19 (/opt/ros/jazzy/share/tf2_geometry_msgs/cmake)
+[3.117s] -- Found eigen3_cmake_module: 0.3.0 (/opt/ros/jazzy/share/eigen3_cmake_module/cmake)
+[3.121s] -- Found Eigen3: TRUE (found version "3.4.0") 
+[3.122s] -- Ensuring Eigen3 include directory is part of orocos-kdl CMake target
+[3.141s] -- Found ffmpeg_image_transport_msgs: 1.0.2 (/opt/ros/jazzy/share/ffmpeg_image_transport_msgs/cmake)
+[3.173s] -- Found ament_cmake_gtest: 2.5.5 (/opt/ros/jazzy/share/ament_cmake_gtest/cmake)
+[3.183s] -- Found gtest sources under '/opt/ros/jazzy/src/gtest_vendor': C++ tests using 'Google Test' will be built
+[3.198s] -- Found Threads: TRUE  
+[3.486s] -- Configuring done (3.4s)
+[3.820s] -- Generating done (0.3s)
+[3.915s] -- Build files have been written to: /home/ground/ugv_ws/build/depthai_bridge
+[3.989s] Invoked command in '/home/ground/ugv_ws/build/depthai_bridge' returned '0': CMAKE_PREFIX_PATH=/home/ground/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_ws/install/rplidar_ros:/home/ground/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_ws/install/my_ugv_description:/home/ground/ugv_ws/install/depthai-ros:/home/ground/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages /usr/bin/cmake /home/ground/ugv_ws/src/depthai-ros/depthai_bridge -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_ws/install/depthai_bridge
+[3.990s] Invoking command in '/home/ground/ugv_ws/build/depthai_bridge': CMAKE_PREFIX_PATH=/home/ground/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_ws/install/rplidar_ros:/home/ground/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_ws/install/my_ugv_description:/home/ground/ugv_ws/install/depthai-ros:/home/ground/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages /usr/bin/cmake --build /home/ground/ugv_ws/build/depthai_bridge -- -j4 -l4
+[4.293s] [  2%] [32mBuilding CXX object gtest/CMakeFiles/gtest.dir/src/gtest-all.cc.o[0m
+[4.293s] [  5%] [32mBuilding CXX object gtest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o[0m
+[4.303s] [  7%] [32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/BaseConverter.cpp.o[0m
+[4.308s] [ 10%] [32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o[0m
+[9.284s] [ 12%] [32m[1mLinking CXX static library libgtest_main.a[0m
+[9.528s] [ 12%] Built target gtest_main
+[20.616s] [ 15%] [32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o[0m
+[21.216s] In file included from [01m[K/home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImageConverter.cpp:1[m[K:
+[21.217s] [01m[K/home/ground/ugv_ws/src/depthai-ros/depthai_bridge/include/depthai_bridge/ImageConverter.hpp:9:10:[m[K [01;31m[Kfatal error: [m[Kdepthai/common/Point2f.hpp: No such file or directory
+[21.217s]     9 | #include [01;31m[K"depthai/common/Point2f.hpp"[m[K
+[21.217s]       |          [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[21.217s] compilation terminated.
+[21.229s] gmake[2]: *** [CMakeFiles/depthai_bridge.dir/build.make:118: CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o] Error 1
+[21.229s] gmake[1]: *** [CMakeFiles/Makefile2:177: CMakeFiles/depthai_bridge.dir/all] Error 2
+[21.230s] gmake[1]: *** Waiting for unfinished jobs....
+[23.142s] [ 17%] [32m[1mLinking CXX static library libgtest.a[0m
+[23.546s] [ 17%] Built target gtest
+[23.552s] gmake: *** [Makefile:146: all] Error 2
+[23.563s] Invoked command in '/home/ground/ugv_ws/build/depthai_bridge' returned '2': CMAKE_PREFIX_PATH=/home/ground/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_ws/install/rplidar_ros:/home/ground/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_ws/install/my_ugv_description:/home/ground/ugv_ws/install/depthai-ros:/home/ground/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages /usr/bin/cmake --build /home/ground/ugv_ws/build/depthai_bridge -- -j4 -l4

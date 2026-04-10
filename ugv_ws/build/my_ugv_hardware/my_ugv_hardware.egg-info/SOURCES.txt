@@ -2,7 +2,8 @@ package.xml
 setup.cfg
 setup.py
 my_ugv_hardware/__init__.py
-my_ugv_hardware/roboteq_bridge.py
+my_ugv_hardware/button_driver.py
+my_ugv_hardware/lora_bridge.py
 my_ugv_hardware/virtual_odom.py
 my_ugv_hardware.egg-info/PKG-INFO
 my_ugv_hardware.egg-info/SOURCES.txt

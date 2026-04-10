@@ -1,0 +1,6 @@
+[  5%] Built target gtest
+[  7%] [32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/GridMapConverter.cpp.o[0m
+[ 12%] Built target gtest_main
+[ 15%] [32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o[0m
+[ 17%] [32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o[0m
+[ 20%] [32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o[0m

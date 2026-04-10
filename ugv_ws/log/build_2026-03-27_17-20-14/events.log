@@ -1,0 +1,605 @@
+[0.000000] (-) TimerEvent: {}
+[0.000452] (-) JobUnselected: {'identifier': 'depthai-ros'}
+[0.000562] (-) JobUnselected: {'identifier': 'depthai_descriptions'}
+[0.000586] (-) JobUnselected: {'identifier': 'depthai_examples'}
+[0.000606] (-) JobUnselected: {'identifier': 'depthai_filters'}
+[0.000624] (-) JobUnselected: {'identifier': 'depthai_ros_driver'}
+[0.000642] (-) JobUnselected: {'identifier': 'depthai_ros_msgs'}
+[0.000659] (-) JobUnselected: {'identifier': 'my_ugv_bringup'}
+[0.000675] (-) JobUnselected: {'identifier': 'my_ugv_description'}
+[0.000692] (-) JobUnselected: {'identifier': 'my_ugv_hardware'}
+[0.000708] (-) JobUnselected: {'identifier': 'my_ugv_vision'}
+[0.000725] (-) JobUnselected: {'identifier': 'roboteq_ros2_driver'}
+[0.000742] (-) JobUnselected: {'identifier': 'rplidar_ros'}
+[0.000764] (depthai_bridge) JobQueued: {'identifier': 'depthai_bridge', 'dependencies': OrderedDict({'depthai_ros_msgs': '/home/ground/ugv_ws/install/depthai_ros_msgs'})}
+[0.001101] (depthai_bridge) JobStarted: {'identifier': 'depthai_bridge'}
+[0.031331] (depthai_bridge) JobProgress: {'identifier': 'depthai_bridge', 'progress': 'cmake'}
+[0.032134] (depthai_bridge) Command: {'cmd': ['/usr/bin/cmake', '/home/ground/ugv_ws/src/depthai-ros/depthai_bridge', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/ground/ugv_ws/install/depthai_bridge'], 'cwd': '/home/ground/ugv_ws/build/depthai_bridge', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'ground', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz', 'XDG_SESSION_TYPE': 'wayland', 'CLUTTER_DISABLE_MIPMAPPED_TEXT': '1', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/ground/ugv_ws/install/depthai_ros_msgs/lib:/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/ground', 'OLDPWD': '/home/ground/ugv_ws/src/depthai-ros', 'DESKTOP_SESSION': 'ubuntu', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'SYSTEMD_EXEC_PID': '1773', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/ground/ugv_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'ground', 'IGN_GAZEBO_MODEL_PATH': '/home/ground/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@wayland.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'ground', 'TERM': 'xterm-256color', 'GAZEBO_MODEL_PATH': '/home/ground/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/ground-desktop:@/tmp/.ICE-unix/1735,unix/ground-desktop:/tmp/.ICE-unix/1735', 'XDG_MENU_PREFIX': 'gnome-', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/30a25bf6_6fc2_4088_9ca9_050decce2be7', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.RD43M3', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'GNOME_TERMINAL_SERVICE': ':1.169', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/ground/ugv_ws/install/my_ugv_vision:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/rplidar_ros:/home/ground/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_description:/home/ground/ugv_ws/install/depthai-ros:/home/ground/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'IGN_GAZEBO_RESOURCE_PATH': '/home/ground/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'GAZEBO_RESOURCE_PATH': '/home/ground/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/ground/ugv_ws/build/depthai_bridge', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/ground/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_vision:/home/ground/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'VTE_VERSION': '7600', 'CMAKE_PREFIX_PATH': '/home/ground/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/rplidar_ros:/home/ground/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_ws/install/my_ugv_description:/home/ground/ugv_ws/install/depthai-ros:/home/ground/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_ws/install/my_ugv_vision:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy'}), 'shell': False}
+[0.099515] (-) TimerEvent: {}
+[0.169217] (depthai_bridge) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 13.3.0\n'}
+[0.199650] (-) TimerEvent: {}
+[0.263851] (depthai_bridge) StdoutLine: {'line': b'-- The C compiler identification is GNU 13.3.0\n'}
+[0.294787] (depthai_bridge) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.299750] (-) TimerEvent: {}
+[0.400090] (-) TimerEvent: {}
+[0.500438] (-) TimerEvent: {}
+[0.508411] (depthai_bridge) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.525702] (depthai_bridge) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.526099] (depthai_bridge) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.526748] (depthai_bridge) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.541732] (depthai_bridge) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.600517] (-) TimerEvent: {}
+[0.700918] (-) TimerEvent: {}
+[0.738715] (depthai_bridge) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.754712] (depthai_bridge) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.755122] (depthai_bridge) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.755700] (depthai_bridge) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.770038] (depthai_bridge) StdoutLine: {'line': b'-- ------------------------------------------\n'}
+[0.770171] (depthai_bridge) StdoutLine: {'line': b'-- Depthai Bridge is being built using AMENT.\n'}
+[0.770251] (depthai_bridge) StdoutLine: {'line': b'-- ------------------------------------------\n'}
+[0.776283] (depthai_bridge) StdoutLine: {'line': b'-- Found ament_index_cpp: 1.8.2 (/opt/ros/jazzy/share/ament_index_cpp/cmake)\n'}
+[0.783157] (depthai_bridge) StdoutLine: {'line': b'-- Found camera_info_manager: 5.1.7 (/opt/ros/jazzy/share/camera_info_manager/cmake)\n'}
+[0.800980] (-) TimerEvent: {}
+[0.901252] (-) TimerEvent: {}
+[1.001594] (-) TimerEvent: {}
+[1.061548] (depthai_bridge) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter \n'}
+[1.101681] (-) TimerEvent: {}
+[1.193235] (depthai_bridge) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[1.201787] (-) TimerEvent: {}
+[1.302050] (-) TimerEvent: {}
+[1.402363] (-) TimerEvent: {}
+[1.415376] (depthai_bridge) StdoutLine: {'line': b'-- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)\n'}
+[1.449128] (depthai_bridge) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)\n'}
+[1.483874] (depthai_bridge) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.502439] (-) TimerEvent: {}
+[1.529865] (depthai_bridge) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.602545] (-) TimerEvent: {}
+[1.681381] (depthai_bridge) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)\n'}
+[1.689587] (depthai_bridge) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)\n'}
+[1.702610] (-) TimerEvent: {}
+[1.802878] (-) TimerEvent: {}
+[1.877472] (depthai_bridge) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/aarch64-linux-gnu/libcrypto.so (found version "3.0.13")  \n'}
+[1.902989] (-) TimerEvent: {}
+[1.917325] (depthai_bridge) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") \n'}
+[1.957308] (depthai_bridge) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[2.003069] (-) TimerEvent: {}
+[2.103353] (-) TimerEvent: {}
+[2.183617] (depthai_bridge) StdoutLine: {'line': b"-- Setting yaml-cpp_DIR to: '/opt/ros/jazzy/share/yaml_cpp_vendor/cmake/../../../opt/yaml_cpp_vendor/share/cmake/yaml-cpp'\n"}
+[2.203441] (-) TimerEvent: {}
+[2.257884] (depthai_bridge) StdoutLine: {'line': b'-- Found cv_bridge: 4.1.0 (/opt/ros/jazzy/share/cv_bridge/cmake)\n'}
+[2.262016] (depthai_bridge) StdoutLine: {'line': b'-- Found depthai_ros_msgs: 3.1.0 (/home/ground/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake)\n'}
+[2.303516] (-) TimerEvent: {}
+[2.403797] (-) TimerEvent: {}
+[2.504168] (-) TimerEvent: {}
+[2.562925] (depthai_bridge) StdoutLine: {'line': b'-- Found image_transport: 5.1.7 (/opt/ros/jazzy/share/image_transport/cmake)\n'}
+[2.604265] (-) TimerEvent: {}
+[2.624640] (depthai_bridge) StdoutLine: {'line': b'-- Found stereo_msgs: 5.3.6 (/opt/ros/jazzy/share/stereo_msgs/cmake)\n'}
+[2.657554] (depthai_bridge) StdoutLine: {'line': b'-- Found tf2_ros: 0.36.19 (/opt/ros/jazzy/share/tf2_ros/cmake)\n'}
+[2.704348] (-) TimerEvent: {}
+[2.804638] (-) TimerEvent: {}
+[2.858952] (depthai_bridge) StdoutLine: {'line': b'-- Found tf2_geometry_msgs: 0.36.19 (/opt/ros/jazzy/share/tf2_geometry_msgs/cmake)\n'}
+[2.892216] (depthai_bridge) StdoutLine: {'line': b'-- Found eigen3_cmake_module: 0.3.0 (/opt/ros/jazzy/share/eigen3_cmake_module/cmake)\n'}
+[2.894119] (depthai_bridge) StdoutLine: {'line': b'-- Found Eigen3: TRUE (found version "3.4.0") \n'}
+[2.894247] (depthai_bridge) StdoutLine: {'line': b'-- Ensuring Eigen3 include directory is part of orocos-kdl CMake target\n'}
+[2.903310] (depthai_bridge) StdoutLine: {'line': b'-- Found ffmpeg_image_transport_msgs: 1.0.2 (/opt/ros/jazzy/share/ffmpeg_image_transport_msgs/cmake)\n'}
+[2.904692] (-) TimerEvent: {}
+[2.939735] (depthai_bridge) StdoutLine: {'line': b'-- --------------------------jazzy ---\n'}
+[2.939979] (depthai_bridge) StdoutLine: {'line': b'-- jazzy\n'}
+[3.004795] (-) TimerEvent: {}
+[3.105113] (-) TimerEvent: {}
+[3.124016] (depthai_bridge) StdoutLine: {'line': b'-- Configuring done (3.1s)\n'}
+[3.159100] (depthai_bridge) StdoutLine: {'line': b'-- Generating done (0.0s)\n'}
+[3.167081] (depthai_bridge) StdoutLine: {'line': b'-- Build files have been written to: /home/ground/ugv_ws/build/depthai_bridge\n'}
+[3.191079] (depthai_bridge) CommandEnded: {'returncode': 0}
+[3.191868] (depthai_bridge) JobProgress: {'identifier': 'depthai_bridge', 'progress': 'build'}
+[3.193470] (depthai_bridge) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/ground/ugv_ws/build/depthai_bridge', '--', '-j4', '-l4'], 'cwd': '/home/ground/ugv_ws/build/depthai_bridge', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'ground', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz', 'XDG_SESSION_TYPE': 'wayland', 'CLUTTER_DISABLE_MIPMAPPED_TEXT': '1', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/ground/ugv_ws/install/depthai_ros_msgs/lib:/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/ground', 'OLDPWD': '/home/ground/ugv_ws/src/depthai-ros', 'DESKTOP_SESSION': 'ubuntu', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'SYSTEMD_EXEC_PID': '1773', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/ground/ugv_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'ground', 'IGN_GAZEBO_MODEL_PATH': '/home/ground/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@wayland.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'ground', 'TERM': 'xterm-256color', 'GAZEBO_MODEL_PATH': '/home/ground/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/ground-desktop:@/tmp/.ICE-unix/1735,unix/ground-desktop:/tmp/.ICE-unix/1735', 'XDG_MENU_PREFIX': 'gnome-', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/30a25bf6_6fc2_4088_9ca9_050decce2be7', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.RD43M3', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'GNOME_TERMINAL_SERVICE': ':1.169', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/ground/ugv_ws/install/my_ugv_vision:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/rplidar_ros:/home/ground/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_description:/home/ground/ugv_ws/install/depthai-ros:/home/ground/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'IGN_GAZEBO_RESOURCE_PATH': '/home/ground/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'GAZEBO_RESOURCE_PATH': '/home/ground/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/ground/ugv_ws/build/depthai_bridge', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/ground/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_vision:/home/ground/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'VTE_VERSION': '7600', 'CMAKE_PREFIX_PATH': '/home/ground/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/rplidar_ros:/home/ground/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_ws/install/my_ugv_description:/home/ground/ugv_ws/install/depthai-ros:/home/ground/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_ws/install/my_ugv_vision:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy'}), 'shell': False}
+[3.205207] (-) TimerEvent: {}
+[3.305769] (-) TimerEvent: {}
+[3.314069] (depthai_bridge) StdoutLine: {'line': b'[ 30%] \x1b[32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o\x1b[0m\n'}
+[3.318166] (depthai_bridge) StdoutLine: {'line': b'[ 30%] \x1b[32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o\x1b[0m\n'}
+[3.318621] (depthai_bridge) StdoutLine: {'line': b'[ 30%] \x1b[32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o\x1b[0m\n'}
+[3.319282] (depthai_bridge) StdoutLine: {'line': b'[ 40%] \x1b[32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o\x1b[0m\n'}
+[3.407513] (-) TimerEvent: {}
+[3.507961] (-) TimerEvent: {}
+[3.608389] (-) TimerEvent: {}
+[3.708998] (-) TimerEvent: {}
+[3.811960] (-) TimerEvent: {}
+[3.912459] (-) TimerEvent: {}
+[4.012890] (-) TimerEvent: {}
+[4.113326] (-) TimerEvent: {}
+[4.213779] (-) TimerEvent: {}
+[4.316234] (-) TimerEvent: {}
+[4.418189] (-) TimerEvent: {}
+[4.518720] (-) TimerEvent: {}
+[4.619185] (-) TimerEvent: {}
+[4.720550] (-) TimerEvent: {}
+[4.821107] (-) TimerEvent: {}
+[4.921744] (-) TimerEvent: {}
+[5.024884] (-) TimerEvent: {}
+[5.125338] (-) TimerEvent: {}
+[5.225805] (-) TimerEvent: {}
+[5.326269] (-) TimerEvent: {}
+[5.426716] (-) TimerEvent: {}
+[5.529556] (-) TimerEvent: {}
+[5.629979] (-) TimerEvent: {}
+[5.730421] (-) TimerEvent: {}
+[5.830862] (-) TimerEvent: {}
+[5.931288] (-) TimerEvent: {}
+[6.031774] (-) TimerEvent: {}
+[6.134536] (-) TimerEvent: {}
+[6.234948] (-) TimerEvent: {}
+[6.335391] (-) TimerEvent: {}
+[6.435878] (-) TimerEvent: {}
+[6.536578] (-) TimerEvent: {}
+[6.637038] (-) TimerEvent: {}
+[6.737530] (-) TimerEvent: {}
+[6.840702] (-) TimerEvent: {}
+[6.941124] (-) TimerEvent: {}
+[7.041544] (-) TimerEvent: {}
+[7.142011] (-) TimerEvent: {}
+[7.242674] (-) TimerEvent: {}
+[7.346542] (-) TimerEvent: {}
+[7.447023] (-) TimerEvent: {}
+[7.547519] (-) TimerEvent: {}
+[7.647963] (-) TimerEvent: {}
+[7.748459] (-) TimerEvent: {}
+[7.848939] (-) TimerEvent: {}
+[7.949467] (-) TimerEvent: {}
+[8.049932] (-) TimerEvent: {}
+[8.151560] (-) TimerEvent: {}
+[8.252026] (-) TimerEvent: {}
+[8.352512] (-) TimerEvent: {}
+[8.455880] (-) TimerEvent: {}
+[8.556368] (-) TimerEvent: {}
+[8.656861] (-) TimerEvent: {}
+[8.757354] (-) TimerEvent: {}
+[8.857834] (-) TimerEvent: {}
+[8.958260] (-) TimerEvent: {}
+[9.060536] (-) TimerEvent: {}
+[9.161022] (-) TimerEvent: {}
+[9.261532] (-) TimerEvent: {}
+[9.361964] (-) TimerEvent: {}
+[9.462485] (-) TimerEvent: {}
+[9.565862] (-) TimerEvent: {}
+[9.666307] (-) TimerEvent: {}
+[9.766814] (-) TimerEvent: {}
+[9.867289] (-) TimerEvent: {}
+[9.967775] (-) TimerEvent: {}
+[10.068246] (-) TimerEvent: {}
+[10.179644] (-) TimerEvent: {}
+[10.280167] (-) TimerEvent: {}
+[10.380653] (-) TimerEvent: {}
+[10.481709] (-) TimerEvent: {}
+[10.582555] (-) TimerEvent: {}
+[10.684543] (-) TimerEvent: {}
+[10.785042] (-) TimerEvent: {}
+[10.885533] (-) TimerEvent: {}
+[10.985982] (-) TimerEvent: {}
+[11.088553] (-) TimerEvent: {}
+[11.189018] (-) TimerEvent: {}
+[11.289490] (-) TimerEvent: {}
+[11.389941] (-) TimerEvent: {}
+[11.490404] (-) TimerEvent: {}
+[11.590897] (-) TimerEvent: {}
+[11.692002] (-) TimerEvent: {}
+[11.794863] (-) TimerEvent: {}
+[11.895334] (-) TimerEvent: {}
+[11.995816] (-) TimerEvent: {}
+[12.096284] (-) TimerEvent: {}
+[12.196767] (-) TimerEvent: {}
+[12.299763] (-) TimerEvent: {}
+[12.400207] (-) TimerEvent: {}
+[12.500668] (-) TimerEvent: {}
+[12.614737] (-) TimerEvent: {}
+[12.715522] (-) TimerEvent: {}
+[12.815971] (-) TimerEvent: {}
+[12.918672] (-) TimerEvent: {}
+[13.019114] (-) TimerEvent: {}
+[13.119538] (-) TimerEvent: {}
+[13.219999] (-) TimerEvent: {}
+[13.320483] (-) TimerEvent: {}
+[13.423534] (-) TimerEvent: {}
+[13.524000] (-) TimerEvent: {}
+[13.624487] (-) TimerEvent: {}
+[13.724974] (-) TimerEvent: {}
+[13.825472] (-) TimerEvent: {}
+[13.925921] (-) TimerEvent: {}
+[14.026443] (-) TimerEvent: {}
+[14.128007] (-) TimerEvent: {}
+[14.230542] (-) TimerEvent: {}
+[14.330967] (-) TimerEvent: {}
+[14.431384] (-) TimerEvent: {}
+[14.531885] (-) TimerEvent: {}
+[14.632586] (-) TimerEvent: {}
+[14.733786] (-) TimerEvent: {}
+[14.822841] (depthai_bridge) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.o\x1b[0m\n'}
+[14.836536] (-) TimerEvent: {}
+[14.936953] (-) TimerEvent: {}
+[15.037374] (-) TimerEvent: {}
+[15.137880] (-) TimerEvent: {}
+[15.238536] (-) TimerEvent: {}
+[15.339030] (-) TimerEvent: {}
+[15.442233] (-) TimerEvent: {}
+[15.542785] (-) TimerEvent: {}
+[15.643351] (-) TimerEvent: {}
+[15.746542] (-) TimerEvent: {}
+[15.847006] (-) TimerEvent: {}
+[15.947538] (-) TimerEvent: {}
+[16.048064] (-) TimerEvent: {}
+[16.148505] (-) TimerEvent: {}
+[16.173770] (depthai_bridge) StdoutLine: {'line': b'[ 60%] \x1b[32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o\x1b[0m\n'}
+[16.250531] (-) TimerEvent: {}
+[16.350944] (-) TimerEvent: {}
+[16.451359] (-) TimerEvent: {}
+[16.551798] (-) TimerEvent: {}
+[16.655660] (-) TimerEvent: {}
+[16.756071] (-) TimerEvent: {}
+[16.856512] (-) TimerEvent: {}
+[16.956961] (-) TimerEvent: {}
+[17.058577] (-) TimerEvent: {}
+[17.159042] (-) TimerEvent: {}
+[17.261905] (-) TimerEvent: {}
+[17.364540] (-) TimerEvent: {}
+[17.465003] (-) TimerEvent: {}
+[17.565460] (-) TimerEvent: {}
+[17.665897] (-) TimerEvent: {}
+[17.766384] (-) TimerEvent: {}
+[17.866876] (-) TimerEvent: {}
+[17.970904] (-) TimerEvent: {}
+[18.071350] (-) TimerEvent: {}
+[18.171801] (-) TimerEvent: {}
+[18.272300] (-) TimerEvent: {}
+[18.375722] (-) TimerEvent: {}
+[18.476129] (-) TimerEvent: {}
+[18.576552] (-) TimerEvent: {}
+[18.679617] (-) TimerEvent: {}
+[18.779036] (depthai_bridge) StdoutLine: {'line': b'[ 70%] \x1b[32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.o\x1b[0m\n'}
+[18.781661] (-) TimerEvent: {}
+[18.883932] (-) TimerEvent: {}
+[18.984369] (-) TimerEvent: {}
+[19.086865] (-) TimerEvent: {}
+[19.187488] (-) TimerEvent: {}
+[19.287909] (-) TimerEvent: {}
+[19.390834] (-) TimerEvent: {}
+[19.491373] (-) TimerEvent: {}
+[19.591936] (-) TimerEvent: {}
+[19.695530] (-) TimerEvent: {}
+[19.795981] (-) TimerEvent: {}
+[19.896492] (-) TimerEvent: {}
+[19.997029] (-) TimerEvent: {}
+[20.098544] (-) TimerEvent: {}
+[20.199018] (-) TimerEvent: {}
+[20.302798] (-) TimerEvent: {}
+[20.403279] (-) TimerEvent: {}
+[20.504644] (-) TimerEvent: {}
+[20.606744] (-) TimerEvent: {}
+[20.711454] (-) TimerEvent: {}
+[20.814534] (-) TimerEvent: {}
+[20.914948] (-) TimerEvent: {}
+[21.015394] (-) TimerEvent: {}
+[21.116501] (-) TimerEvent: {}
+[21.216956] (-) TimerEvent: {}
+[21.317417] (-) TimerEvent: {}
+[21.420758] (-) TimerEvent: {}
+[21.521387] (-) TimerEvent: {}
+[21.622037] (-) TimerEvent: {}
+[21.723543] (-) TimerEvent: {}
+[21.826789] (-) TimerEvent: {}
+[21.927394] (-) TimerEvent: {}
+[22.028580] (-) TimerEvent: {}
+[22.130616] (-) TimerEvent: {}
+[22.231299] (-) TimerEvent: {}
+[22.331997] (-) TimerEvent: {}
+[22.434909] (-) TimerEvent: {}
+[22.535569] (-) TimerEvent: {}
+[22.636693] (-) TimerEvent: {}
+[22.738850] (-) TimerEvent: {}
+[22.839420] (-) TimerEvent: {}
+[22.940856] (-) TimerEvent: {}
+[23.042741] (-) TimerEvent: {}
+[23.145625] (-) TimerEvent: {}
+[23.246418] (-) TimerEvent: {}
+[23.334687] (depthai_bridge) StdoutLine: {'line': b'[ 80%] \x1b[32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.o\x1b[0m\n'}
+[23.346613] (-) TimerEvent: {}
+[23.448937] (-) TimerEvent: {}
+[23.551768] (-) TimerEvent: {}
+[23.652410] (-) TimerEvent: {}
+[23.752860] (-) TimerEvent: {}
+[23.853470] (-) TimerEvent: {}
+[23.954746] (-) TimerEvent: {}
+[24.057770] (-) TimerEvent: {}
+[24.158676] (-) TimerEvent: {}
+[24.263952] (-) TimerEvent: {}
+[24.364564] (-) TimerEvent: {}
+[24.469056] (-) TimerEvent: {}
+[24.569549] (-) TimerEvent: {}
+[24.672546] (-) TimerEvent: {}
+[24.773024] (-) TimerEvent: {}
+[24.873497] (-) TimerEvent: {}
+[24.973919] (-) TimerEvent: {}
+[25.074607] (-) TimerEvent: {}
+[25.176742] (-) TimerEvent: {}
+[25.277394] (-) TimerEvent: {}
+[25.378758] (-) TimerEvent: {}
+[25.480817] (-) TimerEvent: {}
+[25.582830] (-) TimerEvent: {}
+[25.683500] (-) TimerEvent: {}
+[25.785130] (-) TimerEvent: {}
+[25.887943] (-) TimerEvent: {}
+[25.988470] (-) TimerEvent: {}
+[26.088969] (-) TimerEvent: {}
+[26.189493] (-) TimerEvent: {}
+[26.289948] (-) TimerEvent: {}
+[26.392783] (-) TimerEvent: {}
+[26.493264] (-) TimerEvent: {}
+[26.593755] (-) TimerEvent: {}
+[26.694200] (-) TimerEvent: {}
+[26.794672] (-) TimerEvent: {}
+[26.896754] (-) TimerEvent: {}
+[26.997247] (-) TimerEvent: {}
+[27.097734] (-) TimerEvent: {}
+[27.200543] (-) TimerEvent: {}
+[27.300988] (-) TimerEvent: {}
+[27.401481] (-) TimerEvent: {}
+[27.502062] (-) TimerEvent: {}
+[27.602535] (-) TimerEvent: {}
+[27.706271] (-) TimerEvent: {}
+[27.806867] (-) TimerEvent: {}
+[27.907918] (-) TimerEvent: {}
+[28.012007] (-) TimerEvent: {}
+[28.065174] (depthai_bridge) StdoutLine: {'line': b'[ 90%] \x1b[32mBuilding CXX object CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.o\x1b[0m\n'}
+[28.112138] (-) TimerEvent: {}
+[28.212532] (-) TimerEvent: {}
+[28.314759] (-) TimerEvent: {}
+[28.416736] (-) TimerEvent: {}
+[28.517203] (-) TimerEvent: {}
+[28.620771] (-) TimerEvent: {}
+[28.721351] (-) TimerEvent: {}
+[28.821895] (-) TimerEvent: {}
+[28.922526] (-) TimerEvent: {}
+[29.023130] (-) TimerEvent: {}
+[29.125205] (-) TimerEvent: {}
+[29.225824] (-) TimerEvent: {}
+[29.327780] (-) TimerEvent: {}
+[29.428448] (-) TimerEvent: {}
+[29.529708] (-) TimerEvent: {}
+[29.632530] (-) TimerEvent: {}
+[29.733153] (-) TimerEvent: {}
+[29.833819] (-) TimerEvent: {}
+[29.935770] (-) TimerEvent: {}
+[30.036298] (-) TimerEvent: {}
+[30.139535] (-) TimerEvent: {}
+[30.239954] (-) TimerEvent: {}
+[30.340367] (-) TimerEvent: {}
+[30.440813] (-) TimerEvent: {}
+[30.541255] (-) TimerEvent: {}
+[30.641716] (-) TimerEvent: {}
+[30.742220] (-) TimerEvent: {}
+[30.846217] (-) TimerEvent: {}
+[30.947594] (-) TimerEvent: {}
+[31.049760] (-) TimerEvent: {}
+[31.152608] (-) TimerEvent: {}
+[31.253073] (-) TimerEvent: {}
+[31.353869] (-) TimerEvent: {}
+[31.454704] (-) TimerEvent: {}
+[31.555165] (-) TimerEvent: {}
+[31.655846] (-) TimerEvent: {}
+[31.758750] (-) TimerEvent: {}
+[31.859384] (-) TimerEvent: {}
+[31.959999] (-) TimerEvent: {}
+[32.061779] (-) TimerEvent: {}
+[32.162443] (-) TimerEvent: {}
+[32.264766] (-) TimerEvent: {}
+[32.365508] (-) TimerEvent: {}
+[32.469609] (-) TimerEvent: {}
+[32.570330] (-) TimerEvent: {}
+[32.671131] (-) TimerEvent: {}
+[32.771741] (-) TimerEvent: {}
+[32.874884] (-) TimerEvent: {}
+[32.975320] (-) TimerEvent: {}
+[33.075797] (-) TimerEvent: {}
+[33.176226] (-) TimerEvent: {}
+[33.276672] (-) TimerEvent: {}
+[33.379536] (-) TimerEvent: {}
+[33.479951] (-) TimerEvent: {}
+[33.580357] (-) TimerEvent: {}
+[33.681029] (-) TimerEvent: {}
+[33.783547] (-) TimerEvent: {}
+[33.883981] (-) TimerEvent: {}
+[33.984462] (-) TimerEvent: {}
+[34.084877] (-) TimerEvent: {}
+[34.187536] (-) TimerEvent: {}
+[34.287966] (-) TimerEvent: {}
+[34.388401] (-) TimerEvent: {}
+[34.488832] (-) TimerEvent: {}
+[34.589255] (-) TimerEvent: {}
+[34.692538] (-) TimerEvent: {}
+[34.793025] (-) TimerEvent: {}
+[34.893509] (-) TimerEvent: {}
+[34.993962] (-) TimerEvent: {}
+[35.094448] (-) TimerEvent: {}
+[35.194945] (-) TimerEvent: {}
+[35.295423] (-) TimerEvent: {}
+[35.398549] (-) TimerEvent: {}
+[35.499009] (-) TimerEvent: {}
+[35.599760] (-) TimerEvent: {}
+[35.700353] (-) TimerEvent: {}
+[35.805260] (-) TimerEvent: {}
+[35.911671] (-) TimerEvent: {}
+[36.018610] (-) TimerEvent: {}
+[36.119316] (-) TimerEvent: {}
+[36.220040] (-) TimerEvent: {}
+[36.320674] (-) TimerEvent: {}
+[36.421937] (-) TimerEvent: {}
+[36.525520] (-) TimerEvent: {}
+[36.625887] (-) TimerEvent: {}
+[36.726312] (-) TimerEvent: {}
+[36.826706] (-) TimerEvent: {}
+[36.927084] (-) TimerEvent: {}
+[37.027501] (-) TimerEvent: {}
+[37.127928] (-) TimerEvent: {}
+[37.228312] (-) TimerEvent: {}
+[37.331519] (-) TimerEvent: {}
+[37.431891] (-) TimerEvent: {}
+[37.532300] (-) TimerEvent: {}
+[37.632760] (-) TimerEvent: {}
+[37.736170] (-) TimerEvent: {}
+[37.838531] (-) TimerEvent: {}
+[37.941137] (-) TimerEvent: {}
+[38.041532] (-) TimerEvent: {}
+[38.141929] (-) TimerEvent: {}
+[38.242357] (-) TimerEvent: {}
+[38.342782] (-) TimerEvent: {}
+[38.443206] (-) TimerEvent: {}
+[38.543620] (-) TimerEvent: {}
+[38.644019] (-) TimerEvent: {}
+[38.744495] (-) TimerEvent: {}
+[38.844950] (-) TimerEvent: {}
+[38.945360] (-) TimerEvent: {}
+[39.045803] (-) TimerEvent: {}
+[39.146227] (-) TimerEvent: {}
+[39.246670] (-) TimerEvent: {}
+[39.347033] (-) TimerEvent: {}
+[39.447400] (-) TimerEvent: {}
+[39.547791] (-) TimerEvent: {}
+[39.648144] (-) TimerEvent: {}
+[39.748531] (-) TimerEvent: {}
+[39.848948] (-) TimerEvent: {}
+[39.949337] (-) TimerEvent: {}
+[40.049699] (-) TimerEvent: {}
+[40.150056] (-) TimerEvent: {}
+[40.250421] (-) TimerEvent: {}
+[40.350790] (-) TimerEvent: {}
+[40.451167] (-) TimerEvent: {}
+[40.551527] (-) TimerEvent: {}
+[40.651885] (-) TimerEvent: {}
+[40.752249] (-) TimerEvent: {}
+[40.852638] (-) TimerEvent: {}
+[40.953006] (-) TimerEvent: {}
+[41.053366] (-) TimerEvent: {}
+[41.153744] (-) TimerEvent: {}
+[41.254102] (-) TimerEvent: {}
+[41.354460] (-) TimerEvent: {}
+[41.454819] (-) TimerEvent: {}
+[41.555182] (-) TimerEvent: {}
+[41.655536] (-) TimerEvent: {}
+[41.755897] (-) TimerEvent: {}
+[41.856253] (-) TimerEvent: {}
+[41.956627] (-) TimerEvent: {}
+[42.056991] (-) TimerEvent: {}
+[42.157334] (-) TimerEvent: {}
+[42.257697] (-) TimerEvent: {}
+[42.358057] (-) TimerEvent: {}
+[42.458461] (-) TimerEvent: {}
+[42.558830] (-) TimerEvent: {}
+[42.659229] (-) TimerEvent: {}
+[42.759719] (-) TimerEvent: {}
+[42.860220] (-) TimerEvent: {}
+[42.960652] (-) TimerEvent: {}
+[43.060990] (-) TimerEvent: {}
+[43.161321] (-) TimerEvent: {}
+[43.261675] (-) TimerEvent: {}
+[43.362002] (-) TimerEvent: {}
+[43.462322] (-) TimerEvent: {}
+[43.562671] (-) TimerEvent: {}
+[43.663000] (-) TimerEvent: {}
+[43.763328] (-) TimerEvent: {}
+[43.863676] (-) TimerEvent: {}
+[43.964012] (-) TimerEvent: {}
+[44.064349] (-) TimerEvent: {}
+[44.164691] (-) TimerEvent: {}
+[44.265015] (-) TimerEvent: {}
+[44.365346] (-) TimerEvent: {}
+[44.465694] (-) TimerEvent: {}
+[44.566025] (-) TimerEvent: {}
+[44.666358] (-) TimerEvent: {}
+[44.766693] (-) TimerEvent: {}
+[44.867026] (-) TimerEvent: {}
+[44.967367] (-) TimerEvent: {}
+[45.067721] (-) TimerEvent: {}
+[45.168046] (-) TimerEvent: {}
+[45.268382] (-) TimerEvent: {}
+[45.368762] (-) TimerEvent: {}
+[45.469100] (-) TimerEvent: {}
+[45.569414] (-) TimerEvent: {}
+[45.669851] (-) TimerEvent: {}
+[45.770338] (-) TimerEvent: {}
+[45.870820] (-) TimerEvent: {}
+[45.908475] (depthai_bridge) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX shared library libdepthai_bridge.so\x1b[0m\n'}
+[45.970944] (-) TimerEvent: {}
+[46.071337] (-) TimerEvent: {}
+[46.171816] (-) TimerEvent: {}
+[46.272326] (-) TimerEvent: {}
+[46.373054] (-) TimerEvent: {}
+[46.473576] (-) TimerEvent: {}
+[46.574186] (-) TimerEvent: {}
+[46.674581] (-) TimerEvent: {}
+[46.775106] (-) TimerEvent: {}
+[46.875827] (-) TimerEvent: {}
+[46.976619] (-) TimerEvent: {}
+[47.077065] (-) TimerEvent: {}
+[47.177582] (-) TimerEvent: {}
+[47.278168] (-) TimerEvent: {}
+[47.378548] (-) TimerEvent: {}
+[47.479003] (-) TimerEvent: {}
+[47.579421] (-) TimerEvent: {}
+[47.679795] (-) TimerEvent: {}
+[47.780135] (-) TimerEvent: {}
+[47.880540] (-) TimerEvent: {}
+[47.949946] (depthai_bridge) StdoutLine: {'line': b'[100%] Built target depthai_bridge\n'}
+[47.974385] (depthai_bridge) CommandEnded: {'returncode': 0}
+[47.975198] (depthai_bridge) JobProgress: {'identifier': 'depthai_bridge', 'progress': 'install'}
+[47.980611] (-) TimerEvent: {}
+[48.003606] (depthai_bridge) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/ground/ugv_ws/build/depthai_bridge'], 'cwd': '/home/ground/ugv_ws/build/depthai_bridge', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'ground', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz', 'XDG_SESSION_TYPE': 'wayland', 'CLUTTER_DISABLE_MIPMAPPED_TEXT': '1', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/ground/ugv_ws/install/depthai_ros_msgs/lib:/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/ground', 'OLDPWD': '/home/ground/ugv_ws/src/depthai-ros', 'DESKTOP_SESSION': 'ubuntu', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'SYSTEMD_EXEC_PID': '1773', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/ground/ugv_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'ground', 'IGN_GAZEBO_MODEL_PATH': '/home/ground/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@wayland.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'ground', 'TERM': 'xterm-256color', 'GAZEBO_MODEL_PATH': '/home/ground/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/ground-desktop:@/tmp/.ICE-unix/1735,unix/ground-desktop:/tmp/.ICE-unix/1735', 'XDG_MENU_PREFIX': 'gnome-', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/30a25bf6_6fc2_4088_9ca9_050decce2be7', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.RD43M3', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'GNOME_TERMINAL_SERVICE': ':1.169', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/ground/ugv_ws/install/my_ugv_vision:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/rplidar_ros:/home/ground/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_description:/home/ground/ugv_ws/install/depthai-ros:/home/ground/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'IGN_GAZEBO_RESOURCE_PATH': '/home/ground/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'GAZEBO_RESOURCE_PATH': '/home/ground/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/ground/ugv_ws/build/depthai_bridge', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/ground/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_vision:/home/ground/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:/home/ground/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'VTE_VERSION': '7600', 'CMAKE_PREFIX_PATH': '/home/ground/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_ws/install/rplidar_ros:/home/ground/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_ws/install/my_ugv_description:/home/ground/ugv_ws/install/depthai-ros:/home/ground/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_ws/install/my_ugv_vision:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy'}), 'shell': False}
+[48.023033] (depthai_bridge) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[48.023894] (depthai_bridge) StdoutLine: {'line': b'-- Execute custom install script\n'}
+[48.024336] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/environment/library_path.sh\n'}
+[48.043402] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/environment/library_path.dsv\n'}
+[48.062836] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/include//depthai_bridge/BridgePublisher.hpp\n'}
+[48.080725] (-) TimerEvent: {}
+[48.085188] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/include//depthai_bridge/DisparityConverter.hpp\n'}
+[48.112175] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/include//depthai_bridge/ImageConverter.hpp\n'}
+[48.131036] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/include//depthai_bridge/ImgDetectionConverter.hpp\n'}
+[48.150295] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/include//depthai_bridge/ImuConverter.hpp\n'}
+[48.169628] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/include//depthai_bridge/SpatialDetectionConverter.hpp\n'}
+[48.180806] (-) TimerEvent: {}
+[48.198683] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/include//depthai_bridge/TFPublisher.hpp\n'}
+[48.220396] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/include//depthai_bridge/TrackDetectionConverter.hpp\n'}
+[48.239715] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/include//depthai_bridge/TrackSpatialDetectionConverter.hpp\n'}
+[48.259009] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/include//depthai_bridge/TrackedFeaturesConverter.hpp\n'}
+[48.278052] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/include//depthai_bridge/depthaiUtility.hpp\n'}
+[48.280873] (-) TimerEvent: {}
+[48.308841] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/rviz/pointCloud.rviz\n'}
+[48.328616] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/ament_index/resource_index/package_run_dependencies/depthai_bridge\n'}
+[48.348032] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/ament_index/resource_index/parent_prefix_path/depthai_bridge\n'}
+[48.367347] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/environment/ament_prefix_path.sh\n'}
+[48.380962] (-) TimerEvent: {}
+[48.391875] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/environment/ament_prefix_path.dsv\n'}
+[48.417211] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/environment/path.sh\n'}
+[48.436459] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/environment/path.dsv\n'}
+[48.455484] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/local_setup.bash\n'}
+[48.474783] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/local_setup.sh\n'}
+[48.481059] (-) TimerEvent: {}
+[48.504927] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/local_setup.zsh\n'}
+[48.524750] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/local_setup.dsv\n'}
+[48.543656] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/package.dsv\n'}
+[48.562909] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/ament_index/resource_index/packages/depthai_bridge\n'}
+[48.581157] (-) TimerEvent: {}
+[48.585994] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/ament_cmake_export_targets-extras.cmake\n'}
+[48.613496] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/ament_cmake_export_include_directories-extras.cmake\n'}
+[48.632585] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/ament_cmake_export_libraries-extras.cmake\n'}
+[48.651319] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/ament_cmake_export_dependencies-extras.cmake\n'}
+[48.670626] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/depthai_bridgeConfig.cmake\n'}
+[48.681254] (-) TimerEvent: {}
+[48.699953] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/depthai_bridgeConfig-version.cmake\n'}
+[48.721202] (depthai_bridge) StdoutLine: {'line': b'-- Symlinking: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/package.xml\n'}
+[48.740309] (depthai_bridge) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_ws/install/depthai_bridge/lib/libdepthai_bridge.so\n'}
+[48.746145] (depthai_bridge) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/ground/ugv_ws/install/depthai_bridge/lib/libdepthai_bridge.so" to ""\n'}
+[48.746366] (depthai_bridge) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/depthai_bridgeTargets.cmake\n'}
+[48.746538] (depthai_bridge) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/depthai_bridgeTargets-noconfig.cmake\n'}
+[48.746709] (depthai_bridge) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/depthai_bridgeTargetsExport.cmake\n'}
+[48.746897] (depthai_bridge) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/depthai_bridgeTargetsExport-noconfig.cmake\n'}
+[48.750129] (depthai_bridge) CommandEnded: {'returncode': 0}
+[48.799818] (-) TimerEvent: {}
+[48.810013] (depthai_bridge) JobEnded: {'identifier': 'depthai_bridge', 'rc': 0}
+[48.811481] (-) EventReactorShutdown: {}

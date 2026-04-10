@@ -1,0 +1,67 @@
+[0.088s] Invoking command in '/home/ground/ugv_ws/build/roboteq_ros2_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_ws/src/roboteq_ros2_driver -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_ws/install/roboteq_ros2_driver
+[0.345s] -- The C compiler identification is GNU 13.3.0
+[0.524s] -- The CXX compiler identification is GNU 13.3.0
+[0.562s] -- Detecting C compiler ABI info
+[1.110s] -- Detecting C compiler ABI info - done
+[1.131s] -- Check for working C compiler: /usr/bin/cc - skipped
+[1.134s] -- Detecting C compile features
+[1.138s] -- Detecting C compile features - done
+[1.170s] -- Detecting CXX compiler ABI info
+[1.560s] -- Detecting CXX compiler ABI info - done
+[1.576s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[1.579s] -- Detecting CXX compile features
+[1.579s] -- Detecting CXX compile features - done
+[1.585s] -- Found ament_cmake: 2.5.5 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[2.198s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[2.386s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[2.493s] -- Found rclcpp: 28.1.16 (/opt/ros/jazzy/share/rclcpp/cmake)
+[2.600s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[2.665s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[2.725s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[2.780s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[3.061s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[3.072s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[3.305s] -- Found OpenSSL: /usr/lib/aarch64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[3.364s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[3.424s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[3.596s] -- Found rclpy: 7.1.9 (/opt/ros/jazzy/share/rclpy/cmake)
+[3.603s] -- Found geometry_msgs: 5.3.6 (/opt/ros/jazzy/share/geometry_msgs/cmake)
+[3.670s] -- Found tf2_ros: 0.36.19 (/opt/ros/jazzy/share/tf2_ros/cmake)
+[4.016s] -- Found ament_lint_auto: 0.17.4 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[4.384s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[4.384s] -- Configured cppcheck include dirs: 
+[4.385s] -- Configured cppcheck exclude dirs and/or files: 
+[4.392s] -- Added test 'flake8' to check Python code syntax and style conventions
+[4.392s] -- Configured 'flake8' exclude dirs and/or files: 
+[4.396s] -- Added test 'lint_cmake' to check CMake code style
+[4.403s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[4.434s] -- Added test 'uncrustify' to check C / C++ code style
+[4.437s] -- Configured uncrustify additional arguments: 
+[4.442s] -- Added test 'xmllint' to check XML markup files
+[4.450s] -- Configuring done (4.3s)
+[4.461s] -- Generating done (0.0s)
+[4.466s] -- Build files have been written to: /home/ground/ugv_ws/build/roboteq_ros2_driver
+[4.499s] Invoked command in '/home/ground/ugv_ws/build/roboteq_ros2_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_ws/src/roboteq_ros2_driver -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_ws/install/roboteq_ros2_driver
+[4.500s] Invoking command in '/home/ground/ugv_ws/build/roboteq_ros2_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_ws/build/roboteq_ros2_driver -- -j4 -l4
+[4.701s] Invoked command in '/home/ground/ugv_ws/build/roboteq_ros2_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_ws/build/roboteq_ros2_driver -- -j4 -l4
+[4.701s] Invoking command in '/home/ground/ugv_ws/build/roboteq_ros2_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_ws/build/roboteq_ros2_driver
+[4.760s] -- Install configuration: ""
+[4.761s] -- Execute custom install script
+[4.762s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/lib/roboteq_ros2_driver/roboteq_bridge.py
+[4.806s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/ament_index/resource_index/package_run_dependencies/roboteq_ros2_driver
+[4.864s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/ament_index/resource_index/parent_prefix_path/roboteq_ros2_driver
+[4.909s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/ament_prefix_path.sh
+[4.976s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/ament_prefix_path.dsv
+[5.034s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/path.sh
+[5.096s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/path.dsv
+[5.147s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.bash
+[5.211s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.sh
+[5.285s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.zsh
+[5.344s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.dsv
+[5.413s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.dsv
+[5.480s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/ament_index/resource_index/packages/roboteq_ros2_driver
+[5.521s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/cmake/ament_cmake_export_dependencies-extras.cmake
+[5.549s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/cmake/roboteq_ros2_driverConfig.cmake
+[5.602s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/cmake/roboteq_ros2_driverConfig-version.cmake
+[5.665s] -- Symlinking: /home/ground/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.xml
+[5.709s] Invoked command in '/home/ground/ugv_ws/build/roboteq_ros2_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_ws/build/roboteq_ros2_driver

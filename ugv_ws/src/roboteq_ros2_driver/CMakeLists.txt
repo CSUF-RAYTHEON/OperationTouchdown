@@ -9,8 +9,10 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclpy REQUIRED)
-find_package(geometry_msg REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -24,4 +26,17 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+# Add this section to link the dependencies
+ament_export_dependencies(
+  rclcpp
+  rclpy
+  geometry_msgs
+  std_msgs
+)
+
+# Install the Python scripts
+install(PROGRAMS
+  scripts/roboteq_bridge.py
+  DESTINATION lib/${PROJECT_NAME}
+)
 ament_package()

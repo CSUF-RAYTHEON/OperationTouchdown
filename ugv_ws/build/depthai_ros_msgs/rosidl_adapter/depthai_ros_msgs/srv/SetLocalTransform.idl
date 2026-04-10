@@ -1,0 +1,16 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from depthai_ros_msgs/srv/SetLocalTransform.srv
+// generated code does not contain a copyright notice
+
+#include "geometry_msgs/msg/Pose.idl"
+
+module depthai_ros_msgs {
+  module srv {
+    struct SetLocalTransform_Request {
+      geometry_msgs::msg::Pose local_transform;
+    };
+    struct SetLocalTransform_Response {
+      boolean success;
+    };
+  };
+};

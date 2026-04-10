@@ -1,1 +1,0 @@
-/home/ground/ugv_ws/src/my_ugv_bringup/launch/master.launch.py
