@@ -1,1 +1,1 @@
-/home/ground/ugv_ws/build/rplidar_ros/ament_cmake_core/rplidar_rosConfig-version.cmake
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/rplidar_ros/ament_cmake_core/rplidar_rosConfig-version.cmake

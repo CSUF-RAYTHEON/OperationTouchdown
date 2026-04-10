@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs
+CMAKE_SOURCE_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ground/ugv_ws/build/depthai_ros_msgs
+CMAKE_BINARY_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs
 
 # Utility rule file for depthai_ros_msgs.
 
@@ -66,18 +66,18 @@ include CMakeFiles/depthai_ros_msgs.dir/compiler_depend.make
 # Include the progress variables for this target.
 include CMakeFiles/depthai_ros_msgs.dir/progress.make
 
-CMakeFiles/depthai_ros_msgs: /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/AutoFocusCtrl.msg
-CMakeFiles/depthai_ros_msgs: /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/HandLandmark.msg
-CMakeFiles/depthai_ros_msgs: /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/HandLandmarkArray.msg
-CMakeFiles/depthai_ros_msgs: /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/ImuWithMagneticField.msg
-CMakeFiles/depthai_ros_msgs: /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/TrackedFeature.msg
-CMakeFiles/depthai_ros_msgs: /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/TrackedFeatures.msg
-CMakeFiles/depthai_ros_msgs: /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/SpatialDetection.msg
-CMakeFiles/depthai_ros_msgs: /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/SpatialDetectionArray.msg
-CMakeFiles/depthai_ros_msgs: /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/TrackDetection2D.msg
-CMakeFiles/depthai_ros_msgs: /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/TrackDetection2DArray.msg
-CMakeFiles/depthai_ros_msgs: /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/srv/TriggerNamed.srv
-CMakeFiles/depthai_ros_msgs: /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/srv/NormalizedImageCrop.srv
+CMakeFiles/depthai_ros_msgs: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/AutoFocusCtrl.msg
+CMakeFiles/depthai_ros_msgs: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/HandLandmark.msg
+CMakeFiles/depthai_ros_msgs: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/HandLandmarkArray.msg
+CMakeFiles/depthai_ros_msgs: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/ImuWithMagneticField.msg
+CMakeFiles/depthai_ros_msgs: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/TrackedFeature.msg
+CMakeFiles/depthai_ros_msgs: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/TrackedFeatures.msg
+CMakeFiles/depthai_ros_msgs: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/SpatialDetection.msg
+CMakeFiles/depthai_ros_msgs: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/SpatialDetectionArray.msg
+CMakeFiles/depthai_ros_msgs: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/TrackDetection2D.msg
+CMakeFiles/depthai_ros_msgs: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/TrackDetection2DArray.msg
+CMakeFiles/depthai_ros_msgs: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs/srv/TriggerNamed.srv
+CMakeFiles/depthai_ros_msgs: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs/srv/NormalizedImageCrop.srv
 CMakeFiles/depthai_ros_msgs: /opt/ros/jazzy/share/builtin_interfaces/msg/Duration.idl
 CMakeFiles/depthai_ros_msgs: /opt/ros/jazzy/share/builtin_interfaces/msg/Time.idl
 CMakeFiles/depthai_ros_msgs: /opt/ros/jazzy/share/geometry_msgs/msg/Accel.idl
@@ -201,6 +201,6 @@ CMakeFiles/depthai_ros_msgs.dir/clean:
 .PHONY : CMakeFiles/depthai_ros_msgs.dir/clean
 
 CMakeFiles/depthai_ros_msgs.dir/depend:
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs /home/ground/ugv_ws/build/depthai_ros_msgs /home/ground/ugv_ws/build/depthai_ros_msgs /home/ground/ugv_ws/build/depthai_ros_msgs/CMakeFiles/depthai_ros_msgs.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/CMakeFiles/depthai_ros_msgs.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/depthai_ros_msgs.dir/depend
 

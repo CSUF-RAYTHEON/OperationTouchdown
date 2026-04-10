@@ -1,7 +1,7 @@
 CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o: \
- /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TFPublisher.cpp \
+ /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TFPublisher.cpp \
  /usr/include/stdc-predef.h \
- /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/include/depthai_bridge/TFPublisher.hpp \
+ /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/include/depthai_bridge/TFPublisher.hpp \
  /opt/ros/jazzy/include/depthai-shared/common/CameraFeatures.hpp \
  /opt/ros/jazzy/include/depthai-shared/common/CameraBoardSocket.hpp \
  /usr/include/c++/13/cstdint \

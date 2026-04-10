@@ -23,7 +23,7 @@ function(ament_cmake_symlink_install_directory cmake_current_source_dir)
 
   # make destination absolute path and ensure that it exists
   if(NOT IS_ABSOLUTE "${ARG_DESTINATION}")
-    set(ARG_DESTINATION "/home/ground/ugv_ws/install/depthai_bridge/${ARG_DESTINATION}")
+    set(ARG_DESTINATION "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge/${ARG_DESTINATION}")
   endif()
   if(NOT EXISTS "${ARG_DESTINATION}")
     file(MAKE_DIRECTORY "${ARG_DESTINATION}")
@@ -128,7 +128,7 @@ function(ament_cmake_symlink_install_files cmake_current_source_dir)
 
   # make destination an absolute path and ensure that it exists
   if(NOT IS_ABSOLUTE "${ARG_DESTINATION}")
-    set(ARG_DESTINATION "/home/ground/ugv_ws/install/depthai_bridge/${ARG_DESTINATION}")
+    set(ARG_DESTINATION "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge/${ARG_DESTINATION}")
   endif()
   if(NOT EXISTS "${ARG_DESTINATION}")
     file(MAKE_DIRECTORY "${ARG_DESTINATION}")
@@ -186,7 +186,7 @@ function(ament_cmake_symlink_install_programs cmake_current_source_dir)
 
   # make destination an absolute path and ensure that it exists
   if(NOT IS_ABSOLUTE "${ARG_DESTINATION}")
-    set(ARG_DESTINATION "/home/ground/ugv_ws/install/depthai_bridge/${ARG_DESTINATION}")
+    set(ARG_DESTINATION "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge/${ARG_DESTINATION}")
   endif()
   if(NOT EXISTS "${ARG_DESTINATION}")
     file(MAKE_DIRECTORY "${ARG_DESTINATION}")
@@ -256,7 +256,7 @@ function(ament_cmake_symlink_install_targets)
 
     # make destination an absolute path and ensure that it exists
     if(NOT IS_ABSOLUTE "${destination}")
-      set(destination "/home/ground/ugv_ws/install/depthai_bridge/${destination}")
+      set(destination "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge/${destination}")
     endif()
     if(NOT EXISTS "${destination}")
       file(MAKE_DIRECTORY "${destination}")
@@ -316,67 +316,67 @@ message(STATUS "Execute custom install script")
 # begin of custom install code
 
 # install(FILES "/opt/ros/jazzy/lib/python3.12/site-packages/ament_package/template/environment_hook/library_path.sh" "DESTINATION" "share/depthai_bridge/environment")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/opt/ros/jazzy/lib/python3.12/site-packages/ament_package/template/environment_hook/library_path.sh" "DESTINATION" "share/depthai_bridge/environment")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/opt/ros/jazzy/lib/python3.12/site-packages/ament_package/template/environment_hook/library_path.sh" "DESTINATION" "share/depthai_bridge/environment")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/library_path.dsv" "DESTINATION" "share/depthai_bridge/environment")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/library_path.dsv" "DESTINATION" "share/depthai_bridge/environment")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/library_path.dsv" "DESTINATION" "share/depthai_bridge/environment")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/library_path.dsv" "DESTINATION" "share/depthai_bridge/environment")
 
 # install(DIRECTORY "include/" "DESTINATION" "include/")
-ament_cmake_symlink_install_directory("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" DIRECTORY "include/" "DESTINATION" "include/")
+ament_cmake_symlink_install_directory("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" DIRECTORY "include/" "DESTINATION" "include/")
 
 # install(DIRECTORY "rviz" "DESTINATION" "share/depthai_bridge")
-ament_cmake_symlink_install_directory("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" DIRECTORY "rviz" "DESTINATION" "share/depthai_bridge")
+ament_cmake_symlink_install_directory("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" DIRECTORY "rviz" "DESTINATION" "share/depthai_bridge")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/depthai_bridge" "DESTINATION" "share/ament_index/resource_index/package_run_dependencies")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/depthai_bridge" "DESTINATION" "share/ament_index/resource_index/package_run_dependencies")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/depthai_bridge" "DESTINATION" "share/ament_index/resource_index/package_run_dependencies")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/depthai_bridge" "DESTINATION" "share/ament_index/resource_index/package_run_dependencies")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/depthai_bridge" "DESTINATION" "share/ament_index/resource_index/parent_prefix_path")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/depthai_bridge" "DESTINATION" "share/ament_index/resource_index/parent_prefix_path")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/depthai_bridge" "DESTINATION" "share/ament_index/resource_index/parent_prefix_path")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/depthai_bridge" "DESTINATION" "share/ament_index/resource_index/parent_prefix_path")
 
 # install(FILES "/opt/ros/jazzy/share/ament_cmake_core/cmake/environment_hooks/environment/ament_prefix_path.sh" "DESTINATION" "share/depthai_bridge/environment")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/opt/ros/jazzy/share/ament_cmake_core/cmake/environment_hooks/environment/ament_prefix_path.sh" "DESTINATION" "share/depthai_bridge/environment")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/opt/ros/jazzy/share/ament_cmake_core/cmake/environment_hooks/environment/ament_prefix_path.sh" "DESTINATION" "share/depthai_bridge/environment")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/ament_prefix_path.dsv" "DESTINATION" "share/depthai_bridge/environment")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/ament_prefix_path.dsv" "DESTINATION" "share/depthai_bridge/environment")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/ament_prefix_path.dsv" "DESTINATION" "share/depthai_bridge/environment")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/ament_prefix_path.dsv" "DESTINATION" "share/depthai_bridge/environment")
 
 # install(FILES "/opt/ros/jazzy/share/ament_cmake_core/cmake/environment_hooks/environment/path.sh" "DESTINATION" "share/depthai_bridge/environment")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/opt/ros/jazzy/share/ament_cmake_core/cmake/environment_hooks/environment/path.sh" "DESTINATION" "share/depthai_bridge/environment")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/opt/ros/jazzy/share/ament_cmake_core/cmake/environment_hooks/environment/path.sh" "DESTINATION" "share/depthai_bridge/environment")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/path.dsv" "DESTINATION" "share/depthai_bridge/environment")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/path.dsv" "DESTINATION" "share/depthai_bridge/environment")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/path.dsv" "DESTINATION" "share/depthai_bridge/environment")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/path.dsv" "DESTINATION" "share/depthai_bridge/environment")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.bash" "DESTINATION" "share/depthai_bridge")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.bash" "DESTINATION" "share/depthai_bridge")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.bash" "DESTINATION" "share/depthai_bridge")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.bash" "DESTINATION" "share/depthai_bridge")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.sh" "DESTINATION" "share/depthai_bridge")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.sh" "DESTINATION" "share/depthai_bridge")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.sh" "DESTINATION" "share/depthai_bridge")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.sh" "DESTINATION" "share/depthai_bridge")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.zsh" "DESTINATION" "share/depthai_bridge")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.zsh" "DESTINATION" "share/depthai_bridge")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.zsh" "DESTINATION" "share/depthai_bridge")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.zsh" "DESTINATION" "share/depthai_bridge")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.dsv" "DESTINATION" "share/depthai_bridge")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.dsv" "DESTINATION" "share/depthai_bridge")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.dsv" "DESTINATION" "share/depthai_bridge")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/local_setup.dsv" "DESTINATION" "share/depthai_bridge")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/package.dsv" "DESTINATION" "share/depthai_bridge")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/package.dsv" "DESTINATION" "share/depthai_bridge")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/package.dsv" "DESTINATION" "share/depthai_bridge")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_environment_hooks/package.dsv" "DESTINATION" "share/depthai_bridge")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_index/share/ament_index/resource_index/packages/depthai_bridge" "DESTINATION" "share/ament_index/resource_index/packages")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_index/share/ament_index/resource_index/packages/depthai_bridge" "DESTINATION" "share/ament_index/resource_index/packages")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_index/share/ament_index/resource_index/packages/depthai_bridge" "DESTINATION" "share/ament_index/resource_index/packages")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_index/share/ament_index/resource_index/packages/depthai_bridge" "DESTINATION" "share/ament_index/resource_index/packages")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_export_targets/ament_cmake_export_targets-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_export_targets/ament_cmake_export_targets-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_export_targets/ament_cmake_export_targets-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_export_targets/ament_cmake_export_targets-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_export_include_directories/ament_cmake_export_include_directories-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_export_include_directories/ament_cmake_export_include_directories-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_export_include_directories/ament_cmake_export_include_directories-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_export_include_directories/ament_cmake_export_include_directories-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_export_libraries/ament_cmake_export_libraries-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_export_libraries/ament_cmake_export_libraries-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_export_libraries/ament_cmake_export_libraries-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_export_libraries/ament_cmake_export_libraries-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_export_dependencies/ament_cmake_export_dependencies-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_export_dependencies/ament_cmake_export_dependencies-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_export_dependencies/ament_cmake_export_dependencies-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_export_dependencies/ament_cmake_export_dependencies-extras.cmake" "DESTINATION" "share/depthai_bridge/cmake")
 
-# install(FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_core/depthai_bridgeConfig.cmake" "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_core/depthai_bridgeConfig-version.cmake" "DESTINATION" "share/depthai_bridge/cmake")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_core/depthai_bridgeConfig.cmake" "/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_core/depthai_bridgeConfig-version.cmake" "DESTINATION" "share/depthai_bridge/cmake")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_core/depthai_bridgeConfig.cmake" "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_core/depthai_bridgeConfig-version.cmake" "DESTINATION" "share/depthai_bridge/cmake")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_core/depthai_bridgeConfig.cmake" "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_core/depthai_bridgeConfig-version.cmake" "DESTINATION" "share/depthai_bridge/cmake")
 
-# install(FILES "/home/ground/ugv_ws/src/depthai-ros/depthai_bridge/package.xml" "DESTINATION" "share/depthai_bridge")
-ament_cmake_symlink_install_files("/home/ground/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_ws/src/depthai-ros/depthai_bridge/package.xml" "DESTINATION" "share/depthai_bridge")
+# install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/package.xml" "DESTINATION" "share/depthai_bridge")
+ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/package.xml" "DESTINATION" "share/depthai_bridge")

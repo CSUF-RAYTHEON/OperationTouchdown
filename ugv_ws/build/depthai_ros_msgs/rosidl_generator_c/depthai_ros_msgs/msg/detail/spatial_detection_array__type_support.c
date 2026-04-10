@@ -4,10 +4,10 @@
 
 #include <string.h>
 
-#include "depthai_ros_msgs/msg/detail/spatial_detection_array__struct.h"
 #include "rosidl_typesupport_interface/macros.h"
-#include "depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.h"
 #include "depthai_ros_msgs/msg/detail/spatial_detection_array__functions.h"
+#include "depthai_ros_msgs/msg/detail/spatial_detection_array__struct.h"
+#include "depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.h"
 
 #ifdef __cplusplus
 extern "C"

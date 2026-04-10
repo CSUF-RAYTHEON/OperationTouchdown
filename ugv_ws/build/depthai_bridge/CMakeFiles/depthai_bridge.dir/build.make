@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ground/ugv_ws/src/depthai-ros/depthai_bridge
+CMAKE_SOURCE_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ground/ugv_ws/build/depthai_bridge
+CMAKE_BINARY_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge
 
 # Include any dependencies generated for this target.
 include CMakeFiles/depthai_bridge.dir/depend.make
@@ -70,130 +70,130 @@ include CMakeFiles/depthai_bridge.dir/progress.make
 include CMakeFiles/depthai_bridge.dir/flags.make
 
 CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o: CMakeFiles/depthai_bridge.dir/flags.make
-CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o: /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/DisparityConverter.cpp
+CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/DisparityConverter.cpp
 CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o: CMakeFiles/depthai_bridge.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o -c /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/DisparityConverter.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.o -c /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/DisparityConverter.cpp
 
 CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/DisparityConverter.cpp > CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/DisparityConverter.cpp > CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.i
 
 CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/DisparityConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/DisparityConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/DisparityConverter.cpp.s
 
 CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o: CMakeFiles/depthai_bridge.dir/flags.make
-CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o: /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImageConverter.cpp
+CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/ImageConverter.cpp
 CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o: CMakeFiles/depthai_bridge.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o -c /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImageConverter.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o -c /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/ImageConverter.cpp
 
 CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImageConverter.cpp > CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/ImageConverter.cpp > CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.i
 
 CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImageConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/ImageConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.s
 
 CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o: CMakeFiles/depthai_bridge.dir/flags.make
-CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o: /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImgDetectionConverter.cpp
+CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/ImgDetectionConverter.cpp
 CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o: CMakeFiles/depthai_bridge.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o -c /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImgDetectionConverter.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.o -c /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/ImgDetectionConverter.cpp
 
 CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImgDetectionConverter.cpp > CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/ImgDetectionConverter.cpp > CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.i
 
 CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImgDetectionConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/ImgDetectionConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/ImgDetectionConverter.cpp.s
 
 CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o: CMakeFiles/depthai_bridge.dir/flags.make
-CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o: /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImuConverter.cpp
+CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/ImuConverter.cpp
 CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o: CMakeFiles/depthai_bridge.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o -c /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImuConverter.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.o -c /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/ImuConverter.cpp
 
 CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImuConverter.cpp > CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/ImuConverter.cpp > CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.i
 
 CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImuConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/ImuConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/ImuConverter.cpp.s
 
 CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.o: CMakeFiles/depthai_bridge.dir/flags.make
-CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.o: /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/SpatialDetectionConverter.cpp
+CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.o: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/SpatialDetectionConverter.cpp
 CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.o: CMakeFiles/depthai_bridge.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.o -c /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/SpatialDetectionConverter.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.o -c /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/SpatialDetectionConverter.cpp
 
 CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/SpatialDetectionConverter.cpp > CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/SpatialDetectionConverter.cpp > CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.i
 
 CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/SpatialDetectionConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/SpatialDetectionConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/SpatialDetectionConverter.cpp.s
 
 CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o: CMakeFiles/depthai_bridge.dir/flags.make
-CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o: /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TFPublisher.cpp
+CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TFPublisher.cpp
 CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o: CMakeFiles/depthai_bridge.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o -c /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TFPublisher.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.o -c /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TFPublisher.cpp
 
 CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TFPublisher.cpp > CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TFPublisher.cpp > CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.i
 
 CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TFPublisher.cpp -o CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TFPublisher.cpp -o CMakeFiles/depthai_bridge.dir/src/TFPublisher.cpp.s
 
 CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.o: CMakeFiles/depthai_bridge.dir/flags.make
-CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.o: /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackDetectionConverter.cpp
+CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.o: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackDetectionConverter.cpp
 CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.o: CMakeFiles/depthai_bridge.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.o -c /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackDetectionConverter.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.o -c /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackDetectionConverter.cpp
 
 CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackDetectionConverter.cpp > CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackDetectionConverter.cpp > CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.i
 
 CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackDetectionConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackDetectionConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/TrackDetectionConverter.cpp.s
 
 CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.o: CMakeFiles/depthai_bridge.dir/flags.make
-CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.o: /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackSpatialDetectionConverter.cpp
+CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.o: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackSpatialDetectionConverter.cpp
 CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.o: CMakeFiles/depthai_bridge.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.o -c /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackSpatialDetectionConverter.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.o -c /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackSpatialDetectionConverter.cpp
 
 CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackSpatialDetectionConverter.cpp > CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackSpatialDetectionConverter.cpp > CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.i
 
 CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackSpatialDetectionConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackSpatialDetectionConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/TrackSpatialDetectionConverter.cpp.s
 
 CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.o: CMakeFiles/depthai_bridge.dir/flags.make
-CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.o: /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackedFeaturesConverter.cpp
+CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.o: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackedFeaturesConverter.cpp
 CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.o: CMakeFiles/depthai_bridge.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.o -c /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackedFeaturesConverter.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.o -MF CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.o.d -o CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.o -c /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackedFeaturesConverter.cpp
 
 CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackedFeaturesConverter.cpp > CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackedFeaturesConverter.cpp > CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.i
 
 CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackedFeaturesConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge/src/TrackedFeaturesConverter.cpp -o CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter.cpp.s
 
 # Object files for target depthai_bridge
 depthai_bridge_OBJECTS = \
@@ -222,12 +222,12 @@ libdepthai_bridge.so: CMakeFiles/depthai_bridge.dir/src/TrackedFeaturesConverter
 libdepthai_bridge.so: CMakeFiles/depthai_bridge.dir/build.make
 libdepthai_bridge.so: /opt/ros/jazzy/lib/libcamera_info_manager.so
 libdepthai_bridge.so: /opt/ros/jazzy/lib/libcv_bridge.so
-libdepthai_bridge.so: /home/ground/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_fastrtps_c.so
-libdepthai_bridge.so: /home/ground/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.so
-libdepthai_bridge.so: /home/ground/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_introspection_c.so
-libdepthai_bridge.so: /home/ground/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_introspection_cpp.so
-libdepthai_bridge.so: /home/ground/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_cpp.so
-libdepthai_bridge.so: /home/ground/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_generator_py.so
+libdepthai_bridge.so: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_fastrtps_c.so
+libdepthai_bridge.so: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.so
+libdepthai_bridge.so: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_introspection_c.so
+libdepthai_bridge.so: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_introspection_cpp.so
+libdepthai_bridge.so: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_cpp.so
+libdepthai_bridge.so: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_generator_py.so
 libdepthai_bridge.so: /opt/ros/jazzy/lib/aarch64-linux-gnu/libimage_transport.so
 libdepthai_bridge.so: /opt/ros/jazzy/lib/libstereo_msgs__rosidl_typesupport_fastrtps_c.so
 libdepthai_bridge.so: /opt/ros/jazzy/lib/libstereo_msgs__rosidl_typesupport_introspection_c.so
@@ -267,8 +267,8 @@ libdepthai_bridge.so: /opt/ros/jazzy/lib/liblifecycle_msgs__rosidl_typesupport_c
 libdepthai_bridge.so: /opt/ros/jazzy/lib/liblifecycle_msgs__rosidl_generator_py.so
 libdepthai_bridge.so: /opt/ros/jazzy/lib/liblifecycle_msgs__rosidl_typesupport_c.so
 libdepthai_bridge.so: /opt/ros/jazzy/lib/liblifecycle_msgs__rosidl_generator_c.so
-libdepthai_bridge.so: /home/ground/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_c.so
-libdepthai_bridge.so: /home/ground/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_generator_c.so
+libdepthai_bridge.so: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_c.so
+libdepthai_bridge.so: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_generator_c.so
 libdepthai_bridge.so: /opt/ros/jazzy/lib/libvision_msgs__rosidl_typesupport_c.so
 libdepthai_bridge.so: /opt/ros/jazzy/lib/libvision_msgs__rosidl_generator_c.so
 libdepthai_bridge.so: /opt/ros/jazzy/lib/libsensor_msgs__rosidl_typesupport_fastrtps_c.so
@@ -404,7 +404,7 @@ libdepthai_bridge.so: /usr/lib/aarch64-linux-gnu/libopencv_imgproc.so.4.6.0
 libdepthai_bridge.so: /usr/lib/aarch64-linux-gnu/libopencv_flann.so.4.6.0
 libdepthai_bridge.so: /usr/lib/aarch64-linux-gnu/libopencv_core.so.4.6.0
 libdepthai_bridge.so: CMakeFiles/depthai_bridge.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX shared library libdepthai_bridge.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX shared library libdepthai_bridge.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/depthai_bridge.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -416,6 +416,6 @@ CMakeFiles/depthai_bridge.dir/clean:
 .PHONY : CMakeFiles/depthai_bridge.dir/clean
 
 CMakeFiles/depthai_bridge.dir/depend:
-	cd /home/ground/ugv_ws/build/depthai_bridge && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ground/ugv_ws/src/depthai-ros/depthai_bridge /home/ground/ugv_ws/src/depthai-ros/depthai_bridge /home/ground/ugv_ws/build/depthai_bridge /home/ground/ugv_ws/build/depthai_bridge /home/ground/ugv_ws/build/depthai_bridge/CMakeFiles/depthai_bridge.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles/depthai_bridge.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/depthai_bridge.dir/depend
 

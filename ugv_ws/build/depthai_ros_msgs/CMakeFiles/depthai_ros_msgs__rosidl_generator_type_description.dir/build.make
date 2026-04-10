@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs
+CMAKE_SOURCE_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ground/ugv_ws/build/depthai_ros_msgs
+CMAKE_BINARY_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs
 
 # Utility rule file for depthai_ros_msgs__rosidl_generator_type_description.
 
@@ -93,8 +93,8 @@ rosidl_generator_type_description/depthai_ros_msgs/msg/AutoFocusCtrl.json: rosid
 rosidl_generator_type_description/depthai_ros_msgs/msg/AutoFocusCtrl.json: rosidl_adapter/depthai_ros_msgs/msg/TrackDetection2DArray.idl
 rosidl_generator_type_description/depthai_ros_msgs/msg/AutoFocusCtrl.json: rosidl_adapter/depthai_ros_msgs/srv/TriggerNamed.idl
 rosidl_generator_type_description/depthai_ros_msgs/msg/AutoFocusCtrl.json: rosidl_adapter/depthai_ros_msgs/srv/NormalizedImageCrop.idl
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/ground/ugv_ws/build/depthai_ros_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating type hashes for ROS interfaces"
-	/usr/bin/python3 /opt/ros/jazzy/lib/rosidl_generator_type_description/rosidl_generator_type_description --generator-arguments-file /home/ground/ugv_ws/build/depthai_ros_msgs/rosidl_generator_type_description__arguments.json
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating type hashes for ROS interfaces"
+	/usr/bin/python3 /opt/ros/jazzy/lib/rosidl_generator_type_description/rosidl_generator_type_description --generator-arguments-file /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/rosidl_generator_type_description__arguments.json
 
 rosidl_generator_type_description/depthai_ros_msgs/msg/HandLandmark.json: rosidl_generator_type_description/depthai_ros_msgs/msg/AutoFocusCtrl.json
 	@$(CMAKE_COMMAND) -E touch_nocreate rosidl_generator_type_description/depthai_ros_msgs/msg/HandLandmark.json
@@ -154,6 +154,6 @@ CMakeFiles/depthai_ros_msgs__rosidl_generator_type_description.dir/clean:
 .PHONY : CMakeFiles/depthai_ros_msgs__rosidl_generator_type_description.dir/clean
 
 CMakeFiles/depthai_ros_msgs__rosidl_generator_type_description.dir/depend:
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs /home/ground/ugv_ws/build/depthai_ros_msgs /home/ground/ugv_ws/build/depthai_ros_msgs /home/ground/ugv_ws/build/depthai_ros_msgs/CMakeFiles/depthai_ros_msgs__rosidl_generator_type_description.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/CMakeFiles/depthai_ros_msgs__rosidl_generator_type_description.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/depthai_ros_msgs__rosidl_generator_type_description.dir/depend
 

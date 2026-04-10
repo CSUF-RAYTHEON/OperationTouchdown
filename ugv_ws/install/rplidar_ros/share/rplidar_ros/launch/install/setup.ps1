@@ -1,1 +1,1 @@
-/home/ground/ugv_ws/src/rplidar_ros/launch/install/setup.ps1
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/rplidar_ros/launch/install/setup.ps1

@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs
+CMAKE_SOURCE_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ground/ugv_ws/build/depthai_ros_msgs
+CMAKE_BINARY_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -142,14 +142,14 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs && $(CMAKE_COMMAND) -E cmake_progress_start /home/ground/ugv_ws/build/depthai_ros_msgs/CMakeFiles /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py//CMakeFiles/progress.marks
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ground/ugv_ws/build/depthai_ros_msgs/CMakeFiles 0
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs && $(CMAKE_COMMAND) -E cmake_progress_start /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/CMakeFiles /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py//CMakeFiles/progress.marks
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/clean
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/clean
 .PHONY : clean
 
 # The main clean target
@@ -158,31 +158,31 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/preinstall
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/preinstall
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/rule:
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/rule
-.PHONY : /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/rule
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/rule:
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/rule
+.PHONY : /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/rule
 
 # Convenience name for target.
-depthai_ros_msgs__py: /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/rule
+depthai_ros_msgs__py: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/rule
 .PHONY : depthai_ros_msgs__py
 
 # fast build rule for target.
 depthai_ros_msgs__py/fast:
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs && $(MAKE) $(MAKESILENT) -f /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/build.make /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/build
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs && $(MAKE) $(MAKESILENT) -f /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/build.make /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/build
 .PHONY : depthai_ros_msgs__py/fast
 
 # Help Target
@@ -210,6 +210,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

@@ -1,8 +1,8 @@
-# Install script for directory: /home/ground/ugv_ws/src/depthai-ros/depthai_descriptions
+# Install script for directory: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_descriptions
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/ground/ugv_ws/install/depthai_descriptions")
+  set(CMAKE_INSTALL_PREFIX "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -43,11 +43,11 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  include("/home/ground/ugv_ws/build/depthai_descriptions/ament_cmake_symlink_install/ament_cmake_symlink_install.cmake")
+  include("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions/ament_cmake_symlink_install/ament_cmake_symlink_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/depthai_descriptions/launch" TYPE DIRECTORY FILES "/home/ground/ugv_ws/src/depthai-ros/depthai_descriptions/launch/" FILES_MATCHING REGEX "/[^/]*\\.py$")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/depthai_descriptions/launch" TYPE DIRECTORY FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_descriptions/launch/" FILES_MATCHING REGEX "/[^/]*\\.py$")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -58,5 +58,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/ground/ugv_ws/build/depthai_descriptions/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

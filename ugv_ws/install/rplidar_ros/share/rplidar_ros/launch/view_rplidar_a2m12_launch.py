@@ -1,1 +1,1 @@
-/home/ground/ugv_ws/src/rplidar_ros/launch/view_rplidar_a2m12_launch.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/rplidar_ros/launch/view_rplidar_a2m12_launch.py

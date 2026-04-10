@@ -1,1 +1,1 @@
-/home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/AutoFocusCtrl.msg
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs/msg/AutoFocusCtrl.msg

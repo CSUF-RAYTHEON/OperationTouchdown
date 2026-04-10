@@ -1,8 +1,8 @@
-# Install script for directory: /home/ground/ugv_ws/src/roboteq_ros2_driver
+# Install script for directory: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/roboteq_ros2_driver
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/ground/ugv_ws/install/roboteq_ros2_driver")
+  set(CMAKE_INSTALL_PREFIX "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -43,7 +43,7 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  include("/home/ground/ugv_ws/build/roboteq_ros2_driver/ament_cmake_symlink_install/ament_cmake_symlink_install.cmake")
+  include("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver/ament_cmake_symlink_install/ament_cmake_symlink_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -54,5 +54,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/ground/ugv_ws/build/roboteq_ros2_driver/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

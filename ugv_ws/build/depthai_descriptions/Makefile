@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ground/ugv_ws/src/depthai-ros/depthai_descriptions
+CMAKE_SOURCE_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_descriptions
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ground/ugv_ws/build/depthai_descriptions
+CMAKE_BINARY_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -142,9 +142,9 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ground/ugv_ws/build/depthai_descriptions/CMakeFiles /home/ground/ugv_ws/build/depthai_descriptions//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions/CMakeFiles /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ground/ugv_ws/build/depthai_descriptions/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

@@ -1,9 +1,0 @@
-In file included from [01m[K/home/ground/ugv_ws/src/depthai-ros/depthai_bridge/src/ImageConverter.cpp:1[m[K:
-[01m[K/home/ground/ugv_ws/src/depthai-ros/depthai_bridge/include/depthai_bridge/ImageConverter.hpp:9:10:[m[K [01;31m[Kfatal error: [m[Kdepthai/common/Point2f.hpp: No such file or directory
-    9 | #include [01;31m[K"depthai/common/Point2f.hpp"[m[K
-      |          [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
-compilation terminated.
-gmake[2]: *** [CMakeFiles/depthai_bridge.dir/build.make:118: CMakeFiles/depthai_bridge.dir/src/ImageConverter.cpp.o] Error 1
-gmake[1]: *** [CMakeFiles/Makefile2:177: CMakeFiles/depthai_bridge.dir/all] Error 2
-gmake[1]: *** Waiting for unfinished jobs....
-gmake: *** [Makefile:146: all] Error 2

@@ -1,2 +1,2 @@
 # Hashes of file build rules.
-689bd90632dd8b2194413ad0745320a2 CMakeFiles/depthai_bridge_uninstall
+d4740e6d9c2cafee89e1682a5113ab90 CMakeFiles/depthai_bridge_uninstall

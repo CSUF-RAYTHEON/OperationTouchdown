@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ground/ugv_ws/src/depthai-ros/depthai_bridge
+CMAKE_SOURCE_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ground/ugv_ws/build/depthai_bridge
+CMAKE_BINARY_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge
 
 # Utility rule file for depthai_bridge_uninstall.
 
@@ -67,7 +67,7 @@ include CMakeFiles/depthai_bridge_uninstall.dir/compiler_depend.make
 include CMakeFiles/depthai_bridge_uninstall.dir/progress.make
 
 CMakeFiles/depthai_bridge_uninstall:
-	/usr/bin/cmake -P /home/ground/ugv_ws/build/depthai_bridge/ament_cmake_uninstall_target/ament_cmake_uninstall_target.cmake
+	/usr/bin/cmake -P /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_uninstall_target/ament_cmake_uninstall_target.cmake
 
 depthai_bridge_uninstall: CMakeFiles/depthai_bridge_uninstall
 depthai_bridge_uninstall: CMakeFiles/depthai_bridge_uninstall.dir/build.make
@@ -82,6 +82,6 @@ CMakeFiles/depthai_bridge_uninstall.dir/clean:
 .PHONY : CMakeFiles/depthai_bridge_uninstall.dir/clean
 
 CMakeFiles/depthai_bridge_uninstall.dir/depend:
-	cd /home/ground/ugv_ws/build/depthai_bridge && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ground/ugv_ws/src/depthai-ros/depthai_bridge /home/ground/ugv_ws/src/depthai-ros/depthai_bridge /home/ground/ugv_ws/build/depthai_bridge /home/ground/ugv_ws/build/depthai_bridge /home/ground/ugv_ws/build/depthai_bridge/CMakeFiles/depthai_bridge_uninstall.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles/depthai_bridge_uninstall.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/depthai_bridge_uninstall.dir/depend
 

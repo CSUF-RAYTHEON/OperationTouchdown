@@ -23,18 +23,18 @@ depthai_ros_msgs__msg__TrackDetection2DArray__get_type_hash(
 #include <string.h>
 
 // Include directives for referenced types
-#include "geometry_msgs/msg/detail/pose_with_covariance__functions.h"
-#include "depthai_ros_msgs/msg/detail/track_detection2_d__functions.h"
-#include "geometry_msgs/msg/detail/pose__functions.h"
-#include "vision_msgs/msg/detail/point2_d__functions.h"
-#include "builtin_interfaces/msg/detail/time__functions.h"
-#include "geometry_msgs/msg/detail/quaternion__functions.h"
 #include "vision_msgs/msg/detail/object_hypothesis__functions.h"
-#include "vision_msgs/msg/detail/bounding_box2_d__functions.h"
+#include "geometry_msgs/msg/detail/pose_with_covariance__functions.h"
 #include "vision_msgs/msg/detail/object_hypothesis_with_pose__functions.h"
-#include "vision_msgs/msg/detail/pose2_d__functions.h"
+#include "depthai_ros_msgs/msg/detail/track_detection2_d__functions.h"
+#include "vision_msgs/msg/detail/point2_d__functions.h"
 #include "std_msgs/msg/detail/header__functions.h"
 #include "geometry_msgs/msg/detail/point__functions.h"
+#include "builtin_interfaces/msg/detail/time__functions.h"
+#include "geometry_msgs/msg/detail/quaternion__functions.h"
+#include "vision_msgs/msg/detail/bounding_box2_d__functions.h"
+#include "geometry_msgs/msg/detail/pose__functions.h"
+#include "vision_msgs/msg/detail/pose2_d__functions.h"
 
 // Hashes for external referenced types
 #ifndef NDEBUG

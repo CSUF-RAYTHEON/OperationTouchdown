@@ -1,8 +1,8 @@
-# Install script for directory: /home/ground/ugv_ws/src/depthai-ros/depthai_bridge
+# Install script for directory: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_bridge
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/ground/ugv_ws/install/depthai_bridge")
+  set(CMAKE_INSTALL_PREFIX "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -43,7 +43,7 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  include("/home/ground/ugv_ws/build/depthai_bridge/ament_cmake_symlink_install/ament_cmake_symlink_install.cmake")
+  include("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/ament_cmake_symlink_install/ament_cmake_symlink_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -53,12 +53,12 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libdepthai_bridge.so"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE SHARED_LIBRARY FILES "/home/ground/ugv_ws/build/depthai_bridge/libdepthai_bridge.so")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE SHARED_LIBRARY FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/libdepthai_bridge.so")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libdepthai_bridge.so" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libdepthai_bridge.so")
     file(RPATH_CHANGE
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libdepthai_bridge.so"
-         OLD_RPATH "/home/ground/ugv_ws/install/depthai_ros_msgs/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/lib:"
+         OLD_RPATH "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/lib:"
          NEW_RPATH "")
     if(CMAKE_INSTALL_DO_STRIP)
       execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libdepthai_bridge.so")
@@ -73,7 +73,7 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake/depthai_bridgeTargets.cmake")
     file(DIFFERENT _cmake_export_file_changed FILES
          "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake/depthai_bridgeTargets.cmake"
-         "/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles/Export/7131aca0d561835dcb29c3034909c18f/depthai_bridgeTargets.cmake")
+         "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles/Export/7131aca0d561835dcb29c3034909c18f/depthai_bridgeTargets.cmake")
     if(_cmake_export_file_changed)
       file(GLOB _cmake_old_config_files "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake/depthai_bridgeTargets-*.cmake")
       if(_cmake_old_config_files)
@@ -86,9 +86,9 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
     endif()
     unset(_cmake_export_file_changed)
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake" TYPE FILE FILES "/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles/Export/7131aca0d561835dcb29c3034909c18f/depthai_bridgeTargets.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake" TYPE FILE FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles/Export/7131aca0d561835dcb29c3034909c18f/depthai_bridgeTargets.cmake")
   if(CMAKE_INSTALL_CONFIG_NAME MATCHES "^()$")
-    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake" TYPE FILE FILES "/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles/Export/7131aca0d561835dcb29c3034909c18f/depthai_bridgeTargets-noconfig.cmake")
+    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake" TYPE FILE FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles/Export/7131aca0d561835dcb29c3034909c18f/depthai_bridgeTargets-noconfig.cmake")
   endif()
 endif()
 
@@ -96,7 +96,7 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake/depthai_bridgeTargetsExport.cmake")
     file(DIFFERENT _cmake_export_file_changed FILES
          "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake/depthai_bridgeTargetsExport.cmake"
-         "/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles/Export/7131aca0d561835dcb29c3034909c18f/depthai_bridgeTargetsExport.cmake")
+         "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles/Export/7131aca0d561835dcb29c3034909c18f/depthai_bridgeTargetsExport.cmake")
     if(_cmake_export_file_changed)
       file(GLOB _cmake_old_config_files "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake/depthai_bridgeTargetsExport-*.cmake")
       if(_cmake_old_config_files)
@@ -109,9 +109,9 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
     endif()
     unset(_cmake_export_file_changed)
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake" TYPE FILE FILES "/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles/Export/7131aca0d561835dcb29c3034909c18f/depthai_bridgeTargetsExport.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake" TYPE FILE FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles/Export/7131aca0d561835dcb29c3034909c18f/depthai_bridgeTargetsExport.cmake")
   if(CMAKE_INSTALL_CONFIG_NAME MATCHES "^()$")
-    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake" TYPE FILE FILES "/home/ground/ugv_ws/build/depthai_bridge/CMakeFiles/Export/7131aca0d561835dcb29c3034909c18f/depthai_bridgeTargetsExport-noconfig.cmake")
+    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/depthai_bridge/cmake" TYPE FILE FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/CMakeFiles/Export/7131aca0d561835dcb29c3034909c18f/depthai_bridgeTargetsExport-noconfig.cmake")
   endif()
 endif()
 
@@ -123,5 +123,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/ground/ugv_ws/build/depthai_bridge/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_bridge/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

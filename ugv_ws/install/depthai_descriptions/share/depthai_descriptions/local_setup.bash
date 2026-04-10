@@ -1,1 +1,1 @@
-/home/ground/ugv_ws/build/depthai_descriptions/ament_cmake_environment_hooks/local_setup.bash
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions/ament_cmake_environment_hooks/local_setup.bash

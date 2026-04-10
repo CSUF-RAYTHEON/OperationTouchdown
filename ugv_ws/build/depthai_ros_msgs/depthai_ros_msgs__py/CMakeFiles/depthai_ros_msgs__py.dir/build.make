@@ -53,48 +53,48 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs
+CMAKE_SOURCE_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ground/ugv_ws/build/depthai_ros_msgs
+CMAKE_BINARY_DIR = /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs
 
 # Utility rule file for depthai_ros_msgs__py.
 
 # Include any custom commands dependencies for this target.
-include /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/compiler_depend.make
+include /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/compiler_depend.make
 
 # Include the progress variables for this target.
-include /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/progress.make
+include /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/progress.make
 
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_introspection_c.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_c.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_auto_focus_ctrl.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_hand_landmark.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_hand_landmark_array.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_imu_with_magnetic_field.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_tracked_feature.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_tracked_features.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_spatial_detection.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_spatial_detection_array.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_track_detection2_d.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_track_detection2_d_array.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/_trigger_named.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/_normalized_image_crop.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/__init__.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/__init__.py
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_auto_focus_ctrl_s.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_hand_landmark_s.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_hand_landmark_array_s.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_imu_with_magnetic_field_s.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_tracked_feature_s.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_tracked_features_s.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_spatial_detection_s.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_spatial_detection_array_s.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_track_detection2_d_s.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_track_detection2_d_array_s.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/_trigger_named_s.c
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/_normalized_image_crop_s.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_introspection_c.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_c.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_auto_focus_ctrl.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_hand_landmark.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_hand_landmark_array.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_imu_with_magnetic_field.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_tracked_feature.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_tracked_features.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_spatial_detection.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_spatial_detection_array.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_track_detection2_d.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_track_detection2_d_array.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/_trigger_named.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/_normalized_image_crop.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/__init__.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/__init__.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_auto_focus_ctrl_s.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_hand_landmark_s.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_hand_landmark_array_s.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_imu_with_magnetic_field_s.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_tracked_feature_s.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_tracked_features_s.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_spatial_detection_s.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_spatial_detection_array_s.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_track_detection2_d_s.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/msg/_track_detection2_d_array_s.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/_trigger_named_s.c
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/_normalized_image_crop_s.c
 
 rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /opt/ros/jazzy/lib/rosidl_generator_py/rosidl_generator_py
 rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /opt/ros/jazzy/lib/python3.12/site-packages/rosidl_generator_py/__init__.py
@@ -230,8 +230,8 @@ rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_f
 rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /opt/ros/jazzy/share/sensor_msgs/msg/TimeReference.idl
 rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /opt/ros/jazzy/share/sensor_msgs/srv/SetCameraInfo.idl
 rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /opt/ros/jazzy/share/service_msgs/msg/ServiceEventInfo.idl
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/ground/ugv_ws/build/depthai_ros_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating Python code for ROS interfaces"
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py && /usr/bin/python3 /opt/ros/jazzy/share/rosidl_generator_py/cmake/../../../lib/rosidl_generator_py/rosidl_generator_py --generator-arguments-file /home/ground/ugv_ws/build/depthai_ros_msgs/rosidl_generator_py__arguments.json --typesupport-impls "rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c;rosidl_typesupport_c"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating Python code for ROS interfaces"
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py && /usr/bin/python3 /opt/ros/jazzy/share/rosidl_generator_py/cmake/../../../lib/rosidl_generator_py/rosidl_generator_py --generator-arguments-file /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/rosidl_generator_py__arguments.json --typesupport-impls "rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c;rosidl_typesupport_c"
 
 rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_introspection_c.c: rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
 	@$(CMAKE_COMMAND) -E touch_nocreate rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_introspection_c.c
@@ -317,7 +317,7 @@ rosidl_generator_py/depthai_ros_msgs/srv/_trigger_named_s.c: rosidl_generator_py
 rosidl_generator_py/depthai_ros_msgs/srv/_normalized_image_crop_s.c: rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
 	@$(CMAKE_COMMAND) -E touch_nocreate rosidl_generator_py/depthai_ros_msgs/srv/_normalized_image_crop_s.c
 
-depthai_ros_msgs__py: /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py
+depthai_ros_msgs__py: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py
 depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_c.c
 depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
 depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_introspection_c.c
@@ -347,18 +347,18 @@ depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/_normalized_image
 depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/_normalized_image_crop_s.c
 depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/_trigger_named.py
 depthai_ros_msgs__py: rosidl_generator_py/depthai_ros_msgs/srv/_trigger_named_s.c
-depthai_ros_msgs__py: /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/build.make
+depthai_ros_msgs__py: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/build.make
 .PHONY : depthai_ros_msgs__py
 
 # Rule to build all files generated by this target.
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/build: depthai_ros_msgs__py
-.PHONY : /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/build
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/build: depthai_ros_msgs__py
+.PHONY : /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/build
 
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/clean:
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py && $(CMAKE_COMMAND) -P CMakeFiles/depthai_ros_msgs__py.dir/cmake_clean.cmake
-.PHONY : /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/clean
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/clean:
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py && $(CMAKE_COMMAND) -P CMakeFiles/depthai_ros_msgs__py.dir/cmake_clean.cmake
+.PHONY : /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/clean
 
-/home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/depend:
-	cd /home/ground/ugv_ws/build/depthai_ros_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ground/ugv_ws/src/depthai-ros/depthai_ros_msgs /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py /home/ground/ugv_ws/build/depthai_ros_msgs /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/DependInfo.cmake "--color=$(COLOR)"
-.PHONY : /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/depend
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/depend:
+	cd /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/DependInfo.cmake "--color=$(COLOR)"
+.PHONY : /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py/CMakeFiles/depthai_ros_msgs__py.dir/depend
 

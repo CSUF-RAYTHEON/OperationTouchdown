@@ -1,10 +1,10 @@
 CMakeFiles/rplidar_node.dir/sdk/src/sl_crc.cpp.o: \
- /home/ground/ugv_ws/src/rplidar_ros/sdk/src/sl_crc.cpp \
+ /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/rplidar_ros/sdk/src/sl_crc.cpp \
  /usr/include/stdc-predef.h \
- /home/ground/ugv_ws/src/rplidar_ros/sdk/include/sl_crc.h \
- /home/ground/ugv_ws/src/rplidar_ros/sdk/include/sl_lidar_cmd.h \
- /home/ground/ugv_ws/src/rplidar_ros/sdk/include/sl_lidar_protocol.h \
- /home/ground/ugv_ws/src/rplidar_ros/sdk/include/sl_types.h \
+ /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/rplidar_ros/sdk/include/sl_crc.h \
+ /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/rplidar_ros/sdk/include/sl_lidar_cmd.h \
+ /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/rplidar_ros/sdk/include/sl_lidar_protocol.h \
+ /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/rplidar_ros/sdk/include/sl_types.h \
  /usr/include/c++/13/cstdint \
  /usr/include/aarch64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/aarch64-linux-gnu/c++/13/bits/os_defines.h \

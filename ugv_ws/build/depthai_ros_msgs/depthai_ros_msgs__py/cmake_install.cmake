@@ -1,8 +1,8 @@
-# Install script for directory: /home/ground/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py
+# Install script for directory: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/ground/ugv_ws/install/depthai_ros_msgs")
+  set(CMAKE_INSTALL_PREFIX "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 

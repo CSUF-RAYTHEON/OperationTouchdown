@@ -4,9 +4,9 @@
 
 #include <string.h>
 
-#include "depthai_ros_msgs/srv/detail/trigger_named__type_support.h"
 #include "rosidl_typesupport_interface/macros.h"
 #include "depthai_ros_msgs/srv/detail/trigger_named__functions.h"
+#include "depthai_ros_msgs/srv/detail/trigger_named__type_support.h"
 #include "depthai_ros_msgs/srv/detail/trigger_named__struct.h"
 
 #ifdef __cplusplus

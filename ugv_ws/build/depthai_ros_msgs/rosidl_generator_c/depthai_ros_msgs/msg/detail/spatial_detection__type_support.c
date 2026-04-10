@@ -5,9 +5,9 @@
 #include <string.h>
 
 #include "rosidl_typesupport_interface/macros.h"
-#include "depthai_ros_msgs/msg/detail/spatial_detection__struct.h"
 #include "depthai_ros_msgs/msg/detail/spatial_detection__type_support.h"
 #include "depthai_ros_msgs/msg/detail/spatial_detection__functions.h"
+#include "depthai_ros_msgs/msg/detail/spatial_detection__struct.h"
 
 #ifdef __cplusplus
 extern "C"
