@@ -5,6 +5,8 @@ from broadcaster import camera_broadcaster
 from viewer import run_viewer
 
 if __name__ == "__main__":
+    mp.set_start_method('spawn', force=True)
+    
     W, H = 640, 400
     RGB_BYTES = W * H * 3
     GRAY_BYTES = W * H

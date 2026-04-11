@@ -1,1 +1,0 @@
-wall_time_iso,t_sec,status,x_m,y_m,z_m,yaw_vis_deg,yaw_oak_imu_deg,tracked_pts,pnp_pts,inliers,loop_detected,loop_kf_id,loop_score,loop_drift_m,softcorr_applied,softcorr_step_m,mavlink_sent,mavlink_aligned

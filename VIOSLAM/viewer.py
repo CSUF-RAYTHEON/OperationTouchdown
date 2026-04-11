@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import time
 from multiprocessing import shared_memory
 
 def run_viewer(lock):
@@ -7,7 +8,7 @@ def run_viewer(lock):
     Reads frames from shared memory and displays them side-by-side.
     """
     W, H = 640, 400
-    
+    time.sleep(5)
     # We only connect to the two blocks we actually care about drawing
     shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
     shm_gray = shared_memory.SharedMemory(name="oak_gray")
@@ -32,8 +33,8 @@ def run_viewer(lock):
         combined = np.hstack((local_rgb, gray_bgr))
 
         cv2.imshow("Parallel Viewer (RGB | Gray)", combined)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        print("showed frame")
+        if cv2.waitKey(60) & 0xFF == ord('q'):
             break
 
     print("[Viewer] Exiting...")
