@@ -3,7 +3,7 @@ import numpy as np
 import time
 from multiprocessing import shared_memory
 
-def run_viewer(lock):
+def run_viewer(camera_frame_mutex):
     W, H = 640, 400
     time.sleep(2)
 
@@ -19,7 +19,7 @@ def run_viewer(lock):
     while True:
         # 2. This section is a critical section as we must aquire the mutex/lock before 
         #    copying from the shared memory, and release it immediately after.
-        with lock:
+        with camera_frame_mutex:
             np.copyto(local_rgb, shared_rgb)
             np.copyto(local_gray, shared_gray)
 

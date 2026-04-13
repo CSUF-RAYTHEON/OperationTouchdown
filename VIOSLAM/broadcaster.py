@@ -2,7 +2,7 @@ import numpy as np
 import depthai as dai
 from multiprocessing import shared_memory
 
-def camera_broadcaster(frame_shared_memory_mutex, camera_calibration_mutex):
+def camera_broadcaster(camera_frame_mutex, camera_calibration_mutex):
     W, H = 640, 400
     FPS = 30.0
 
@@ -73,7 +73,7 @@ def camera_broadcaster(frame_shared_memory_mutex, camera_calibration_mutex):
                 try:
                     # 5. This section is a critical section as we must aquire the mutex/lock before 
                     #    copying from the shared memory, and release it immediately after.
-                    with frame_shared_memory_mutex:
+                    with camera_frame_mutex:
                         np.copyto(shared_rgb, rgb_frame)
                         np.copyto(shared_gray, gray_frame)
                         np.copyto(shared_depth, depth_frame)

@@ -315,7 +315,7 @@ class VO_LK:
 # -----------------------
 # Main Process Function
 # -----------------------
-def calculatevioslam_updateposition(frame_shared_memory_mutex, uart_tx_port_mutex, camera_calibration_mutex):
+def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_port_mutex, camera_calibration_mutex):
     W, H = 640, 400
     
     # Let the broadcaster initialize the RAM first
@@ -365,7 +365,7 @@ def calculatevioslam_updateposition(frame_shared_memory_mutex, uart_tx_port_mute
 
     while True:
         # --- CRITICAL SECTION: RAM COPY ---
-        with frame_shared_memory_mutex:
+        with camera_frame_mutex:
             np.copyto(local_rgb, shared_rgb)
             np.copyto(local_gray, shared_gray)
             np.copyto(local_depth, shared_depth)

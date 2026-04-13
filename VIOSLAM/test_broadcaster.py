@@ -21,11 +21,12 @@ if __name__ == "__main__":
     shm_depth = shared_memory.SharedMemory(create=True, size=DEPTH_BYTES, name="oak_depth")
     
     # 2. Create the mutex lock for the shared memory
-    frame_lock = mp.Lock()
+    camera_frame_mutex = mp.Lock()
+    camera_calibration_mutex = mp.Lock()
 
     # 3. Define the independent processes
-    broadcaster_process = mp.Process(target=camera_broadcaster, args=(frame_lock,))
-    viewer_process = mp.Process(target=run_viewer, args=(frame_lock,))
+    broadcaster_process = mp.Process(target=camera_broadcaster, args=(camera_frame_mutex, camera_calibration_mutex))
+    viewer_process = mp.Process(target=run_viewer, args=(camera_frame_mutex,))
 
     try:
         # 4. Start the processes
