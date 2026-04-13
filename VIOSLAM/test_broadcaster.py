@@ -13,12 +13,14 @@ if __name__ == "__main__":
     RGB_BYTES = W * H * 3
     GRAY_BYTES = W * H
     DEPTH_BYTES = W * H * 2  # 16-bit depth uses 2 bytes per pixel
+    CALIB_BYTES = 3 * 3 * 8
 
-    # 2. Create the three shared memory variables for RGB, gray, and depth frames
+    # 2. Create the shared memory variables for RGB, gray, depth frames, and camera calibration matrix
     print("Broadcaster tester allocating shared memory...")
     shm_rgb = shared_memory.SharedMemory(create=True, size=RGB_BYTES, name="oak_rgb")
     shm_gray = shared_memory.SharedMemory(create=True, size=GRAY_BYTES, name="oak_gray")
     shm_depth = shared_memory.SharedMemory(create=True, size=DEPTH_BYTES, name="oak_depth")
+    shm_calib = shared_memory.SharedMemory(create=True, size=CALIB_BYTES, name="oak_calib")
     
     # 2. Create the mutex lock for the shared memory
     camera_frame_mutex = mp.Lock()
