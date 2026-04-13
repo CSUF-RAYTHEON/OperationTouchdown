@@ -4,12 +4,10 @@ import time
 from multiprocessing import shared_memory
 
 def run_viewer(lock):
-    """
-    Reads frames from shared memory and displays them side-by-side.
-    """
     W, H = 640, 400
-    time.sleep(5)
-    # We only connect to the two blocks we actually care about drawing
+    time.sleep(2)
+
+    # 1. Connect to the shared memory blocks for RGB and gray frames as we don't care about depth for simply viewing the camera feed
     shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
     shm_gray = shared_memory.SharedMemory(name="oak_gray")
 
@@ -18,27 +16,25 @@ def run_viewer(lock):
 
     local_rgb = np.zeros((H, W, 3), dtype=np.uint8)
     local_gray = np.zeros((H, W), dtype=np.uint8)
-
-    print("[Viewer] Connected to Shared Memory. Starting display...")
+    print("Viewer connected to Shared Memory. Starting display...")
 
     while True:
-        # --- CRITICAL SECTION ---
+        # 2. This section is a critical section as we must aquire the mutex/lock before 
+        #    copying from the shared memory, and release it immediately after.
         with lock:
             np.copyto(local_rgb, shared_rgb)
             np.copyto(local_gray, shared_gray)
-        # ------------------------
 
-        # Make the 1-channel gray into 3-channels so we can glue them together
+        # 3. Make the 1-channel gray into 3-channels so we can get them in the same image and display them together
         gray_bgr = cv2.cvtColor(local_gray, cv2.COLOR_GRAY2BGR)
         combined = np.hstack((local_rgb, gray_bgr))
 
-        cv2.imshow("Parallel Viewer (RGB | Gray)", combined)
-        print("showed frame")
+        cv2.imshow("RGB and Gray", combined)
         if cv2.waitKey(60) & 0xFF == ord('q'):
             break
-
-    print("[Viewer] Exiting...")
-    cv2.destroyAllWindows()
     
+    # 4. Close the shared memory connections and destroy the viewer window
+    print("Viewer exiting...")
+    cv2.destroyAllWindows()
     shm_rgb.close()
     shm_gray.close()
