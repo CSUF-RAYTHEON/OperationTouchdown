@@ -185,15 +185,16 @@ class VO_LK:
         W, H = gray.shape[1], gray.shape[0]
 
         if self.prev_gray is None or self.prev_depth is None or self.prev_pts is None:
-            self.prev_gray = gray
-            self.prev_depth = depth_mm
+            # FIX: Force a physical memory copy!
+            self.prev_gray = gray.copy()
+            self.prev_depth = depth_mm.copy()
             self.prev_pts = self._detect(gray)
             self.status = "WARMUP"
             return
 
         if self.prev_pts is None or len(self.prev_pts) < MIN_PNP_POINTS:
-            self.prev_gray = gray
-            self.prev_depth = depth_mm
+            self.prev_gray = gray.copy()
+            self.prev_depth = depth_mm.copy()
             self.prev_pts = self._detect(gray)
             self.status = "REDETECT"
             return
@@ -205,8 +206,8 @@ class VO_LK:
             criteria=(cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 30, 0.01),
         )
         if next_pts is None or st is None:
-            self.prev_gray = gray
-            self.prev_depth = depth_mm
+            self.prev_gray = gray.copy()
+            self.prev_depth = depth_mm.copy()
             self.prev_pts = self._detect(gray)
             self.status = "LK_FAIL"
             return
@@ -217,8 +218,8 @@ class VO_LK:
         self.num_tracked = len(prev_good)
 
         if self.num_tracked < MIN_PNP_POINTS:
-            self.prev_gray = gray
-            self.prev_depth = depth_mm
+            self.prev_gray = gray.copy()
+            self.prev_depth = depth_mm.copy()
             self.prev_pts = self._detect(gray)
             self.status = f"LOW_TRACK({self.num_tracked})"
             return
@@ -243,8 +244,8 @@ class VO_LK:
 
         self.num_used_pnp = len(obj_pts)
         if self.num_used_pnp < MIN_PNP_POINTS:
-            self.prev_gray = gray
-            self.prev_depth = depth_mm
+            self.prev_gray = gray.copy()
+            self.prev_depth = depth_mm.copy()
             self.prev_pts = curr_good.reshape(-1, 1, 2).astype(np.float32)
             self.status = f"DEPTH_FILTER({self.num_used_pnp})"
             return
@@ -260,8 +261,8 @@ class VO_LK:
             iterationsCount=150
         )
         if not ok or inl is None or len(inl) < 12:
-            self.prev_gray = gray
-            self.prev_depth = depth_mm
+            self.prev_gray = gray.copy()
+            self.prev_depth = depth_mm.copy()
             self.prev_pts = curr_good.reshape(-1, 1, 2).astype(np.float32)
             self.status = "PNP_FAIL"
             return
@@ -286,8 +287,9 @@ class VO_LK:
         else:
             self.prev_pts = curr_good.reshape(-1, 1, 2).astype(np.float32)
 
-        self.prev_gray = gray
-        self.prev_depth = depth_mm
+        # FIX: The final copy assignment at the end of a successful loop
+        self.prev_gray = gray.copy()
+        self.prev_depth = depth_mm.copy()
 
     def apply_soft_correction(self, target_pose_xyz: np.ndarray):
         if not ENABLE_SOFT_CORRECTION: return None

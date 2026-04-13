@@ -53,4 +53,6 @@ if __name__ == "__main__":
         shm_gray.unlink()
         shm_depth.close()
         shm_depth.unlink()
-        print("Broadcaster tester processes terminated safely.")
+        shm_calib.close()
+        shm_calib.unlink()
+        print("Integrating vioslam tester processes terminated safely.")
