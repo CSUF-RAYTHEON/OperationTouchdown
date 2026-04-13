@@ -10,10 +10,8 @@ def run_viewer(lock):
     # 1. Connect to the shared memory blocks for RGB and gray frames as we don't care about depth for simply viewing the camera feed
     shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
     shm_gray = shared_memory.SharedMemory(name="oak_gray")
-
     shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
     shared_gray = np.ndarray((H, W), dtype=np.uint8, buffer=shm_gray.buf)
-
     local_rgb = np.zeros((H, W, 3), dtype=np.uint8)
     local_gray = np.zeros((H, W), dtype=np.uint8)
     print("Viewer connected to Shared Memory. Starting display...")

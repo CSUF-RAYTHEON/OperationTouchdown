@@ -2,7 +2,7 @@ import numpy as np
 import depthai as dai
 from multiprocessing import shared_memory
 
-def camera_broadcaster(frame_shared_memory_mutex):
+def camera_broadcaster(frame_shared_memory_mutex, camera_calibration_mutex):
     W, H = 640, 400
     FPS = 30.0
 
@@ -10,9 +10,11 @@ def camera_broadcaster(frame_shared_memory_mutex):
     shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
     shm_gray = shared_memory.SharedMemory(name="oak_gray")
     shm_depth = shared_memory.SharedMemory(name="oak_depth")
+    shm_calib = shared_memory.SharedMemory(name="oak_calib")
     shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
     shared_gray = np.ndarray((H, W), dtype=np.uint8, buffer=shm_gray.buf)
     shared_depth = np.ndarray((H, W), dtype=np.uint16, buffer=shm_depth.buf)
+    shared_calib = np.ndarray((3, 3), dtype=np.float64, buffer=shm_calib.buf)
     print("Broadcaster shared memory connected. Booting camera...")
 
     with dai.Device() as device:
@@ -47,6 +49,12 @@ def camera_broadcaster(frame_shared_memory_mutex):
             sync_q = sync.out.createOutputQueue(maxSize=4, blocking=False)
             pipeline.start()
             print("Broadcaster camera running. Writing frames...")
+
+            calib = device.getCalibration()
+            K = np.array(calib.getCameraIntrinsics(dai.CameraBoardSocket.CAM_B, W, H), dtype=np.float64)
+            with camera_calibration_mutex:
+                np.copyto(shared_calib, K)
+            print("Broadcaster calibration data written to shared memory.")
 
             while pipeline.isRunning():
                 msg_group = sync_q.get()
