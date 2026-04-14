@@ -7,6 +7,7 @@ from PixhawkController.stationary_landing_controller import StationaryLandingCon
 CONNECTION_STRING = "/dev/serial0" 
 BAUDRATE = 57600
 LANDING_THRESHOLD = 1.5
+TAKEOFF_ALTITUDE = 3 # in meters
 
 # 1. Initialize the Device first
 with dai.Device() as device:
@@ -38,7 +39,9 @@ with dai.Device() as device:
         pipeline.start()
         print("[INFO] Pipeline started. Initiating takeoff sequence...")
 
-        controller.test_arm_and_takeoff()
+        controller.change_flight_mode("GUIDED")
+        controller.arm_motors()
+        controller.takeoff_to_altitude(TAKEOFF_ALTITUDE)  # 3 meters
 
         # --- SETUP: The Fallback Timers ---
         last_tag_time = time.time()
@@ -91,7 +94,8 @@ with dai.Device() as device:
 
             if body_z < LANDING_THRESHOLD:
                 print("[INFO] Landing threshold reached. Landing...")
-                controller.land_and_disarm(body_z)
+                controller.stationary_landing()
+                controller.disarm_motors()
                 break
 
             controller.adjust_velocity_and_send(body_x, body_y, body_z)
