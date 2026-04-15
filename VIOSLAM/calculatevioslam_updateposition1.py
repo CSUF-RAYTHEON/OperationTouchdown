@@ -57,13 +57,14 @@ def clamp_norm(vec: np.ndarray, max_norm: float) -> np.ndarray:
 
 def vo_pose_to_ned(camera_x, camera_y, camera_z, yaw_offset_rad):
     """
-    1. Swaps OpenCV coordinates to NED (Assuming forward-facing camera)
-    2. Rotates the 2D grid to align with the Pixhawk's true magnetic North
+    1. Swaps OpenCV coordinates to NED for a DOWNWARD-facing camera.
+       (Assumes the top of the camera image points to the front of the drone).
+    2. Rotates the 2D grid to align with the Pixhawk's true magnetic North.
     """
-    # Swap Axes: OpenCV to Local Un-rotated NED
-    ned_x_unaligned = camera_z
-    ned_y_unaligned = camera_x
-    ned_z_final     = camera_y # Down is already correct
+    # --- THE FIX: Downward Camera Geometry ---
+    ned_x_unaligned = -camera_y  # Moving towards top of image = Forward (North)
+    ned_y_unaligned = camera_x   # Moving towards right of image = Right (East)
+    ned_z_final     = camera_z   # Moving straight out of lens = Down
 
     # Rotate the grid using the magnetic yaw offset
     c = math.cos(yaw_offset_rad)
