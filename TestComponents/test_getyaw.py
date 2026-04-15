@@ -11,6 +11,7 @@ def get_yaw(master):
     
     request_attitude_message(master)
     msg = master.recv_match(type='ATTITUDE', blocking=True, timeout=3)
+
     if msg:
         print(f"Returning ATTITUDE message with yaw: {msg.yaw}")
         return float(msg.yaw)
@@ -44,8 +45,10 @@ if __name__ == "__main__":
 
     time .sleep(2)
     try:
-        print(f"Current Yaw: {get_yaw(master)}")
-        time.sleep(1)
+        while True:
+            yaw = get_yaw(master)
+            print(f"Current Yaw: {yaw}")
+            time.sleep(1)
     except KeyboardInterrupt:
         print("Stopped getting yaw")
 
