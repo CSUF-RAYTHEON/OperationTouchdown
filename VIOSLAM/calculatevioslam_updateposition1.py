@@ -55,6 +55,25 @@ def clamp_norm(vec: np.ndarray, max_norm: float) -> np.ndarray:
         return vec
     return vec * (max_norm / n)
 
+def vo_pose_to_ned(camera_x, camera_y, camera_z, yaw_offset_rad):
+    """
+    1. Swaps OpenCV coordinates to NED (Assuming forward-facing camera)
+    2. Rotates the 2D grid to align with the Pixhawk's true magnetic North
+    """
+    # Swap Axes: OpenCV to Local Un-rotated NED
+    ned_x_unaligned = camera_z
+    ned_y_unaligned = camera_x
+    ned_z_final     = camera_y # Down is already correct
+
+    # Rotate the grid using the magnetic yaw offset
+    c = math.cos(yaw_offset_rad)
+    s = math.sin(yaw_offset_rad)
+
+    ned_x_final = (ned_x_unaligned * c) - (ned_y_unaligned * s)
+    ned_y_final = (ned_x_unaligned * s) + (ned_y_unaligned * c)
+
+    return ned_x_final, ned_y_final, ned_z_final
+
 # -----------------------
 # SLAM (Loop Closure) Class
 # -----------------------
@@ -328,11 +347,13 @@ def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_ca
     shm_gray = shared_memory.SharedMemory(name="oak_gray")
     shm_depth = shared_memory.SharedMemory(name="oak_depth")
     shm_calib = shared_memory.SharedMemory(name="oak_calib")
+    shm_yaw = shared_memory.SharedMemory(name="pixhawk_yaw")
 
     shared_calib = np.ndarray((3, 3), dtype=np.float64, buffer=shm_calib.buf)
     shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
     shared_gray = np.ndarray((H, W), dtype=np.uint8, buffer=shm_gray.buf)
     shared_depth = np.ndarray((H, W), dtype=np.uint16, buffer=shm_depth.buf)
+    shared_yaw = np.ndarray((1,), dtype=np.float64, buffer=shm_yaw.buf)
     
     local_calib = np.zeros((3, 3), dtype=np.float64)
     local_rgb = np.zeros((H, W, 3), dtype=np.uint8)
@@ -344,15 +365,14 @@ def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_ca
 
     print("[VIO] Connected to Shared Memory. Booting Algorithm...")
 
+    initial_yaw_rad = 0.0
+    with yaw_mutex:
+        initial_yaw_rad = shared_yaw[0]
+        print(f"[VIO] Initial Yaw from Shared Memory: {initial_yaw_rad} radians")
+
     # --- 2. VIO INIT ---
     # IMPORTANT: Update this matrix with the actual K matrix printed out in your terminal
     # when you originally ran vo_full_vers3.py! This is a generic OAK-D placeholder.
-    camera_matrix_K = np.array([
-        [400.0, 0.0,   320.0],
-        [0.0,   400.0, 200.0],
-        [0.0,   0.0,   1.0  ]
-    ], dtype=np.float64)
-
     with camera_calibration_mutex:
         np.copyto(local_calib, shared_calib)
     camera_matrix_K = local_calib.copy()
@@ -404,10 +424,11 @@ def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_ca
         # --- UART TRANSMIT CRITICAL SECTION ---
         # We only print/transmit if we actually have tracking data
         if vo.status == "TRACKING":
+            aligned_x, aligned_y, aligned_z = vo_pose_to_ned(pos[0], pos[1], pos[2], initial_yaw_rad)
             with uart_tx_mutex:
                 # Later, this print statement will become your:
                 # master.mav.vision_position_estimate_send(...)
-                print(f"[UART TX MOCK] STATUS: {vo.status} | X:{pos[0]:+.2f}m, Y:{pos[1]:+.2f}m, Z:{pos[2]:+.2f}m | YAW:{yaw_vis:+.1f}deg")
+                print(f"[UART TX MOCK] ALIGNED NED | North(X):{aligned_x:+.2f}m, East(Y):{aligned_y:+.2f}m, Down(Z):{aligned_z:+.2f}m")
         else:
              with uart_tx_mutex:
                  print(f"[UART TX MOCK] VIO LOST. Status: {vo.status}")

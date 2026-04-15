@@ -16,8 +16,8 @@ def get_yaw(master):
         print(f"Returning ATTITUDE message with yaw: {msg.yaw}")
         return float(msg.yaw)
     else:
-        print("Failed to receive ATTITUDE message returning 9999")
-        return float(9999)
+        print("Failed to receive ATTITUDE message returning 999")
+        return float(999)
 
 def request_attitude_message(master):
     print(f"Entered request_attitude_messages() for Target System: {master.target_system} & Target Component: {master.target_component}")
