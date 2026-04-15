@@ -57,6 +57,7 @@ if __name__ == "__main__":
     with yaw_mutex:
         shared_yaw[0] = initial_yaw_rad
         print(f"Initial yaw set in shared memory: {shared_yaw[0]} radians")
+        master.close()
 
     # 3. Define the independent processes
     broadcaster_process = mp.Process(target=camera_broadcaster, args=(camera_frame_mutex, camera_calibration_mutex))
