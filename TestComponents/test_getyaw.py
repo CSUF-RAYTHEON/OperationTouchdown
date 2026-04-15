@@ -1,8 +1,22 @@
+# This code tests getting the yaw from the drone by reading the attitude mavlink message sent by the pixhawk.
 from pymavlink import mavutil
-from test_change_flight_mode import change_flight_mode
-from test_arm_drone import arm_drone
-import test_move
-import test_local_position
+import time
+
+def get_yaw(master):
+    print("Waiting for heartbeat from Pixhawk...")
+    master.wait_heartbeat()
+    print("Heartbeat Received\n")
+
+    print("Listening for ATTITUDE messages...")
+    
+    msg = master.recv_match(type='ATTITUDE', blocking=True, timeout=3)
+    if msg:
+        print(f"Returning ATTITUDE message with yaw: {msg.yaw}")
+        return float(msg.yaw)
+    else:
+        print("Failed to receive ATTITUDE message returning 9999")
+        return float(9999)
+
 
 if __name__ == "__main__":
     serial_port = '/dev/serial0'
@@ -18,11 +32,10 @@ if __name__ == "__main__":
     print("Heartbeat Received & Connection Established")
     print(f"Source System: {master.source_system}, Source Component: {master.source_component}, Target System: {master.target_system}, Target Component: {master.target_component}, Connection Type: {serial_port}, Baudrate: {baudrate}")
 
-    change_flight_mode(master, "GUIDED")
-    arm_drone(master)
-    test_local_position.request_local_position_messages(master)
-    test_local_position.set_origin_local_position(master)
-    test_local_position.update_local_position(master)
-    test_move.takeoff(master, 3)
-    test_move.move(master, 3, 3, -3)
-    test_move.land_current_position(master)
+    try:
+        print(f"Current Yaw: {get_yaw(master)}")
+        time.sleep(1)
+    except KeyboardInterrupt:
+        print("Stopped getting yaw")
+
+

@@ -5,7 +5,7 @@ from pymavlink import mavutil
 import global_variables
 import time
 
-def test_request_local_position_messages(master):
+def request_local_position_messages(master):
     print(f"Entered test_request_local_position_messages() for Target System: {master.target_system} & Target Component: {master.target_component}")
 
     # 1. We do this because by default pixhawk does not send certain messages, the LOCAL_POSITION_NED message being one of them.
@@ -15,7 +15,7 @@ def test_request_local_position_messages(master):
     mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL, 0, mavutil.mavlink.MAVLINK_MSG_ID_LOCAL_POSITION_NED,
     1e7 / 10, 0, 0, 0, 0, 0)
 
-def test_set_origin_local_position(master):
+def set_origin_local_position(master):
     print(f"Entered test_set_origin_local_position() for Target System: {master.target_system} & Target Component: {master.target_component}")
 
     # 1. Here we read the LOCAL_POSITION_NED messages, this message contains the local position of the drone in the NED (North, East, Down) coordinate frame. 
@@ -48,7 +48,7 @@ def test_set_origin_local_position(master):
     print(f"First custom current position values: x: {global_variables.current_position_custom_x}, y: {global_variables.current_position_custom_y}, z: {global_variables.current_position_custom_z}")
 
 
-def test_update_local_position(master):
+def update_local_position(master):
     # 1. Read LOCAL_POSITION_NED message and update current position values.
     
     print(f"Entered test_update_local_position() for Target System: {master.target_system} & Target Component: {master.target_component}")
@@ -80,6 +80,6 @@ if __name__ == "__main__":
     print("Heartbeat Received & Connection Established")
     print(f"Source System: {master.source_system}, Source Component: {master.source_component}, Target System: {master.target_system}, Target Component: {master.target_component}, Connection Type: {serial_port}, Baudrate: {baudrate}")
 
-    test_request_local_position_messages(master)
-    test_set_origin_local_position(master)
-    test_update_local_position(master)
+    request_local_position_messages(master)
+    set_origin_local_position(master)
+    update_local_position(master)

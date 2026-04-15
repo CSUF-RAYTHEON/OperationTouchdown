@@ -6,7 +6,7 @@ from pymavlink import mavutil
 import global_variables
 import time
 
-def test_poll_local_position(master):
+def poll_local_position(master):
     print(f"Entered test_poll_local_position() for Target System: {master.target_system} & Target Component: {master.target_component}")
 
     # 1. We do this because by default pixhawk does not send certain messages, the LOCAL_POSITION_NED message being one of them.
@@ -110,4 +110,4 @@ if __name__ == "__main__":
     print("Heartbeat Received & Connection Established")
     print(f"Source System: {master.source_system}, Source Component: {master.source_component}, Target System: {master.target_system}, Target Component: {master.target_component}, Connection Type: {serial_port}, Baudrate: {baudrate}")
 
-    test_poll_local_position(master)
+    poll_local_position(master)

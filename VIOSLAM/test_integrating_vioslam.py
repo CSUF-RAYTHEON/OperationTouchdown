@@ -2,6 +2,7 @@ import multiprocessing as mp
 from multiprocessing import shared_memory
 from broadcaster import camera_broadcaster
 from calculatevioslam_updateposition1 import calculatevioslam_updateposition
+from pymavlink import mavutil
 
 if __name__ == "__main__":
     # 1. Set the multiprocessing start method to 'spawn' this is so that when a new process is started it
@@ -13,7 +14,7 @@ if __name__ == "__main__":
     RGB_BYTES = W * H * 3
     GRAY_BYTES = W * H
     DEPTH_BYTES = W * H * 2  # 16-bit depth uses 2 bytes per pixel
-    CALIB_BYTES = 3 * 3 * 8
+    CALIB_BYTES = 3 * 3 * 8 # 3x3 matrix of float64 (8 bytes each)
 
     # 2. Create the shared memory variables for RGB, gray, depth frames, and camera calibration matrix
     print("Broadcaster tester allocating shared memory...")
@@ -22,14 +23,14 @@ if __name__ == "__main__":
     shm_depth = shared_memory.SharedMemory(create=True, size=DEPTH_BYTES, name="oak_depth")
     shm_calib = shared_memory.SharedMemory(create=True, size=CALIB_BYTES, name="oak_calib")
     
-    # 2. Create the mutex lock for the shared memory
+    # 2. Create the mutex lock for the camera frame variables, camera calibration variable, and uart tx port variable
     camera_frame_mutex = mp.Lock()
     camera_calibration_mutex = mp.Lock()
-    uart_tx_port_mutex = mp.Lock()
+    uart_tx_mutex = mp.Lock()
 
     # 3. Define the independent processes
     broadcaster_process = mp.Process(target=camera_broadcaster, args=(camera_frame_mutex, camera_calibration_mutex))
-    calculatevioslam_updateposition_process = mp.Process(target=calculatevioslam_updateposition, args=(camera_frame_mutex, uart_tx_port_mutex, camera_calibration_mutex))
+    calculatevioslam_updateposition_process = mp.Process(target=calculatevioslam_updateposition, args=(camera_frame_mutex, uart_tx_mutex, camera_calibration_mutex))
 
     try:
         # 4. Start the processes

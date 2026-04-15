@@ -317,7 +317,7 @@ class VO_LK:
 # -----------------------
 # Main Process Function
 # -----------------------
-def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_port_mutex, camera_calibration_mutex):
+def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_calibration_mutex):
     W, H = 640, 400
     
     # Let the broadcaster initialize the RAM first
@@ -404,10 +404,10 @@ def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_port_mutex, came
         # --- UART TRANSMIT CRITICAL SECTION ---
         # We only print/transmit if we actually have tracking data
         if vo.status == "TRACKING":
-            with uart_tx_port_mutex:
+            with uart_tx_mutex:
                 # Later, this print statement will become your:
                 # master.mav.vision_position_estimate_send(...)
                 print(f"[UART TX MOCK] STATUS: {vo.status} | X:{pos[0]:+.2f}m, Y:{pos[1]:+.2f}m, Z:{pos[2]:+.2f}m | YAW:{yaw_vis:+.1f}deg")
         else:
-             with uart_tx_port_mutex:
+             with uart_tx_mutex:
                  print(f"[UART TX MOCK] VIO LOST. Status: {vo.status}")
