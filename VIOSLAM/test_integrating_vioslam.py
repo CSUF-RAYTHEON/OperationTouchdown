@@ -1,7 +1,9 @@
 import multiprocessing as mp
+import numpy as np
 from multiprocessing import shared_memory
 from broadcaster import camera_broadcaster
 from calculatevioslam_updateposition1 import calculatevioslam_updateposition
+from TestComponents import test_getyaw
 from pymavlink import mavutil
 
 if __name__ == "__main__":
@@ -15,6 +17,7 @@ if __name__ == "__main__":
     GRAY_BYTES = W * H
     DEPTH_BYTES = W * H * 2  # 16-bit depth uses 2 bytes per pixel
     CALIB_BYTES = 3 * 3 * 8 # 3x3 matrix of float64 (8 bytes each)
+    YAW_BYTES = 8 # float64 for yaw value
 
     # 2. Create the shared memory variables for RGB, gray, depth frames, and camera calibration matrix
     print("Broadcaster tester allocating shared memory...")
@@ -22,15 +25,40 @@ if __name__ == "__main__":
     shm_gray = shared_memory.SharedMemory(create=True, size=GRAY_BYTES, name="oak_gray")
     shm_depth = shared_memory.SharedMemory(create=True, size=DEPTH_BYTES, name="oak_depth")
     shm_calib = shared_memory.SharedMemory(create=True, size=CALIB_BYTES, name="oak_calib")
-    
+    shm_yaw = shared_memory.SharedMemory(create=True, size=YAW_BYTES, name="pixhawk_yaw")
+
+    shared_yaw = np.ndarray((1,), dtype=np.float64, buffer=shm_yaw.buf)
+    shared_yaw[0] = 999.0  # VIO script looks for this to know it hasn't updated yet
+
     # 2. Create the mutex lock for the camera frame variables, camera calibration variable, and uart tx port variable
     camera_frame_mutex = mp.Lock()
     camera_calibration_mutex = mp.Lock()
     uart_tx_mutex = mp.Lock()
+    yaw_mutex = mp.Lock()
+
+    serial_port = '/dev/serial0'
+    baudrate =  57600
+    source_system = 1
+    source_component = 191
+
+    print("\nConnecting to Pixhawk & Waiting for Heartbeat")
+    master = mavutil.mavlink_connection(serial_port, baud=baudrate, source_system=source_system, source_component=source_component)
+    master.target_system = 1 # Send messages to system 1(drone/vehicle #1)
+    master.target_component = 1 # Send messages to flight controller "autopilot"
+    master.wait_heartbeat()
+    print("Heartbeat Received & Connection Established")
+    print(f"Source System: {master.source_system}, Source Component: {master.source_component}, Target System: {master.target_system}, Target Component: {master.target_component}, Connection Type: {serial_port}, Baudrate: {baudrate}")
+
+    initial_yaw_rad = test_getyaw.get_yaw(master)
+    with yaw_mutex:
+        shared_yaw[0] = initial_yaw_rad
+        print(f"Initial yaw set in shared memory: {shared_yaw[0]} radians")
 
     # 3. Define the independent processes
     broadcaster_process = mp.Process(target=camera_broadcaster, args=(camera_frame_mutex, camera_calibration_mutex))
-    calculatevioslam_updateposition_process = mp.Process(target=calculatevioslam_updateposition, args=(camera_frame_mutex, uart_tx_mutex, camera_calibration_mutex))
+    calculatevioslam_updateposition_process = mp.Process(target=calculatevioslam_updateposition, args=(camera_frame_mutex, uart_tx_mutex, camera_calibration_mutex, yaw_mutex))
+
+    
 
     try:
         # 4. Start the processes
@@ -56,4 +84,6 @@ if __name__ == "__main__":
         shm_depth.unlink()
         shm_calib.close()
         shm_calib.unlink()
+        shm_yaw.close()
+        shm_yaw.unlink()
         print("Integrating vioslam tester processes terminated safely.")

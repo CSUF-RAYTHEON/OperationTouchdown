@@ -43,12 +43,12 @@ if __name__ == "__main__":
     print("Heartbeat Received & Connection Established")
     print(f"Source System: {master.source_system}, Source Component: {master.source_component}, Target System: {master.target_system}, Target Component: {master.target_component}, Connection Type: {serial_port}, Baudrate: {baudrate}")
 
-    time .sleep(2)
+    time.sleep(2)
     try:
         while True:
             yaw = get_yaw(master)
             print(f"Current Yaw: {yaw}")
-            time.sleep(1)
+            time.sleep(0.25)
     except KeyboardInterrupt:
         print("Stopped getting yaw")
 
