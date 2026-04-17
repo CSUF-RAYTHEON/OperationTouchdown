@@ -426,10 +426,13 @@ def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_ca
         # We only print/transmit if we actually have tracking data
         if vo.status == "TRACKING":
             aligned_x, aligned_y, aligned_z = vo_pose_to_ned(pos[0], pos[1], pos[2], initial_yaw_rad)
+            aligned_yaw_rad = initial_yaw_rad + math.radians(yaw_vis)
+
+            time_usec = int(time.time() * 1e6)
             with uart_tx_mutex:
                 # Later, this print statement will become your:
                 # master.mav.vision_position_estimate_send(...)
-                print(f"[UART TX MOCK] ALIGNED NED | North(X):{aligned_x:+.2f}m, East(Y):{aligned_y:+.2f}m, Down(Z):{aligned_z:+.2f}m")
+                print(f"[UART TX MOCK] ALIGNED NED | North(X):{aligned_x:+.2f}m, East(Y):{aligned_y:+.2f}m, Down(Z):{aligned_z:+.2f}m, Yaw: {math.degrees(aligned_yaw_rad):+.1f}deg")
         else:
              with uart_tx_mutex:
                  print(f"[UART TX MOCK] VIO LOST. Status: {vo.status}")
