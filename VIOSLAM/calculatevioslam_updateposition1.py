@@ -432,7 +432,7 @@ def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_ca
             with uart_tx_mutex:
                 # Later, this print statement will become your:
                 # master.mav.vision_position_estimate_send(...)
-                print(f"[UART TX MOCK] ALIGNED NED | North(X):{aligned_x:+.2f}m, East(Y):{aligned_y:+.2f}m, Down(Z):{aligned_z:+.2f}m, Yaw: {math.degrees(aligned_yaw_rad):+.1f}deg")
+                print(f"[UART TX MOCK] ALIGNED NED | North(X):{aligned_x:+.2f}m, East(Y):{aligned_y:+.2f}m, Down(Z):{aligned_z:+.2f}m, Yaw: {math.degrees(aligned_yaw_rad):+.1f}deg, Time: {time_usec}us")
         else:
              with uart_tx_mutex:
                  print(f"[UART TX MOCK] VIO LOST. Status: {vo.status}")
