@@ -3,6 +3,8 @@ import numpy as np
 import time
 import math
 from multiprocessing import shared_memory
+from pymavlink import mavutil
+
 
 # -----------------------
 # VIO & SLAM Settings
@@ -372,6 +374,20 @@ def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_ca
     # We keep a copy of the previous frame specifically to check if the memory updated
     last_processed_gray = np.zeros((H, W), dtype=np.uint8)
 
+    serial_port = '/dev/serial0'
+    baudrate =  57600
+    source_system = 1
+    source_component = 191
+
+    print("\nConnecting to Pixhawk & Waiting for Heartbeat")
+    master = mavutil.mavlink_connection(serial_port, baud=baudrate, source_system=source_system, source_component=source_component)
+    master.target_system = 1 # Send messages to system 1(drone/vehicle #1)
+    master.target_component = 1 # Send messages to flight controller "autopilot"
+    master.wait_heartbeat()
+    print("Heartbeat Received & Connection Established")
+    print(f"Source System: {master.source_system}, Source Component: {master.source_component}, Target System: {master.target_system}, Target Component: {master.target_component}, Connection Type: {serial_port}, Baudrate: {baudrate}")
+
+
     print("[VIO] Connected to Shared Memory. Booting Algorithm...")
 
     initial_yaw_rad = 0.0
@@ -439,7 +455,7 @@ def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_ca
 
             time_usec = int(time.time() * 1e6)
             with uart_tx_mutex:
-                #master.mav.vision_position_estimate_send(time_usec, aligned_x, aligned_y, aligned_z, 0.0, 0.0, aligned_yaw_rad)
+                master.mav.vision_position_estimate_send(time_usec, aligned_x, aligned_y, aligned_z, 0.0, 0.0, aligned_yaw_rad)
                 print(f"[UART TX MOCK] ALIGNED NED | North(X):{aligned_x:+.2f}m, East(Y):{aligned_y:+.2f}m, Down(Z):{aligned_z:+.2f}m, Yaw: {aligned_yaw_rad} Rads, Time: {time_usec}us")
 
         else:
