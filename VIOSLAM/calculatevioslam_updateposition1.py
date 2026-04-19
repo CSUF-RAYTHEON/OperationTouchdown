@@ -46,6 +46,14 @@ def wrap_deg180(a: float) -> float:
         a += 360
     return a
 
+def wrap_rad_pi(angle_rad: float) -> float:
+    """Wraps an angle in radians to the strictly required [-pi, pi] range."""
+    while angle_rad > math.pi:
+        angle_rad -= 2.0 * math.pi
+    while angle_rad < -math.pi:
+        angle_rad += 2.0 * math.pi
+    return angle_rad
+
 def rotmat_to_yaw_deg(R: np.ndarray) -> float:
     return wrap_deg180(math.degrees(math.atan2(R[1, 0], R[0, 0])))
 
@@ -337,7 +345,7 @@ class VO_LK:
 # -----------------------
 # Main Process Function
 # -----------------------
-def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_calibration_mutex, yaw_mutex):
+def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_calibration_mutex, yaw_mutex, master):
     W, H = 640, 400
     
     # Let the broadcaster initialize the RAM first
@@ -430,9 +438,8 @@ def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_ca
 
             time_usec = int(time.time() * 1e6)
             with uart_tx_mutex:
-                # Later, this print statement will become your:
-                # master.mav.vision_position_estimate_send(...)
+                #master.mav.vision_position_estimate_send(time_usec, aligned_x, aligned_y, aligned_z, 0.0, 0.0, aligned_yaw_rad)
                 print(f"[UART TX MOCK] ALIGNED NED | North(X):{aligned_x:+.2f}m, East(Y):{aligned_y:+.2f}m, Down(Z):{aligned_z:+.2f}m, Yaw: {math.degrees(aligned_yaw_rad):+.1f}deg, Time: {time_usec}us")
+
         else:
-             with uart_tx_mutex:
-                 print(f"[UART TX MOCK] VIO LOST. Status: {vo.status}")
+            print(f"VIO LOST. Status: {vo.status}")

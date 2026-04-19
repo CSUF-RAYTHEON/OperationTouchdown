@@ -8,6 +8,8 @@ from multiprocessing import shared_memory
 from broadcaster import camera_broadcaster
 from calculatevioslam_updateposition1 import calculatevioslam_updateposition
 from TestComponents import test_getyaw
+from TestComponents import test_use_externalnav
+from TestComponents import test_change_flight_mode
 from pymavlink import mavutil
 
 if __name__ == "__main__":
@@ -61,9 +63,11 @@ if __name__ == "__main__":
 
     # 3. Define the independent processes
     broadcaster_process = mp.Process(target=camera_broadcaster, args=(camera_frame_mutex, camera_calibration_mutex))
-    calculatevioslam_updateposition_process = mp.Process(target=calculatevioslam_updateposition, args=(camera_frame_mutex, uart_tx_mutex, camera_calibration_mutex, yaw_mutex))
-
+    calculatevioslam_updateposition_process = mp.Process(target=calculatevioslam_updateposition, args=(camera_frame_mutex, uart_tx_mutex, camera_calibration_mutex, yaw_mutex, master))
     
+    #with uart_tx_mutex:
+        #test_use_externalnav.use_externalnav(master)
+        #test_change_flight_mode.change_flight_mode(master)
 
     try:
         # 4. Start the processes

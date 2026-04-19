@@ -30,8 +30,6 @@ def move(master, x, y, z):
         hold_position(master, global_variables.origin_drone_x + x, global_variables.origin_drone_y + y, global_variables.origin_drone_z + z, 2)
         update_local_position(master)
 
-
-
 def goto(master, x, y, z):
     # 1. Send SET_POSITION_TARGET_LOCAL_NED message to move the drone to the specified position
     master.mav.set_position_target_local_ned_send(0, master.target_system, master.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, 
