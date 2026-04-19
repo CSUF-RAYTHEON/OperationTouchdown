@@ -1,6 +1,6 @@
 # This code tests changing parametes such that the drone uses External Navigation as its main positioning system
 from pymavlink import mavutil
-from test_change_flight_mode import change_flight_mode
+from TestComponents.test_change_flight_mode import change_flight_mode
 
 def use_externalnav(master):
     print(f"Entered use_externalnav() & Setting External Navigation Parameters for Target System: {master.target_system} & Target Component: {master.target_component}")
