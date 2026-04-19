@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
     # 3. Define the independent processes
     broadcaster_process = mp.Process(target=camera_broadcaster, args=(camera_frame_mutex, camera_calibration_mutex))
-    calculatevioslam_updateposition_process = mp.Process(target=calculatevioslam_updateposition, args=(camera_frame_mutex, uart_tx_mutex, camera_calibration_mutex, yaw_mutex, master))
+    calculatevioslam_updateposition_process = mp.Process(target=calculatevioslam_updateposition, args=(camera_frame_mutex, uart_tx_mutex, camera_calibration_mutex, yaw_mutex))
     
     #with uart_tx_mutex:
         #test_use_externalnav.use_externalnav(master)
