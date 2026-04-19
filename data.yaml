@@ -1,0 +1,17 @@
+train: train/images
+val: val/images
+
+nc: 4
+
+names:
+  0: bucket
+  1: cone
+  2: box
+  3: ramp
+
+roboflow:
+  workspace: ags-workspace
+  project: ags-workspace
+  version: dataset
+  license: Private
+  url: https://app.roboflow.com/ags-workspace/ags-workspace/dataset
