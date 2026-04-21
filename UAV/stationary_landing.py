@@ -6,7 +6,7 @@ from PixhawkController.stationary_landing_controller import StationaryLandingCon
 # Reminder: Make sure this matches what you found via 'ls /dev/tty*'
 CONNECTION_STRING = "/dev/serial0" 
 BAUDRATE = 57600
-LANDING_THRESHOLD = 1.5
+LANDING_THRESHOLD = 0.4
 TAKEOFF_ALTITUDE = 3 # in meters
 
 # 1. Initialize the Device first
@@ -23,14 +23,16 @@ with dai.Device() as device:
     with dai.Pipeline(device) as pipeline:
         
         # 3. Create and build the Camera Node
-        cam_rgb = pipeline.create(dai.node.Camera).build(dai.CameraBoardSocket.CAM_A)
+        cam_rgb = pipeline.create(dai.node.ColorCamera)
+        cam_rgb.setResolution(dai.ColorCameraProperties.SensorResolution.THE_1080_P)
+        cam_rgb.setBoardSocket(dai.CameraBoardSocket.RGB)
+
+        cam_rgb.initialControl.setAutoFocusMode(dai.CameraControl.AutoFocusMode.CONTINUOUS_VIDEO)
         
         # 4. Request Output directly (No XLinkOut needed)
-        rgb_out = cam_rgb.requestOutput(
-            size=(300, 300), 
-            type=dai.ImgFrame.Type.NV12, 
-            fps=30
-        )
+        rgb_out = pipeline.create(dai.node.XLinkOut)
+        rgb_out.setStreamName("rgb")
+        cam_rgb.video.link(rgb_out.input)
 
         # 5. Create the queue directly from that output
         q_rgb = rgb_out.createOutputQueue(maxSize=4, blocking=False)
@@ -47,14 +49,15 @@ with dai.Device() as device:
         last_tag_time = time.time()
         
         # Extended Fallback thresholds (in seconds)
-        HOVER_TIMEOUT = 4.0   # Patient hover duration
-        SEARCH_TIMEOUT = 7.0 # Total time before forcing a blind landing
+        HOVER_TIMEOUT = 7.0   # Patient hover duration
+        SEARCH_TIMEOUT = 10.0 # Total time before forcing a blind landing
 
         # 7. Safe loop checking if the pipeline is still active
         while pipeline.isRunning():
-            in_rgb = q_rgb.get()
+            in_rgb = q_rgb.tryGet()
             
             if in_rgb is None:
+                time.sleep(0.01)
                 continue
                 
             frame = in_rgb.getCvFrame()
@@ -92,8 +95,12 @@ with dai.Device() as device:
 
             print(f"[INFO] Tag Position (Body): X={body_x:.2f}, Y={body_y:.2f}, Z={body_z:.2f}")
 
-            if body_z < LANDING_THRESHOLD:
-                print("[INFO] Landing threshold reached. Landing...")
+            if (
+                abs(body_x) < 0.1 and
+                abs(body_y) < 0.1 and
+                body_z < LANDING_THRESHOLD
+            ):
+                print("[INFO] Landing conditions reached. Landing...")
                 controller.stationary_landing()
                 controller.disarm_motors()
                 break
