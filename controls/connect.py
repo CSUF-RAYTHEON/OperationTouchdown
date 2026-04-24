@@ -8,12 +8,12 @@ def connect_UART0():
     source_system = 1
     source_component = 191
 
-    print("\nConnecting to Pixhawk via UART & waiting for heartbeat")
+    print("\nConnecting to Pixhawk via UART0 & waiting for heartbeat")
     master = mavutil.mavlink_connection(serial_port, baud=baudrate, source_system=source_system, source_component=source_component)
     master.target_system = 1 # Send messages to system 1(drone/vehicle #1)
     master.target_component = 1 # Send messages to flight controller "autopilot"
     master.wait_heartbeat()
-    print("Heartbeat received & connection established")
+    print("Heartbeat received & connection established for UART0")
     print(f"Source System: {master.source_system}, Source Component: {master.source_component}, Target System: {master.target_system}, Target Component: {master.target_component}, Connection Type: {serial_port}, Baudrate: {baudrate}")
     
     return master
@@ -24,12 +24,12 @@ def connect_UART2():
     source_system = 1
     source_component = 191
 
-    print("\nConnecting to Pixhawk via USB0 & waiting for heartbeat")
+    print("\nConnecting to Pixhawk via UART2 & waiting for heartbeat")
     master = mavutil.mavlink_connection(serial_port, baud=baudrate, source_system=source_system, source_component=source_component)
     master.target_system = 1 # Send messages to system 1(drone/vehicle #1)
     master.target_component = 1 # Send messages to flight controller "autopilot"
     master.wait_heartbeat()
-    print("Heartbeat received & connection established")
+    print("Heartbeat received & connection established for UART2")
     print(f"Source System: {master.source_system}, Source Component: {master.source_component}, Target System: {master.target_system}, Target Component: {master.target_component}, Connection Type: {serial_port}, Baudrate: {baudrate}")
     
     return master
