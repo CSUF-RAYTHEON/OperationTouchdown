@@ -347,7 +347,7 @@ class VO_LK:
 # -----------------------
 # Main Process Function
 # -----------------------
-def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_calibration_mutex, yaw_mutex):
+def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_calibration_mutex, yaw_mutex, position_mutex):
     W, H = 640, 400
     
     # Let the broadcaster initialize the RAM first
@@ -359,13 +359,19 @@ def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_ca
     shm_depth = shared_memory.SharedMemory(name="oak_depth")
     shm_calib = shared_memory.SharedMemory(name="oak_calib")
     shm_yaw = shared_memory.SharedMemory(name="pixhawk_yaw")
+    shm_x_coord = shared_memory.SharedMemory(name="pixhawk_x_coord")
+    shm_y_coord = shared_memory.SharedMemory(name="pixhawk_y_coord")
+    shm_z_coord = shared_memory.SharedMemory(name="pixhawk_z_coord")
 
     shared_calib = np.ndarray((3, 3), dtype=np.float64, buffer=shm_calib.buf)
     shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
     shared_gray = np.ndarray((H, W), dtype=np.uint8, buffer=shm_gray.buf)
     shared_depth = np.ndarray((H, W), dtype=np.uint16, buffer=shm_depth.buf)
     shared_yaw = np.ndarray((1,), dtype=np.float64, buffer=shm_yaw.buf)
-    
+    shared_x_coord = np.ndarray((1,), dtype=np.float64, buffer=shm_x_coord.buf)
+    shared_y_coord = np.ndarray((1,), dtype=np.float64, buffer=shm_y_coord.buf)
+    shared_z_coord = np.ndarray((1,), dtype=np.float64, buffer=shm_z_coord.buf)
+
     local_calib = np.zeros((3, 3), dtype=np.float64)
     local_rgb = np.zeros((H, W, 3), dtype=np.uint8)
     local_gray = np.zeros((H, W), dtype=np.uint8)
@@ -378,15 +384,6 @@ def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_ca
     baudrate =  57600
     source_system = 1
     source_component = 191
-
-    print("\nConnecting to Pixhawk & Waiting for Heartbeat")
-    master = mavutil.mavlink_connection(serial_port, baud=baudrate, source_system=source_system, source_component=source_component)
-    master.target_system = 1 # Send messages to system 1(drone/vehicle #1)
-    master.target_component = 1 # Send messages to flight controller "autopilot"
-    master.wait_heartbeat()
-    print("Heartbeat Received & Connection Established")
-    print(f"Source System: {master.source_system}, Source Component: {master.source_component}, Target System: {master.target_system}, Target Component: {master.target_component}, Connection Type: {serial_port}, Baudrate: {baudrate}")
-
 
     print("[VIO] Connected to Shared Memory. Booting Algorithm...")
 
@@ -455,8 +452,16 @@ def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_ca
 
             time_usec = int(time.time() * 1e6)
             with uart_tx_mutex:
+                master = mavutil.mavlink_connection(serial_port, baud=baudrate, source_system=source_system, source_component=source_component)
+                master.target_system = 1 # Send messages to system 1(drone/vehicle #1)
+                master.target_component = 1 # Send messages to flight controller "autopilot"
                 master.mav.vision_position_estimate_send(time_usec, aligned_x, aligned_y, aligned_z, 0.0, 0.0, aligned_yaw_rad)
                 print(f"[UART TX MOCK] ALIGNED NED | North(X):{aligned_x:+.2f}m, East(Y):{aligned_y:+.2f}m, Down(Z):{aligned_z:+.2f}m, Yaw: {aligned_yaw_rad} Rads, Time: {time_usec}us")
+                master.close()
+            with position_mutex:
+                shared_x_coord[0] = aligned_x
+                shared_y_coord[0] = aligned_y
+                shared_z_coord[0] = aligned_z
 
         else:
             print(f"VIO LOST. Status: {vo.status}")
