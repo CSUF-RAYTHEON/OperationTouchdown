@@ -22,6 +22,7 @@ fix_labels.py        # optional dataset cleanup
 data.yaml            # dataset config (reference)
 train.record         # training dataset (TFRecord)
 val.record           # validation dataset (TFRecord)
+ugv_object_detect_model.fbz # final trained model
 ```
 
 ---
@@ -40,6 +41,17 @@ If using Google Colab, also run:
 ```python
 from google.colab import drive
 drive.mount('/content/drive')
+```
+
+---
+
+## Running Inference
+
+Inside object_detector.py or raytheon_ugv_model.py:
+
+preds = det_model.predict(images)
+boxes = decode_predictions(preds[0])
+show_prediction(image, preds[0])
 ```
 
 ---
