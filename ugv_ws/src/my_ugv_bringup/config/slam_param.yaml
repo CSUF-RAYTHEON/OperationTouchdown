@@ -1,0 +1,37 @@
+slam_toolbox:
+  ros__parameters:
+
+    # 1. General Logistics
+    use_sim_time: false
+    odom_frame: odom
+    map_frame: map
+    base_frame: base_footprint
+    scan_topic: /scan
+    mode: mapping
+
+    # 2. DATA INTEGRITY & STABILITY
+    # Increased timeout gives the "Supply Chain" room for UART jitter
+    transform_timeout: 0.2         
+    scan_buffer_size: 100          # Lowered to reduce memory "Overhead"
+    scan_buffer_maximum_scan_distance: 12.0
+    link_match_minimum_response_fine: 0.1 # More "Liquid" matching to speed up processing
+
+    # 3. Solver settings (Market Standard for Ceres)
+    solver_plugin: solver_plugins::CeresSolver
+    ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
+    ceres_preconditioner: SCHUR_JACOBI
+    ceres_trust_strategy: LEVENBERG_MARQUARDT
+    ceres_dogleg_type: TRADITIONAL_DOGLEG
+    ceres_loss_function_type: None
+
+    # 4. Mapping Process settings
+    # Right-sizing the "Resolution" to 10cm for a Balanced Budget
+    resolution: 0.1
+    do_loop_closure: true
+    loop_search_distance: 3.0
+    loop_search_maximum_distance: 3.0
+    link_scan_maximum_distance: 5.0
+    
+    max_laser_range: 5.0 
+    minimum_time_interval: 0.2    # Policy: Slow down updates to save CPU labor
+    transform_publish_period: 0.1  # Dropped to 10Hz to stabilize the TF market

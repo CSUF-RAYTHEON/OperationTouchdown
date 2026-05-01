@@ -1,0 +1,9 @@
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_bringup/CMakeFiles/uninstall.dir
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_bringup/CMakeFiles/my_ugv_bringup_uninstall.dir
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_bringup/CMakeFiles/test.dir
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_bringup/CMakeFiles/edit_cache.dir
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_bringup/CMakeFiles/rebuild_cache.dir
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_bringup/CMakeFiles/list_install_components.dir
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_bringup/CMakeFiles/install.dir
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_bringup/CMakeFiles/install/local.dir
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_bringup/CMakeFiles/install/strip.dir

@@ -1,0 +1,22 @@
+[3.607s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_hardware': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/my_ugv_hardware build --build-base /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build install --record /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware/install.log --single-version-externally-managed install_data
+[4.155s] running egg_info
+[4.186s] writing ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/PKG-INFO
+[4.187s] writing dependency_links to ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/dependency_links.txt
+[4.192s] writing entry points to ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/entry_points.txt
+[4.192s] writing requirements to ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/requires.txt
+[4.192s] writing top-level names to ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/top_level.txt
+[4.248s] reading manifest file '../../build/my_ugv_hardware/my_ugv_hardware.egg-info/SOURCES.txt'
+[4.249s] writing manifest file '../../build/my_ugv_hardware/my_ugv_hardware.egg-info/SOURCES.txt'
+[4.250s] running build
+[4.250s] running build_py
+[4.254s] running install
+[4.265s] running install_lib
+[4.298s] running install_data
+[4.298s] running install_egg_info
+[4.329s] removing '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware-0.0.0-py3.12.egg-info' (and everything under it)
+[4.330s] Copying ../../build/my_ugv_hardware/my_ugv_hardware.egg-info to /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware-0.0.0-py3.12.egg-info
+[4.333s] running install_scripts
+[4.604s] Installing lora_bridge script to /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+[4.605s] Installing virtual_odom script to /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+[4.607s] writing list of installed files to '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware/install.log'
+[4.817s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_hardware' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/my_ugv_hardware build --build-base /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build install --record /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware/install.log --single-version-externally-managed install_data

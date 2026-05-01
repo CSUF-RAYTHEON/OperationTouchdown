@@ -315,8 +315,8 @@ message(STATUS "Execute custom install script")
 
 # begin of custom install code
 
-# install(DIRECTORY "launch" "DESTINATION" "share/my_ugv_bringup")
-ament_cmake_symlink_install_directory("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_bringup" DIRECTORY "launch" "DESTINATION" "share/my_ugv_bringup")
+# install(DIRECTORY "launch" "config" "urdf" "DESTINATION" "share/my_ugv_bringup")
+ament_cmake_symlink_install_directory("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_bringup" DIRECTORY "launch" "config" "urdf" "DESTINATION" "share/my_ugv_bringup")
 
 # install(FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_bringup/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/my_ugv_bringup" "DESTINATION" "share/ament_index/resource_index/package_run_dependencies")
 ament_cmake_symlink_install_files("/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_bringup" FILES "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_bringup/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/my_ugv_bringup" "DESTINATION" "share/ament_index/resource_index/package_run_dependencies")

@@ -1,0 +1,21 @@
+[2.018s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_vision': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/my_ugv_vision build --build-base /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/build install --record /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/install.log --single-version-externally-managed install_data
+[2.535s] running egg_info
+[2.579s] writing ../../build/my_ugv_vision/my_ugv_vision.egg-info/PKG-INFO
+[2.579s] writing dependency_links to ../../build/my_ugv_vision/my_ugv_vision.egg-info/dependency_links.txt
+[2.579s] writing entry points to ../../build/my_ugv_vision/my_ugv_vision.egg-info/entry_points.txt
+[2.579s] writing requirements to ../../build/my_ugv_vision/my_ugv_vision.egg-info/requires.txt
+[2.580s] writing top-level names to ../../build/my_ugv_vision/my_ugv_vision.egg-info/top_level.txt
+[2.656s] reading manifest file '../../build/my_ugv_vision/my_ugv_vision.egg-info/SOURCES.txt'
+[2.657s] writing manifest file '../../build/my_ugv_vision/my_ugv_vision.egg-info/SOURCES.txt'
+[2.658s] running build
+[2.658s] running build_py
+[2.658s] running install
+[2.672s] running install_lib
+[2.707s] running install_data
+[2.707s] running install_egg_info
+[2.741s] removing '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision-0.0.0-py3.12.egg-info' (and everything under it)
+[2.741s] Copying ../../build/my_ugv_vision/my_ugv_vision.egg-info to /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision-0.0.0-py3.12.egg-info
+[2.741s] running install_scripts
+[2.949s] Installing object_detector script to /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/my_ugv_vision
+[2.950s] writing list of installed files to '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/install.log'
+[3.052s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_vision' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/my_ugv_vision build --build-base /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/build install --record /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/install.log --single-version-externally-managed install_data

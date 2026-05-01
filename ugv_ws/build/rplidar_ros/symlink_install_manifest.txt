@@ -15,6 +15,10 @@
 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/COLCON_IGNORE
 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/build_2026-03-27_14-15-04/events.log
 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/build_2026-03-27_14-15-04/logger_all.log
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/build_2026-04-24_15-40-20/events.log
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/build_2026-04-24_15-40-20/logger_all.log
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/build_2026-04-24_15-48-14/events.log
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/build_2026-04-24_15-48-14/logger_all.log
 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/latest/events.log
 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/latest/logger_all.log
 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/latest_build/events.log

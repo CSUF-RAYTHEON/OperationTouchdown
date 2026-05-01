@@ -1,0 +1,255 @@
+[0.155s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--packages-select', 'roboteq_ros2_driver']
+[0.155s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=4, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=['roboteq_ros2_driver'], packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0xffffaa13cf80>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0xffffaaaf06e0>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0xffffaaaf06e0>>, mixin_verb=('build',))
+[0.216s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.216s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.216s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.216s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.216s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.216s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.216s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src'
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.254s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.254s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.254s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.254s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.255s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.255s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.255s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.255s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.255s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extensions ['ignore', 'ignore_ament_install']
+[0.255s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extension 'ignore'
+[0.255s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extension 'ignore_ament_install'
+[0.255s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extensions ['colcon_pkg']
+[0.255s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extension 'colcon_pkg'
+[0.255s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extensions ['colcon_meta']
+[0.255s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extension 'colcon_meta'
+[0.255s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extensions ['ros']
+[0.255s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extension 'ros'
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extensions ['cmake', 'python']
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extension 'cmake'
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extension 'python'
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extensions ['python_setup_py']
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros) by extension 'python_setup_py'
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai-ros) by extensions ['ignore', 'ignore_ament_install']
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai-ros) by extension 'ignore'
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai-ros) by extension 'ignore_ament_install'
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai-ros) by extensions ['colcon_pkg']
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai-ros) by extension 'colcon_pkg'
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai-ros) by extensions ['colcon_meta']
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai-ros) by extension 'colcon_meta'
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai-ros) by extensions ['ros']
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai-ros) by extension 'ros'
+[0.259s] DEBUG:colcon.colcon_core.package_identification:Package 'depthai-ros/depthai-ros' with type 'ros.ament_cmake' and name 'depthai-ros'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_bridge) by extensions ['ignore', 'ignore_ament_install']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_bridge) by extension 'ignore'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_bridge) by extension 'ignore_ament_install'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_bridge) by extensions ['colcon_pkg']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_bridge) by extension 'colcon_pkg'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_bridge) by extensions ['colcon_meta']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_bridge) by extension 'colcon_meta'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_bridge) by extensions ['ros']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_bridge) by extension 'ros'
+[0.262s] DEBUG:colcon.colcon_core.package_identification:Package 'depthai-ros/depthai_bridge' with type 'ros.ament_cmake' and name 'depthai_bridge'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_descriptions) by extensions ['ignore', 'ignore_ament_install']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_descriptions) by extension 'ignore'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_descriptions) by extension 'ignore_ament_install'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_descriptions) by extensions ['colcon_pkg']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_descriptions) by extension 'colcon_pkg'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_descriptions) by extensions ['colcon_meta']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_descriptions) by extension 'colcon_meta'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_descriptions) by extensions ['ros']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_descriptions) by extension 'ros'
+[0.263s] DEBUG:colcon.colcon_core.package_identification:Package 'depthai-ros/depthai_descriptions' with type 'ros.ament_cmake' and name 'depthai_descriptions'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_examples) by extensions ['ignore', 'ignore_ament_install']
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_examples) by extension 'ignore'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_examples) by extension 'ignore_ament_install'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_examples) by extensions ['colcon_pkg']
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_examples) by extension 'colcon_pkg'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_examples) by extensions ['colcon_meta']
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_examples) by extension 'colcon_meta'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_examples) by extensions ['ros']
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_examples) by extension 'ros'
+[0.265s] DEBUG:colcon.colcon_core.package_identification:Package 'depthai-ros/depthai_examples' with type 'ros.ament_cmake' and name 'depthai_examples'
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_filters) by extensions ['ignore', 'ignore_ament_install']
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_filters) by extension 'ignore'
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_filters) by extension 'ignore_ament_install'
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_filters) by extensions ['colcon_pkg']
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_filters) by extension 'colcon_pkg'
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_filters) by extensions ['colcon_meta']
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_filters) by extension 'colcon_meta'
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_filters) by extensions ['ros']
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_filters) by extension 'ros'
+[0.267s] DEBUG:colcon.colcon_core.package_identification:Package 'depthai-ros/depthai_filters' with type 'ros.ament_cmake' and name 'depthai_filters'
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_driver) by extensions ['ignore', 'ignore_ament_install']
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_driver) by extension 'ignore'
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_driver) by extension 'ignore_ament_install'
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_driver) by extensions ['colcon_pkg']
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_driver) by extension 'colcon_pkg'
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_driver) by extensions ['colcon_meta']
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_driver) by extension 'colcon_meta'
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_driver) by extensions ['ros']
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_driver) by extension 'ros'
+[0.269s] DEBUG:colcon.colcon_core.package_identification:Package 'depthai-ros/depthai_ros_driver' with type 'ros.ament_cmake' and name 'depthai_ros_driver'
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_msgs) by extensions ['ignore', 'ignore_ament_install']
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_msgs) by extension 'ignore'
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_msgs) by extension 'ignore_ament_install'
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_msgs) by extensions ['colcon_pkg']
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_msgs) by extension 'colcon_pkg'
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_msgs) by extensions ['colcon_meta']
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_msgs) by extension 'colcon_meta'
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_msgs) by extensions ['ros']
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(depthai-ros/depthai_ros_msgs) by extension 'ros'
+[0.271s] DEBUG:colcon.colcon_core.package_identification:Package 'depthai-ros/depthai_ros_msgs' with type 'ros.ament_cmake' and name 'depthai_ros_msgs'
+[0.271s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.271s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.271s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.271s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.271s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.271s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.271s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_bringup) by extensions ['ignore', 'ignore_ament_install']
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_bringup) by extension 'ignore'
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_bringup) by extension 'ignore_ament_install'
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_bringup) by extensions ['colcon_pkg']
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_bringup) by extension 'colcon_pkg'
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_bringup) by extensions ['colcon_meta']
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_bringup) by extension 'colcon_meta'
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_bringup) by extensions ['ros']
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_bringup) by extension 'ros'
+[0.272s] DEBUG:colcon.colcon_core.package_identification:Package 'my_ugv_bringup' with type 'ros.ament_cmake' and name 'my_ugv_bringup'
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_description) by extensions ['ignore', 'ignore_ament_install']
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_description) by extension 'ignore'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_description) by extension 'ignore_ament_install'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_description) by extensions ['colcon_pkg']
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_description) by extension 'colcon_pkg'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_description) by extensions ['colcon_meta']
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_description) by extension 'colcon_meta'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_description) by extensions ['ros']
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_description) by extension 'ros'
+[0.273s] DEBUG:colcon.colcon_core.package_identification:Package 'my_ugv_description' with type 'ros.ament_cmake' and name 'my_ugv_description'
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_hardware) by extensions ['ignore', 'ignore_ament_install']
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_hardware) by extension 'ignore'
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_hardware) by extension 'ignore_ament_install'
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_hardware) by extensions ['colcon_pkg']
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_hardware) by extension 'colcon_pkg'
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_hardware) by extensions ['colcon_meta']
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_hardware) by extension 'colcon_meta'
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_hardware) by extensions ['ros']
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_hardware) by extension 'ros'
+[0.275s] DEBUG:colcon.colcon_core.package_identification:Package 'my_ugv_hardware' with type 'ros.ament_python' and name 'my_ugv_hardware'
+[0.275s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_vision) by extensions ['ignore', 'ignore_ament_install']
+[0.275s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_vision) by extension 'ignore'
+[0.275s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_vision) by extension 'ignore_ament_install'
+[0.275s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_vision) by extensions ['colcon_pkg']
+[0.275s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_vision) by extension 'colcon_pkg'
+[0.275s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_vision) by extensions ['colcon_meta']
+[0.275s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_vision) by extension 'colcon_meta'
+[0.275s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_vision) by extensions ['ros']
+[0.275s] Level 1:colcon.colcon_core.package_identification:_identify(my_ugv_vision) by extension 'ros'
+[0.276s] DEBUG:colcon.colcon_core.package_identification:Package 'my_ugv_vision' with type 'ros.ament_python' and name 'my_ugv_vision'
+[0.276s] Level 1:colcon.colcon_core.package_identification:_identify(roboteq_ros2_driver) by extensions ['ignore', 'ignore_ament_install']
+[0.276s] Level 1:colcon.colcon_core.package_identification:_identify(roboteq_ros2_driver) by extension 'ignore'
+[0.276s] Level 1:colcon.colcon_core.package_identification:_identify(roboteq_ros2_driver) by extension 'ignore_ament_install'
+[0.276s] Level 1:colcon.colcon_core.package_identification:_identify(roboteq_ros2_driver) by extensions ['colcon_pkg']
+[0.276s] Level 1:colcon.colcon_core.package_identification:_identify(roboteq_ros2_driver) by extension 'colcon_pkg'
+[0.276s] Level 1:colcon.colcon_core.package_identification:_identify(roboteq_ros2_driver) by extensions ['colcon_meta']
+[0.276s] Level 1:colcon.colcon_core.package_identification:_identify(roboteq_ros2_driver) by extension 'colcon_meta'
+[0.276s] Level 1:colcon.colcon_core.package_identification:_identify(roboteq_ros2_driver) by extensions ['ros']
+[0.276s] Level 1:colcon.colcon_core.package_identification:_identify(roboteq_ros2_driver) by extension 'ros'
+[0.277s] DEBUG:colcon.colcon_core.package_identification:Package 'roboteq_ros2_driver' with type 'ros.ament_cmake' and name 'roboteq_ros2_driver'
+[0.277s] Level 1:colcon.colcon_core.package_identification:_identify(rplidar_ros) by extensions ['ignore', 'ignore_ament_install']
+[0.277s] Level 1:colcon.colcon_core.package_identification:_identify(rplidar_ros) by extension 'ignore'
+[0.277s] Level 1:colcon.colcon_core.package_identification:_identify(rplidar_ros) by extension 'ignore_ament_install'
+[0.277s] Level 1:colcon.colcon_core.package_identification:_identify(rplidar_ros) by extensions ['colcon_pkg']
+[0.277s] Level 1:colcon.colcon_core.package_identification:_identify(rplidar_ros) by extension 'colcon_pkg'
+[0.277s] Level 1:colcon.colcon_core.package_identification:_identify(rplidar_ros) by extensions ['colcon_meta']
+[0.277s] Level 1:colcon.colcon_core.package_identification:_identify(rplidar_ros) by extension 'colcon_meta'
+[0.277s] Level 1:colcon.colcon_core.package_identification:_identify(rplidar_ros) by extensions ['ros']
+[0.277s] Level 1:colcon.colcon_core.package_identification:_identify(rplidar_ros) by extension 'ros'
+[0.278s] DEBUG:colcon.colcon_core.package_identification:Package 'rplidar_ros' with type 'ros.ament_cmake' and name 'rplidar_ros'
+[0.278s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.278s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.278s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.278s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.278s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.308s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai_descriptions' in 'depthai-ros/depthai_descriptions'
+[0.308s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai_ros_msgs' in 'depthai-ros/depthai_ros_msgs'
+[0.308s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'my_ugv_description' in 'my_ugv_description'
+[0.308s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'my_ugv_hardware' in 'my_ugv_hardware'
+[0.308s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'my_ugv_vision' in 'my_ugv_vision'
+[0.308s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'rplidar_ros' in 'rplidar_ros'
+[0.308s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai_bridge' in 'depthai-ros/depthai_bridge'
+[0.308s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai_filters' in 'depthai-ros/depthai_filters'
+[0.308s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'my_ugv_bringup' in 'my_ugv_bringup'
+[0.308s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai_examples' in 'depthai-ros/depthai_examples'
+[0.308s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai_ros_driver' in 'depthai-ros/depthai_ros_driver'
+[0.308s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai-ros' in 'depthai-ros/depthai-ros'
+[0.309s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.309s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.312s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 13 installed packages in /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install
+[0.313s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 0 installed packages in /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/roboteq_ros2_driver/scripts/install
+[0.313s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 1 installed packages in /home/ground/install
+[0.316s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 414 installed packages in /opt/ros/jazzy
+[0.318s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.409s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'cmake_args' from command line to 'None'
+[0.409s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'cmake_target' from command line to 'None'
+[0.409s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.409s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'cmake_clean_cache' from command line to 'False'
+[0.409s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'cmake_clean_first' from command line to 'False'
+[0.409s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'cmake_force_configure' from command line to 'False'
+[0.409s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'ament_cmake_args' from command line to 'None'
+[0.409s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'catkin_cmake_args' from command line to 'None'
+[0.409s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.409s] DEBUG:colcon.colcon_core.verb:Building package 'roboteq_ros2_driver' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver', 'merge_install': False, 'path': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/roboteq_ros2_driver', 'symlink_install': False, 'test_result_base': None}
+[0.409s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.410s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.411s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/roboteq_ros2_driver' with build type 'ament_cmake'
+[0.411s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/roboteq_ros2_driver'
+[0.414s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.414s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.414s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.433s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/home/ground/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver -- -j4 -l4
+[0.484s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/home/ground/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver -- -j4 -l4
+[0.485s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(roboteq_ros2_driver)
+[0.488s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver' for CMake module files
+[0.489s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver' for CMake config files
+[0.489s] Level 1:colcon.colcon_core.shell:create_environment_hook('roboteq_ros2_driver', 'cmake_prefix_path')
+[0.489s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/hook/cmake_prefix_path.ps1'
+[0.490s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/hook/cmake_prefix_path.dsv'
+[0.491s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/hook/cmake_prefix_path.sh'
+[0.492s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/lib'
+[0.492s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/bin'
+[0.492s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/lib/pkgconfig/roboteq_ros2_driver.pc'
+[0.493s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/lib/python3.12/site-packages'
+[0.493s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/bin'
+[0.493s] INFO:colcon.colcon_core.shell:Creating package script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.ps1'
+[0.494s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.dsv'
+[0.495s] INFO:colcon.colcon_core.shell:Creating package script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.sh'
+[0.496s] INFO:colcon.colcon_core.shell:Creating package script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.bash'
+[0.497s] INFO:colcon.colcon_core.shell:Creating package script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.zsh'
+[0.498s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/colcon-core/packages/roboteq_ros2_driver)
+[0.508s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[0.509s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[0.509s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '2'
+[0.509s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[0.518s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[0.518s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[0.518s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[0.549s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[0.549s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/local_setup.ps1'
+[0.551s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/_local_setup_util_ps1.py'
+[0.553s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/setup.ps1'
+[0.555s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/local_setup.sh'
+[0.557s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/_local_setup_util_sh.py'
+[0.558s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/setup.sh'
+[0.562s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/local_setup.bash'
+[0.563s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/setup.bash'
+[0.566s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/local_setup.zsh'
+[0.566s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/setup.zsh'

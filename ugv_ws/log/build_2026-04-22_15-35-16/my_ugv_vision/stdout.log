@@ -1,0 +1,29 @@
+running develop
+Removing /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my-ugv-vision.egg-link (link to .)
+running egg_info
+writing ../../build/my_ugv_vision/my_ugv_vision.egg-info/PKG-INFO
+writing dependency_links to ../../build/my_ugv_vision/my_ugv_vision.egg-info/dependency_links.txt
+writing entry points to ../../build/my_ugv_vision/my_ugv_vision.egg-info/entry_points.txt
+writing requirements to ../../build/my_ugv_vision/my_ugv_vision.egg-info/requires.txt
+writing top-level names to ../../build/my_ugv_vision/my_ugv_vision.egg-info/top_level.txt
+reading manifest file '../../build/my_ugv_vision/my_ugv_vision.egg-info/SOURCES.txt'
+writing manifest file '../../build/my_ugv_vision/my_ugv_vision.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/build
+creating /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib
+creating /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision
+copying my_ugv_vision/__init__.py -> /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision
+running install
+running install_lib
+creating /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision
+copying /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision/__init__.py -> /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision
+byte-compiling /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision/__init__.py to __init__.cpython-312.pyc
+running install_data
+copying resource/my_ugv_vision -> /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/share/ament_index/resource_index/packages
+copying package.xml -> /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/share/my_ugv_vision
+running install_egg_info
+Copying ../../build/my_ugv_vision/my_ugv_vision.egg-info to /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision-0.0.0-py3.12.egg-info
+running install_scripts
+Installing object_detector script to /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/my_ugv_vision
+writing list of installed files to '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/install.log'

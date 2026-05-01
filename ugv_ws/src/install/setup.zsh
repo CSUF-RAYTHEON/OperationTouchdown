@@ -22,7 +22,13 @@ _colcon_prefix_chain_zsh_source_script() {
 COLCON_CURRENT_PREFIX="/opt/ros/jazzy"
 _colcon_prefix_chain_zsh_source_script "$COLCON_CURRENT_PREFIX/local_setup.zsh"
 # setting COLCON_CURRENT_PREFIX avoids determining the prefix in the sourced script
-COLCON_CURRENT_PREFIX="/home/ground/ugv_ws/install"
+COLCON_CURRENT_PREFIX="/home/ground/install"
+_colcon_prefix_chain_zsh_source_script "$COLCON_CURRENT_PREFIX/local_setup.zsh"
+# setting COLCON_CURRENT_PREFIX avoids determining the prefix in the sourced script
+COLCON_CURRENT_PREFIX="/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/roboteq_ros2_driver/scripts/install"
+_colcon_prefix_chain_zsh_source_script "$COLCON_CURRENT_PREFIX/local_setup.zsh"
+# setting COLCON_CURRENT_PREFIX avoids determining the prefix in the sourced script
+COLCON_CURRENT_PREFIX="/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install"
 _colcon_prefix_chain_zsh_source_script "$COLCON_CURRENT_PREFIX/local_setup.zsh"
 
 # source this prefix
