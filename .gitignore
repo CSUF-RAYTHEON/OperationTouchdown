@@ -1,6 +1,3 @@
-# Python virtual environments
-ugv_ws/akida_venv/
-
 # ROS2 build artifacts
 ugv_ws/build/
 ugv_ws/install/

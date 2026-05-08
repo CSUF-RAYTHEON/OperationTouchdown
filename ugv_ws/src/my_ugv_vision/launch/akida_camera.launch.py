@@ -31,15 +31,11 @@ How it works
       ~/akida/detections        vision_msgs/Detection2DArray
       ~/akida/annotated_image   sensor_msgs/Image  (debug overlay)
 
-Venv
-----
-akida, numpy, and opencv-python must be in the venv at:
-  <ugv_ws>/akida_venv/
-Run the setup script once to create it:
-  bash ugv_ws/setup_akida_venv.sh
-
-The node picks up the venv automatically via the AKIDA_VENV_SITE
-environment variable injected by this launch file.
+Dependencies
+------------
+Run the setup script once after cloning to install akida, numpy, and
+opencv-python to your user site-packages:
+  bash ugv_ws/setup_akida.sh
 """
 
 import os
@@ -56,27 +52,13 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 # ---------------------------------------------------------------------------
-# Workspace-relative paths
-# Resolve from this file's installed location back to ugv_ws/.
-# This file installs to:
-#   <ugv_ws>/install/my_ugv_vision/share/my_ugv_vision/launch/
-# So ugv_ws/ is six levels up from __file__.
+# Default path to the .fbz model blob.
+# Resolved from this file's installed location back to the workspace root.
 # ---------------------------------------------------------------------------
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-# Walk up: launch/ → my_ugv_vision/share/ → my_ugv_vision/ → share/ → install/ → ugv_ws/
 _UGV_WS = os.path.normpath(os.path.join(_THIS_DIR, *(['..'] * 5)))
-
-# When running from source (colcon build --symlink-install or direct execution)
-# the file may live inside src/ — detect and adjust.
 if 'src' in _THIS_DIR:
-    # src/my_ugv_vision/launch/ → src/ → ugv_ws/
-    _UGV_WS = os.path.normpath(
-        os.path.join(_THIS_DIR, '..', '..', '..')
-    )
-
-_AKIDA_VENV_SITE = os.path.join(
-    _UGV_WS, 'akida_venv', 'lib', 'python3.12', 'site-packages'
-)
+    _UGV_WS = os.path.normpath(os.path.join(_THIS_DIR, '..', '..', '..'))
 
 _DEFAULT_FBZ = os.path.join(
     os.path.dirname(_UGV_WS), 'ugv_object_detect_model.fbz'
@@ -149,11 +131,6 @@ def launch_setup(context, *args, **kwargs):
                     'background_class': int(akida_bg_class),
                     'publish_annotated_image': True,
                 }],
-                additional_env={
-                    # Provides akida, numpy, cv2 from the project venv
-                    # without overriding system Python used by rclpy.
-                    'AKIDA_VENV_SITE': _AKIDA_VENV_SITE,
-                },
             )
         )
 

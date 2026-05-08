@@ -25,30 +25,20 @@ Model architecture (ugv_object_detect_model.fbz):
   - Bounding boxes are derived from each cell's position in the grid
     (each cell covers a 32×32-pixel receptive field in the 224-px frame).
 
-Venv:
-  - akida, numpy, and opencv-python live in ugv_ws/akida_venv/.
-  - The launch file sets AKIDA_VENV_SITE so the system Python used by
-    ROS2 can still import rclpy while the venv provides the ML libs.
+Dependencies:
+  - Run ugv_ws/setup_akida.sh once after cloning to install
+    akida==2.19.1, numpy, and opencv-python to user site-packages.
 """
 
 import os
-import sys
 
-# ---------------------------------------------------------------------------
-# Venv bootstrap — must run before any akida / numpy / cv2 imports.
-# Set by the camera.launch.py via Node(additional_env={...}).
-# ---------------------------------------------------------------------------
-_venv_site = os.environ.get('AKIDA_VENV_SITE', '')
-if _venv_site and _venv_site not in sys.path:
-    sys.path.insert(0, _venv_site)
-
-import cv2  # noqa: E402
-import numpy as np  # noqa: E402
-import rclpy  # noqa: E402
-from cv_bridge import CvBridge  # noqa: E402
-from rclpy.node import Node  # noqa: E402
-from sensor_msgs.msg import Image  # noqa: E402
-from vision_msgs.msg import (  # noqa: E402
+import cv2
+import numpy as np
+import rclpy
+from cv_bridge import CvBridge
+from rclpy.node import Node
+from sensor_msgs.msg import Image
+from vision_msgs.msg import (
     BoundingBox2D,
     Detection2D,
     Detection2DArray,
