@@ -1,0 +1,17 @@
+[2.013s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/build --no-deps symlink_data
+[2.647s] running develop
+[3.012s] running egg_info
+[3.043s] writing my_ugv_vision.egg-info/PKG-INFO
+[3.043s] writing dependency_links to my_ugv_vision.egg-info/dependency_links.txt
+[3.043s] writing entry points to my_ugv_vision.egg-info/entry_points.txt
+[3.044s] writing requirements to my_ugv_vision.egg-info/requires.txt
+[3.046s] writing top-level names to my_ugv_vision.egg-info/top_level.txt
+[3.106s] reading manifest file 'my_ugv_vision.egg-info/SOURCES.txt'
+[3.107s] writing manifest file 'my_ugv_vision.egg-info/SOURCES.txt'
+[3.141s] running build_ext
+[3.141s] Creating /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my-ugv-vision.egg-link (link to .)
+[3.141s] Installing object_detector script to /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/my_ugv_vision
+[3.142s] 
+[3.142s] Installed /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision
+[3.142s] running symlink_data
+[3.250s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/build --no-deps symlink_data

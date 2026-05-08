@@ -1,12 +1,12 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, TimerAction, EmitEvent, RegisterEventHandler, LogInfo
+from launch.actions import IncludeLaunchDescription, TimerAction, EmitEvent, RegisterEventHandler
 from launch.launch_description_sources import PythonLaunchDescriptionSource, AnyLaunchDescriptionSource
 from launch_ros.actions import Node, LifecycleNode
 from launch_ros.events.lifecycle import ChangeState
 from launch_ros.event_handlers import OnStateTransition
-from launch.event_handlers import OnProcessExit 
+from launch.events import matches_action
 import lifecycle_msgs.msg
 import xacro
 
@@ -21,7 +21,6 @@ def generate_launch_description():
     foxglove_path = os.path.join(get_package_share_directory('foxglove_bridge'), 'launch', 'foxglove_bridge_launch.xml')
     oakd_path = os.path.join(get_package_share_directory('depthai_ros_driver'), 'launch', 'camera.launch.py')
     ekf_path = os.path.join(pkg_share, 'config', 'ekf.yaml')
-    # Point to your custom SLAM policy (ensuring name matches slam_param.yaml)
     slam_params_path = os.path.join(pkg_share, 'config', 'slam_param.yaml')
 
     # 3. Core Infrastructure Nodes
@@ -64,7 +63,7 @@ def generate_launch_description():
             'serial_baudrate': 115200,
             'inverted': False,
             'angle_compensate': True,
-            'scan_frequency': 5.0,
+            'scan_frequency': 10.0,
         }],
         output='screen'
     )
@@ -73,10 +72,16 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(oakd_path),
         launch_arguments={
             'name': 'oak',
-            'enable_color': 'false',       # STOPS the RGB stream
-            'rectify_rgb': 'false',        # SAVES massive CPU math
-            'enable_depth': 'true',        # KEEPS the data needed for SLAM
-            'depth_module.depth_profile': '640,400,5', # 5Hz is plenty for safety
+            'pass_tf_args_as_params': 'true',
+            'parent_frame': 'base_link',
+            'cam_roll': '3.14159',
+            'enable_color': 'false',
+            'rectify_rgb': 'false',
+            'enable_depth': 'true',
+            'depth_module.depth_profile': '640,400,5',
+            # --- ADD THIS TO STOP THE FIGHT ---
+            'publish_tf_from_calibration': 'false', 
+            # ----------------------------------
         }.items()
     )
 
@@ -91,10 +96,10 @@ def generate_launch_description():
         ],
         parameters=[{
             'output_frame': 'oak_rgb_camera_frame', 
-            'range_min': 0.45,  # Increased min range to skip noisy near-pixels
-            'range_max': 3.5,   # LOWERED from 5.0 to 3.5 (Saves massive math)
+            'range_min': 0.45,
+            'range_max': 3.5,
             'scan_height': 1,
-            'scan_time': 0.2    # MATCHED to 5Hz (0.2s) to sync with OAK-D FPS
+            'scan_time': 0.2
         }]
     )
 
@@ -106,7 +111,7 @@ def generate_launch_description():
         parameters=[{'enable_button': 5, 'axis_linear.x': 1, 'axis_angular.yaw': 3, 'scale_linear.x': 3.0, 'scale_angular.yaw': 1.0}]
     )
 
-    # 7. SLAM (Restructured for "Market Activation")
+    # 7. SLAM
     slam_toolbox = LifecycleNode(
         package='slam_toolbox',
         executable='async_slam_toolbox_node',
@@ -115,9 +120,6 @@ def generate_launch_description():
         output='screen',
         parameters=[slam_params_path]
     )
-
-    # FIXED: Using matches_action instead of lambda for better "Traceability"
-    from launch.events import matches_action
 
     configure_event = EmitEvent(
         event=ChangeState(
@@ -129,7 +131,7 @@ def generate_launch_description():
     activate_event = RegisterEventHandler(
         OnStateTransition(
             target_lifecycle_node=slam_toolbox,
-            goal_state='inactive', # When it finishes configuring
+            goal_state='inactive',
             entities=[
                 EmitEvent(
                     event=ChangeState(
@@ -152,6 +154,5 @@ def generate_launch_description():
         depth_to_scan, 
         joy_node,
         teleop_node,
-        # SLAM is started with a slight delay to let the Lidar and Odom "Solvency" stabilize
         TimerAction(period=3.0, actions=[slam_toolbox, configure_event, activate_event])
     ])

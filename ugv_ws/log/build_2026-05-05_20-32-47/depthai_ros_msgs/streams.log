@@ -1,0 +1,641 @@
+[0.036s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs
+[0.926s] -- The C compiler identification is GNU 13.3.0
+[1.655s] -- The CXX compiler identification is GNU 13.3.0
+[1.707s] -- Detecting C compiler ABI info
+[2.001s] -- Detecting C compiler ABI info - done
+[2.015s] -- Check for working C compiler: /usr/bin/cc - skipped
+[2.018s] -- Detecting C compile features
+[2.020s] -- Detecting C compile features - done
+[2.047s] -- Detecting CXX compiler ABI info
+[2.352s] -- Detecting CXX compiler ABI info - done
+[2.366s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[2.367s] -- Detecting CXX compile features
+[2.370s] -- Detecting CXX compile features - done
+[2.389s] -- Found ament_cmake: 2.5.5 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[2.819s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[3.143s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[3.274s] -- ------------------------------------------
+[3.274s] -- Depthai ROS MSGS/INTERFACES is being built using AMENT.
+[3.274s] -- ------------------------------------------
+[3.283s] -- Found geometry_msgs: 5.3.6 (/opt/ros/jazzy/share/geometry_msgs/cmake)
+[3.479s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[3.543s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[3.608s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[3.676s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[3.828s] -- Found vision_msgs: 4.1.1 (/opt/ros/jazzy/share/vision_msgs/cmake)
+[3.900s] -- Found sensor_msgs: 5.3.6 (/opt/ros/jazzy/share/sensor_msgs/cmake)
+[4.027s] -- Found rosidl_default_generators: 1.6.0 (/opt/ros/jazzy/share/rosidl_default_generators/cmake)
+[4.084s] -- Found rosidl_adapter: 4.6.7 (/opt/ros/jazzy/share/rosidl_adapter/cmake)
+[6.174s] -- Found ament_cmake_ros: 0.12.0 (/opt/ros/jazzy/share/ament_cmake_ros/cmake)
+[8.515s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[9.504s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[9.523s] -- Found python_cmake_module: 0.11.1 (/opt/ros/jazzy/share/python_cmake_module/cmake)
+[9.954s] -- Found PythonExtra: /usr/bin/python3  
+[12.256s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter Development NumPy Development.Module Development.Embed 
+[12.715s] -- Configuring done (12.7s)
+[13.039s] -- Generating done (0.2s)
+[13.101s] -- Build files have been written to: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs
+[13.163s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs
+[13.165s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs -- -j4 -l4
+[13.414s] [  1%] [34m[1mGenerating type hashes for ROS interfaces[0m
+[13.416s] [  1%] Built target ament_cmake_python_symlink_depthai_ros_msgs
+[14.558s] running egg_info
+[14.558s] creating depthai_ros_msgs.egg-info
+[14.649s] writing depthai_ros_msgs.egg-info/PKG-INFO
+[14.650s] writing dependency_links to depthai_ros_msgs.egg-info/dependency_links.txt
+[14.653s] writing top-level names to depthai_ros_msgs.egg-info/top_level.txt
+[14.654s] writing manifest file 'depthai_ros_msgs.egg-info/SOURCES.txt'
+[14.864s] reading manifest file 'depthai_ros_msgs.egg-info/SOURCES.txt'
+[14.866s] writing manifest file 'depthai_ros_msgs.egg-info/SOURCES.txt'
+[15.037s] [  1%] Built target ament_cmake_python_build_depthai_ros_msgs_egg
+[15.340s] [  1%] Built target depthai_ros_msgs__rosidl_generator_type_description
+[15.398s] [  2%] [34m[1mGenerating C code for ROS interfaces[0m
+[15.450s] [  2%] [34m[1mGenerating C++ code for ROS interfaces[0m
+[19.136s] [  2%] Built target depthai_ros_msgs__cpp
+[20.411s] [  2%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/auto_focus_ctrl__description.c.o[0m
+[20.425s] [  2%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/hand_landmark__description.c.o[0m
+[20.432s] [  3%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/auto_focus_ctrl__type_support.c.o[0m
+[20.437s] [  4%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/auto_focus_ctrl__functions.c.o[0m
+[20.622s] [  5%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/hand_landmark__functions.c.o[0m
+[20.659s] [  6%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/hand_landmark__type_support.c.o[0m
+[20.701s] [  6%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/hand_landmark_array__description.c.o[0m
+[20.846s] [  7%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/hand_landmark_array__functions.c.o[0m
+[20.877s] [  8%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support.c.o[0m
+[20.957s] [  8%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__functions.c.o[0m
+[20.964s] [  9%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__description.c.o[0m
+[21.025s] [ 10%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__type_support.c.o[0m
+[21.135s] [ 11%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/tracked_feature__description.c.o[0m
+[21.243s] [ 11%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/tracked_feature__functions.c.o[0m
+[21.272s] [ 12%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/tracked_feature__type_support.c.o[0m
+[21.298s] [ 13%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/tracked_features__description.c.o[0m
+[21.319s] [ 13%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/tracked_features__functions.c.o[0m
+[21.460s] [ 14%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/tracked_features__type_support.c.o[0m
+[21.548s] [ 14%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/spatial_detection__functions.c.o[0m
+[21.549s] [ 15%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/spatial_detection__description.c.o[0m
+[21.631s] [ 16%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/spatial_detection__type_support.c.o[0m
+[21.720s] [ 17%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/spatial_detection_array__description.c.o[0m
+[21.821s] [ 18%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/track_detection2_d__description.c.o[0m
+[21.848s] [ 19%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/spatial_detection_array__functions.c.o[0m
+[21.857s] [ 19%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.c.o[0m
+[22.060s] [ 20%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/track_detection2_d__functions.c.o[0m
+[22.076s] [ 20%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/track_detection2_d__type_support.c.o[0m
+[22.123s] [ 21%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/track_detection2_d_array__description.c.o[0m
+[22.189s] [ 22%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/track_detection2_d_array__functions.c.o[0m
+[22.230s] [ 22%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support.c.o[0m
+[22.302s] [ 23%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/srv/detail/trigger_named__description.c.o[0m
+[22.367s] [ 24%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/srv/detail/trigger_named__functions.c.o[0m
+[22.395s] [ 25%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/srv/detail/trigger_named__type_support.c.o[0m
+[22.504s] [ 25%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/srv/detail/normalized_image_crop__description.c.o[0m
+[22.543s] [ 26%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/srv/detail/normalized_image_crop__functions.c.o[0m
+[22.610s] [ 27%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/srv/detail/normalized_image_crop__type_support.c.o[0m
+[22.867s] [ 27%] [32m[1mLinking C shared library libdepthai_ros_msgs__rosidl_generator_c.so[0m
+[23.208s] [ 27%] Built target depthai_ros_msgs__rosidl_generator_c
+[23.265s] [ 27%] [34m[1mGenerating C++ type support dispatch for ROS interfaces[0m
+[23.273s] [ 28%] [34m[1mGenerating C type support for eProsima Fast-RTPS[0m
+[23.281s] [ 29%] [34m[1mGenerating C++ type support for eProsima Fast-RTPS[0m
+[23.286s] [ 30%] [34m[1mGenerating C introspection for ROS interfaces[0m
+[27.280s] [ 31%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/auto_focus_ctrl__type_support.cpp.o[0m
+[28.156s] [ 31%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/auto_focus_ctrl__type_support.c.o[0m
+[28.424s] [ 32%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/hand_landmark__type_support.c.o[0m
+[28.787s] [ 33%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support.c.o[0m
+[29.053s] [ 33%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__type_support.c.o[0m
+[29.304s] [ 34%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/tracked_feature__type_support.c.o[0m
+[29.455s] [ 35%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/tracked_features__type_support.c.o[0m
+[29.657s] [ 35%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/spatial_detection__type_support.c.o[0m
+[29.781s] [ 36%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/auto_focus_ctrl__type_support.cpp.o[0m
+[29.794s] [ 37%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/hand_landmark__type_support.cpp.o[0m
+[29.933s] [ 38%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.c.o[0m
+[30.142s] [ 39%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/track_detection2_d__type_support.c.o[0m
+[30.288s] [ 40%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/auto_focus_ctrl__type_support_c.cpp.o[0m
+[30.351s] [ 41%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support.c.o[0m
+[30.652s] [ 41%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/srv/detail/trigger_named__type_support.c.o[0m
+[31.008s] [ 42%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/srv/detail/normalized_image_crop__type_support.c.o[0m
+[31.310s] [ 43%] [32m[1mLinking C shared library libdepthai_ros_msgs__rosidl_typesupport_introspection_c.so[0m
+[31.750s] [ 43%] Built target depthai_ros_msgs__rosidl_typesupport_introspection_c
+[31.787s] [ 44%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/hand_landmark__type_support_c.cpp.o[0m
+[32.959s] [ 45%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/hand_landmark_array__type_support.cpp.o[0m
+[33.738s] [ 45%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/hand_landmark__type_support.cpp.o[0m
+[33.945s] [ 45%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support_c.cpp.o[0m
+[34.418s] [ 45%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/imu_with_magnetic_field__type_support.cpp.o[0m
+[34.842s] [ 46%] [34m[1mGenerating C type support dispatch for ROS interfaces[0m
+[36.720s] [ 47%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/tracked_feature__type_support.cpp.o[0m
+[37.485s] [ 48%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__type_support_c.cpp.o[0m
+[37.553s] [ 49%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/hand_landmark_array__type_support.cpp.o[0m
+[37.993s] [ 49%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/auto_focus_ctrl__type_support.cpp.o[0m
+[38.245s] [ 50%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/hand_landmark__type_support.cpp.o[0m
+[38.391s] [ 51%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/hand_landmark_array__type_support.cpp.o[0m
+[38.505s] [ 51%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/imu_with_magnetic_field__type_support.cpp.o[0m
+[38.612s] [ 52%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/tracked_features__type_support.cpp.o[0m
+[38.625s] [ 53%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/tracked_feature__type_support.cpp.o[0m
+[38.729s] [ 54%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/tracked_features__type_support.cpp.o[0m
+[38.835s] [ 55%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/spatial_detection__type_support.cpp.o[0m
+[38.945s] [ 55%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/spatial_detection_array__type_support.cpp.o[0m
+[39.055s] [ 56%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/track_detection2_d__type_support.cpp.o[0m
+[39.189s] [ 57%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/track_detection2_d_array__type_support.cpp.o[0m
+[39.310s] [ 57%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/srv/trigger_named__type_support.cpp.o[0m
+[39.538s] [ 58%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/srv/normalized_image_crop__type_support.cpp.o[0m
+[39.884s] [ 59%] [32m[1mLinking CXX shared library libdepthai_ros_msgs__rosidl_typesupport_c.so[0m
+[40.212s] [ 59%] Built target depthai_ros_msgs__rosidl_typesupport_c
+[40.433s] [ 60%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/imu_with_magnetic_field__type_support.cpp.o[0m
+[40.866s] [ 61%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/tracked_feature__type_support_c.cpp.o[0m
+[40.886s] [ 61%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/spatial_detection__type_support.cpp.o[0m
+[42.475s] [ 62%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/spatial_detection_array__type_support.cpp.o[0m
+[42.753s] [ 62%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/tracked_feature__type_support.cpp.o[0m
+[43.027s] [ 62%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/tracked_features__type_support_c.cpp.o[0m
+[44.183s] [ 63%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/tracked_features__type_support.cpp.o[0m
+[44.360s] [ 64%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/track_detection2_d__type_support.cpp.o[0m
+[45.409s] [ 65%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/spatial_detection__type_support_c.cpp.o[0m
+[45.877s] [ 66%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/spatial_detection__type_support.cpp.o[0m
+[46.335s] [ 66%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/track_detection2_d_array__type_support.cpp.o[0m
+[47.621s] [ 67%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/srv/trigger_named__type_support.cpp.o[0m
+[47.740s] [ 68%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support_c.cpp.o[0m
+[48.290s] [ 68%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/spatial_detection_array__type_support.cpp.o[0m
+[49.098s] [ 68%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/track_detection2_d__type_support_c.cpp.o[0m
+[49.208s] [ 69%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/srv/normalized_image_crop__type_support.cpp.o[0m
+[50.207s] [ 70%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/track_detection2_d__type_support.cpp.o[0m
+[50.498s] [ 70%] [32m[1mLinking CXX shared library libdepthai_ros_msgs__rosidl_typesupport_cpp.so[0m
+[50.892s] [ 70%] Built target depthai_ros_msgs__rosidl_typesupport_cpp
+[50.949s] [ 71%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support_c.cpp.o[0m
+[52.011s] [ 72%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/track_detection2_d_array__type_support.cpp.o[0m
+[52.169s] [ 73%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/srv/detail/trigger_named__type_support_c.cpp.o[0m
+[53.493s] [ 74%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/srv/detail/dds_fastrtps/trigger_named__type_support.cpp.o[0m
+[53.572s] [ 74%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/srv/detail/normalized_image_crop__type_support_c.cpp.o[0m
+[54.916s] [ 75%] [32m[1mLinking CXX shared library libdepthai_ros_msgs__rosidl_typesupport_fastrtps_c.so[0m
+[55.273s] [ 75%] Built target depthai_ros_msgs__rosidl_typesupport_fastrtps_c
+[55.431s] [ 75%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/srv/detail/dds_fastrtps/normalized_image_crop__type_support.cpp.o[0m
+[56.723s] [ 76%] [32m[1mLinking CXX shared library libdepthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.so[0m
+[57.012s] [ 76%] Built target depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp
+[57.038s] [ 76%] [34m[1mGenerating C++ introspection for ROS interfaces[0m
+[60.117s] [ 28%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/auto_focus_ctrl__type_support.cpp.o[0m
+[61.253s] [ 68%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__type_support.cpp.o[0m
+[62.548s] [ 69%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/tracked_feature__type_support.cpp.o[0m
+[63.336s] [ 69%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/tracked_features__type_support.cpp.o[0m
+[64.279s] [ 70%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/spatial_detection__type_support.cpp.o[0m
+[64.857s] [ 71%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.cpp.o[0m
+[65.522s] [ 72%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/track_detection2_d__type_support.cpp.o[0m
+[66.116s] [ 72%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support.cpp.o[0m
+[66.793s] [ 73%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/srv/detail/trigger_named__type_support.cpp.o[0m
+[67.493s] [ 74%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/srv/detail/normalized_image_crop__type_support.cpp.o[0m
+[68.162s] [ 74%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support.cpp.o[0m
+[68.817s] [ 75%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/hand_landmark__type_support.cpp.o[0m
+[69.396s] [ 75%] [32m[1mLinking CXX shared library libdepthai_ros_msgs__rosidl_typesupport_introspection_cpp.so[0m
+[69.624s] [ 75%] Built target depthai_ros_msgs__rosidl_typesupport_introspection_cpp
+[69.666s] [ 75%] Built target depthai_ros_msgs
+[69.712s] [ 76%] [34m[1mGenerating Python code for ROS interfaces[0m
+[72.426s] [ 86%] Built target depthai_ros_msgs__py
+[72.466s] [ 87%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_auto_focus_ctrl_s.c.o[0m
+[72.743s] [ 88%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_imu_with_magnetic_field_s.c.o[0m
+[72.965s] [ 89%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_tracked_feature_s.c.o[0m
+[73.185s] [ 89%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_tracked_features_s.c.o[0m
+[73.410s] [ 90%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_spatial_detection_s.c.o[0m
+[73.645s] [ 91%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_spatial_detection_array_s.c.o[0m
+[73.869s] [ 92%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_track_detection2_d_s.c.o[0m
+[74.108s] [ 92%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_track_detection2_d_array_s.c.o[0m
+[74.333s] [ 93%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/srv/_trigger_named_s.c.o[0m
+[74.590s] [ 94%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/srv/_normalized_image_crop_s.c.o[0m
+[74.843s] [ 94%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_hand_landmark_array_s.c.o[0m
+[75.063s] [ 95%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_hand_landmark_s.c.o[0m
+[75.296s] [ 95%] [32m[1mLinking C shared library libdepthai_ros_msgs__rosidl_generator_py.so[0m
+[75.420s] [ 95%] Built target depthai_ros_msgs__rosidl_generator_py
+[75.462s] [ 95%] [32mBuilding C object CMakeFiles/depthai_ros_msgs_s__rosidl_typesupport_fastrtps_c.dir/rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c.o[0m
+[75.727s] [ 96%] [32m[1mLinking C shared module rosidl_generator_py/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_fastrtps_c.so[0m
+[75.799s] [ 96%] Built target depthai_ros_msgs_s__rosidl_typesupport_fastrtps_c
+[75.840s] [ 97%] [32mBuilding C object CMakeFiles/depthai_ros_msgs_s__rosidl_typesupport_c.dir/rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_c.c.o[0m
+[76.108s] [ 98%] [32m[1mLinking C shared module rosidl_generator_py/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_c.so[0m
+[76.172s] [ 98%] Built target depthai_ros_msgs_s__rosidl_typesupport_c
+[76.214s] [ 99%] [32mBuilding C object CMakeFiles/depthai_ros_msgs_s__rosidl_typesupport_introspection_c.dir/rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_introspection_c.c.o[0m
+[76.486s] [100%] [32m[1mLinking C shared module rosidl_generator_py/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_introspection_c.so[0m
+[76.554s] [100%] Built target depthai_ros_msgs_s__rosidl_typesupport_introspection_c
+[76.577s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs -- -j4 -l4
+[76.580s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs
+[76.596s] -- Install configuration: ""
+[76.597s] -- Execute custom install script
+[76.598s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/ament_index/resource_index/rosidl_interfaces/depthai_ros_msgs
+[76.618s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/AutoFocusCtrl.json
+[76.636s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmark.json
+[76.654s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmarkArray.json
+[76.671s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmarkArray.json': File exists
+[76.674s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/ImuWithMagneticField.json
+[76.693s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeature.json
+[76.709s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeature.json': File exists
+[76.712s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeatures.json
+[76.728s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeatures.json': File exists
+[76.730s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetection.json
+[76.749s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetectionArray.json
+[76.768s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2D.json
+[76.788s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2DArray.json
+[76.807s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/TriggerNamed.json
+[76.823s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/TriggerNamed.json': File exists
+[76.827s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/NormalizedImageCrop.json
+[76.846s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/auto_focus_ctrl.h
+[76.865s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__functions.h
+[76.883s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__struct.h
+[76.901s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__type_support.h
+[76.918s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__type_support.h': File exists
+[76.921s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__functions.h
+[76.939s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__struct.h
+[76.958s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__type_support.h
+[76.974s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__type_support.h': File exists
+[76.976s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__functions.h
+[76.993s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__functions.h': File exists
+[76.996s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__struct.h
+[77.015s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support.h
+[77.031s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support.h': File exists
+[77.034s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__functions.h
+[77.050s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__functions.h': File exists
+[77.053s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__struct.h
+[77.070s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__struct.h': File exists
+[77.070s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__type_support.h
+[77.089s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__functions.h
+[77.108s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__struct.h
+[77.124s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__struct.h': File exists
+[77.127s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__type_support.h
+[77.146s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__functions.h
+[77.162s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__functions.h': File exists
+[77.165s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__struct.h
+[77.184s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.h
+[77.200s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.h': File exists
+[77.203s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__functions.h
+[77.219s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__functions.h': File exists
+[77.222s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__struct.h
+[77.237s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__struct.h': File exists
+[77.240s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__type_support.h
+[77.258s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__functions.h
+[77.277s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__struct.h
+[77.293s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__struct.h': File exists
+[77.297s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support.h
+[77.313s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support.h': File exists
+[77.315s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__functions.h
+[77.331s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__functions.h': File exists
+[77.333s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__struct.h
+[77.350s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__struct.h': File exists
+[77.352s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__type_support.h
+[77.371s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__functions.h
+[77.389s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__struct.h
+[77.407s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__type_support.h
+[77.424s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__type_support.h': File exists
+[77.427s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/hand_landmark.h
+[77.447s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/hand_landmark_array.h
+[77.462s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/hand_landmark_array.h': File exists
+[77.464s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/imu_with_magnetic_field.h
+[77.481s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/imu_with_magnetic_field.h': File exists
+[77.483s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/rosidl_generator_c__visibility_control.h
+[77.501s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/rosidl_generator_c__visibility_control.h': File exists
+[77.502s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/spatial_detection.h
+[77.518s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/spatial_detection.h': File exists
+[77.521s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/spatial_detection_array.h
+[77.539s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/track_detection2_d.h
+[77.558s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/track_detection2_d_array.h
+[77.577s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/tracked_feature.h
+[77.596s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/tracked_features.h
+[77.616s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__functions.h
+[77.631s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__functions.h': File exists
+[77.633s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__struct.h
+[77.652s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__type_support.h
+[77.672s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__functions.h
+[77.689s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__struct.h
+[77.707s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__type_support.h
+[77.727s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/normalized_image_crop.h
+[77.743s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/normalized_image_crop.h': File exists
+[77.746s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/trigger_named.h
+[77.763s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/trigger_named.h': File exists
+[77.764s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/library_path.sh
+[77.783s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/library_path.dsv
+[77.799s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/library_path.dsv': File exists
+[77.803s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__rosidl_typesupport_fastrtps_c.h
+[77.822s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__rosidl_typesupport_fastrtps_c.h
+[77.841s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__rosidl_typesupport_fastrtps_c.h
+[77.859s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__rosidl_typesupport_fastrtps_c.h': File exists
+[77.859s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__rosidl_typesupport_fastrtps_c.h
+[77.879s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__rosidl_typesupport_fastrtps_c.h
+[77.895s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__rosidl_typesupport_fastrtps_c.h': File exists
+[77.898s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__rosidl_typesupport_fastrtps_c.h
+[77.915s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__rosidl_typesupport_fastrtps_c.h': File exists
+[77.916s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__rosidl_typesupport_fastrtps_c.h
+[77.932s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__rosidl_typesupport_fastrtps_c.h': File exists
+[77.935s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__rosidl_typesupport_fastrtps_c.h
+[77.953s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__rosidl_typesupport_fastrtps_c.h': File exists
+[77.954s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__rosidl_typesupport_fastrtps_c.h
+[77.973s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__rosidl_typesupport_fastrtps_c.h
+[77.991s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[78.011s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__rosidl_typesupport_fastrtps_c.h
+[78.029s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__rosidl_typesupport_fastrtps_c.h
+[78.050s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/auto_focus_ctrl.hpp
+[78.068s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__builder.hpp
+[78.085s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__builder.hpp': File exists
+[78.088s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__struct.hpp
+[78.106s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__traits.hpp
+[78.125s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__type_support.hpp
+[78.144s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__builder.hpp
+[78.163s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__struct.hpp
+[78.182s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__traits.hpp
+[78.199s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__traits.hpp': File exists
+[78.200s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__type_support.hpp
+[78.217s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__type_support.hpp': File exists
+[78.219s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__builder.hpp
+[78.235s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__builder.hpp': File exists
+[78.238s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__struct.hpp
+[78.256s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__traits.hpp
+[78.275s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support.hpp
+[78.291s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support.hpp': File exists
+[78.293s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__builder.hpp
+[78.312s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__struct.hpp
+[78.331s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__struct.hpp': File exists
+[78.331s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__traits.hpp
+[78.347s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__traits.hpp': File exists
+[78.350s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__type_support.hpp
+[78.367s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__type_support.hpp': File exists
+[78.368s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__builder.hpp
+[78.387s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__struct.hpp
+[78.405s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__traits.hpp
+[78.424s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__traits.hpp': File exists
+[78.426s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__type_support.hpp
+[78.442s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__type_support.hpp': File exists
+[78.444s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__builder.hpp
+[78.460s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__builder.hpp': File exists
+[78.462s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__struct.hpp
+[78.481s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__traits.hpp
+[78.497s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__traits.hpp': File exists
+[78.499s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.hpp
+[78.517s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.hpp': File exists
+[78.519s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__builder.hpp
+[78.538s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__struct.hpp
+[78.557s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__traits.hpp
+[78.576s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__type_support.hpp
+[78.594s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__builder.hpp
+[78.613s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__struct.hpp
+[78.632s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__traits.hpp
+[78.649s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__traits.hpp': File exists
+[78.652s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support.hpp
+[78.667s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support.hpp': File exists
+[78.671s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__builder.hpp
+[78.689s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__struct.hpp
+[78.709s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__traits.hpp
+[78.725s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__traits.hpp': File exists
+[78.727s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__type_support.hpp
+[78.746s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__builder.hpp
+[78.762s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__builder.hpp': File exists
+[78.766s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__struct.hpp
+[78.783s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__struct.hpp': File exists
+[78.784s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__traits.hpp
+[78.800s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__traits.hpp': File exists
+[78.803s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__type_support.hpp
+[78.818s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__type_support.hpp': File exists
+[78.821s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/hand_landmark.hpp
+[78.841s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/hand_landmark_array.hpp
+[78.860s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/imu_with_magnetic_field.hpp
+[78.878s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/rosidl_generator_cpp__visibility_control.hpp
+[78.897s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/spatial_detection.hpp
+[78.913s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/spatial_detection.hpp': File exists
+[78.917s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/spatial_detection_array.hpp
+[78.933s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/spatial_detection_array.hpp': File exists
+[78.935s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/track_detection2_d.hpp
+[78.953s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/track_detection2_d_array.hpp
+[78.972s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/tracked_feature.hpp
+[78.991s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/tracked_features.hpp
+[79.010s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__builder.hpp
+[79.027s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__builder.hpp': File exists
+[79.029s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__struct.hpp
+[79.045s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__struct.hpp': File exists
+[79.048s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__traits.hpp
+[79.067s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__type_support.hpp
+[79.085s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__builder.hpp
+[79.101s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__builder.hpp': File exists
+[79.104s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__struct.hpp
+[79.120s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__struct.hpp': File exists
+[79.122s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__traits.hpp
+[79.141s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__type_support.hpp
+[79.161s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/normalized_image_crop.hpp
+[79.179s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/trigger_named.hpp
+[79.199s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__rosidl_typesupport_fastrtps_cpp.hpp
+[79.216s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__rosidl_typesupport_fastrtps_cpp.hpp': File exists
+[79.219s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__rosidl_typesupport_fastrtps_cpp.hpp
+[79.237s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__rosidl_typesupport_fastrtps_cpp.hpp
+[79.256s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__rosidl_typesupport_fastrtps_cpp.hpp
+[79.273s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__rosidl_typesupport_fastrtps_cpp.hpp': File exists
+[79.275s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__rosidl_typesupport_fastrtps_cpp.hpp
+[79.294s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__rosidl_typesupport_fastrtps_cpp.hpp
+[79.311s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__rosidl_typesupport_fastrtps_cpp.hpp': File exists
+[79.312s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__rosidl_typesupport_fastrtps_cpp.hpp
+[79.332s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__rosidl_typesupport_fastrtps_cpp.hpp
+[79.347s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__rosidl_typesupport_fastrtps_cpp.hpp': File exists
+[79.350s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__rosidl_typesupport_fastrtps_cpp.hpp
+[79.366s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__rosidl_typesupport_fastrtps_cpp.hpp': File exists
+[79.369s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__rosidl_typesupport_fastrtps_cpp.hpp
+[79.387s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[79.403s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h': File exists
+[79.406s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__rosidl_typesupport_fastrtps_cpp.hpp
+[79.425s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__rosidl_typesupport_fastrtps_cpp.hpp
+[79.441s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__rosidl_typesupport_fastrtps_cpp.hpp': File exists
+[79.444s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__rosidl_typesupport_introspection_c.h
+[79.463s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__rosidl_typesupport_introspection_c.h
+[79.483s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__rosidl_typesupport_introspection_c.h
+[79.498s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__rosidl_typesupport_introspection_c.h': File exists
+[79.501s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__rosidl_typesupport_introspection_c.h
+[79.520s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__rosidl_typesupport_introspection_c.h
+[79.536s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__rosidl_typesupport_introspection_c.h': File exists
+[79.538s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__rosidl_typesupport_introspection_c.h
+[79.555s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__rosidl_typesupport_introspection_c.h': File exists
+[79.557s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__rosidl_typesupport_introspection_c.h
+[79.576s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__rosidl_typesupport_introspection_c.h
+[79.595s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__rosidl_typesupport_introspection_c.h
+[79.614s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__rosidl_typesupport_introspection_c.h
+[79.634s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[79.652s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__rosidl_typesupport_introspection_c.h
+[79.670s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__rosidl_typesupport_introspection_c.h': File exists
+[79.671s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__rosidl_typesupport_introspection_c.h
+[79.690s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__rosidl_typesupport_introspection_cpp.hpp
+[79.709s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__rosidl_typesupport_introspection_cpp.hpp
+[79.727s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__rosidl_typesupport_introspection_cpp.hpp': File exists
+[79.727s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__rosidl_typesupport_introspection_cpp.hpp
+[79.746s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__rosidl_typesupport_introspection_cpp.hpp': File exists
+[79.746s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__rosidl_typesupport_introspection_cpp.hpp
+[79.766s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__rosidl_typesupport_introspection_cpp.hpp
+[79.784s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__rosidl_typesupport_introspection_cpp.hpp
+[79.801s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__rosidl_typesupport_introspection_cpp.hpp': File exists
+[79.803s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__rosidl_typesupport_introspection_cpp.hpp
+[79.828s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__rosidl_typesupport_introspection_cpp.hpp
+[79.846s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__rosidl_typesupport_introspection_cpp.hpp': File exists
+[79.848s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__rosidl_typesupport_introspection_cpp.hpp
+[79.867s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__rosidl_typesupport_introspection_cpp.hpp
+[79.883s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__rosidl_typesupport_introspection_cpp.hpp': File exists
+[79.886s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__rosidl_typesupport_introspection_cpp.hpp
+[79.905s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__rosidl_typesupport_introspection_cpp.hpp
+[79.922s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__rosidl_typesupport_introspection_cpp.hpp': File exists
+[79.923s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/pythonpath.sh
+[79.940s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/pythonpath.sh': File exists
+[79.942s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/pythonpath.dsv
+[79.959s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/pythonpath.dsv': File exists
+[79.962s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs-2.12.2-py3.12.egg-info/PKG-INFO
+[79.981s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs-2.12.2-py3.12.egg-info/SOURCES.txt
+[79.997s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs-2.12.2-py3.12.egg-info/SOURCES.txt': File exists
+[79.999s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs-2.12.2-py3.12.egg-info/dependency_links.txt
+[80.018s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs-2.12.2-py3.12.egg-info/top_level.txt
+[80.036s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs-2.12.2-py3.12.egg-info/top_level.txt': File exists
+[80.038s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/__init__.py
+[80.056s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/__init__.py': File exists
+[80.058s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_c.c
+[80.074s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_c.c': File exists
+[80.077s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
+[80.093s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c': File exists
+[80.095s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_introspection_c.c
+[80.115s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_c.so
+[80.131s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_c.so': File exists
+[80.134s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_fastrtps_c.so
+[80.152s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_introspection_c.so
+[80.169s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_introspection_c.so': File exists
+[80.171s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/__init__.py
+[80.187s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/__init__.py': File exists
+[80.190s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_auto_focus_ctrl.py
+[80.210s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_auto_focus_ctrl_s.c
+[80.229s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_hand_landmark.py
+[80.248s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_hand_landmark_array.py
+[80.267s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_hand_landmark_array_s.c
+[80.286s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_hand_landmark_s.c
+[80.302s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_hand_landmark_s.c': File exists
+[80.306s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_imu_with_magnetic_field.py
+[80.321s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_imu_with_magnetic_field.py': File exists
+[80.323s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_imu_with_magnetic_field_s.c
+[80.343s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection.py
+[80.359s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection.py': File exists
+[80.361s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection_array.py
+[80.377s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection_array.py': File exists
+[80.381s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection_array_s.c
+[80.399s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection_s.c
+[80.418s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_track_detection2_d.py
+[80.434s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_track_detection2_d.py': File exists
+[80.436s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_track_detection2_d_array.py
+[80.456s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_track_detection2_d_array_s.c
+[80.474s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_track_detection2_d_s.c
+[80.493s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_feature.py
+[80.511s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_feature_s.c
+[80.528s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_feature_s.c': File exists
+[80.532s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_features.py
+[80.547s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_features.py': File exists
+[80.551s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_features_s.c
+[80.570s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/__init__.py
+[80.585s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/__init__.py': File exists
+[80.588s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/_normalized_image_crop.py
+[80.607s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/_normalized_image_crop_s.c
+[80.627s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/_trigger_named.py
+[80.644s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/_trigger_named_s.c
+[80.663s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_fastrtps_c.so
+[80.664s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_introspection_c.so
+[80.664s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_c.so
+[80.665s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/AutoFocusCtrl.idl
+[80.683s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmark.idl
+[80.700s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmark.idl': File exists
+[80.702s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmarkArray.idl
+[80.722s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/ImuWithMagneticField.idl
+[80.740s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeature.idl
+[80.757s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeature.idl': File exists
+[80.760s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeatures.idl
+[80.775s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeatures.idl': File exists
+[80.779s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetection.idl
+[80.797s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetectionArray.idl
+[80.813s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetectionArray.idl': File exists
+[80.817s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2D.idl
+[80.832s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2D.idl': File exists
+[80.835s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2DArray.idl
+[80.851s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2DArray.idl': File exists
+[80.854s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/TriggerNamed.idl
+[80.871s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/TriggerNamed.idl': File exists
+[80.873s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/NormalizedImageCrop.idl
+[80.891s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/AutoFocusCtrl.msg
+[80.911s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmark.msg
+[80.929s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmarkArray.msg
+[80.945s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmarkArray.msg': File exists
+[80.948s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/ImuWithMagneticField.msg
+[80.964s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/ImuWithMagneticField.msg': File exists
+[80.968s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeature.msg
+[80.986s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeatures.msg
+[81.005s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetection.msg
+[81.021s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetection.msg': File exists
+[81.024s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetectionArray.msg
+[81.040s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetectionArray.msg': File exists
+[81.042s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2D.msg
+[81.059s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2D.msg': File exists
+[81.061s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2DArray.msg
+[81.077s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2DArray.msg': File exists
+[81.080s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/TriggerNamed.srv
+[81.096s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/TriggerNamed.srv': File exists
+[81.099s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/NormalizedImageCrop.srv
+[81.118s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/ament_index/resource_index/package_run_dependencies/depthai_ros_msgs
+[81.135s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/ament_index/resource_index/package_run_dependencies/depthai_ros_msgs': File exists
+[81.138s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/ament_index/resource_index/parent_prefix_path/depthai_ros_msgs
+[81.153s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/ament_index/resource_index/parent_prefix_path/depthai_ros_msgs': File exists
+[81.157s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/ament_prefix_path.sh
+[81.176s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/ament_prefix_path.dsv
+[81.192s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/ament_prefix_path.dsv': File exists
+[81.194s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/path.sh
+[81.211s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/path.sh': File exists
+[81.213s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/path.dsv
+[81.233s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/local_setup.bash
+[81.249s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/local_setup.bash': File exists
+[81.252s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/local_setup.sh
+[81.271s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/local_setup.zsh
+[81.290s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/local_setup.dsv
+[81.308s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/package.dsv
+[81.324s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/package.dsv': File exists
+[81.327s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/ament_index/resource_index/packages/depthai_ros_msgs
+[81.343s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/ament_index/resource_index/packages/depthai_ros_msgs': File exists
+[81.346s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/rosidl_cmake-extras.cmake
+[81.365s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/ament_cmake_export_dependencies-extras.cmake
+[81.384s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/ament_cmake_export_include_directories-extras.cmake
+[81.403s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/ament_cmake_export_libraries-extras.cmake
+[81.423s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/ament_cmake_export_targets-extras.cmake
+[81.441s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[81.457s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake': File exists
+[81.459s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[81.478s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgsConfig.cmake
+[81.494s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgsConfig.cmake': File exists
+[81.497s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgsConfig-version.cmake
+[81.517s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/package.xml
+[81.532s] CMake Error: failed to create symbolic link '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/package.xml': File exists
+[81.535s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_generator_c.so
+[81.537s] -- Set non-toolchain portion of runtime path of "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_generator_c.so" to ""
+[81.537s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_fastrtps_c.so
+[81.542s] -- Up-to-date: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.so
+[81.542s] -- Up-to-date: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_introspection_c.so
+[81.543s] -- Up-to-date: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_c.so
+[81.544s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_introspection_cpp.so
+[81.546s] -- Set non-toolchain portion of runtime path of "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_introspection_cpp.so" to ""
+[81.547s] -- Up-to-date: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_cpp.so
+[81.645s] Listing '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs'...
+[81.645s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/__init__.py'...
+[81.645s] Listing '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg'...
+[81.645s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/__init__.py'...
+[81.645s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_auto_focus_ctrl.py'...
+[81.646s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_hand_landmark.py'...
+[81.646s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_hand_landmark_array.py'...
+[81.646s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_imu_with_magnetic_field.py'...
+[81.646s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection.py'...
+[81.646s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection_array.py'...
+[81.646s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_track_detection2_d.py'...
+[81.647s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_track_detection2_d_array.py'...
+[81.647s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_feature.py'...
+[81.649s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_features.py'...
+[81.649s] Listing '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv'...
+[81.650s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/__init__.py'...
+[81.651s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/_normalized_image_crop.py'...
+[81.651s] Compiling '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/_trigger_named.py'...
+[81.669s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_generator_py.so
+[81.670s] -- Set non-toolchain portion of runtime path of "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_generator_py.so" to ""
+[81.670s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_generator_cExport.cmake
+[81.671s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_generator_cExport-noconfig.cmake
+[81.671s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_typesupport_fastrtps_cExport.cmake
+[81.671s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_typesupport_fastrtps_cExport-noconfig.cmake
+[81.672s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_generator_cppExport.cmake
+[81.672s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_typesupport_fastrtps_cppExport.cmake
+[81.672s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake
+[81.673s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_introspection_cExport.cmake
+[81.673s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_introspection_cExport-noconfig.cmake
+[81.674s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_cExport.cmake
+[81.674s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_cExport-noconfig.cmake
+[81.674s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_introspection_cppExport.cmake
+[81.674s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+[81.674s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_cppExport.cmake
+[81.675s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_cppExport-noconfig.cmake
+[81.675s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_generator_pyExport.cmake
+[81.675s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_generator_pyExport-noconfig.cmake
+[81.680s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs

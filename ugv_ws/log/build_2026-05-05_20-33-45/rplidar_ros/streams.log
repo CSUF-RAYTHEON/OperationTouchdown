@@ -1,0 +1,88 @@
+[0.042s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/rplidar_ros': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/rplidar_ros -- -j4 -l4
+[0.537s] [ 47%] Built target rplidar_node
+[0.730s] [ 52%] Built target rplidar_client
+[1.024s] [100%] Built target rplidar_composition
+[1.107s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/rplidar_ros' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/rplidar_ros -- -j4 -l4
+[1.117s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/rplidar_ros': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/rplidar_ros
+[1.182s] -- Install configuration: ""
+[1.184s] -- Execute custom install script
+[1.185s] [33mCMake Warning (dev) at ament_cmake_symlink_install/ament_cmake_symlink_install.cmake:67 (file):
+[1.191s]   Policy CMP0009 is not set: FILE GLOB_RECURSE calls should not follow
+[1.191s]   symlinks by default.  Run "cmake --help-policy CMP0009" for policy details.
+[1.191s]   Use the cmake_policy command to set the policy and suppress this warning.
+[1.192s] Call Stack (most recent call first):
+[1.193s]   ament_cmake_symlink_install/ament_cmake_symlink_install.cmake:319 (ament_cmake_symlink_install_directory)
+[1.194s]   cmake_install.cmake:46 (include)
+[1.194s] This warning is for project developers.  Use -Wno-dev to suppress it.
+[1.194s] [0m
+[1.194s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/build/.built_by
+[1.194s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/build/COLCON_IGNORE
+[1.194s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/install/.colcon_install_layout
+[1.194s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/install/COLCON_IGNORE
+[1.194s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/install/_local_setup_util_ps1.py
+[1.199s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/install/_local_setup_util_sh.py
+[1.200s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/install/local_setup.bash
+[1.201s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/install/local_setup.ps1
+[1.202s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/install/local_setup.sh
+[1.202s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/install/local_setup.zsh
+[1.204s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/install/setup.bash
+[1.206s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/install/setup.ps1
+[1.211s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/install/setup.sh
+[1.212s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/install/setup.zsh
+[1.212s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/COLCON_IGNORE
+[1.216s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/build_2026-03-27_14-15-04/events.log
+[1.216s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/build_2026-03-27_14-15-04/logger_all.log
+[1.216s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/build_2026-04-24_15-40-20/events.log
+[1.217s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/build_2026-04-24_15-40-20/logger_all.log
+[1.217s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/build_2026-04-24_15-48-14/events.log
+[1.217s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/build_2026-04-24_15-48-14/logger_all.log
+[1.217s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/latest/events.log
+[1.220s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/latest/logger_all.log
+[1.222s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/latest_build/events.log
+[1.224s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/log/latest_build/logger_all.log
+[1.226s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/rplidar_a1_launch.py
+[1.229s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/rplidar_a2m12_launch.py
+[1.234s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/rplidar_a2m7_launch.py
+[1.235s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/rplidar_a2m8_launch.py
+[1.236s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/rplidar_a3_launch.py
+[1.241s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/rplidar_c1_launch.py
+[1.241s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/rplidar_s1_launch.py
+[1.241s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/rplidar_s1_tcp_launch.py
+[1.241s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/rplidar_s2_launch.py
+[1.241s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/rplidar_s2e_launch.py
+[1.241s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/rplidar_s3_launch.py
+[1.242s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/rplidar_t1_launch.py
+[1.242s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/view_rplidar_a1_launch.py
+[1.242s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/view_rplidar_a2m12_launch.py
+[1.248s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/view_rplidar_a2m7_launch.py
+[1.248s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/view_rplidar_a2m8_launch.py
+[1.248s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/view_rplidar_a3_launch.py
+[1.248s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/view_rplidar_c1_launch.py
+[1.249s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/view_rplidar_s1_launch.py
+[1.249s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/view_rplidar_s1_tcp_launch.py
+[1.249s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/view_rplidar_s2_launch.py
+[1.249s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/view_rplidar_s2e_launch.py
+[1.249s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/view_rplidar_s3_launch.py
+[1.249s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/launch/view_rplidar_t1_launch.py
+[1.249s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/rviz/rplidar_ros.rviz
+[1.254s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/lib/rplidar_ros/rplidar_node
+[1.256s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/lib/rplidar_ros/rplidar_composition
+[1.259s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/lib/rplidar_ros/rplidar_client
+[1.260s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/ament_index/resource_index/package_run_dependencies/rplidar_ros
+[1.260s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/ament_index/resource_index/parent_prefix_path/rplidar_ros
+[1.260s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/environment/ament_prefix_path.sh
+[1.260s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/environment/ament_prefix_path.dsv
+[1.261s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/environment/path.sh
+[1.261s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/environment/path.dsv
+[1.269s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/local_setup.bash
+[1.269s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/local_setup.sh
+[1.269s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/local_setup.zsh
+[1.269s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/local_setup.dsv
+[1.269s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/package.dsv
+[1.270s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/ament_index/resource_index/packages/rplidar_ros
+[1.270s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/cmake/ament_cmake_export_dependencies-extras.cmake
+[1.270s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/cmake/ament_cmake_export_include_directories-extras.cmake
+[1.298s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/cmake/rplidar_rosConfig.cmake
+[1.325s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/cmake/rplidar_rosConfig-version.cmake
+[1.363s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/package.xml
+[1.429s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/rplidar_ros' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/rplidar_ros

@@ -1,0 +1,65 @@
+[0.032s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_descriptions -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions
+[0.921s] -- The C compiler identification is GNU 13.3.0
+[1.649s] -- The CXX compiler identification is GNU 13.3.0
+[1.696s] -- Detecting C compiler ABI info
+[1.999s] -- Detecting C compiler ABI info - done
+[2.023s] -- Check for working C compiler: /usr/bin/cc - skipped
+[2.023s] -- Detecting C compile features
+[2.023s] -- Detecting C compile features - done
+[2.044s] -- Detecting CXX compiler ABI info
+[2.356s] -- Detecting CXX compiler ABI info - done
+[2.374s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[2.375s] -- Detecting CXX compile features
+[2.376s] -- Detecting CXX compile features - done
+[2.384s] -- Found ament_cmake: 2.5.5 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[2.820s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[3.135s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[3.531s] -- Configuring done (3.5s)
+[3.538s] -- Generating done (0.0s)
+[3.542s] -- Build files have been written to: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions
+[3.633s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_descriptions -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions
+[3.634s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions -- -j4 -l4
+[3.730s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions -- -j4 -l4
+[3.753s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions
+[3.775s] -- Install configuration: ""
+[3.776s] -- Execute custom install script
+[3.779s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/base_descr.urdf.xacro
+[3.804s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/depthai_descr.urdf.xacro
+[3.828s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/include/base_macro.urdf.xacro
+[3.851s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/include/depthai_macro.urdf.xacro
+[3.875s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-1.stl
+[3.899s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-D-CM4-POE.stl
+[3.924s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-D-IOT-75.stl
+[3.946s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-D-LITE.stl
+[3.973s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-D-LR.stl
+[3.997s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-D-POE.stl
+[4.023s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-D-PRO-W.stl
+[4.046s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-D-PRO.stl
+[4.074s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-D-S2-POE.stl
+[4.104s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-D-S2.stl
+[4.128s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-D-SR-POE.stl
+[4.162s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-D-SR.stl
+[4.186s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-D.stl
+[4.210s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK-T.stl
+[4.235s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK4-D.stl
+[4.263s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/urdf/models/OAK4-S.stl
+[4.289s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/environment/depthai_descriptions.sh
+[4.319s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/environment/depthai_descriptions.dsv
+[4.352s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/ament_index/resource_index/package_run_dependencies/depthai_descriptions
+[4.376s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/ament_index/resource_index/parent_prefix_path/depthai_descriptions
+[4.397s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/environment/ament_prefix_path.sh
+[4.423s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/environment/ament_prefix_path.dsv
+[4.480s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/environment/path.sh
+[4.504s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/environment/path.dsv
+[4.526s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/local_setup.bash
+[4.551s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/local_setup.sh
+[4.577s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/local_setup.zsh
+[4.608s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/local_setup.dsv
+[4.631s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/package.dsv
+[4.655s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/ament_index/resource_index/packages/depthai_descriptions
+[4.678s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/cmake/depthai_descriptionsConfig.cmake
+[4.699s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/cmake/depthai_descriptionsConfig-version.cmake
+[4.729s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/package.xml
+[4.753s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/launch
+[4.754s] -- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/launch/urdf_launch.py
+[4.760s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_descriptions

@@ -4,10 +4,10 @@
 
 #include <string.h>
 
-#include "rosidl_typesupport_interface/macros.h"
 #include "depthai_ros_msgs/srv/detail/normalized_image_crop__functions.h"
 #include "depthai_ros_msgs/srv/detail/normalized_image_crop__struct.h"
 #include "depthai_ros_msgs/srv/detail/normalized_image_crop__type_support.h"
+#include "rosidl_typesupport_interface/macros.h"
 
 #ifdef __cplusplus
 extern "C"

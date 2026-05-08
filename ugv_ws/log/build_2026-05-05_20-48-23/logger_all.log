@@ -1,0 +1,317 @@
+[1.098s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--packages-select', 'my_ugv_bringup']
+[1.098s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=4, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=['my_ugv_bringup'], packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0xffffa4c21760>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0xffffa4dddc10>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0xffffa4dddc10>>, mixin_verb=('build',))
+[1.447s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[1.449s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[1.450s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[1.450s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[1.450s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[1.451s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[1.451s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws'
+[1.451s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[1.452s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[1.452s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[1.452s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[1.452s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[1.452s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[1.452s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[1.452s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[1.452s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[1.608s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[1.609s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[1.609s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[1.610s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[1.610s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[1.611s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[1.612s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[1.613s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[1.613s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[1.614s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[1.614s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[1.614s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extensions ['ignore', 'ignore_ament_install']
+[1.614s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extension 'ignore'
+[1.614s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extension 'ignore_ament_install'
+[1.614s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extensions ['colcon_pkg']
+[1.614s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extension 'colcon_pkg'
+[1.615s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extensions ['colcon_meta']
+[1.615s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extension 'colcon_meta'
+[1.615s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extensions ['ros']
+[1.615s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extension 'ros'
+[1.615s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extensions ['cmake', 'python']
+[1.615s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extension 'cmake'
+[1.616s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extension 'python'
+[1.616s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extensions ['python_setup_py']
+[1.616s] Level 1:colcon.colcon_core.package_identification:_identify(isaac _communication) by extension 'python_setup_py'
+[1.616s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[1.617s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[1.617s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[1.617s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[1.618s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[1.619s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[1.619s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[1.619s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[1.620s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[1.620s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[1.620s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[1.620s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[1.621s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[1.621s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[1.622s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[1.622s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[1.622s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[1.623s] Level 1:colcon.colcon_core.package_identification:_identify(src/build) by extensions ['ignore', 'ignore_ament_install']
+[1.623s] Level 1:colcon.colcon_core.package_identification:_identify(src/build) by extension 'ignore'
+[1.624s] Level 1:colcon.colcon_core.package_identification:_identify(src/build) ignored
+[1.624s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extensions ['ignore', 'ignore_ament_install']
+[1.625s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'ignore'
+[1.625s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'ignore_ament_install'
+[1.625s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extensions ['colcon_pkg']
+[1.625s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'colcon_pkg'
+[1.625s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extensions ['colcon_meta']
+[1.625s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'colcon_meta'
+[1.625s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extensions ['ros']
+[1.625s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'ros'
+[1.625s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extensions ['cmake', 'python']
+[1.625s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'cmake'
+[1.625s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'python'
+[1.626s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extensions ['python_setup_py']
+[1.626s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'python_setup_py'
+[1.626s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai-ros) by extensions ['ignore', 'ignore_ament_install']
+[1.626s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai-ros) by extension 'ignore'
+[1.626s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai-ros) by extension 'ignore_ament_install'
+[1.627s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai-ros) by extensions ['colcon_pkg']
+[1.627s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai-ros) by extension 'colcon_pkg'
+[1.627s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai-ros) by extensions ['colcon_meta']
+[1.627s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai-ros) by extension 'colcon_meta'
+[1.627s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai-ros) by extensions ['ros']
+[1.627s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai-ros) by extension 'ros'
+[1.639s] DEBUG:colcon.colcon_core.package_identification:Package 'src/depthai-ros/depthai-ros' with type 'ros.ament_cmake' and name 'depthai-ros'
+[1.639s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_bridge) by extensions ['ignore', 'ignore_ament_install']
+[1.640s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_bridge) by extension 'ignore'
+[1.640s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_bridge) by extension 'ignore_ament_install'
+[1.640s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_bridge) by extensions ['colcon_pkg']
+[1.640s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_bridge) by extension 'colcon_pkg'
+[1.641s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_bridge) by extensions ['colcon_meta']
+[1.641s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_bridge) by extension 'colcon_meta'
+[1.641s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_bridge) by extensions ['ros']
+[1.641s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_bridge) by extension 'ros'
+[1.644s] DEBUG:colcon.colcon_core.package_identification:Package 'src/depthai-ros/depthai_bridge' with type 'ros.ament_cmake' and name 'depthai_bridge'
+[1.645s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_descriptions) by extensions ['ignore', 'ignore_ament_install']
+[1.645s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_descriptions) by extension 'ignore'
+[1.645s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_descriptions) by extension 'ignore_ament_install'
+[1.646s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_descriptions) by extensions ['colcon_pkg']
+[1.646s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_descriptions) by extension 'colcon_pkg'
+[1.646s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_descriptions) by extensions ['colcon_meta']
+[1.646s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_descriptions) by extension 'colcon_meta'
+[1.646s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_descriptions) by extensions ['ros']
+[1.646s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_descriptions) by extension 'ros'
+[1.648s] DEBUG:colcon.colcon_core.package_identification:Package 'src/depthai-ros/depthai_descriptions' with type 'ros.ament_cmake' and name 'depthai_descriptions'
+[1.649s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_examples) by extensions ['ignore', 'ignore_ament_install']
+[1.649s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_examples) by extension 'ignore'
+[1.649s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_examples) by extension 'ignore_ament_install'
+[1.649s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_examples) by extensions ['colcon_pkg']
+[1.649s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_examples) by extension 'colcon_pkg'
+[1.650s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_examples) by extensions ['colcon_meta']
+[1.650s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_examples) by extension 'colcon_meta'
+[1.650s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_examples) by extensions ['ros']
+[1.650s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_examples) by extension 'ros'
+[1.653s] DEBUG:colcon.colcon_core.package_identification:Package 'src/depthai-ros/depthai_examples' with type 'ros.ament_cmake' and name 'depthai_examples'
+[1.653s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_filters) by extensions ['ignore', 'ignore_ament_install']
+[1.653s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_filters) by extension 'ignore'
+[1.653s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_filters) by extension 'ignore_ament_install'
+[1.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_filters) by extensions ['colcon_pkg']
+[1.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_filters) by extension 'colcon_pkg'
+[1.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_filters) by extensions ['colcon_meta']
+[1.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_filters) by extension 'colcon_meta'
+[1.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_filters) by extensions ['ros']
+[1.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_filters) by extension 'ros'
+[1.656s] DEBUG:colcon.colcon_core.package_identification:Package 'src/depthai-ros/depthai_filters' with type 'ros.ament_cmake' and name 'depthai_filters'
+[1.657s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_driver) by extensions ['ignore', 'ignore_ament_install']
+[1.657s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_driver) by extension 'ignore'
+[1.657s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_driver) by extension 'ignore_ament_install'
+[1.658s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_driver) by extensions ['colcon_pkg']
+[1.658s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_driver) by extension 'colcon_pkg'
+[1.658s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_driver) by extensions ['colcon_meta']
+[1.658s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_driver) by extension 'colcon_meta'
+[1.658s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_driver) by extensions ['ros']
+[1.658s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_driver) by extension 'ros'
+[1.662s] DEBUG:colcon.colcon_core.package_identification:Package 'src/depthai-ros/depthai_ros_driver' with type 'ros.ament_cmake' and name 'depthai_ros_driver'
+[1.662s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_msgs) by extensions ['ignore', 'ignore_ament_install']
+[1.663s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_msgs) by extension 'ignore'
+[1.663s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_msgs) by extension 'ignore_ament_install'
+[1.663s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_msgs) by extensions ['colcon_pkg']
+[1.663s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_msgs) by extension 'colcon_pkg'
+[1.663s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_msgs) by extensions ['colcon_meta']
+[1.663s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_msgs) by extension 'colcon_meta'
+[1.663s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_msgs) by extensions ['ros']
+[1.663s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros/depthai_ros_msgs) by extension 'ros'
+[1.664s] DEBUG:colcon.colcon_core.package_identification:Package 'src/depthai-ros/depthai_ros_msgs' with type 'ros.ament_cmake' and name 'depthai_ros_msgs'
+[1.664s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extensions ['ignore', 'ignore_ament_install']
+[1.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extension 'ignore'
+[1.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) ignored
+[1.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/log) by extensions ['ignore', 'ignore_ament_install']
+[1.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/log) by extension 'ignore'
+[1.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/log) ignored
+[1.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extensions ['ignore', 'ignore_ament_install']
+[1.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extension 'ignore'
+[1.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extension 'ignore_ament_install'
+[1.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extensions ['colcon_pkg']
+[1.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extension 'colcon_pkg'
+[1.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extensions ['colcon_meta']
+[1.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extension 'colcon_meta'
+[1.666s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extensions ['ros']
+[1.666s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extension 'ros'
+[1.667s] DEBUG:colcon.colcon_core.package_identification:Package 'src/my_ugv_bringup' with type 'ros.ament_cmake' and name 'my_ugv_bringup'
+[1.667s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_description) by extensions ['ignore', 'ignore_ament_install']
+[1.667s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_description) by extension 'ignore'
+[1.667s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_description) by extension 'ignore_ament_install'
+[1.667s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_description) by extensions ['colcon_pkg']
+[1.668s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_description) by extension 'colcon_pkg'
+[1.668s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_description) by extensions ['colcon_meta']
+[1.668s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_description) by extension 'colcon_meta'
+[1.668s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_description) by extensions ['ros']
+[1.668s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_description) by extension 'ros'
+[1.671s] DEBUG:colcon.colcon_core.package_identification:Package 'src/my_ugv_description' with type 'ros.ament_cmake' and name 'my_ugv_description'
+[1.672s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_hardware) by extensions ['ignore', 'ignore_ament_install']
+[1.673s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_hardware) by extension 'ignore'
+[1.673s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_hardware) by extension 'ignore_ament_install'
+[1.673s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_hardware) by extensions ['colcon_pkg']
+[1.673s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_hardware) by extension 'colcon_pkg'
+[1.673s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_hardware) by extensions ['colcon_meta']
+[1.673s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_hardware) by extension 'colcon_meta'
+[1.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_hardware) by extensions ['ros']
+[1.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_hardware) by extension 'ros'
+[1.675s] DEBUG:colcon.colcon_core.package_identification:Package 'src/my_ugv_hardware' with type 'ros.ament_python' and name 'my_ugv_hardware'
+[1.676s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_vision) by extensions ['ignore', 'ignore_ament_install']
+[1.676s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_vision) by extension 'ignore'
+[1.676s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_vision) by extension 'ignore_ament_install'
+[1.676s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_vision) by extensions ['colcon_pkg']
+[1.676s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_vision) by extension 'colcon_pkg'
+[1.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_vision) by extensions ['colcon_meta']
+[1.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_vision) by extension 'colcon_meta'
+[1.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_vision) by extensions ['ros']
+[1.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_vision) by extension 'ros'
+[1.679s] DEBUG:colcon.colcon_core.package_identification:Package 'src/my_ugv_vision' with type 'ros.ament_python' and name 'my_ugv_vision'
+[1.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extensions ['ignore', 'ignore_ament_install']
+[1.680s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extension 'ignore'
+[1.681s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extension 'ignore_ament_install'
+[1.683s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extensions ['colcon_pkg']
+[1.683s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extension 'colcon_pkg'
+[1.684s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extensions ['colcon_meta']
+[1.685s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extension 'colcon_meta'
+[1.685s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extensions ['ros']
+[1.686s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extension 'ros'
+[1.691s] DEBUG:colcon.colcon_core.package_identification:Package 'src/roboteq_ros2_driver' with type 'ros.ament_cmake' and name 'roboteq_ros2_driver'
+[1.693s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extensions ['ignore', 'ignore_ament_install']
+[1.693s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extension 'ignore'
+[1.694s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extension 'ignore_ament_install'
+[1.697s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extensions ['colcon_pkg']
+[1.699s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extension 'colcon_pkg'
+[1.700s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extensions ['colcon_meta']
+[1.701s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extension 'colcon_meta'
+[1.701s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extensions ['ros']
+[1.702s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extension 'ros'
+[1.706s] DEBUG:colcon.colcon_core.package_identification:Package 'src/rplidar_ros' with type 'ros.ament_cmake' and name 'rplidar_ros'
+[1.707s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[1.707s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[1.708s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[1.708s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[1.708s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[1.842s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai_descriptions' in 'src/depthai-ros/depthai_descriptions'
+[1.843s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai_ros_msgs' in 'src/depthai-ros/depthai_ros_msgs'
+[1.843s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'my_ugv_description' in 'src/my_ugv_description'
+[1.843s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'my_ugv_hardware' in 'src/my_ugv_hardware'
+[1.843s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'my_ugv_vision' in 'src/my_ugv_vision'
+[1.843s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'roboteq_ros2_driver' in 'src/roboteq_ros2_driver'
+[1.843s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'rplidar_ros' in 'src/rplidar_ros'
+[1.843s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai_bridge' in 'src/depthai-ros/depthai_bridge'
+[1.843s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai_filters' in 'src/depthai-ros/depthai_filters'
+[1.843s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai_examples' in 'src/depthai-ros/depthai_examples'
+[1.843s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai_ros_driver' in 'src/depthai-ros/depthai_ros_driver'
+[1.844s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'depthai-ros' in 'src/depthai-ros/depthai-ros'
+[1.847s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[1.847s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[1.861s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[1.864s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[1.866s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[1.870s] WARNING:colcon.colcon_ros.prefix_path.catkin:The path '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup' in the environment variable CMAKE_PREFIX_PATH doesn't exist
+[1.871s] WARNING:colcon.colcon_ros.prefix_path.catkin:The path '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros' in the environment variable CMAKE_PREFIX_PATH doesn't exist
+[1.872s] WARNING:colcon.colcon_ros.prefix_path.catkin:The path '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver' in the environment variable CMAKE_PREFIX_PATH doesn't exist
+[1.875s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 10 installed packages in /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install
+[1.883s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 414 installed packages in /opt/ros/jazzy
+[1.888s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[2.175s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'cmake_args' from command line to 'None'
+[2.176s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'cmake_target' from command line to 'None'
+[2.176s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[2.176s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'cmake_clean_cache' from command line to 'False'
+[2.177s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'cmake_clean_first' from command line to 'False'
+[2.177s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'cmake_force_configure' from command line to 'False'
+[2.177s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'ament_cmake_args' from command line to 'None'
+[2.177s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'catkin_cmake_args' from command line to 'None'
+[2.178s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'catkin_skip_building_tests' from command line to 'False'
+[2.178s] DEBUG:colcon.colcon_core.verb:Building package 'my_ugv_bringup' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_bringup', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup', 'merge_install': False, 'path': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_bringup', 'symlink_install': False, 'test_result_base': None}
+[2.179s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[2.189s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[2.191s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_bringup' with build type 'ament_cmake'
+[2.192s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_bringup'
+[2.223s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[2.225s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[2.226s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[2.289s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_bringup': AMENT_PREFIX_PATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy CMAKE_PREFIX_PATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages /usr/bin/cmake /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_bringup -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup
+[7.441s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_bringup' returned '0': AMENT_PREFIX_PATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy CMAKE_PREFIX_PATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages /usr/bin/cmake /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_bringup -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup
+[7.448s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_bringup': AMENT_PREFIX_PATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy CMAKE_PREFIX_PATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_bringup -- -j4 -l4
+[7.739s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_bringup' returned '0': AMENT_PREFIX_PATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy CMAKE_PREFIX_PATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_bringup -- -j4 -l4
+[7.824s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_bringup': AMENT_PREFIX_PATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy CMAKE_PREFIX_PATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages /usr/bin/cmake --install /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_bringup
+[8.057s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(my_ugv_bringup)
+[8.061s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_bringup' returned '0': AMENT_PREFIX_PATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy CMAKE_PREFIX_PATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages /usr/bin/cmake --install /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_bringup
+[8.076s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup' for CMake module files
+[8.077s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup' for CMake config files
+[8.079s] Level 1:colcon.colcon_core.shell:create_environment_hook('my_ugv_bringup', 'cmake_prefix_path')
+[8.079s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/hook/cmake_prefix_path.ps1'
+[8.081s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/hook/cmake_prefix_path.dsv'
+[8.082s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/hook/cmake_prefix_path.sh'
+[8.090s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/bin'
+[8.091s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/lib/pkgconfig/my_ugv_bringup.pc'
+[8.093s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/lib/python3.12/site-packages'
+[8.095s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/bin'
+[8.096s] INFO:colcon.colcon_core.shell:Creating package script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.ps1'
+[8.100s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.dsv'
+[8.106s] INFO:colcon.colcon_core.shell:Creating package script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.sh'
+[8.112s] INFO:colcon.colcon_core.shell:Creating package script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.bash'
+[8.119s] INFO:colcon.colcon_core.shell:Creating package script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.zsh'
+[8.126s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/colcon-core/packages/my_ugv_bringup)
+[8.130s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(my_ugv_bringup)
+[8.132s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup' for CMake module files
+[8.136s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup' for CMake config files
+[8.137s] Level 1:colcon.colcon_core.shell:create_environment_hook('my_ugv_bringup', 'cmake_prefix_path')
+[8.139s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/hook/cmake_prefix_path.ps1'
+[8.141s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/hook/cmake_prefix_path.dsv'
+[8.145s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/hook/cmake_prefix_path.sh'
+[8.148s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/bin'
+[8.149s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/lib/pkgconfig/my_ugv_bringup.pc'
+[8.150s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/lib/python3.12/site-packages'
+[8.153s] Level 1:colcon.colcon_core.environment:checking '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/bin'
+[8.160s] INFO:colcon.colcon_core.shell:Creating package script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.ps1'
+[8.168s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.dsv'
+[8.173s] INFO:colcon.colcon_core.shell:Creating package script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.sh'
+[8.174s] INFO:colcon.colcon_core.shell:Creating package script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.bash'
+[8.176s] INFO:colcon.colcon_core.shell:Creating package script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.zsh'
+[8.180s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/colcon-core/packages/my_ugv_bringup)
+[8.182s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[8.186s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[8.186s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[8.186s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[8.337s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[8.338s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[8.338s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[8.346s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.Notifications was not provided by any .service files
+[8.347s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[8.349s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/local_setup.ps1'
+[8.354s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/_local_setup_util_ps1.py'
+[8.356s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/setup.ps1'
+[8.367s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/local_setup.sh'
+[8.370s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/_local_setup_util_sh.py'
+[8.374s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/setup.sh'
+[8.388s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/local_setup.bash'
+[8.392s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/setup.bash'
+[8.398s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/local_setup.zsh'
+[8.400s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/setup.zsh'

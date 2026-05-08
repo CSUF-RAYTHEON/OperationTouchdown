@@ -6,32 +6,31 @@ slam_toolbox:
     odom_frame: odom
     map_frame: map
     base_frame: base_footprint
-    scan_topic: /scan
+    scan_topic: /scan_merged    # FIXED: Use the combined asset
     mode: mapping
 
     # 2. DATA INTEGRITY & STABILITY
-    # Increased timeout gives the "Supply Chain" room for UART jitter
-    transform_timeout: 0.2         
-    scan_buffer_size: 100          # Lowered to reduce memory "Overhead"
+    transform_timeout: 0.1         
+    scan_buffer_size: 10          # REDUCED: Lowers memory overhead
     scan_buffer_maximum_scan_distance: 12.0
-    link_match_minimum_response_fine: 0.1 # More "Liquid" matching to speed up processing
+    link_match_minimum_response_fine: 0.1 
 
-    # 3. Solver settings (Market Standard for Ceres)
+    # 3. Solver settings (Sticking with Ceres)
     solver_plugin: solver_plugins::CeresSolver
     ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
     ceres_preconditioner: SCHUR_JACOBI
     ceres_trust_strategy: LEVENBERG_MARQUARDT
-    ceres_dogleg_type: TRADITIONAL_DOGLEG
-    ceres_loss_function_type: None
 
     # 4. Mapping Process settings
-    # Right-sizing the "Resolution" to 10cm for a Balanced Budget
-    resolution: 0.1
+    resolution: 0.05             # High-Def resolution (5cm)
     do_loop_closure: true
-    loop_search_distance: 3.0
-    loop_search_maximum_distance: 3.0
-    link_scan_maximum_distance: 5.0
+    loop_search_distance: 8.0     # Wider search for better "Matching"
     
-    max_laser_range: 5.0 
-    minimum_time_interval: 0.2    # Policy: Slow down updates to save CPU labor
-    transform_publish_period: 0.1  # Dropped to 10Hz to stabilize the TF market
+    # 5. CPU THROTTLING (The "Efficiency" Policy)
+    max_laser_range: 12.0        # Use the Lidar's full indoor reach
+    minimum_time_interval: 0.3    # Update map 3x per second (Saves CPU)
+    minimum_travel_distance: 0.1  # Only update if robot moves 10cm
+    minimum_travel_heading: 0.1   # Only update if robot turns ~6 degrees
+    
+    transform_publish_period: 0.05 # Keep TF high (20Hz) for smooth navigation
+    map_update_interval: 5.0      # Only re-draw the global map every 5s

@@ -6,126 +6,124 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource, Any
 from launch_ros.actions import Node, LifecycleNode
 from launch_ros.events.lifecycle import ChangeState
 from launch_ros.event_handlers import OnStateTransition
+from launch.events import matches_action
 import lifecycle_msgs.msg
 import xacro
 
 def generate_launch_description():
-    # 1. Path Setup
     pkg_share = get_package_share_directory('my_ugv_bringup')
     
-    # Process URDF/Xacro
+    # 1. Process URDF
     xacro_file = os.path.join(pkg_share, 'urdf', 'my_ugv.urdf.xacro')
     robot_description_raw = xacro.process_file(xacro_file).toxml()
 
-    # Paths
+    # 2. Paths
     foxglove_path = os.path.join(get_package_share_directory('foxglove_bridge'), 'launch', 'foxglove_bridge_launch.xml')
-    rplidar_launch_path = os.path.join(get_package_share_directory('rplidar_ros'), 'launch', 'rplidar_a1_launch.py')
-    oakd_launch_path = os.path.join(get_package_share_directory('depthai_ros_driver'), 'launch', 'camera.launch.py')
-    ekf_config_path = os.path.join(pkg_share, 'config', 'ekf.yaml')
+    oakd_path = os.path.join(get_package_share_directory('depthai_ros_driver'), 'launch', 'camera.launch.py')
+    ekf_path = os.path.join(pkg_share, 'config', 'ekf.yaml')
+    slam_params_path = os.path.join(pkg_share, 'config', 'slam_param.yaml')
 
-    # 2. SLAM Lifecycle Node
-    slam_node = LifecycleNode(
+    # 3. Core Infrastructure
+    robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        parameters=[{'robot_description': robot_description_raw}]
+    )
+
+    foxglove_bridge = IncludeLaunchDescription(AnyLaunchDescriptionSource(foxglove_path))
+
+    roboteq_bridge = Node(
+        package='roboteq_ros2_driver', executable='roboteq_bridge.py', name='roboteq_bridge',
+        parameters=[{'publish_tf': False, 'odom_frame': 'odom', 'base_frame': 'base_footprint'}]
+    )
+
+    ekf_node = Node(
+        package='robot_localization', executable='ekf_node', name='ekf_filter_node',
+        parameters=[ekf_path]
+    )
+
+    # 4. Sensors
+    rplidar_node = Node(
+        package='rplidar_ros', executable='rplidar_node', name='rplidar_node',
+        parameters=[{
+            'serial_port': '/dev/ttyUSB0',
+            'frame_id': 'laser',
+            'scan_mode': 'Standard',
+            'serial_baudrate': 115200,
+            'scan_frequency': 10.0,
+        }]
+    )
+
+    oakd_camera = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(oakd_path),
+        launch_arguments={
+            'name': 'oak',
+            'parent_frame': 'base_link',
+            'publish_tf_from_calibration': 'false', 
+            'enable_depth': 'true',
+        }.items()
+    )
+
+    depth_to_scan = Node(
+        package='depthimage_to_laserscan', executable='depthimage_to_laserscan_node',
+        remappings=[('depth', '/oak/stereo/image_raw'), ('depth_camera_info', '/oak/stereo/camera_info'), ('scan', '/camera_scan')],
+        parameters=[{'output_frame': 'oak_rgb_camera_frame', 'range_min': 0.45, 'range_max': 3.5}]
+    )
+
+    # 5. NEW: Dual Laser Merger Node
+    # This node is the "Factory" that combines your Lidar and Camera data
+    laser_merger_node = Node(
+        package='dual_laser_merger',
+        executable='dual_laser_merger_node',
+        name='dual_laser_merger',
+        namespace='', # Explicitly defined
+        remappings=[
+            ('/laser_1', '/scan'),
+            ('/laser_2', '/camera_scan'),
+            ('/merged', '/scan_merged')
+        ],
+        parameters=[{
+            'target_frame': 'base_link',
+            'publish_rate': 100,
+            'scan_time': 0.1,
+        }]
+    )
+
+    joy_node = Node(package='joy_linux', executable='joy_linux_node', name='joy_node', parameters=[{'dev': '/dev/input/js0'}])
+    
+    teleop_node = Node(
+        package='teleop_twist_joy', executable='teleop_node', name='teleop_twist_joy_node',
+        parameters=[{'enable_button': 5, 'axis_linear.x': 1, 'axis_angular.yaw': 3, 'scale_linear.x': 3.0, 'scale_angular.yaw': 1.0}]
+    )
+
+    # 6. SLAM Configuration
+    slam_toolbox = LifecycleNode(
         package='slam_toolbox',
         executable='async_slam_toolbox_node',
         name='slam_toolbox',
-        namespace='', 
+        namespace='', # REQUIRED: This fixes the TypeError
         output='screen',
-        parameters=[
-            '/opt/ros/jazzy/share/slam_toolbox/config/mapper_params_online_async.yaml',
-            {
-                'use_sim_time': False,
-                'odom_frame': 'odom',
-                'base_frame': 'base_footprint',
-                'scan_topic': '/scan',
-                'mode': 'mapping'
-            }
-        ]
+        parameters=[slam_params_path]
     )
 
-    # 3. SLAM Activation Logic
-    configure_event = EmitEvent(
-        event=ChangeState(
-            lifecycle_node_matcher=lambda node: node is slam_node,
-            transition_id=lifecycle_msgs.msg.Transition.TRANSITION_CONFIGURE,
-        )
-    )
+    # Lifecycle Management for SLAM
+    configure_event = EmitEvent(event=ChangeState(lifecycle_node_matcher=matches_action(slam_toolbox), transition_id=lifecycle_msgs.msg.Transition.TRANSITION_CONFIGURE))
+    activate_event = RegisterEventHandler(OnStateTransition(target_lifecycle_node=slam_toolbox, goal_state='inactive', entities=[EmitEvent(event=ChangeState(lifecycle_node_matcher=matches_action(slam_toolbox), transition_id=lifecycle_msgs.msg.Transition.TRANSITION_ACTIVATE))]))
 
-    activate_event = RegisterEventHandler(
-        OnStateTransition(
-            target_lifecycle_node=slam_node,
-            start_state='configuring',
-            goal_state='inactive',
-            entities=[
-                EmitEvent(event=ChangeState(
-                    lifecycle_node_matcher=lambda node: node is slam_node,
-                    transition_id=lifecycle_msgs.msg.Transition.TRANSITION_ACTIVATE,
-                ))
-            ]
-        )
-    )
-
+    # 7. Final Return with Staggered Timers
     return LaunchDescription([
-        # 4. Robot State Publisher
-        Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            name='robot_state_publisher',
-            output='both',
-            parameters=[{'robot_description': robot_description_raw}]
-        ),
-
-        # 5. Foxglove Bridge (Using AnyLaunchDescriptionSource for XML compatibility)
-        IncludeLaunchDescription(
-            AnyLaunchDescriptionSource(foxglove_path)
-        ),
-
-        # 6. Roboteq Motors
-        Node(
-            package='roboteq_ros2_driver',
-            executable='roboteq_bridge.py',
-            name='roboteq_bridge',
-            parameters=[{
-                'serial_port': '/dev/ttyAMA0',
-                'publish_tf': False,
-                'odom_frame': 'odom',
-                'base_frame': 'base_footprint'
-            }]
-        ),
-
-        # 7. EKF Sensor Fusion
-        Node(
-            package='robot_localization',
-            executable='ekf_node',
-            name='ekf_filter_node',
-            output='screen',
-            parameters=[ekf_config_path]
-        ),
-
-        # 8. Controller Support
-        Node(package='joy_linux', executable='joy_linux_node', name='joy_node', parameters=[{'dev': '/dev/input/js0'}]),
-        Node(
-            package='teleop_twist_joy', executable='teleop_node', name='teleop_twist_joy_node',
-            parameters=[{'enable_button': 5, 'axis_linear.x': 1, 'axis_angular.yaw': 3, 'scale_linear.x': 3.0, 'scale_angular.yaw': 1.0}]
-        ),
-
-        # 9. Hardware Drivers
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(rplidar_launch_path),
-            launch_arguments={
-                'serial_port': '/dev/ttyUSB0',
-                'serial_baudrate': '115200',
-                'frame_id': 'laser'
-            }.items()
-        ),
-
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(oakd_launch_path),
-            launch_arguments={'name': 'oak', 'enable_rgb': 'false'}.items()
-        ),
-
-        # 10. Start SLAM after a short delay
-        TimerAction(
-            period=5.0,
-            actions=[slam_node, configure_event, activate_event]
-        )
+        robot_state_publisher,
+        foxglove_bridge,
+        roboteq_bridge,
+        ekf_node,
+        rplidar_node,
+        oakd_camera,
+        depth_to_scan,
+        joy_node,
+        teleop_node,
+        # Start Merger after 5 seconds to ensure sensors are "Liquid"
+        TimerAction(period=5.0, actions=[laser_merger_node]),
+        # Start SLAM last, once the /scan_merged topic is fully established
+        TimerAction(period=8.0, actions=[slam_toolbox, configure_event, activate_event])
     ])

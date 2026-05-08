@@ -1,0 +1,18 @@
+[2.045s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build --no-deps symlink_data
+[2.842s] running develop
+[3.326s] running egg_info
+[3.357s] writing my_ugv_hardware.egg-info/PKG-INFO
+[3.357s] writing dependency_links to my_ugv_hardware.egg-info/dependency_links.txt
+[3.359s] writing entry points to my_ugv_hardware.egg-info/entry_points.txt
+[3.360s] writing requirements to my_ugv_hardware.egg-info/requires.txt
+[3.361s] writing top-level names to my_ugv_hardware.egg-info/top_level.txt
+[3.426s] reading manifest file 'my_ugv_hardware.egg-info/SOURCES.txt'
+[3.426s] writing manifest file 'my_ugv_hardware.egg-info/SOURCES.txt'
+[3.455s] running build_ext
+[3.455s] Creating /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my-ugv-hardware.egg-link (link to .)
+[3.456s] Installing lora_bridge script to /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+[3.457s] Installing virtual_odom script to /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+[3.458s] 
+[3.458s] Installed /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware
+[3.458s] running symlink_data
+[3.587s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build --no-deps symlink_data

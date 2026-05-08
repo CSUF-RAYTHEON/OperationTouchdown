@@ -4,10 +4,10 @@
 
 #include <string.h>
 
-#include "rosidl_typesupport_interface/macros.h"
-#include "depthai_ros_msgs/msg/detail/tracked_feature__functions.h"
 #include "depthai_ros_msgs/msg/detail/tracked_feature__struct.h"
 #include "depthai_ros_msgs/msg/detail/tracked_feature__type_support.h"
+#include "depthai_ros_msgs/msg/detail/tracked_feature__functions.h"
+#include "rosidl_typesupport_interface/macros.h"
 
 #ifdef __cplusplus
 extern "C"

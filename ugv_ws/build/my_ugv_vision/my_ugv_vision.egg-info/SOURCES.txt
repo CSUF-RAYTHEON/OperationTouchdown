@@ -1,13 +1,6 @@
 package.xml
 setup.cfg
 setup.py
-../../build/my_ugv_vision/my_ugv_vision.egg-info/PKG-INFO
-../../build/my_ugv_vision/my_ugv_vision.egg-info/SOURCES.txt
-../../build/my_ugv_vision/my_ugv_vision.egg-info/dependency_links.txt
-../../build/my_ugv_vision/my_ugv_vision.egg-info/entry_points.txt
-../../build/my_ugv_vision/my_ugv_vision.egg-info/requires.txt
-../../build/my_ugv_vision/my_ugv_vision.egg-info/top_level.txt
-../../build/my_ugv_vision/my_ugv_vision.egg-info/zip-safe
 my_ugv_vision/__init__.py
 my_ugv_vision.egg-info/PKG-INFO
 my_ugv_vision.egg-info/SOURCES.txt

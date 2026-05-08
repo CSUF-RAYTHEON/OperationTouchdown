@@ -36,6 +36,7 @@
 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/master.launch.py
 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/master.launch2.py
 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/master.launch4.py
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/navigation_launch.py
 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/config/build/.built_by
 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/config/build/COLCON_IGNORE
 /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/config/ekf.yaml

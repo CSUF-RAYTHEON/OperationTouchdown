@@ -1,0 +1,678 @@
+[0.000000] (-) TimerEvent: {}
+[0.000326] (-) JobUnselected: {'identifier': 'depthai-ros'}
+[0.000560] (-) JobUnselected: {'identifier': 'depthai_bridge'}
+[0.000866] (-) JobUnselected: {'identifier': 'depthai_descriptions'}
+[0.001031] (-) JobUnselected: {'identifier': 'depthai_examples'}
+[0.001055] (-) JobUnselected: {'identifier': 'depthai_filters'}
+[0.001271] (-) JobUnselected: {'identifier': 'depthai_ros_driver'}
+[0.001291] (-) JobUnselected: {'identifier': 'depthai_ros_msgs'}
+[0.001406] (-) JobUnselected: {'identifier': 'my_ugv_bringup'}
+[0.001426] (-) JobUnselected: {'identifier': 'my_ugv_description'}
+[0.001448] (-) JobUnselected: {'identifier': 'my_ugv_hardware'}
+[0.001480] (-) JobUnselected: {'identifier': 'my_ugv_vision'}
+[0.001514] (-) JobUnselected: {'identifier': 'roboteq_ros2_driver'}
+[0.001536] (-) JobUnselected: {'identifier': 'rplidar_ros'}
+[0.001802] (dual_laser_merger) JobQueued: {'identifier': 'dual_laser_merger', 'dependencies': OrderedDict()}
+[0.001896] (dual_laser_merger) JobStarted: {'identifier': 'dual_laser_merger'}
+[0.013677] (dual_laser_merger) JobProgress: {'identifier': 'dual_laser_merger', 'progress': 'cmake'}
+[0.014542] (dual_laser_merger) Command: {'cmd': ['/usr/bin/cmake', '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/dual_laser_merger', '-DCMAKE_INSTALL_PREFIX=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger'], 'cwd': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'MAIL': '/var/mail/ground', 'USER': 'ground', 'SSH_CLIENT': '100.96.142.123 53546 22', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters/lib:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge/lib:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib:/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/ground', 'OLDPWD': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src', 'SSH_TTY': '/dev/pts/0', 'HUSHLOGIN': 'FALSE', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'COLCON_PREFIX_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'ground', 'IGN_GAZEBO_MODEL_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '7', 'GAZEBO_MODEL_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'PATH': '/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'REMOTEHOST': '100.96.142.123', 'LANG': 'en_US.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'AMENT_PREFIX_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'IGN_GAZEBO_RESOURCE_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'GAZEBO_RESOURCE_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '100.96.142.123 53546 100.84.246.123 22', 'XDG_DATA_DIRS': '/usr/share/gnome:/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy'}), 'shell': False}
+[0.099670] (-) TimerEvent: {}
+[0.200133] (-) TimerEvent: {}
+[0.300639] (-) TimerEvent: {}
+[0.401071] (-) TimerEvent: {}
+[0.501514] (-) TimerEvent: {}
+[0.601954] (-) TimerEvent: {}
+[0.702344] (-) TimerEvent: {}
+[0.773665] (dual_laser_merger) StdoutLine: {'line': b'-- The C compiler identification is GNU 13.3.0\n'}
+[0.802460] (-) TimerEvent: {}
+[0.902854] (-) TimerEvent: {}
+[1.003253] (-) TimerEvent: {}
+[1.103740] (-) TimerEvent: {}
+[1.211497] (-) TimerEvent: {}
+[1.311912] (-) TimerEvent: {}
+[1.405142] (dual_laser_merger) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 13.3.0\n'}
+[1.412035] (-) TimerEvent: {}
+[1.454548] (dual_laser_merger) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[1.512173] (-) TimerEvent: {}
+[1.612583] (-) TimerEvent: {}
+[1.657691] (dual_laser_merger) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[1.674561] (dual_laser_merger) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[1.677688] (dual_laser_merger) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[1.679114] (dual_laser_merger) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[1.699541] (dual_laser_merger) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[1.712711] (-) TimerEvent: {}
+[1.813243] (-) TimerEvent: {}
+[1.895558] (dual_laser_merger) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[1.912320] (dual_laser_merger) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[1.912713] (dual_laser_merger) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[1.913296] (-) TimerEvent: {}
+[1.913455] (dual_laser_merger) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[1.928093] (dual_laser_merger) StdoutLine: {'line': b'-- Found ament_cmake_auto: 2.5.5 (/opt/ros/jazzy/share/ament_cmake_auto/cmake)\n'}
+[2.013427] (-) TimerEvent: {}
+[2.113826] (-) TimerEvent: {}
+[2.214272] (-) TimerEvent: {}
+[2.220833] (dual_laser_merger) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter \n'}
+[2.314371] (-) TimerEvent: {}
+[2.414743] (-) TimerEvent: {}
+[2.515144] (-) TimerEvent: {}
+[2.615476] (-) TimerEvent: {}
+[2.715862] (-) TimerEvent: {}
+[2.816249] (-) TimerEvent: {}
+[2.880631] (dual_laser_merger) StdoutLine: {'line': b'-- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)\n'}
+[2.916339] (-) TimerEvent: {}
+[2.928651] (dual_laser_merger) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)\n'}
+[2.992747] (dual_laser_merger) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[3.016431] (-) TimerEvent: {}
+[3.054297] (dual_laser_merger) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[3.116555] (-) TimerEvent: {}
+[3.216879] (-) TimerEvent: {}
+[3.307212] (dual_laser_merger) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)\n'}
+[3.316952] (-) TimerEvent: {}
+[3.323228] (dual_laser_merger) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)\n'}
+[3.417070] (-) TimerEvent: {}
+[3.517439] (-) TimerEvent: {}
+[3.609312] (dual_laser_merger) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/aarch64-linux-gnu/libcrypto.so (found version "3.0.13")  \n'}
+[3.617516] (-) TimerEvent: {}
+[3.648826] (dual_laser_merger) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") \n'}
+[3.688158] (dual_laser_merger) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[3.717620] (-) TimerEvent: {}
+[3.817993] (-) TimerEvent: {}
+[3.918392] (-) TimerEvent: {}
+[4.018765] (-) TimerEvent: {}
+[4.119167] (-) TimerEvent: {}
+[4.219538] (-) TimerEvent: {}
+[4.319892] (-) TimerEvent: {}
+[4.420277] (-) TimerEvent: {}
+[4.451458] (dual_laser_merger) StderrLine: {'line': b'\x1b[33mCMake Warning (dev) at /usr/lib/aarch64-linux-gnu/cmake/pcl/Modules/FindFLANN.cmake:45 (find_package):\n'}
+[4.451952] (dual_laser_merger) StderrLine: {'line': b'  Policy CMP0144 is not set: find_package uses upper-case <PACKAGENAME>_ROOT\n'}
+[4.452118] (dual_laser_merger) StderrLine: {'line': b'  variables.  Run "cmake --help-policy CMP0144" for policy details.  Use the\n'}
+[4.452258] (dual_laser_merger) StderrLine: {'line': b'  cmake_policy command to set the policy and suppress this warning.\n'}
+[4.452384] (dual_laser_merger) StderrLine: {'line': b'\n'}
+[4.452507] (dual_laser_merger) StderrLine: {'line': b'  CMake variable FLANN_ROOT is set to:\n'}
+[4.452629] (dual_laser_merger) StderrLine: {'line': b'\n'}
+[4.452749] (dual_laser_merger) StderrLine: {'line': b'    /usr\n'}
+[4.452893] (dual_laser_merger) StderrLine: {'line': b'\n'}
+[4.453018] (dual_laser_merger) StderrLine: {'line': b'  For compatibility, find_package is ignoring the variable, but code in a\n'}
+[4.453143] (dual_laser_merger) StderrLine: {'line': b'  .cmake module might still use it.\n'}
+[4.453262] (dual_laser_merger) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[4.453380] (dual_laser_merger) StderrLine: {'line': b'  /usr/lib/aarch64-linux-gnu/cmake/pcl/PCLConfig.cmake:261 (find_package)\n'}
+[4.453498] (dual_laser_merger) StderrLine: {'line': b'  /usr/lib/aarch64-linux-gnu/cmake/pcl/PCLConfig.cmake:306 (find_flann)\n'}
+[4.453616] (dual_laser_merger) StderrLine: {'line': b'  /usr/lib/aarch64-linux-gnu/cmake/pcl/PCLConfig.cmake:570 (find_external_library)\n'}
+[4.453735] (dual_laser_merger) StderrLine: {'line': b'  /opt/ros/jazzy/share/pcl_conversions/cmake/ament_cmake_export_dependencies-extras.cmake:21 (find_package)\n'}
+[4.453871] (dual_laser_merger) StderrLine: {'line': b'  /opt/ros/jazzy/share/pcl_conversions/cmake/pcl_conversionsConfig.cmake:41 (include)\n'}
+[4.453997] (dual_laser_merger) StderrLine: {'line': b'  /opt/ros/jazzy/share/pcl_ros/cmake/ament_cmake_export_dependencies-extras.cmake:21 (find_package)\n'}
+[4.454118] (dual_laser_merger) StderrLine: {'line': b'  /opt/ros/jazzy/share/pcl_ros/cmake/pcl_rosConfig.cmake:41 (include)\n'}
+[4.454236] (dual_laser_merger) StderrLine: {'line': b'  /opt/ros/jazzy/share/ament_cmake_auto/cmake/ament_auto_find_build_dependencies.cmake:67 (find_package)\n'}
+[4.454377] (dual_laser_merger) StderrLine: {'line': b'  CMakeLists.txt:9 (ament_auto_find_build_dependencies)\n'}
+[4.454495] (dual_laser_merger) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[4.454612] (dual_laser_merger) StderrLine: {'line': b'\x1b[0m\n'}
+[4.460960] (dual_laser_merger) StdoutLine: {'line': b'-- Found flann version 1.9.2\n'}
+[4.520408] (-) TimerEvent: {}
+[4.620850] (-) TimerEvent: {}
+[4.721255] (-) TimerEvent: {}
+[4.821872] (-) TimerEvent: {}
+[4.922572] (-) TimerEvent: {}
+[5.022993] (-) TimerEvent: {}
+[5.083631] (dual_laser_merger) StdoutLine: {'line': b'-- Found OpenMP_CXX: -fopenmp (found version "4.5") \n'}
+[5.084298] (dual_laser_merger) StdoutLine: {'line': b'-- Found OpenMP: TRUE (found version "4.5") found components: CXX \n'}
+[5.123097] (-) TimerEvent: {}
+[5.223503] (-) TimerEvent: {}
+[5.323907] (-) TimerEvent: {}
+[5.424326] (-) TimerEvent: {}
+[5.524744] (-) TimerEvent: {}
+[5.625156] (-) TimerEvent: {}
+[5.725522] (-) TimerEvent: {}
+[5.825999] (-) TimerEvent: {}
+[5.926428] (-) TimerEvent: {}
+[6.026837] (-) TimerEvent: {}
+[6.127217] (-) TimerEvent: {}
+[6.227629] (-) TimerEvent: {}
+[6.328126] (-) TimerEvent: {}
+[6.428584] (-) TimerEvent: {}
+[6.529089] (-) TimerEvent: {}
+[6.629491] (-) TimerEvent: {}
+[6.729951] (-) TimerEvent: {}
+[6.830363] (-) TimerEvent: {}
+[6.930859] (-) TimerEvent: {}
+[7.031416] (-) TimerEvent: {}
+[7.131818] (-) TimerEvent: {}
+[7.232273] (-) TimerEvent: {}
+[7.332748] (-) TimerEvent: {}
+[7.433698] (-) TimerEvent: {}
+[7.534252] (-) TimerEvent: {}
+[7.634641] (-) TimerEvent: {}
+[7.735047] (-) TimerEvent: {}
+[7.835414] (-) TimerEvent: {}
+[7.935816] (-) TimerEvent: {}
+[8.036225] (-) TimerEvent: {}
+[8.136647] (-) TimerEvent: {}
+[8.211943] (dual_laser_merger) StdoutLine: {'line': b"-- Checking for module 'libusb-1.0'\n"}
+[8.236769] (-) TimerEvent: {}
+[8.246705] (dual_laser_merger) StdoutLine: {'line': b'--   Found libusb-1.0, version 1.0.27\n'}
+[8.321715] (dual_laser_merger) StdoutLine: {'line': b'-- Found libusb: /usr/lib/aarch64-linux-gnu/libusb-1.0.so  \n'}
+[8.324561] (dual_laser_merger) StdoutLine: {'line': b'-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)\n'}
+[8.336887] (-) TimerEvent: {}
+[8.437327] (-) TimerEvent: {}
+[8.448296] (dual_laser_merger) StdoutLine: {'line': b'-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/aarch64-linux-gnu/libOpenNI2.so;libusb::libusb)\n'}
+[8.454967] (dual_laser_merger) StdoutLine: {'line': b'-- Could NOT find Pcap (missing: PCAP_LIBRARIES PCAP_INCLUDE_DIRS) \n'}
+[8.475065] (dual_laser_merger) StdoutLine: {'line': b'-- Found ZLIB: /usr/lib/aarch64-linux-gnu/libz.so (found version "1.3")  \n'}
+[8.499565] (dual_laser_merger) StdoutLine: {'line': b'-- Found PNG: /usr/lib/aarch64-linux-gnu/libpng.so (found version "1.6.43") \n'}
+[8.537421] (-) TimerEvent: {}
+[8.637844] (-) TimerEvent: {}
+[8.738581] (-) TimerEvent: {}
+[8.839429] (-) TimerEvent: {}
+[8.939813] (-) TimerEvent: {}
+[9.040160] (-) TimerEvent: {}
+[9.140529] (-) TimerEvent: {}
+[9.191142] (dual_laser_merger) StdoutLine: {'line': b'-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)\n'}
+[9.202386] (dual_laser_merger) StdoutLine: {'line': b'-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/aarch64-linux-gnu/libOpenNI2.so;libusb::libusb)\n'}
+[9.240620] (-) TimerEvent: {}
+[9.340997] (-) TimerEvent: {}
+[9.441468] (-) TimerEvent: {}
+[9.542166] (-) TimerEvent: {}
+[9.642524] (-) TimerEvent: {}
+[9.742878] (-) TimerEvent: {}
+[9.843275] (-) TimerEvent: {}
+[9.943759] (-) TimerEvent: {}
+[9.956147] (dual_laser_merger) StdoutLine: {'line': b'-- Found Qhull version 8.0.2\n'}
+[10.043884] (-) TimerEvent: {}
+[10.144303] (-) TimerEvent: {}
+[10.244726] (-) TimerEvent: {}
+[10.345163] (-) TimerEvent: {}
+[10.445521] (-) TimerEvent: {}
+[10.545919] (-) TimerEvent: {}
+[10.646321] (-) TimerEvent: {}
+[10.646931] (dual_laser_merger) StdoutLine: {'line': b'-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)\n'}
+[10.746455] (-) TimerEvent: {}
+[10.846878] (-) TimerEvent: {}
+[10.947287] (-) TimerEvent: {}
+[11.047652] (-) TimerEvent: {}
+[11.148017] (-) TimerEvent: {}
+[11.248376] (-) TimerEvent: {}
+[11.322101] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_COMMON: /usr/lib/aarch64-linux-gnu/libpcl_common.so  \n'}
+[11.324629] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_KDTREE: /usr/lib/aarch64-linux-gnu/libpcl_kdtree.so  \n'}
+[11.326262] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_OCTREE: /usr/lib/aarch64-linux-gnu/libpcl_octree.so  \n'}
+[11.327820] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_SEARCH: /usr/lib/aarch64-linux-gnu/libpcl_search.so  \n'}
+[11.329614] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_SAMPLE_CONSENSUS: /usr/lib/aarch64-linux-gnu/libpcl_sample_consensus.so  \n'}
+[11.331376] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_FILTERS: /usr/lib/aarch64-linux-gnu/libpcl_filters.so  \n'}
+[11.332123] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_2D: /usr/include/pcl-1.14  \n'}
+[11.332772] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_GEOMETRY: /usr/include/pcl-1.14  \n'}
+[11.334455] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_IO: /usr/lib/aarch64-linux-gnu/libpcl_io.so  \n'}
+[11.336317] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_FEATURES: /usr/lib/aarch64-linux-gnu/libpcl_features.so  \n'}
+[11.338186] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_ML: /usr/lib/aarch64-linux-gnu/libpcl_ml.so  \n'}
+[11.339739] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_SEGMENTATION: /usr/lib/aarch64-linux-gnu/libpcl_segmentation.so  \n'}
+[11.341470] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_VISUALIZATION: /usr/lib/aarch64-linux-gnu/libpcl_visualization.so  \n'}
+[11.343172] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_SURFACE: /usr/lib/aarch64-linux-gnu/libpcl_surface.so  \n'}
+[11.344812] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_REGISTRATION: /usr/lib/aarch64-linux-gnu/libpcl_registration.so  \n'}
+[11.346506] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_KEYPOINTS: /usr/lib/aarch64-linux-gnu/libpcl_keypoints.so  \n'}
+[11.348198] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_TRACKING: /usr/lib/aarch64-linux-gnu/libpcl_tracking.so  \n'}
+[11.348431] (-) TimerEvent: {}
+[11.350002] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_RECOGNITION: /usr/lib/aarch64-linux-gnu/libpcl_recognition.so  \n'}
+[11.351908] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_STEREO: /usr/lib/aarch64-linux-gnu/libpcl_stereo.so  \n'}
+[11.353528] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_APPS: /usr/lib/aarch64-linux-gnu/libpcl_apps.so  \n'}
+[11.354893] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_IN_HAND_SCANNER: /usr/include/pcl-1.14  \n'}
+[11.355483] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_MODELER: /usr/include/pcl-1.14  \n'}
+[11.357116] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_POINT_CLOUD_EDITOR: /usr/include/pcl-1.14  \n'}
+[11.358798] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_OUTOFCORE: /usr/lib/aarch64-linux-gnu/libpcl_outofcore.so  \n'}
+[11.360652] (dual_laser_merger) StdoutLine: {'line': b'-- Found PCL_PEOPLE: /usr/lib/aarch64-linux-gnu/libpcl_people.so  \n'}
+[11.448558] (-) TimerEvent: {}
+[11.548949] (-) TimerEvent: {}
+[11.649338] (-) TimerEvent: {}
+[11.686163] (dual_laser_merger) StdoutLine: {'line': b'-- Found eigen3_cmake_module: 0.3.0 (/opt/ros/jazzy/share/eigen3_cmake_module/cmake)\n'}
+[11.689677] (dual_laser_merger) StdoutLine: {'line': b'-- Found Eigen3: TRUE (found version "3.4.0") \n'}
+[11.690008] (dual_laser_merger) StdoutLine: {'line': b'-- Ensuring Eigen3 include directory is part of orocos-kdl CMake target\n'}
+[11.749429] (-) TimerEvent: {}
+[11.790809] (dual_laser_merger) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.17.4 (/opt/ros/jazzy/share/ament_lint_auto/cmake)\n'}
+[11.849546] (-) TimerEvent: {}
+[11.937759] (dual_laser_merger) StderrLine: {'line': b'\x1b[0mIn this package, headers install destination is set to `include` by ament_auto_package. It is recommended to install `include/dual_laser_merger` instead and will be the default behavior of ament_auto_package from ROS 2 Kilted Kaiju. On distributions before Kilted, ament_auto_package behaves the same way when you use USE_SCOPED_HEADER_INSTALL_DIR option.\x1b[0m\n'}
+[11.949643] (-) TimerEvent: {}
+[11.954105] (dual_laser_merger) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[11.954941] (dual_laser_merger) StdoutLine: {'line': b'-- Configured cppcheck include dirs: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/dual_laser_merger/include\n'}
+[11.955100] (dual_laser_merger) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[11.958658] (dual_laser_merger) StdoutLine: {'line': b"-- Added test 'flake8' to check Python code syntax and style conventions\n"}
+[11.958889] (dual_laser_merger) StdoutLine: {'line': b"-- Configured 'flake8' exclude dirs and/or files: \n"}
+[11.962601] (dual_laser_merger) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[11.965442] (dual_laser_merger) StdoutLine: {'line': b"-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257\n"}
+[11.972660] (dual_laser_merger) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[11.972905] (dual_laser_merger) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[11.975901] (dual_laser_merger) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[11.988346] (dual_laser_merger) StdoutLine: {'line': b'-- Configuring done (12.0s)\n'}
+[12.049760] (-) TimerEvent: {}
+[12.150354] (-) TimerEvent: {}
+[12.250774] (-) TimerEvent: {}
+[12.338217] (dual_laser_merger) StdoutLine: {'line': b'-- Generating done (0.3s)\n'}
+[12.350853] (-) TimerEvent: {}
+[12.352886] (dual_laser_merger) StdoutLine: {'line': b'-- Build files have been written to: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger\n'}
+[12.403392] (dual_laser_merger) CommandEnded: {'returncode': 0}
+[12.404560] (dual_laser_merger) JobProgress: {'identifier': 'dual_laser_merger', 'progress': 'build'}
+[12.405739] (dual_laser_merger) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger', '--', '-j4', '-l4'], 'cwd': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'MAIL': '/var/mail/ground', 'USER': 'ground', 'SSH_CLIENT': '100.96.142.123 53546 22', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters/lib:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge/lib:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib:/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/ground', 'OLDPWD': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src', 'SSH_TTY': '/dev/pts/0', 'HUSHLOGIN': 'FALSE', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'COLCON_PREFIX_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'ground', 'IGN_GAZEBO_MODEL_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '7', 'GAZEBO_MODEL_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'PATH': '/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'REMOTEHOST': '100.96.142.123', 'LANG': 'en_US.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'AMENT_PREFIX_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'IGN_GAZEBO_RESOURCE_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'GAZEBO_RESOURCE_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '100.96.142.123 53546 100.84.246.123 22', 'XDG_DATA_DIRS': '/usr/share/gnome:/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy'}), 'shell': False}
+[12.450960] (-) TimerEvent: {}
+[12.520928] (dual_laser_merger) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/dual_laser_merger_node.dir/rclcpp_components/node_main_dual_laser_merger_node.cpp.o\x1b[0m\n'}
+[12.521283] (dual_laser_merger) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/dual_laser_merger.dir/src/dual_laser_merger.cpp.o\x1b[0m\n'}
+[12.551087] (-) TimerEvent: {}
+[12.651512] (-) TimerEvent: {}
+[12.751993] (-) TimerEvent: {}
+[12.852401] (-) TimerEvent: {}
+[12.952855] (-) TimerEvent: {}
+[13.053208] (-) TimerEvent: {}
+[13.153620] (-) TimerEvent: {}
+[13.254139] (-) TimerEvent: {}
+[13.354531] (-) TimerEvent: {}
+[13.454961] (-) TimerEvent: {}
+[13.555397] (-) TimerEvent: {}
+[13.655860] (-) TimerEvent: {}
+[13.756263] (-) TimerEvent: {}
+[13.856702] (-) TimerEvent: {}
+[13.957279] (-) TimerEvent: {}
+[14.057680] (-) TimerEvent: {}
+[14.158099] (-) TimerEvent: {}
+[14.258496] (-) TimerEvent: {}
+[14.358906] (-) TimerEvent: {}
+[14.459326] (-) TimerEvent: {}
+[14.559758] (-) TimerEvent: {}
+[14.660262] (-) TimerEvent: {}
+[14.760759] (-) TimerEvent: {}
+[14.861216] (-) TimerEvent: {}
+[14.961682] (-) TimerEvent: {}
+[15.062175] (-) TimerEvent: {}
+[15.162884] (-) TimerEvent: {}
+[15.263413] (-) TimerEvent: {}
+[15.364249] (-) TimerEvent: {}
+[15.465827] (-) TimerEvent: {}
+[15.566443] (-) TimerEvent: {}
+[15.667014] (-) TimerEvent: {}
+[15.768068] (-) TimerEvent: {}
+[15.868904] (-) TimerEvent: {}
+[15.969463] (-) TimerEvent: {}
+[16.070088] (-) TimerEvent: {}
+[16.170624] (-) TimerEvent: {}
+[16.271571] (-) TimerEvent: {}
+[16.372148] (-) TimerEvent: {}
+[16.473021] (-) TimerEvent: {}
+[16.573440] (-) TimerEvent: {}
+[16.673909] (-) TimerEvent: {}
+[16.774328] (-) TimerEvent: {}
+[16.874879] (-) TimerEvent: {}
+[16.975308] (-) TimerEvent: {}
+[17.075701] (-) TimerEvent: {}
+[17.176160] (-) TimerEvent: {}
+[17.276637] (-) TimerEvent: {}
+[17.377060] (-) TimerEvent: {}
+[17.477505] (-) TimerEvent: {}
+[17.578164] (-) TimerEvent: {}
+[17.678640] (-) TimerEvent: {}
+[17.779338] (-) TimerEvent: {}
+[17.880025] (-) TimerEvent: {}
+[17.980427] (-) TimerEvent: {}
+[18.081141] (-) TimerEvent: {}
+[18.181804] (-) TimerEvent: {}
+[18.282251] (-) TimerEvent: {}
+[18.382751] (-) TimerEvent: {}
+[18.483296] (-) TimerEvent: {}
+[18.583822] (-) TimerEvent: {}
+[18.684563] (-) TimerEvent: {}
+[18.785240] (-) TimerEvent: {}
+[18.885676] (-) TimerEvent: {}
+[18.986154] (-) TimerEvent: {}
+[19.086616] (-) TimerEvent: {}
+[19.187101] (-) TimerEvent: {}
+[19.287625] (-) TimerEvent: {}
+[19.388119] (-) TimerEvent: {}
+[19.488638] (-) TimerEvent: {}
+[19.589319] (-) TimerEvent: {}
+[19.689892] (-) TimerEvent: {}
+[19.787714] (dual_laser_merger) StdoutLine: {'line': b'[ 75%] \x1b[32m\x1b[1mLinking CXX executable dual_laser_merger_node\x1b[0m\n'}
+[19.789987] (-) TimerEvent: {}
+[19.890412] (-) TimerEvent: {}
+[19.991048] (-) TimerEvent: {}
+[20.092187] (-) TimerEvent: {}
+[20.192821] (-) TimerEvent: {}
+[20.209013] (dual_laser_merger) StdoutLine: {'line': b'[ 75%] Built target dual_laser_merger_node\n'}
+[20.292931] (-) TimerEvent: {}
+[20.393357] (-) TimerEvent: {}
+[20.493815] (-) TimerEvent: {}
+[20.594228] (-) TimerEvent: {}
+[20.694613] (-) TimerEvent: {}
+[20.795041] (-) TimerEvent: {}
+[20.895476] (-) TimerEvent: {}
+[20.995900] (-) TimerEvent: {}
+[21.096314] (-) TimerEvent: {}
+[21.196764] (-) TimerEvent: {}
+[21.297161] (-) TimerEvent: {}
+[21.397533] (-) TimerEvent: {}
+[21.497871] (-) TimerEvent: {}
+[21.598281] (-) TimerEvent: {}
+[21.698683] (-) TimerEvent: {}
+[21.799146] (-) TimerEvent: {}
+[21.899533] (-) TimerEvent: {}
+[21.999956] (-) TimerEvent: {}
+[22.100338] (-) TimerEvent: {}
+[22.200766] (-) TimerEvent: {}
+[22.301211] (-) TimerEvent: {}
+[22.401644] (-) TimerEvent: {}
+[22.502126] (-) TimerEvent: {}
+[22.602552] (-) TimerEvent: {}
+[22.703001] (-) TimerEvent: {}
+[22.803414] (-) TimerEvent: {}
+[22.903891] (-) TimerEvent: {}
+[23.004289] (-) TimerEvent: {}
+[23.104661] (-) TimerEvent: {}
+[23.205129] (-) TimerEvent: {}
+[23.305587] (-) TimerEvent: {}
+[23.406034] (-) TimerEvent: {}
+[23.506510] (-) TimerEvent: {}
+[23.606937] (-) TimerEvent: {}
+[23.707329] (-) TimerEvent: {}
+[23.807722] (-) TimerEvent: {}
+[23.908141] (-) TimerEvent: {}
+[24.008517] (-) TimerEvent: {}
+[24.108976] (-) TimerEvent: {}
+[24.209379] (-) TimerEvent: {}
+[24.309768] (-) TimerEvent: {}
+[24.410212] (-) TimerEvent: {}
+[24.510708] (-) TimerEvent: {}
+[24.611137] (-) TimerEvent: {}
+[24.711552] (-) TimerEvent: {}
+[24.811989] (-) TimerEvent: {}
+[24.912409] (-) TimerEvent: {}
+[25.012878] (-) TimerEvent: {}
+[25.113280] (-) TimerEvent: {}
+[25.213758] (-) TimerEvent: {}
+[25.315896] (-) TimerEvent: {}
+[25.416592] (-) TimerEvent: {}
+[25.517084] (-) TimerEvent: {}
+[25.617533] (-) TimerEvent: {}
+[25.718040] (-) TimerEvent: {}
+[25.818451] (-) TimerEvent: {}
+[25.919042] (-) TimerEvent: {}
+[26.019421] (-) TimerEvent: {}
+[26.120062] (-) TimerEvent: {}
+[26.221327] (-) TimerEvent: {}
+[26.321821] (-) TimerEvent: {}
+[26.422364] (-) TimerEvent: {}
+[26.522748] (-) TimerEvent: {}
+[26.623134] (-) TimerEvent: {}
+[26.723511] (-) TimerEvent: {}
+[26.823902] (-) TimerEvent: {}
+[26.924280] (-) TimerEvent: {}
+[27.024683] (-) TimerEvent: {}
+[27.125064] (-) TimerEvent: {}
+[27.225485] (-) TimerEvent: {}
+[27.326010] (-) TimerEvent: {}
+[27.426587] (-) TimerEvent: {}
+[27.527037] (-) TimerEvent: {}
+[27.627462] (-) TimerEvent: {}
+[27.727871] (-) TimerEvent: {}
+[27.828266] (-) TimerEvent: {}
+[27.928668] (-) TimerEvent: {}
+[28.029067] (-) TimerEvent: {}
+[28.129462] (-) TimerEvent: {}
+[28.229881] (-) TimerEvent: {}
+[28.330316] (-) TimerEvent: {}
+[28.430756] (-) TimerEvent: {}
+[28.531241] (-) TimerEvent: {}
+[28.631645] (-) TimerEvent: {}
+[28.732073] (-) TimerEvent: {}
+[28.832511] (-) TimerEvent: {}
+[28.933153] (-) TimerEvent: {}
+[29.033557] (-) TimerEvent: {}
+[29.133964] (-) TimerEvent: {}
+[29.234360] (-) TimerEvent: {}
+[29.334776] (-) TimerEvent: {}
+[29.435212] (-) TimerEvent: {}
+[29.535659] (-) TimerEvent: {}
+[29.636090] (-) TimerEvent: {}
+[29.736520] (-) TimerEvent: {}
+[29.836942] (-) TimerEvent: {}
+[29.937351] (-) TimerEvent: {}
+[30.037750] (-) TimerEvent: {}
+[30.138143] (-) TimerEvent: {}
+[30.238551] (-) TimerEvent: {}
+[30.339006] (-) TimerEvent: {}
+[30.439421] (-) TimerEvent: {}
+[30.539866] (-) TimerEvent: {}
+[30.640273] (-) TimerEvent: {}
+[30.740678] (-) TimerEvent: {}
+[30.841089] (-) TimerEvent: {}
+[30.941489] (-) TimerEvent: {}
+[31.041887] (-) TimerEvent: {}
+[31.142276] (-) TimerEvent: {}
+[31.242691] (-) TimerEvent: {}
+[31.343080] (-) TimerEvent: {}
+[31.443458] (-) TimerEvent: {}
+[31.543870] (-) TimerEvent: {}
+[31.644307] (-) TimerEvent: {}
+[31.744840] (-) TimerEvent: {}
+[31.845343] (-) TimerEvent: {}
+[31.945892] (-) TimerEvent: {}
+[32.046547] (-) TimerEvent: {}
+[32.147543] (-) TimerEvent: {}
+[32.248031] (-) TimerEvent: {}
+[32.348436] (-) TimerEvent: {}
+[32.448870] (-) TimerEvent: {}
+[32.549270] (-) TimerEvent: {}
+[32.649679] (-) TimerEvent: {}
+[32.750185] (-) TimerEvent: {}
+[32.850654] (-) TimerEvent: {}
+[32.951125] (-) TimerEvent: {}
+[33.051528] (-) TimerEvent: {}
+[33.151940] (-) TimerEvent: {}
+[33.252362] (-) TimerEvent: {}
+[33.352806] (-) TimerEvent: {}
+[33.453203] (-) TimerEvent: {}
+[33.570741] (-) TimerEvent: {}
+[33.671141] (-) TimerEvent: {}
+[33.771515] (-) TimerEvent: {}
+[33.872178] (-) TimerEvent: {}
+[33.972578] (-) TimerEvent: {}
+[34.072998] (-) TimerEvent: {}
+[34.173397] (-) TimerEvent: {}
+[34.273783] (-) TimerEvent: {}
+[34.374181] (-) TimerEvent: {}
+[34.474590] (-) TimerEvent: {}
+[34.575234] (-) TimerEvent: {}
+[34.675609] (-) TimerEvent: {}
+[34.776007] (-) TimerEvent: {}
+[34.876398] (-) TimerEvent: {}
+[34.976785] (-) TimerEvent: {}
+[35.077181] (-) TimerEvent: {}
+[35.177570] (-) TimerEvent: {}
+[35.277967] (-) TimerEvent: {}
+[35.378343] (-) TimerEvent: {}
+[35.478740] (-) TimerEvent: {}
+[35.579148] (-) TimerEvent: {}
+[35.679556] (-) TimerEvent: {}
+[35.779958] (-) TimerEvent: {}
+[35.880411] (-) TimerEvent: {}
+[35.980779] (-) TimerEvent: {}
+[36.081188] (-) TimerEvent: {}
+[36.181593] (-) TimerEvent: {}
+[36.281999] (-) TimerEvent: {}
+[36.382377] (-) TimerEvent: {}
+[36.482761] (-) TimerEvent: {}
+[36.583145] (-) TimerEvent: {}
+[36.683532] (-) TimerEvent: {}
+[36.783905] (-) TimerEvent: {}
+[36.884303] (-) TimerEvent: {}
+[36.984678] (-) TimerEvent: {}
+[37.085068] (-) TimerEvent: {}
+[37.185447] (-) TimerEvent: {}
+[37.285834] (-) TimerEvent: {}
+[37.386209] (-) TimerEvent: {}
+[37.486591] (-) TimerEvent: {}
+[37.586977] (-) TimerEvent: {}
+[37.687483] (-) TimerEvent: {}
+[37.787866] (-) TimerEvent: {}
+[37.888258] (-) TimerEvent: {}
+[37.988658] (-) TimerEvent: {}
+[38.089062] (-) TimerEvent: {}
+[38.189433] (-) TimerEvent: {}
+[38.289799] (-) TimerEvent: {}
+[38.390175] (-) TimerEvent: {}
+[38.490547] (-) TimerEvent: {}
+[38.590961] (-) TimerEvent: {}
+[38.691362] (-) TimerEvent: {}
+[38.791746] (-) TimerEvent: {}
+[38.892152] (-) TimerEvent: {}
+[38.992497] (-) TimerEvent: {}
+[39.092924] (-) TimerEvent: {}
+[39.193347] (-) TimerEvent: {}
+[39.293730] (-) TimerEvent: {}
+[39.394110] (-) TimerEvent: {}
+[39.494494] (-) TimerEvent: {}
+[39.594884] (-) TimerEvent: {}
+[39.695266] (-) TimerEvent: {}
+[39.795650] (-) TimerEvent: {}
+[39.896111] (-) TimerEvent: {}
+[39.996508] (-) TimerEvent: {}
+[40.096899] (-) TimerEvent: {}
+[40.197275] (-) TimerEvent: {}
+[40.297659] (-) TimerEvent: {}
+[40.398052] (-) TimerEvent: {}
+[40.498441] (-) TimerEvent: {}
+[40.598829] (-) TimerEvent: {}
+[40.699232] (-) TimerEvent: {}
+[40.799614] (-) TimerEvent: {}
+[40.900045] (-) TimerEvent: {}
+[41.000428] (-) TimerEvent: {}
+[41.100813] (-) TimerEvent: {}
+[41.201182] (-) TimerEvent: {}
+[41.301580] (-) TimerEvent: {}
+[41.401977] (-) TimerEvent: {}
+[41.502342] (-) TimerEvent: {}
+[41.602727] (-) TimerEvent: {}
+[41.703126] (-) TimerEvent: {}
+[41.803503] (-) TimerEvent: {}
+[41.903944] (-) TimerEvent: {}
+[42.004365] (-) TimerEvent: {}
+[42.104799] (-) TimerEvent: {}
+[42.205203] (-) TimerEvent: {}
+[42.305620] (-) TimerEvent: {}
+[42.406483] (-) TimerEvent: {}
+[42.507076] (-) TimerEvent: {}
+[42.607627] (-) TimerEvent: {}
+[42.708069] (-) TimerEvent: {}
+[42.808496] (-) TimerEvent: {}
+[42.909042] (-) TimerEvent: {}
+[43.009570] (-) TimerEvent: {}
+[43.110021] (-) TimerEvent: {}
+[43.210456] (-) TimerEvent: {}
+[43.310907] (-) TimerEvent: {}
+[43.411400] (-) TimerEvent: {}
+[43.511869] (-) TimerEvent: {}
+[43.612372] (-) TimerEvent: {}
+[43.713005] (-) TimerEvent: {}
+[43.813933] (-) TimerEvent: {}
+[43.914345] (-) TimerEvent: {}
+[44.014750] (-) TimerEvent: {}
+[44.115174] (-) TimerEvent: {}
+[44.215638] (-) TimerEvent: {}
+[44.316154] (-) TimerEvent: {}
+[44.416526] (-) TimerEvent: {}
+[44.494417] (dual_laser_merger) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX shared library libdual_laser_merger.so\x1b[0m\n'}
+[44.516639] (-) TimerEvent: {}
+[44.617135] (-) TimerEvent: {}
+[44.717652] (-) TimerEvent: {}
+[44.818271] (-) TimerEvent: {}
+[44.918836] (-) TimerEvent: {}
+[45.019388] (-) TimerEvent: {}
+[45.119825] (-) TimerEvent: {}
+[45.220399] (-) TimerEvent: {}
+[45.321332] (-) TimerEvent: {}
+[45.421874] (-) TimerEvent: {}
+[45.522357] (-) TimerEvent: {}
+[45.622886] (-) TimerEvent: {}
+[45.723366] (-) TimerEvent: {}
+[45.823841] (-) TimerEvent: {}
+[45.924652] (-) TimerEvent: {}
+[46.025748] (-) TimerEvent: {}
+[46.126750] (-) TimerEvent: {}
+[46.227596] (-) TimerEvent: {}
+[46.328081] (-) TimerEvent: {}
+[46.428634] (-) TimerEvent: {}
+[46.529576] (-) TimerEvent: {}
+[46.630296] (-) TimerEvent: {}
+[46.730823] (-) TimerEvent: {}
+[46.831393] (-) TimerEvent: {}
+[46.932534] (-) TimerEvent: {}
+[47.034080] (-) TimerEvent: {}
+[47.135077] (-) TimerEvent: {}
+[47.235930] (-) TimerEvent: {}
+[47.336634] (-) TimerEvent: {}
+[47.437545] (-) TimerEvent: {}
+[47.538230] (-) TimerEvent: {}
+[47.639141] (-) TimerEvent: {}
+[47.740023] (-) TimerEvent: {}
+[47.840514] (-) TimerEvent: {}
+[47.941145] (-) TimerEvent: {}
+[48.041632] (-) TimerEvent: {}
+[48.142138] (-) TimerEvent: {}
+[48.243081] (-) TimerEvent: {}
+[48.343717] (-) TimerEvent: {}
+[48.444783] (-) TimerEvent: {}
+[48.545652] (-) TimerEvent: {}
+[48.646066] (-) TimerEvent: {}
+[48.746580] (-) TimerEvent: {}
+[48.847552] (-) TimerEvent: {}
+[48.948072] (-) TimerEvent: {}
+[49.049034] (-) TimerEvent: {}
+[49.149554] (-) TimerEvent: {}
+[49.250241] (-) TimerEvent: {}
+[49.351164] (-) TimerEvent: {}
+[49.451693] (-) TimerEvent: {}
+[49.552523] (-) TimerEvent: {}
+[49.653079] (-) TimerEvent: {}
+[49.753450] (-) TimerEvent: {}
+[49.853882] (-) TimerEvent: {}
+[49.954335] (-) TimerEvent: {}
+[50.054906] (-) TimerEvent: {}
+[50.131073] (dual_laser_merger) StdoutLine: {'line': b'[100%] Built target dual_laser_merger\n'}
+[50.155007] (-) TimerEvent: {}
+[50.157485] (dual_laser_merger) CommandEnded: {'returncode': 0}
+[50.158288] (dual_laser_merger) JobProgress: {'identifier': 'dual_laser_merger', 'progress': 'install'}
+[50.177888] (dual_laser_merger) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger'], 'cwd': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'MAIL': '/var/mail/ground', 'USER': 'ground', 'SSH_CLIENT': '100.96.142.123 53546 22', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters/lib:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge/lib:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib:/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/ground', 'OLDPWD': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src', 'SSH_TTY': '/dev/pts/0', 'HUSHLOGIN': 'FALSE', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'COLCON_PREFIX_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'ground', 'IGN_GAZEBO_MODEL_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '7', 'GAZEBO_MODEL_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'PATH': '/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'REMOTEHOST': '100.96.142.123', 'LANG': 'en_US.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'AMENT_PREFIX_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'IGN_GAZEBO_RESOURCE_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'GAZEBO_RESOURCE_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions/share:/opt/ros/jazzy/share', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '100.96.142.123 53546 100.84.246.123 22', 'XDG_DATA_DIRS': '/usr/share/gnome:/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib/python3.12/site-packages:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/rplidar_ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_description:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai-ros:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_driver:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_filters:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_examples:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_bridge:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_ros_msgs:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/depthai_descriptions:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy'}), 'shell': False}
+[50.195777] (dual_laser_merger) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[50.196171] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib/dual_laser_merger/dual_laser_merger_node\n'}
+[50.197686] (dual_laser_merger) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib/dual_laser_merger/dual_laser_merger_node" to ""\n'}
+[50.197893] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/include/dual_laser_merger/include\n'}
+[50.198048] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/include/dual_laser_merger/include/dual_laser_merger\n'}
+[50.198218] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/include/dual_laser_merger/include/dual_laser_merger/dual_laser_merger.hpp\n'}
+[50.198396] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger\n'}
+[50.198560] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/demo_laser_merger.launch.py\n'}
+[50.198727] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/bag\n'}
+[50.198873] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/bag/dual_lidar\n'}
+[50.199004] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/bag/dual_lidar/dual_lidar_0.mcap\n'}
+[50.255118] (-) TimerEvent: {}
+[50.325864] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/bag/dual_lidar/metadata.yaml\n'}
+[50.326276] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/config\n'}
+[50.326911] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/config/rviz_config.rviz\n'}
+[50.327035] (dual_laser_merger) StdoutLine: {'line': b'-- Up-to-date: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/include\n'}
+[50.327200] (dual_laser_merger) StdoutLine: {'line': b'-- Up-to-date: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/include/dual_laser_merger\n'}
+[50.327307] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/include/dual_laser_merger/dual_laser_merger.hpp\n'}
+[50.327437] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/library_path.sh\n'}
+[50.327528] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/library_path.dsv\n'}
+[50.327662] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib/libdual_laser_merger.so\n'}
+[50.345587] (dual_laser_merger) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib/libdual_laser_merger.so" to ""\n'}
+[50.345842] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/ament_index/resource_index/package_run_dependencies/dual_laser_merger\n'}
+[50.346167] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/ament_index/resource_index/parent_prefix_path/dual_laser_merger\n'}
+[50.346414] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/ament_prefix_path.sh\n'}
+[50.346623] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/ament_prefix_path.dsv\n'}
+[50.346825] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/path.sh\n'}
+[50.347039] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/path.dsv\n'}
+[50.347238] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/local_setup.bash\n'}
+[50.347442] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/local_setup.sh\n'}
+[50.347663] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/local_setup.zsh\n'}
+[50.347897] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/local_setup.dsv\n'}
+[50.348110] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.dsv\n'}
+[50.348389] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/ament_index/resource_index/packages/dual_laser_merger\n'}
+[50.348663] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/ament_index/resource_index/rclcpp_components/dual_laser_merger\n'}
+[50.348980] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/ament_cmake_export_dependencies-extras.cmake\n'}
+[50.349188] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/ament_cmake_export_include_directories-extras.cmake\n'}
+[50.349403] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/ament_cmake_export_libraries-extras.cmake\n'}
+[50.349619] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/dual_laser_mergerConfig.cmake\n'}
+[50.349807] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/dual_laser_mergerConfig-version.cmake\n'}
+[50.349997] (dual_laser_merger) StdoutLine: {'line': b'-- Installing: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.xml\n'}
+[50.353062] (dual_laser_merger) CommandEnded: {'returncode': 0}
+[50.355186] (-) TimerEvent: {}
+[50.385473] (dual_laser_merger) JobEnded: {'identifier': 'dual_laser_merger', 'rc': 0}
+[50.386856] (-) EventReactorShutdown: {}

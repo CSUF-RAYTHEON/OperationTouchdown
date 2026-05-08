@@ -9,9 +9,9 @@
     <xacro:property name="laser_x" value="0.095"/> 
     <xacro:property name="laser_y" value="0.038"/> 
     <xacro:property name="laser_z" value="0.569"/> 
-    <xacro:property name="cam_x" value="0.089"/> 
-    <xacro:property name="cam_y" value="-0.012"/> 
-    <xacro:property name="cam_z" value="0.241"/> 
+    <xacro:property name="cam_x" value="0.15"/> 
+    <xacro:property name="cam_y" value="0.0"/> 
+    <xacro:property name="cam_z" value="0.05"/> 
 
     <link name="base_footprint"/>
 
@@ -37,7 +37,7 @@
         </collision>
     </link>
 
-    <link name="oak-d-base-frame"/>
+    <link name="oak_base_frame"/>
     <link name="oak_rgb_camera_frame"/>
 
     <joint name="base_joint" type="fixed">
@@ -53,13 +53,12 @@
     </joint>
 
     <joint name="camera_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="oak-d-base-frame"/>
-    <origin xyz="0.15 0.0 0.05" rpy="0 -1.57 0"/> 
+        <parent link="base_link"/>
+        <child link="oak_base_frame"/> <origin xyz="${cam_x} ${cam_y} ${cam_z}" rpy="0 0 0"/> 
     </joint>
 
     <joint name="oak_base_to_rgb" type="fixed">
-        <parent link="oak-d-base-frame"/>
+        <parent link="oak_base_frame"/>
         <child link="oak_rgb_camera_frame"/>
         <origin xyz="0 0 0" rpy="0 0 0"/>
     </joint>

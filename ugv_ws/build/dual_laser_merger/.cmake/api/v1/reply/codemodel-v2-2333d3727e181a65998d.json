@@ -1,0 +1,88 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-4e1ff53e03e81cf7d239.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "dual_laser_merger",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "dual_laser_merger::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dual_laser_merger-2f4e44e30d1dfa8f0ed9.json",
+					"name" : "dual_laser_merger",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "dual_laser_merger_node::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dual_laser_merger_node-2d0fa950b10411baaa22.json",
+					"name" : "dual_laser_merger_node",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "dual_laser_merger_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dual_laser_merger_uninstall-8a2dca99c1016d004164.json",
+					"name" : "dual_laser_merger_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-c20d8452ccb172943ea1.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger",
+		"source" : "/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/dual_laser_merger"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}
