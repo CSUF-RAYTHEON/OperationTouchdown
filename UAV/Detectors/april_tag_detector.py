@@ -16,21 +16,34 @@ import depthai as dai
 TARGET_TAG_ID = 67
 TAG_SIZE = 0.20     # 20 cm tag
 
-# Gamma brightening uses the photographic convention:
+# Gamma uses the photographic convention:
 #   output = (pixel / 255) ^ (1 / gamma) × 255
-# gamma > 1.0 BRIGHTENS (lifts shadows); gamma < 1.0 darkens.
 #
-# _GAMMA_MODERATE — partial shadows, one side of the tag in shade
-# _GAMMA_DEEP     — tag nearly or fully inside a deep shadow
-# _GAMMA_EXTREME  — near-black frames; pixel at value 5 lifts to ~152
+#  gamma > 1.0  →  BRIGHTENS dark pixels  (shadow / under-exposure tier)
+#  gamma < 1.0  →  DARKENS  bright pixels (glare / over-exposure tier)
+#
+# ── Shadow / under-exposure tier (gamma > 1) ────────────────────────────────
+# _GAMMA_MODERATE   partial shadow, one side of the tag in shade
+# _GAMMA_DEEP       tag mostly in deep shadow
+# _GAMMA_MID_DARK   fills the gap between deep shadow and near-black
+# _GAMMA_EXTREME    near-black; pixel at value 5 lifts to ~152
 _GAMMA_MODERATE = 2.2
-_GAMMA_DEEP = 4.0
-_GAMMA_EXTREME = 8.0
+_GAMMA_DEEP     = 4.0
+_GAMMA_MID_DARK = 6.0
+_GAMMA_EXTREME  = 8.0
+
+# ── Glare / over-exposure tier (gamma < 1) ──────────────────────────────────
+# _GAMMA_WHITE_MILD     mild glare / slight over-exposure
+# _GAMMA_WHITE_MODERATE moderate over-exposure; blacks appear mid-gray
+# _GAMMA_WHITE_STRONG   heavy over-exposure / near-white frames
+_GAMMA_WHITE_MILD     = 0.5
+_GAMMA_WHITE_MODERATE = 0.3
+_GAMMA_WHITE_STRONG   = 0.15
 
 # Percentile clipping for the histogram-stretch passes.
 # Clips the bottom/top N% of pixels before stretching to avoid letting
 # a handful of noise spikes collapse the entire tonal range.
-_STRETCH_LOW_PCT = 1.0
+_STRETCH_LOW_PCT  = 1.0
 _STRETCH_HIGH_PCT = 99.0
 
 
@@ -98,10 +111,16 @@ class AprilTagDetector:
         # recovers tag structure when the shadow covers most of the tag.
         self._clahe_deep = cv2.createCLAHE(clipLimit=5.0, tileGridSize=(4, 4))
 
-        # Gamma LUTs — each tier lifts dark pixels progressively harder.
-        self._gamma_lut = _build_gamma_lut(_GAMMA_MODERATE)
-        self._gamma_lut_strong = _build_gamma_lut(_GAMMA_DEEP)
-        self._gamma_lut_extreme = _build_gamma_lut(_GAMMA_EXTREME)
+        # Shadow tier LUTs (gamma > 1, brighten)
+        self._gamma_lut          = _build_gamma_lut(_GAMMA_MODERATE)
+        self._gamma_lut_strong   = _build_gamma_lut(_GAMMA_DEEP)
+        self._gamma_lut_mid_dark = _build_gamma_lut(_GAMMA_MID_DARK)
+        self._gamma_lut_extreme  = _build_gamma_lut(_GAMMA_EXTREME)
+
+        # Glare / over-exposure tier LUTs (gamma < 1, darken)
+        self._gamma_lut_white_mild     = _build_gamma_lut(_GAMMA_WHITE_MILD)
+        self._gamma_lut_white_moderate = _build_gamma_lut(_GAMMA_WHITE_MODERATE)
+        self._gamma_lut_white_strong   = _build_gamma_lut(_GAMMA_WHITE_STRONG)
 
         print("[INFO] Detector initialized (intrinsics will be set on first frame)")
 
@@ -147,96 +166,143 @@ class AprilTagDetector:
 
     def _preprocess_variants(self, gray: np.ndarray) -> list:
         """
-        Return a list of preprocessed grayscale images to try in order.
+        Return preprocessed grayscale images to try in order, from least to
+        most aggressive.  Early passes exit quickly on normal frames; the
+        expensive passes only execute when all lighter passes have failed.
 
-        Passes are ordered from least to most aggressive so that the common
-        case (mild or no shadow) returns quickly, and the expensive deep-shadow
-        passes only run when everything else has already failed.
+        ── Shadow / under-exposure tier (dark frames) ─────────────────────────
 
-        Pass 1 — CLAHE (standard)
-            Local contrast normalization.  Handles partial shadows where one
-            side of the tag is lit and the other is dark.
+        Pass 1  CLAHE (standard)
+                Local contrast normalisation.  Handles partial shadows where
+                one side of the tag is lit and the other is dark.
 
-        Pass 2 — Moderate gamma lift (2.2×) → standard CLAHE
-            Brightens pixel values before CLAHE so that the equalizer has more
-            tonal range to work with in lightly-shaded regions.
+        Pass 2  Gamma 2.2× → standard CLAHE
+                Mild brightness lift before CLAHE for lightly shaded regions.
 
-        Pass 3 — Bilateral filter → standard CLAHE
-            Smooths sensor noise at shadow boundaries while preserving edges.
-            Useful for low-light / high-ISO frames.
+        Pass 3  Bilateral → standard CLAHE
+                Smooths sensor noise at shadow boundaries while preserving
+                tag edges.  Useful for low-light / high-gain frames.
 
-        Pass 4 — Strong gamma lift (4.0×) → aggressive CLAHE
-            Aggressively raises very dark pixels (a pixel at value 20 becomes
-            ~120) before applying high-clip-limit CLAHE with fine tiles.
-            Primary recovery pass for tags almost entirely in deep shadow.
+        Pass 4  Gamma 4.0× → aggressive CLAHE
+                Deep-shadow primary: pixel at 20 → ~120.
 
-        Pass 5 — Strong gamma lift (4.0×) → bilateral smooth → aggressive CLAHE
-            Same strong lift but de-noised first.  Last resort for dark,
-            noisy frames where shadow boundaries introduce false edges.
+        Pass 5  Gamma 4.0× → bilateral → aggressive CLAHE
+                Same deep lift but de-noised first for noisy dark frames.
 
-        ── Near-black / near-zero passes ──────────────────────────────────────
-        The passes below are for frames where most pixel values are in roughly
-        the 0–20 range.  The tag's white squares are only marginally brighter
-        than its black squares, so the goal is to amplify that tiny relative
-        contrast before handing off to the detector.
+        Pass 6  Gamma 6.0× → aggressive CLAHE   [mid-dark fill]
+                Covers the range between deep shadow and near-black where
+                gamma 4.0 undershoots and gamma 8.0 can over-smooth.
 
-        Pass 6 — Extreme gamma lift (8.0×) → aggressive CLAHE
-            Pushes a pixel at value 5 up to ~152.  Fastest near-black pass.
+        Pass 7  Gamma 8.0× → aggressive CLAHE
+                Near-black primary: pixel at 5 → ~152.
 
-        Pass 7 — Percentile stretch → aggressive CLAHE
-            Maps whatever tonal range actually exists in the frame (even if it
-            is just 2–18) to the full 0–255 scale, then CLAHE enhances local
-            contrast on top.  Most powerful single pass for near-black frames.
+        Pass 8  Percentile stretch → aggressive CLAHE
+                Maps the actual tonal range of the frame (even 2–18) to
+                full 0–255 before CLAHE.  Most powerful near-black pass.
 
-        Pass 8 — Gaussian denoise → percentile stretch → aggressive CLAHE
-            De-noises before stretching so sensor noise spikes don't dominate
-            the stretched range.  Best for very dark, high-gain (noisy) frames.
+        Pass 9  Gaussian denoise → percentile stretch → aggressive CLAHE
+                Same stretch but de-noised first so noise spikes don't
+                dominate the stretched range.  Best for very dark noisy frames.
+
+        ── Glare / over-exposure tier (bright frames) ─────────────────────────
+        When a frame is over-exposed the tag's black squares lift to mid-gray,
+        washing out the contrast.  Gamma < 1 compresses bright pixels back into
+        a workable range before CLAHE restores local contrast.
+
+        Pass 10  Gamma 0.5 → standard CLAHE   [mild over-exposure]
+                 Gentle darkening; handles slight glare or direct sunlight
+                 reflecting off the landing pad.  Pixel at 230 → ~207.
+
+        Pass 11  Gamma 0.3 → aggressive CLAHE  [moderate over-exposure]
+                 Moderate darkening; handles scenes where blacks appear gray.
+                 Pixel at 230 → ~176.
+
+        Pass 12  Gamma 0.15 → aggressive CLAHE  [strong / near-white]
+                 Heavy darkening for near-white or heavily washed-out frames.
+                 Pixel at 230 → ~131.
+
+        Pass 13  Gaussian denoise → gamma 0.3 → aggressive CLAHE
+                 Same moderate darkening but de-noised first.  Handles bright,
+                 high-sensor-gain frames where noise was amplified by exposure.
         """
-        # Pass 1: standard CLAHE only
+        # ── Shadow tier ────────────────────────────────────────────────────
+        # Pass 1
         clahe_only = self._clahe.apply(gray)
 
-        # Pass 2: moderate gamma lift then standard CLAHE
+        # Pass 2
         gamma_moderate = cv2.LUT(gray, self._gamma_lut)
         gamma_moderate_clahe = self._clahe.apply(gamma_moderate)
 
-        # Pass 3: bilateral de-noise then standard CLAHE
+        # Pass 3
         bilateral = cv2.bilateralFilter(gray, d=9, sigmaColor=75, sigmaSpace=75)
         bilateral_clahe = self._clahe.apply(bilateral)
 
-        # Pass 4: strong gamma lift then aggressive CLAHE (deep-shadow primary)
+        # Pass 4
         gamma_strong = cv2.LUT(gray, self._gamma_lut_strong)
         gamma_strong_clahe_deep = self._clahe_deep.apply(gamma_strong)
 
-        # Pass 5: strong gamma lift, de-noised, then aggressive CLAHE
+        # Pass 5
         gamma_strong_bilateral = cv2.bilateralFilter(
             gamma_strong, d=9, sigmaColor=75, sigmaSpace=75
         )
         gamma_strong_bilateral_clahe_deep = self._clahe_deep.apply(gamma_strong_bilateral)
 
-        # Pass 6: extreme gamma lift then aggressive CLAHE (near-black primary)
+        # Pass 6 — mid-dark fill (gamma 6.0)
+        gamma_mid_dark = cv2.LUT(gray, self._gamma_lut_mid_dark)
+        gamma_mid_dark_clahe_deep = self._clahe_deep.apply(gamma_mid_dark)
+
+        # Pass 7
         gamma_extreme = cv2.LUT(gray, self._gamma_lut_extreme)
         gamma_extreme_clahe_deep = self._clahe_deep.apply(gamma_extreme)
 
-        # Pass 7: percentile stretch then aggressive CLAHE (near-black strongest)
+        # Pass 8
         stretched = _percentile_stretch(gray)
         stretched_clahe_deep = self._clahe_deep.apply(stretched)
 
-        # Pass 8: Gaussian denoise → percentile stretch → aggressive CLAHE
-        # Gaussian is cheaper than bilateral and appropriate here since we
-        # want maximum noise floor reduction before the stretch amplifies it.
+        # Pass 9
         denoised = cv2.GaussianBlur(gray, (5, 5), 0)
-        denoised_stretched = _percentile_stretch(denoised)
-        denoised_stretched_clahe_deep = self._clahe_deep.apply(denoised_stretched)
+        denoised_stretched_clahe_deep = self._clahe_deep.apply(
+            _percentile_stretch(denoised)
+        )
+
+        # ── Glare / over-exposure tier ─────────────────────────────────────
+        # Pass 10 — mild over-exposure
+        white_mild = cv2.LUT(gray, self._gamma_lut_white_mild)
+        white_mild_clahe = self._clahe.apply(white_mild)
+
+        # Pass 11 — moderate over-exposure
+        white_moderate = cv2.LUT(gray, self._gamma_lut_white_moderate)
+        white_moderate_clahe_deep = self._clahe_deep.apply(white_moderate)
+
+        # Pass 12 — strong / near-white
+        white_strong = cv2.LUT(gray, self._gamma_lut_white_strong)
+        white_strong_clahe_deep = self._clahe_deep.apply(white_strong)
+
+        # Pass 13 — bright + noisy: denoise then moderate darkening
+        bright_denoised = cv2.GaussianBlur(gray, (5, 5), 0)
+        bright_denoised_white_moderate = cv2.LUT(
+            bright_denoised, self._gamma_lut_white_moderate
+        )
+        bright_denoised_clahe_deep = self._clahe_deep.apply(
+            bright_denoised_white_moderate
+        )
 
         return [
+            # shadow tier
             clahe_only,
             gamma_moderate_clahe,
             bilateral_clahe,
             gamma_strong_clahe_deep,
             gamma_strong_bilateral_clahe_deep,
+            gamma_mid_dark_clahe_deep,
             gamma_extreme_clahe_deep,
             stretched_clahe_deep,
             denoised_stretched_clahe_deep,
+            # glare / over-exposure tier
+            white_mild_clahe,
+            white_moderate_clahe_deep,
+            white_strong_clahe_deep,
+            bright_denoised_clahe_deep,
         ]
 
     def _detect_on_image(self, image: np.ndarray):
