@@ -250,7 +250,7 @@ class AprilTagDetector:
         h, w = frame.shape[:2]
 
         intrinsics = self.calibration_handler.getCameraIntrinsics(
-            dai.CameraBoardSocket.RGB,
+            dai.CameraBoardSocket.CAM_A,
             w,
             h
         )
@@ -265,7 +265,7 @@ class AprilTagDetector:
         # Load distortion coefficients as well (the detector needs them)
         self.dist_coeffs = np.array(
             self.calibration_handler.getDistortionCoefficients(
-                dai.CameraBoardSocket.RGB
+                dai.CameraBoardSocket.CAM_A
             )
         )
 
