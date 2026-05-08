@@ -3,7 +3,7 @@
 #
 # Assumptions:
 # - Tag family: 36h11
-# - Target tag ID: 0
+# - Target tag ID: 67
 # - Tag size: 20 cm (0.20 meters)
 
 import cv2
@@ -52,7 +52,7 @@ class AprilTagDetector:
         h, w = frame.shape[:2]
 
         intrinsics = self.calibration_handler.getCameraIntrinsics(
-            dai.CameraBoardSocket.RGB,
+            dai.CameraBoardSocket.CAM_A,
             w,
             h
         )

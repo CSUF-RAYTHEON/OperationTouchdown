@@ -1,108 +1,147 @@
 import time
 import depthai as dai
+
 from Detectors.april_tag_detector import AprilTagDetector
-from PixhawkController.stationary_landing_controller import StationaryLandingController
+from PixhawkController.stationary_landing_controller import (
+    StationaryLandingController
+)
 
-# Reminder: Make sure this matches what you found via 'ls /dev/tty*'
-CONNECTION_STRING = "/dev/serial0" 
+CONNECTION_STRING = "/dev/serial0"
 BAUDRATE = 57600
-LANDING_THRESHOLD = 0.4
-TAKEOFF_ALTITUDE = 3 # in meters
 
-# 1. Initialize the Device first
+LANDING_THRESHOLD = 0.4
+TAKEOFF_ALTITUDE = 3  # meters
+
+HOVER_TIMEOUT = 7.0
+SEARCH_TIMEOUT = 10.0
+
+# Start the pipeline / camera
+
 with dai.Device() as device:
+
     print("[INFO] OAK-D Started")
 
-    # Read calibration before starting the pipeline
+    # Load calibration for AprilTag detection
     calibration = device.getCalibration()
-    
+
     april_tag_detector = AprilTagDetector(calibration)
-    controller = StationaryLandingController(CONNECTION_STRING, BAUDRATE)
 
-    # 2. Create the Pipeline bound to the device
+    controller = StationaryLandingController(
+        CONNECTION_STRING,
+        BAUDRATE
+    )
+
+    # Create the pipeline
+
     with dai.Pipeline(device) as pipeline:
-        
-        # 3. Create and build the Camera Node
-        cam_rgb = pipeline.create(dai.node.ColorCamera)
-        cam_rgb.setResolution(dai.ColorCameraProperties.SensorResolution.THE_1080_P)
-        cam_rgb.setBoardSocket(dai.CameraBoardSocket.RGB)
+        cam_rgb = pipeline.create(dai.node.Camera)
+        cam_rgb.build(dai.CameraBoardSocket.CAM_A)
 
-        cam_rgb.initialControl.setAutoFocusMode(dai.CameraControl.AutoFocusMode.CONTINUOUS_VIDEO)
-        
-        # 4. Request Output directly (No XLinkOut needed)
-        rgb_out = pipeline.create(dai.node.XLinkOut)
-        rgb_out.setStreamName("rgb")
-        cam_rgb.video.link(rgb_out.input)
+        rgb_out = cam_rgb.requestOutput(
+            size=(640, 480),
+            type=dai.ImgFrame.Type.NV12,
+            fps=30
+        )
 
-        # 5. Create the queue directly from that output
-        q_rgb = rgb_out.createOutputQueue(maxSize=4, blocking=False)
+        q_rgb = rgb_out.createOutputQueue(
+            maxSize=4,
+            blocking=False
+        )
 
-        # 6. Start the pipeline
         pipeline.start()
-        print("[INFO] Pipeline started. Initiating takeoff sequence...")
+
+        print("[INFO] Pipeline started")
+        print("[INFO] Initiating takeoff sequence...")
 
         controller.change_flight_mode("GUIDED")
         controller.arm_motors()
-        controller.takeoff_to_altitude(TAKEOFF_ALTITUDE)  # 3 meters
+        controller.takeoff_to_altitude(TAKEOFF_ALTITUDE)
 
-        # --- SETUP: The Fallback Timers ---
         last_tag_time = time.time()
-        
-        # Extended Fallback thresholds (in seconds)
-        HOVER_TIMEOUT = 7.0   # Patient hover duration
-        SEARCH_TIMEOUT = 10.0 # Total time before forcing a blind landing
-
-        # 7. Safe loop checking if the pipeline is still active
         while pipeline.isRunning():
             in_rgb = q_rgb.tryGet()
-            
+
             if in_rgb is None:
                 time.sleep(0.01)
                 continue
-                
+            
+            # Get the current frame
             frame = in_rgb.getCvFrame()
+
+            # Get the x y z from the april tag
             pose = april_tag_detector.get_tag_pose(frame)
 
-            # --- LOGIC: The Fallback State Machine ---
+            # Is tag lost?
             if pose is None:
                 time_lost = time.time() - last_tag_time
-                
+
                 if time_lost < HOVER_TIMEOUT:
-                    print(f"[WARN] Tag lost for {time_lost:.1f}s. Hovering patiently...")
+                    print(
+                        f"[WARN] Tag lost for "
+                        f"{time_lost:.1f}s. Hovering..."
+                    )
                     controller.send_velocity(0, 0, 0)
-                    
+
                 elif time_lost < SEARCH_TIMEOUT:
-                    print(f"[WARN] Tag lost for {time_lost:.1f}s. Ascending to widen FOV...")
-                    # Ascend slowly at 0.2 m/s
-                    controller.send_velocity(0, 0, -0.2) 
-                    
+                    print(
+                        f"[WARN] Tag lost for "
+                        f"{time_lost:.1f}s. Ascending..."
+                    )
+                    controller.send_velocity(0, 0, -0.2)
+
                 else:
-                    print("[CRITICAL] Tag lost for 12+ seconds. Initiating blind VIO landing...")
-                    # Descend slowly at 0.3 m/s
-                    controller.send_velocity(0, 0, 0.3)
-                    
-                continue 
+                    print(
+                        "[CRITICAL] Tag lost too long. "
+                        "Blind landing..."
+                    )
+                    controller.stationary_landing()
+                    time.sleep(5)
+                    controller.disarm_motors()
+                    break
 
-            # --- LOGIC: Tag is visible ---
-            last_tag_time = time.time() # Reset the safety timer
+                continue
 
+            # tag detected, reset timer
+            last_tag_time = time.time()
             cam_x, cam_y, cam_z = pose
-            print(f"[INFO] Tag Position (Camera): X={cam_x:.2f}, Y={cam_y:.2f}, Z={cam_z:.2f} m")
-
-            body_x, body_y, body_z = controller.convert_camera_to_body_frame(
-                cam_x, cam_y, cam_z
+            print(
+                f"[INFO] Camera Frame | "
+                f"X={cam_x:.2f}, "
+                f"Y={cam_y:.2f}, "
+                f"Z={cam_z:.2f}"
             )
 
-            print(f"[INFO] Tag Position (Body): X={body_x:.2f}, Y={body_y:.2f}, Z={body_z:.2f}")
+            # camera to body frame conversion
+            body_x, body_y, body_z = (
+                controller.convert_camera_to_body_frame(
+                    cam_x,
+                    cam_y,
+                    cam_z
+                )
+            )
+            print(
+                f"[INFO] Body Frame | "
+                f"X={body_x:.2f}, "
+                f"Y={body_y:.2f}, "
+                f"Z={body_z:.2f}"
+            )
 
+            # Check landing conditions
             if (
-                abs(body_x) < 0.1 and
-                abs(body_y) < 0.1 and
+                abs(body_x) < 0.10 and
+                abs(body_y) < 0.10 and
                 body_z < LANDING_THRESHOLD
             ):
-                print("[INFO] Landing conditions reached. Landing...")
+                print("[INFO] Landing conditions reached")
                 controller.stationary_landing()
                 controller.disarm_motors()
                 break
 
-            controller.adjust_velocity_and_send(body_x, body_y, body_z)
+            # track the tag by sending velocity commands
+            controller.adjust_velocity_and_send(
+                body_x,
+                body_y,
+                body_z
+            )
+            # Small sleep to stabilize loop timing
+            time.sleep(0.01)
