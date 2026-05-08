@@ -6,7 +6,10 @@ from PixhawkController.stationary_landing_controller import StationaryLandingCon
 # Reminder: Make sure this matches what you found via 'ls /dev/tty*'
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE = 57600
-LANDING_THRESHOLD = 0.4
+LANDING_THRESHOLD_Z  = 0.4   # meters — trigger landing when tag is this close below
+LANDING_THRESHOLD_XY = 0.2   # meters — lateral alignment tolerance (each axis)
+                              # 0.1 m was too tight; proportional control + filter
+                              # lag means both axes rarely hit 10 cm simultaneously
 TAKEOFF_ALTITUDE = 3  # meters
 
 # Camera output resolution fed to the AprilTag detector.
@@ -101,13 +104,13 @@ with dai.Device() as device:
             print(f"[INFO] Tag Position (Body): X={body_x:.2f}, Y={body_y:.2f}, Z={body_z:.2f}")
 
             if (
-                abs(body_x) < 0.1 and
-                abs(body_y) < 0.1 and
-                body_z < LANDING_THRESHOLD
+                abs(body_x) < LANDING_THRESHOLD_XY and
+                abs(body_y) < LANDING_THRESHOLD_XY and
+                body_z < LANDING_THRESHOLD_Z
             ):
-                print("[INFO] Landing conditions reached. Landing...")
+                print(f"[INFO] Landing conditions met — "
+                      f"X={body_x:.2f} Y={body_y:.2f} Z={body_z:.2f}. Landing...")
                 controller.stationary_landing()
-                controller.disarm_motors()
                 break
 
             controller.adjust_velocity_and_send(body_x, body_y, body_z)

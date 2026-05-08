@@ -38,9 +38,13 @@ class StationaryLandingController:
         print(f"Source System: {self.master.source_system}, Source Component: {self.master.source_component}, Target System: {self.master.target_system}, Target Component: {self.master.target_component}, Connection Type: {connection_string}, Baudrate: {baudrate}")
         print("[INFO] Pixhawk Connected")
 
-        self.prev_x = 0
-        self.prev_y = 0
-        self.prev_z = 0
+        # None signals "not yet initialised"; the first detection seeds the
+        # filter directly so the initial velocity command is always correct.
+        # Starting at 0 caused the drone to compute error_z = 0 - 0.3 = -0.3
+        # on the very first frame, sending an ASCEND command instead of DESCEND.
+        self.prev_x = None
+        self.prev_y = None
+        self.prev_z = None
     
     def heartbeat(self):
         print("Waiting for heartbeat from Pixhawk...")
@@ -189,18 +193,31 @@ class StationaryLandingController:
 
     def stationary_landing(self):
         """
-        Send land command to Pixhawk
-        """
-        print("[INFO] Landing...")
+        Switch to LAND mode and wait for the drone to touch down.
 
-        self.master.mav.command_long_send(
-            self.master.target_system,
-            self.master.target_component,
-            mavutil.mavlink.MAV_CMD_NAV_LAND,
-            0,
-            0,0,0,0,0,0,0
-        )
-        time.sleep(5)
+        MAV_CMD_NAV_LAND is a navigation waypoint command and is not reliably
+        honoured by ArduCopter while in GUIDED mode.  Switching to LAND mode
+        directly is the correct approach — ArduCopter will descend, touch down,
+        and auto-disarm when it detects zero throttle at ground level.
+        """
+        print("[INFO] Switching to LAND mode...")
+        self.change_flight_mode("LAND")
+
+        # Wait for motors to auto-disarm, which confirms touchdown.
+        # LAND mode descends at ~0.5–1 m/s; 20 s is a safe upper bound
+        # from the ~0.3 m trigger altitude (expected ~1–2 s), but guards
+        # against higher-altitude triggering edge cases.
+        print("[INFO] Waiting for touchdown and auto-disarm...")
+        start = time.time()
+        while time.time() - start < 20:
+            if not self.master.motors_armed():
+                print("[INFO] Motors disarmed — touchdown confirmed.")
+                return
+            time.sleep(0.5)
+
+        # Motors are still armed after 20 s; force-disarm as a safety fallback.
+        print("[WARN] Touchdown not confirmed after 20 s. Force-disarming motors.")
+        self.disarm_motors()
 
     def disable_safety_checks(self):
         """
@@ -226,7 +243,13 @@ class StationaryLandingController:
 
     def takeoff_to_altitude(self, meters):
         """
-        Take off to specified altitude (meters)
+        Take off to the specified altitude and block until the drone
+        has actually reached within 0.3 m of the target.
+
+        A fixed time.sleep(5) was too short for a 3 m climb in many
+        conditions.  Once the main loop starts sending velocity commands
+        they override the climb, so the drone must fully reach altitude
+        BEFORE the control loop begins.
         """
         print(f"[INFO] Taking off to {meters} meters...")
         self.master.mav.command_long_send(
@@ -234,10 +257,27 @@ class StationaryLandingController:
             self.master.target_component,
             mavutil.mavlink.MAV_CMD_NAV_TAKEOFF,
             0,
-            0,0,0,0,0,0,
+            0, 0, 0, 0, 0, 0,
             meters
         )
-        time.sleep(5)
+
+        print(f"[INFO] Waiting for altitude {meters} m ...")
+        timeout = 30  # seconds — generous upper bound
+        start = time.time()
+        while time.time() - start < timeout:
+            msg = self.master.recv_match(
+                type="LOCAL_POSITION_NED", blocking=True, timeout=1
+            )
+            if msg is not None:
+                # In NED frame z is negative when above home, so altitude = -z
+                altitude = -msg.z
+                print(f"[INFO] Altitude: {altitude:.2f} m / {meters} m target")
+                if altitude >= meters - 0.3:
+                    print(f"[INFO] Target altitude reached ({altitude:.2f} m).")
+                    return
+            time.sleep(0.1)
+
+        print(f"[WARN] Altitude timeout — proceeding anyway.")
 
     def send_velocity(self, vx, vy, vz):
         """
@@ -277,10 +317,16 @@ class StationaryLandingController:
         """
         Apply proportional control and send velocity command
         """
+        # Seed filter from the first real measurement instead of zero.
+        if self.prev_x is None:
+            self.prev_x = body_x
+            self.prev_y = body_y
+            self.prev_z = body_z
+
         alpha = 0.7
-        self.prev_x = alpha*self.prev_x + (1-alpha)*body_x
-        self.prev_y = alpha*self.prev_y + (1-alpha)*body_y
-        self.prev_z = alpha*self.prev_z + (1-alpha)*body_z
+        self.prev_x = alpha * self.prev_x + (1 - alpha) * body_x
+        self.prev_y = alpha * self.prev_y + (1 - alpha) * body_y
+        self.prev_z = alpha * self.prev_z + (1 - alpha) * body_z
 
         body_x = self.prev_x
         body_y = self.prev_y
