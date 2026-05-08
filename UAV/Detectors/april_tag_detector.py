@@ -16,18 +16,27 @@ import depthai as dai
 TARGET_TAG_ID = 67
 TAG_SIZE = 0.20     # 20 cm tag
 
-# Shadow/lighting robustness: gamma value for the dark-region fallback pass.
-# Values < 1.0 brighten shadows; 0.5 is a good starting point for heavy shade.
-_GAMMA_CORRECTION = 0.5
+# Gamma brightening uses the photographic convention:
+#   output = (pixel / 255) ^ (1 / gamma) × 255
+# gamma > 1.0 BRIGHTENS (lifts shadows); gamma < 1.0 darkens.
+#
+# _GAMMA_MODERATE — partial shadows, one side of the tag in shade
+# _GAMMA_DEEP     — tag nearly or fully inside a deep shadow
+_GAMMA_MODERATE = 2.2
+_GAMMA_DEEP = 4.0
 
 
 def _build_gamma_lut(gamma: float) -> np.ndarray:
-    """Precompute a 256-entry lookup table for gamma correction."""
+    """
+    Precompute a 256-entry brightening lookup table.
+    Photographic convention: gamma > 1 brightens dark pixels.
+      output = (i / 255) ^ (1 / gamma) × 255
+    """
     inv = 1.0 / gamma
-    table = np.array([
-        min(int((i / 255.0) ** inv * 255.0 + 0.5), 255)
-        for i in range(256)
-    ], dtype=np.uint8)
+    table = np.array(
+        [min(int((i / 255.0) ** inv * 255.0 + 0.5), 255) for i in range(256)],
+        dtype=np.uint8,
+    )
     return table
 
 
@@ -48,14 +57,19 @@ class AprilTagDetector:
         self.CX = None
         self.CY = None
 
-        # CLAHE instance reused every frame — avoids re-allocation overhead.
-        # clipLimit=2.0 / tileGridSize=(8,8) is a well-tested default for
-        # outdoor variable-lighting conditions; raise clipLimit if shadows are
-        # very deep, lower it if false positives appear in high-contrast scenes.
+        # Standard CLAHE — handles partial / mild shadows.
+        # clipLimit=2.0, tileGridSize=(8,8) is the well-tested outdoor default.
         self._clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 
-        # Precomputed gamma LUT for the dark-shadow fallback pass.
-        self._gamma_lut = _build_gamma_lut(_GAMMA_CORRECTION)
+        # Aggressive CLAHE — used for deep-shadow passes.
+        # Higher clipLimit (5.0) pushes more contrast amplification.
+        # Smaller tileGridSize (4,4) normalizes at a finer scale, which
+        # recovers tag structure when the shadow covers most of the tag.
+        self._clahe_deep = cv2.createCLAHE(clipLimit=5.0, tileGridSize=(4, 4))
+
+        # Gamma LUTs — both brighten; _strong lifts very dark pixels harder.
+        self._gamma_lut = _build_gamma_lut(_GAMMA_MODERATE)
+        self._gamma_lut_strong = _build_gamma_lut(_GAMMA_DEEP)
 
         print("[INFO] Detector initialized (intrinsics will be set on first frame)")
 
@@ -103,36 +117,59 @@ class AprilTagDetector:
         """
         Return a list of preprocessed grayscale images to try in order.
 
-        Three passes are generated, each targeting a different lighting failure
-        mode.  The detector tries them in sequence and returns on the first hit,
-        so the extra passes are only paid for on frames where the primary pass
-        misses — which is exactly the shadow-affected frames we care about.
+        Passes are ordered from least to most aggressive so that the common
+        case (mild or no shadow) returns quickly, and the expensive deep-shadow
+        passes only run when everything else has already failed.
 
-        Pass 1 — CLAHE only
+        Pass 1 — CLAHE (standard)
             Local contrast normalization.  Handles partial shadows where one
-            half of the tag is lit and the other is dark.
+            side of the tag is lit and the other is dark.
 
-        Pass 2 — Gamma lift → CLAHE
-            Brightens deeply shadowed regions first so CLAHE has more tonal
-            range to work with.  Helps when the tag is nearly entirely in shade.
+        Pass 2 — Moderate gamma lift (2.2×) → standard CLAHE
+            Brightens pixel values before CLAHE so that the equalizer has more
+            tonal range to work with in lightly-shaded regions.
 
-        Pass 3 — Bilateral filter → CLAHE
-            Smooths colour-fringing / sensor noise at shadow boundaries while
-            preserving tag edges.  Acts as a last-resort for noisy low-light
-            frames.
+        Pass 3 — Bilateral filter → standard CLAHE
+            Smooths sensor noise at shadow boundaries while preserving edges.
+            Useful for low-light / high-ISO frames.
+
+        Pass 4 — Strong gamma lift (4.0×) → aggressive CLAHE
+            Aggressively raises very dark pixels (a pixel at value 20 becomes
+            ~120) before applying high-clip-limit CLAHE with fine tiles.
+            Primary recovery pass for tags almost entirely in deep shadow.
+
+        Pass 5 — Strong gamma lift (4.0×) → bilateral smooth → aggressive CLAHE
+            Same strong lift but de-noised first.  Last resort for dark,
+            noisy frames where shadow boundaries introduce false edges.
         """
-        # Pass 1: CLAHE
+        # Pass 1: standard CLAHE only
         clahe_only = self._clahe.apply(gray)
 
-        # Pass 2: gamma correction to lift shadows, then CLAHE
-        gamma_lifted = cv2.LUT(gray, self._gamma_lut)
-        gamma_clahe = self._clahe.apply(gamma_lifted)
+        # Pass 2: moderate gamma lift then standard CLAHE
+        gamma_moderate = cv2.LUT(gray, self._gamma_lut)
+        gamma_moderate_clahe = self._clahe.apply(gamma_moderate)
 
-        # Pass 3: bilateral smoothing (preserves edges), then CLAHE
+        # Pass 3: bilateral de-noise then standard CLAHE
         bilateral = cv2.bilateralFilter(gray, d=9, sigmaColor=75, sigmaSpace=75)
         bilateral_clahe = self._clahe.apply(bilateral)
 
-        return [clahe_only, gamma_clahe, bilateral_clahe]
+        # Pass 4: strong gamma lift then aggressive CLAHE (deep-shadow primary)
+        gamma_strong = cv2.LUT(gray, self._gamma_lut_strong)
+        gamma_strong_clahe_deep = self._clahe_deep.apply(gamma_strong)
+
+        # Pass 5: strong gamma lift, de-noised, then aggressive CLAHE
+        gamma_strong_bilateral = cv2.bilateralFilter(
+            gamma_strong, d=9, sigmaColor=75, sigmaSpace=75
+        )
+        gamma_strong_bilateral_clahe_deep = self._clahe_deep.apply(gamma_strong_bilateral)
+
+        return [
+            clahe_only,
+            gamma_moderate_clahe,
+            bilateral_clahe,
+            gamma_strong_clahe_deep,
+            gamma_strong_bilateral_clahe_deep,
+        ]
 
     def _detect_on_image(self, image: np.ndarray):
         """Run the detector and return (x, y, z) for TARGET_TAG_ID, or None."""
