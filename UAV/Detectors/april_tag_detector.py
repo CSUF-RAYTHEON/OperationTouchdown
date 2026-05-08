@@ -110,6 +110,58 @@ def _division_normalize(img: np.ndarray, blur_ksize: int = 71) -> np.ndarray:
     return normalized
 
 
+def _unsharp_mask(img: np.ndarray, sigma: float = 2.0, strength: float = 1.5) -> np.ndarray:
+    """
+    Sharpen the image using unsharp masking:
+        output = img + strength × (img − blur(img))
+
+    This is applied AFTER normalisation passes to give the AprilTag corner
+    finder crisper, better-defined tag edges.  Spotty / intermittent detection
+    is often caused by soft edges that the quad-finder finds on some frames but
+    not others; sharpening makes the response consistent across frames.
+
+    sigma=2.0 sharpens at the scale of a tag edge (~2 px) without creating
+    large ringing halos.  strength=1.5 adds the high-frequency detail at
+    150% amplitude — aggressive enough to recover soft edges but below the
+    point where noise starts to dominate.
+    """
+    blurred = cv2.GaussianBlur(img, (0, 0), sigmaX=sigma)
+    return cv2.addWeighted(img, 1.0 + strength, blurred, -strength, 0)
+
+
+def _local_std_normalize(
+    img: np.ndarray, ksize: int = 31, scale: float = 48.0
+) -> np.ndarray:
+    """
+    Normalize each pixel against the local standard deviation of its
+    neighbourhood.
+
+    Unlike division normalization (which only removes the local mean / DC
+    component), this also compresses bright patches and lifts dark ones by
+    dividing out the local contrast magnitude.  The result is that dappled
+    light — alternating bright and dark patches caused by foliage, reflective
+    surfaces, or uneven ground cover — is equalized so every part of the frame
+    has similar contrast range regardless of local brightness.
+
+    Formula:
+        local_mean = GaussianBlur(img, ksize)
+        local_std  = sqrt(GaussianBlur(img², ksize) − local_mean²) + 1
+        output     = (img − local_mean) / local_std × scale + 128
+
+    ksize=31 captures lighting patches wider than ~30 px without erasing the
+    tag pattern (~50–100 px wide).  scale=48 centers the output at 128 with a
+    comfortable ±48 range for typical outdoor contrast levels.
+    """
+    img_f = img.astype(np.float32)
+    k = (ksize, ksize)
+    local_mean   = cv2.GaussianBlur(img_f, k, 0)
+    local_sq_mean = cv2.GaussianBlur(img_f * img_f, k, 0)
+    variance     = local_sq_mean - local_mean * local_mean
+    local_std    = np.sqrt(np.maximum(variance, 0.0)) + 1.0
+    normalized   = (img_f - local_mean) / local_std * scale + 128.0
+    return np.clip(normalized, 0, 255).astype(np.uint8)
+
+
 def _adaptive_thresh(img: np.ndarray, block_size: int, c: int = 5) -> np.ndarray:
     """
     Convert the image to a near-binary representation using Gaussian adaptive
@@ -231,173 +283,206 @@ class AprilTagDetector:
                  Local contrast normalisation.  Handles partial shadows where
                  one side of the tag is lit and the other is dark.
 
-        Pass 2   Gamma 2.2× → standard CLAHE
+        Pass 2   CLAHE → unsharp mask
+                 Same CLAHE output but edge-sharpened.  Directly targets
+                 "spotty" detection: if CLAHE sees the tag but the corner
+                 finder misses it on some frames, sharpening makes the edges
+                 consistent enough to always lock on.
+
+        Pass 3   Gamma 2.2× → standard CLAHE
                  Mild brightness lift for lightly shaded regions.
 
-        Pass 3   Bilateral → standard CLAHE
+        Pass 4   Bilateral → standard CLAHE
                  Smooths sensor noise at shadow boundaries while preserving
                  tag edges.
 
-        Pass 4   Division normalise → aggressive CLAHE
-                 Removes large-scale illumination gradients by dividing out the
-                 local mean.  Works for both gradual shadows and backlighting
-                 and is intentionally placed early because it is effective
-                 across many conditions with minimal distortion.
+        Pass 5   Division normalise → aggressive CLAHE
+                 Removes large-scale illumination gradients.  Works for both
+                 gradual shadows and backlighting.
 
-        Pass 5   Gamma 4.0× → aggressive CLAHE
+        Pass 6   Division normalise → unsharp mask → aggressive CLAHE
+                 Same gradient removal but with edge sharpening applied after.
+                 This is the primary fix for lighting conditions where the tag
+                 is visible but detection is inconsistent: the div-norm makes
+                 the image even, unsharp mask makes the edges crisp.
+
+        Pass 7   Local std normalise → aggressive CLAHE   [dappled-light primary]
+                 Normalises by local standard deviation, not just local mean.
+                 Equalizes both bright patches and dark patches simultaneously,
+                 which is the defining feature of dappled or mixed light.
+
+        Pass 8   Local std normalise → unsharp mask → aggressive CLAHE
+                 Same dappled-light normalization with edge sharpening on top.
+                 Most consistent pass for any mixed-illumination condition.
+
+        Pass 9   Gamma 4.0× → aggressive CLAHE
                  Deep-shadow primary: pixel at 20 → ~120.
 
-        Pass 6   Gamma 4.0× → bilateral → aggressive CLAHE
+        Pass 10  Gamma 4.0× → bilateral → aggressive CLAHE
                  Same deep lift but de-noised first for noisy dark frames.
 
-        Pass 7   Gamma 6.0× → aggressive CLAHE   [mid-dark fill]
+        Pass 11  Gamma 6.0× → aggressive CLAHE   [mid-dark fill]
                  Covers the range between deep shadow and near-black.
 
-        Pass 8   Gamma 6.0× → division normalise → aggressive CLAHE
+        Pass 12  Gamma 6.0× → division normalise → aggressive CLAHE
                  Lifts the dark region then removes any remaining gradient.
-                 Targets the case where a shadow gradient still exists after
-                 brightening.
 
-        Pass 9   Gamma 8.0× → aggressive CLAHE
+        Pass 13  Gamma 8.0× → aggressive CLAHE
                  Near-black primary: pixel at 5 → ~152.
 
-        Pass 10  Percentile stretch → aggressive CLAHE
-                 Maps the actual tonal range (even 2–18) to full 0–255 before
-                 CLAHE.  Most powerful single near-black pass.
+        Pass 14  Percentile stretch → aggressive CLAHE
+                 Maps the actual tonal range (even 2–18) to full 0–255.
 
-        Pass 11  Gaussian denoise → percentile stretch → aggressive CLAHE
-                 Same stretch but de-noised first.  Best for very dark, noisy
-                 frames.
+        Pass 15  Gaussian denoise → percentile stretch → aggressive CLAHE
+                 Same stretch but de-noised first for very dark noisy frames.
 
-        Pass 12  Adaptive threshold, blockSize=31
-                 Completely ignores absolute brightness; each pixel is only
-                 compared to its local 31×31 neighbourhood.  Recovers the tag
-                 pattern from localised deep shadows as long as any relative
-                 contrast remains between the white and black squares.
+        Pass 16  Adaptive threshold, blockSize=31
+                 Completely ignores absolute brightness; detects local contrast
+                 only.  Works even in near-total shadow.
 
-        Pass 13  Adaptive threshold, blockSize=71
-                 Larger neighbourhood handles wide, gradual shadow gradients
-                 and broad backlight halos that span much of the frame.
+        Pass 17  Adaptive threshold, blockSize=71
+                 Larger neighbourhood for wide, gradual gradients and backlight.
+
+        ── Mixed / dappled light tier ─────────────────────────────────────────
+
+        Pass 18  Denoised → local std normalise → aggressive CLAHE
+                 Same as Pass 7 but de-noised first.  Best for outdoor frames
+                 with both sensor noise and dappled lighting (common under
+                 partial cloud cover or through foliage).
 
         ── Glare / backlight / over-exposure tier ─────────────────────────────
-        Gamma < 1 compresses bright pixels back into a workable range.
-        Division normalise removes the large bright-background gradient that is
-        the defining feature of backlight.
 
-        Pass 14  Division normalise → standard CLAHE   [backlight primary]
-                 Same division normalise used in Pass 4 but listed again here
-                 so it is also attempted from the bright side when the shadow
-                 passes have all failed.  This is the most effective single
-                 pass for backlit tags.
+        Pass 19  Division normalise → standard CLAHE   [backlight primary]
 
-        Pass 15  Gamma 0.5 → standard CLAHE   [mild over-exposure]
-                 Gentle global darkening for slight glare or direct sunlight
-                 reflecting off the landing pad.  Pixel at 230 → ~207.
+        Pass 20  Gamma 0.5 → standard CLAHE   [mild over-exposure]
 
-        Pass 16  Gamma 0.5 → division normalise → aggressive CLAHE
+        Pass 21  Gamma 0.5 → unsharp mask → standard CLAHE
+                 Mild darkening with edge sharpening.  Targets bright scenes
+                 where detection is inconsistent because tag edges are soft
+                 after highlight compression.
+
+        Pass 22  Gamma 0.5 → division normalise → aggressive CLAHE
                  Combines global highlight compression with local gradient
-                 removal.  Handles backlit scenes where the tag is somewhat
-                 visible but washed into the background.
+                 removal.
 
-        Pass 17  Gamma 0.3 → aggressive CLAHE   [moderate over-exposure]
-                 Moderate global darkening; pixel at 230 → ~176.
+        Pass 23  Local std normalise on gamma 0.5 image → aggressive CLAHE
+                 Dappled-light normalization from the bright side.  Handles
+                 frames with mixed glare and shadow simultaneously.
 
-        Pass 18  Gamma 0.15 → aggressive CLAHE   [strong / near-white]
-                 Heavy darkening for near-white or heavily washed-out frames.
-                 Pixel at 230 → ~131.
+        Pass 24  Gamma 0.3 → aggressive CLAHE   [moderate over-exposure]
 
-        Pass 19  Gaussian denoise → gamma 0.3 → aggressive CLAHE
-                 De-noised moderate darkening for bright, noisy frames.
+        Pass 25  Gamma 0.15 → aggressive CLAHE   [strong / near-white]
 
-        Pass 20  Adaptive threshold on gamma 0.3 darkened image
-                 Runs adaptive thresholding after global highlight compression.
-                 Recovers near-white frames where the tag structure is locally
-                 distinguishable but globally washed out.
+        Pass 26  Gaussian denoise → gamma 0.3 → aggressive CLAHE
+
+        Pass 27  Adaptive threshold on gamma 0.3 darkened image
         """
         # ── Shadow tier ────────────────────────────────────────────────────
 
         # Pass 1
         p1 = self._clahe.apply(gray)
 
-        # Pass 2
-        p2 = self._clahe.apply(cv2.LUT(gray, self._gamma_lut))
+        # Pass 2 — CLAHE + sharpening (spotty-detection fix)
+        p2 = _unsharp_mask(p1)
 
         # Pass 3
-        p3 = self._clahe.apply(
+        p3 = self._clahe.apply(cv2.LUT(gray, self._gamma_lut))
+
+        # Pass 4
+        p4 = self._clahe.apply(
             cv2.bilateralFilter(gray, d=9, sigmaColor=75, sigmaSpace=75)
         )
 
-        # Pass 4 — division normalise (general gradient removal)
+        # Pass 5 — division normalise
         div_norm = _division_normalize(gray)
-        p4 = self._clahe_deep.apply(div_norm)
+        p5 = self._clahe_deep.apply(div_norm)
 
-        # Pass 5
+        # Pass 6 — division normalise + sharpening
+        p6 = self._clahe_deep.apply(_unsharp_mask(div_norm))
+
+        # Pass 7 — local std normalise (dappled-light primary)
+        lsdn = _local_std_normalize(gray)
+        p7 = self._clahe_deep.apply(lsdn)
+
+        # Pass 8 — local std normalise + sharpening
+        p8 = self._clahe_deep.apply(_unsharp_mask(lsdn))
+
+        # Pass 9
         gamma_strong = cv2.LUT(gray, self._gamma_lut_strong)
-        p5 = self._clahe_deep.apply(gamma_strong)
+        p9 = self._clahe_deep.apply(gamma_strong)
 
-        # Pass 6
-        p6 = self._clahe_deep.apply(
+        # Pass 10
+        p10 = self._clahe_deep.apply(
             cv2.bilateralFilter(gamma_strong, d=9, sigmaColor=75, sigmaSpace=75)
         )
 
-        # Pass 7 — mid-dark fill
+        # Pass 11 — mid-dark fill
         gamma_mid_dark = cv2.LUT(gray, self._gamma_lut_mid_dark)
-        p7 = self._clahe_deep.apply(gamma_mid_dark)
+        p11 = self._clahe_deep.apply(gamma_mid_dark)
 
-        # Pass 8 — mid-dark lift then gradient removal
-        p8 = self._clahe_deep.apply(_division_normalize(gamma_mid_dark))
+        # Pass 12 — mid-dark lift + gradient removal
+        p12 = self._clahe_deep.apply(_division_normalize(gamma_mid_dark))
 
-        # Pass 9
-        gamma_extreme = cv2.LUT(gray, self._gamma_lut_extreme)
-        p9 = self._clahe_deep.apply(gamma_extreme)
+        # Pass 13
+        p13 = self._clahe_deep.apply(cv2.LUT(gray, self._gamma_lut_extreme))
 
-        # Pass 10
-        p10 = self._clahe_deep.apply(_percentile_stretch(gray))
-
-        # Pass 11
-        denoised = cv2.GaussianBlur(gray, (5, 5), 0)
-        p11 = self._clahe_deep.apply(_percentile_stretch(denoised))
-
-        # Pass 12 — adaptive threshold, small neighbourhood
-        p12 = _adaptive_thresh(gray, block_size=31)
-
-        # Pass 13 — adaptive threshold, large neighbourhood (wide gradients)
-        p13 = _adaptive_thresh(gray, block_size=71)
-
-        # ── Glare / backlight / over-exposure tier ─────────────────────────
-
-        # Pass 14 — division normalise as backlight primary (tried again here
-        #           so the bright-side pipeline also benefits from it)
-        p14 = self._clahe.apply(div_norm)
+        # Pass 14
+        p14 = self._clahe_deep.apply(_percentile_stretch(gray))
 
         # Pass 15
+        denoised = cv2.GaussianBlur(gray, (5, 5), 0)
+        p15 = self._clahe_deep.apply(_percentile_stretch(denoised))
+
+        # Pass 16 — adaptive threshold, small neighbourhood
+        p16 = _adaptive_thresh(gray, block_size=31)
+
+        # Pass 17 — adaptive threshold, large neighbourhood
+        p17 = _adaptive_thresh(gray, block_size=71)
+
+        # ── Mixed / dappled light tier ──────────────────────────────────────
+
+        # Pass 18 — denoised local std normalise
+        p18 = self._clahe_deep.apply(_local_std_normalize(denoised))
+
+        # ── Glare / backlight / over-exposure tier ──────────────────────────
+
+        # Pass 19 — div norm as backlight primary
+        p19 = self._clahe.apply(div_norm)
+
+        # Pass 20
         white_mild = cv2.LUT(gray, self._gamma_lut_white_mild)
-        p15 = self._clahe.apply(white_mild)
+        p20 = self._clahe.apply(white_mild)
 
-        # Pass 16 — mild global compression + local gradient removal
-        p16 = self._clahe_deep.apply(_division_normalize(white_mild))
+        # Pass 21 — mild darkening + sharpening
+        p21 = self._clahe.apply(_unsharp_mask(white_mild))
 
-        # Pass 17
+        # Pass 22 — mild darkening + gradient removal
+        p22 = self._clahe_deep.apply(_division_normalize(white_mild))
+
+        # Pass 23 — local std normalise on mildly darkened image
+        p23 = self._clahe_deep.apply(_local_std_normalize(white_mild))
+
+        # Pass 24
         white_moderate = cv2.LUT(gray, self._gamma_lut_white_moderate)
-        p17 = self._clahe_deep.apply(white_moderate)
+        p24 = self._clahe_deep.apply(white_moderate)
 
-        # Pass 18
-        p18 = self._clahe_deep.apply(cv2.LUT(gray, self._gamma_lut_white_strong))
+        # Pass 25
+        p25 = self._clahe_deep.apply(cv2.LUT(gray, self._gamma_lut_white_strong))
 
-        # Pass 19
+        # Pass 26
         bright_denoised = cv2.GaussianBlur(gray, (5, 5), 0)
-        p19 = self._clahe_deep.apply(
+        p26 = self._clahe_deep.apply(
             cv2.LUT(bright_denoised, self._gamma_lut_white_moderate)
         )
 
-        # Pass 20 — adaptive threshold on moderately darkened image
-        p20 = _adaptive_thresh(white_moderate, block_size=31)
+        # Pass 27 — adaptive threshold on moderately darkened image
+        p27 = _adaptive_thresh(white_moderate, block_size=31)
 
         return [
-            p1,  p2,  p3,  p4,  p5,
-            p6,  p7,  p8,  p9,  p10,
-            p11, p12, p13,
-            p14, p15, p16, p17, p18, p19, p20,
+            p1,  p2,  p3,  p4,  p5,  p6,  p7,  p8,  p9,
+            p10, p11, p12, p13, p14, p15, p16, p17,
+            p18,
+            p19, p20, p21, p22, p23, p24, p25, p26, p27,
         ]
 
     def _detect_on_image(self, image: np.ndarray):
