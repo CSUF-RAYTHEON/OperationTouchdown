@@ -1,0 +1,43 @@
+[0.035s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_description -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description
+[0.282s] -- The C compiler identification is GNU 13.3.0
+[0.588s] -- The CXX compiler identification is GNU 13.3.0
+[0.642s] -- Detecting C compiler ABI info
+[1.074s] -- Detecting C compiler ABI info - done
+[1.115s] -- Check for working C compiler: /usr/bin/cc - skipped
+[1.132s] -- Detecting C compile features
+[1.133s] -- Detecting C compile features - done
+[1.157s] -- Detecting CXX compiler ABI info
+[1.602s] -- Detecting CXX compiler ABI info - done
+[1.633s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[1.636s] -- Detecting CXX compile features
+[1.637s] -- Detecting CXX compile features - done
+[1.656s] -- Found ament_cmake: 2.5.5 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[2.360s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[2.757s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[3.369s] -- Configuring done (3.3s)
+[3.374s] -- Generating done (0.0s)
+[3.379s] -- Build files have been written to: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_description
+[3.427s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_description -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description
+[3.430s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_description -- -j4 -l4
+[3.570s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_description -- -j4 -l4
+[3.572s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_description
+[3.606s] -- Install configuration: ""
+[3.610s] -- Execute custom install script
+[3.615s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/urdf/ugv.urdf.xacro
+[3.641s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/package.xml
+[3.683s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/ament_index/resource_index/package_run_dependencies/my_ugv_description
+[3.704s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/ament_index/resource_index/parent_prefix_path/my_ugv_description
+[3.743s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/environment/ament_prefix_path.sh
+[3.784s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/environment/ament_prefix_path.dsv
+[3.818s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/environment/path.sh
+[3.868s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/environment/path.dsv
+[3.916s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/local_setup.bash
+[3.952s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/local_setup.sh
+[3.998s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/local_setup.zsh
+[4.049s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/local_setup.dsv
+[4.085s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/package.dsv
+[4.125s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/ament_index/resource_index/packages/my_ugv_description
+[4.180s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/cmake/my_ugv_descriptionConfig.cmake
+[4.226s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/cmake/my_ugv_descriptionConfig-version.cmake
+[4.269s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/package.xml
+[4.271s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/install/my_ugv_hardware:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/my_ugv_description

@@ -1,0 +1,17 @@
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/urdf/ugv.urdf.xacro
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/package.xml
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/ament_index/resource_index/package_run_dependencies/my_ugv_description
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/ament_index/resource_index/parent_prefix_path/my_ugv_description
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/environment/ament_prefix_path.sh
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/environment/ament_prefix_path.dsv
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/environment/path.sh
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/environment/path.dsv
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/local_setup.bash
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/local_setup.sh
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/local_setup.zsh
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/local_setup.dsv
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/package.dsv
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/ament_index/resource_index/packages/my_ugv_description
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/cmake/my_ugv_descriptionConfig.cmake
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/cmake/my_ugv_descriptionConfig-version.cmake
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/install/my_ugv_description/share/my_ugv_description/package.xml

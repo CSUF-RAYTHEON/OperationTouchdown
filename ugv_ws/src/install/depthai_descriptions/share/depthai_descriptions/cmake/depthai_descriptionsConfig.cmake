@@ -1,0 +1,1 @@
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/build/depthai_descriptions/ament_cmake_core/depthai_descriptionsConfig.cmake

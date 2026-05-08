@@ -79,7 +79,7 @@ class RoboteqBridge(Node):
                         continue
 
         # Send Motor Commands
-        linear = -self.linear_x * 60
+        linear = -self.linear_x * 80
         angular = self.angular_z * 250
         
         left_raw = int(linear + angular)
