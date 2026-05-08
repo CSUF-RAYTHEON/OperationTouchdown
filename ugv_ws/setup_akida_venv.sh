@@ -49,6 +49,9 @@ else
     echo "      Done."
 fi
 
+# Prevent colcon from scanning inside the venv (avoids numpy/akida CMake errors)
+touch "${VENV_DIR}/COLCON_IGNORE"
+
 PIP="${VENV_DIR}/bin/pip"
 VENV_PYTHON="${VENV_DIR}/bin/python"
 
