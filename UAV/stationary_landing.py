@@ -4,10 +4,16 @@ from Detectors.april_tag_detector import AprilTagDetector
 from PixhawkController.stationary_landing_controller import StationaryLandingController
 
 # Reminder: Make sure this matches what you found via 'ls /dev/tty*'
-CONNECTION_STRING = "/dev/serial0" 
+CONNECTION_STRING = "/dev/serial0"
 BAUDRATE = 57600
 LANDING_THRESHOLD = 0.4
-TAKEOFF_ALTITUDE = 3 # in meters
+TAKEOFF_ALTITUDE = 3  # meters
+
+# Camera output resolution fed to the AprilTag detector.
+# 640×640 gives good tag visibility at 1–4 m altitude without
+# overwhelming the preprocessing pipeline on the Pi.
+# Lower to (300, 300) if CPU becomes a bottleneck.
+CAMERA_RESOLUTION = (640, 640)
 
 # 1. Initialize the Device first
 with dai.Device() as device:
@@ -15,26 +21,25 @@ with dai.Device() as device:
 
     # Read calibration before starting the pipeline
     calibration = device.getCalibration()
-    
+
     april_tag_detector = AprilTagDetector(calibration)
     controller = StationaryLandingController(CONNECTION_STRING, BAUDRATE)
 
     # 2. Create the Pipeline bound to the device
     with dai.Pipeline(device) as pipeline:
-        
-        # 3. Create and build the Camera Node
-        cam_rgb = pipeline.create(dai.node.ColorCamera)
-        cam_rgb.setResolution(dai.ColorCameraProperties.SensorResolution.THE_1080_P)
-        cam_rgb.setBoardSocket(dai.CameraBoardSocket.RGB)
 
-        cam_rgb.initialControl.setAutoFocusMode(dai.CameraControl.AutoFocusMode.CONTINUOUS_VIDEO)
-        
-        # 4. Request Output directly (No XLinkOut needed)
-        rgb_out = pipeline.create(dai.node.XLinkOut)
-        rgb_out.setStreamName("rgb")
-        cam_rgb.video.link(rgb_out.input)
+        # 3. Create and build the Camera Node (DepthAI v3 API)
+        cam_rgb = pipeline.create(dai.node.Camera)
+        cam_rgb.build(dai.CameraBoardSocket.CAM_A)
 
-        # 5. Create the queue directly from that output
+        # 4. Request a scaled output — no XLinkOut node needed
+        rgb_out = cam_rgb.requestOutput(
+            size=CAMERA_RESOLUTION,
+            type=dai.ImgFrame.Type.NV12,
+            fps=30
+        )
+
+        # 5. Create the output queue directly from the requested output
         q_rgb = rgb_out.createOutputQueue(maxSize=4, blocking=False)
 
         # 6. Start the pipeline
