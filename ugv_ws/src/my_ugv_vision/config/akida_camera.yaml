@@ -1,0 +1,26 @@
+# Camera configuration for Akida BrainChip inference mode.
+#
+# When using the Akida neuromorphic processor for detection, the OAK-D's
+# internal MyriadX VPU should NOT run any on-device neural network.
+# All inference is handled by the separate Akida PCIe/M.2 hardware via
+# the my_ugv_vision/object_detector node.
+#
+# The camera is configured for fast RGB streaming at a resolution that
+# gives enough detail for the model while keeping USB bandwidth low.
+
+/**:
+  ros__parameters:
+    camera:
+      i_enable_imu: false
+      i_enable_ir: false
+      # Disable on-device NN — inference handled externally by Akida chip
+      i_nn_type: none
+      i_pipeline_type: RGB
+    rgb:
+      i_fps: 15.0
+      i_width: 640
+      i_height: 400
+      i_interleaved: false
+      i_publish_topic: true
+    stereo:
+      i_publish_topic: false

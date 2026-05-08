@@ -1,0 +1,16 @@
+# Python virtual environments
+ugv_ws/akida_venv/
+
+# ROS2 build artifacts
+ugv_ws/build/
+ugv_ws/install/
+ugv_ws/log/
+ugv_ws/src/build/
+ugv_ws/src/install/
+ugv_ws/src/log/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
