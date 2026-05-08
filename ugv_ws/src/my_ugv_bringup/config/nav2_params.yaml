@@ -4,12 +4,14 @@ bt_navigator:
     global_frame: map
     robot_base_frame: base_footprint
     odom_frame: odom
+    transform_tolerance: 2.0
     default_bt_xml_filename: "navigate_to_pose_w_replanning_and_recovery.xml"
 
 controller_server:
   ros__parameters:
     use_sim_time: False
     controller_frequency: 10.0
+    transform_tolerance: 2.0
     min_x_velocity_threshold: 0.001
     min_theta_velocity_threshold: 0.001
     failure_tolerance: 0.3
@@ -27,9 +29,9 @@ controller_server:
       yaw_goal_tolerance: 0.2
     FollowPath:
       plugin: "nav2_mppi_controller::MPPIController"
-      time_steps: 30
+      time_steps: 10      # Reduced for Pi 5 CPU Stability
       model_dt: 0.1
-      batch_size: 150
+      batch_size: 40      # Reduced to 40 to ensure "Solvency"
       vx_min: 0.05    
       vx_max: 0.15    
       vtheta_max: 0.4 
@@ -41,29 +43,36 @@ local_costmap:
       publish_frequency: 2.0
       global_frame: odom
       robot_base_frame: base_footprint
+      transform_tolerance: 2.0
       rolling_window: true
       width: 3
       height: 3
       resolution: 0.05
+      robot_radius: 0.15
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: True
         observation_sources: scan
         scan:
-          topic: /scan
+          topic: /scan_merged
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
           data_type: "LaserScan"
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 5.0 
-        inflation_radius: 0.45   
+        inflation_radius: 0.25   
 
 planner_server:
   ros__parameters:
     expected_planner_frequency: 1.0
     use_sim_time: False
+    transform_tolerance: 2.0
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "nav2_navfn_planner::NavfnPlanner"
@@ -78,7 +87,8 @@ global_costmap:
       publish_frequency: 1.0
       global_frame: map
       robot_base_frame: base_footprint
-      robot_radius: 0.4 
+      transform_tolerance: 2.0
+      robot_radius: 0.15 
       use_sim_time: False
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
       static_layer:
@@ -88,19 +98,19 @@ global_costmap:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         observation_sources: scan
         scan:
-          topic: /scan
+          topic: /scan_merged
           data_type: "LaserScan"
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.55
+        inflation_radius: 0.25
 
 collision_monitor:
   ros__parameters:
     use_sim_time: False
     base_frame_id: "base_footprint"
     odom_frame_id: "odom"
-    transform_tolerance: 0.5
+    transform_tolerance: 2.0
     source_timeout: 5.0
     stop_pub_timeout: 2.0
     polygons: ["FootprintApproach"]
@@ -114,19 +124,22 @@ collision_monitor:
     observation_sources: ["scan"]
     scan:
       type: "scan"
-      topic: "/scan"
+      topic: "/scan_merged"
 
-# --- THE CLEAN LIFECYCLE ROSTER ---
+docking_server:
+  ros__parameters:
+    use_sim_time: false
+    controller_frequency: 50.0
+    dock_plugins: ['simple_dock'] 
+    simple_dock:
+      plugin: "opennav_docking::SimpleNonChargingDock"
+
+route_server:
+  ros__parameters:
+    use_sim_time: false
+    graph_file: ""
+
 lifecycle_manager_navigation:
   ros__parameters:
-    autostart: True
-    use_sim_time: False
-    node_names: 
-      - controller_server
-      - smoother_server
-      - planner_server
-      - behavior_server
-      - bt_navigator
-      - waypoint_follower
-      - velocity_smoother
-      - collision_monitor
+    autostart: true
+    node_names: ['controller_server', 'smoother_server', 'planner_server', 'behavior_server', 'bt_navigator', 'waypoint_follower', 'velocity_smoother', 'collision_monitor', 'route_server', 'docking_server']
