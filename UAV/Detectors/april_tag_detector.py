@@ -22,8 +22,16 @@ TAG_SIZE = 0.20     # 20 cm tag
 #
 # _GAMMA_MODERATE — partial shadows, one side of the tag in shade
 # _GAMMA_DEEP     — tag nearly or fully inside a deep shadow
+# _GAMMA_EXTREME  — near-black frames; pixel at value 5 lifts to ~152
 _GAMMA_MODERATE = 2.2
 _GAMMA_DEEP = 4.0
+_GAMMA_EXTREME = 8.0
+
+# Percentile clipping for the histogram-stretch passes.
+# Clips the bottom/top N% of pixels before stretching to avoid letting
+# a handful of noise spikes collapse the entire tonal range.
+_STRETCH_LOW_PCT = 1.0
+_STRETCH_HIGH_PCT = 99.0
 
 
 def _build_gamma_lut(gamma: float) -> np.ndarray:
@@ -38,6 +46,29 @@ def _build_gamma_lut(gamma: float) -> np.ndarray:
         dtype=np.uint8,
     )
     return table
+
+
+def _percentile_stretch(img: np.ndarray) -> np.ndarray:
+    """
+    Stretch the pixel value range so that the _STRETCH_LOW_PCT percentile
+    maps to 0 and the _STRETCH_HIGH_PCT percentile maps to 255.
+
+    This is the most powerful tool for near-black frames: even if all pixels
+    are in the range [2, 18], whatever relative contrast exists between the
+    tag's white and black squares gets expanded to fill the full 0–255 range
+    before CLAHE runs on top of it.
+
+    Percentile clipping prevents a single bright noise spike from collapsing
+    the stretch and making the rest of the image look uniformly dark.
+    """
+    lo = np.percentile(img, _STRETCH_LOW_PCT)
+    hi = np.percentile(img, _STRETCH_HIGH_PCT)
+    if hi <= lo:
+        return img
+    stretched = np.clip(
+        (img.astype(np.float32) - lo) / (hi - lo) * 255.0, 0, 255
+    ).astype(np.uint8)
+    return stretched
 
 
 class AprilTagDetector:
@@ -67,9 +98,10 @@ class AprilTagDetector:
         # recovers tag structure when the shadow covers most of the tag.
         self._clahe_deep = cv2.createCLAHE(clipLimit=5.0, tileGridSize=(4, 4))
 
-        # Gamma LUTs — both brighten; _strong lifts very dark pixels harder.
+        # Gamma LUTs — each tier lifts dark pixels progressively harder.
         self._gamma_lut = _build_gamma_lut(_GAMMA_MODERATE)
         self._gamma_lut_strong = _build_gamma_lut(_GAMMA_DEEP)
+        self._gamma_lut_extreme = _build_gamma_lut(_GAMMA_EXTREME)
 
         print("[INFO] Detector initialized (intrinsics will be set on first frame)")
 
@@ -141,6 +173,24 @@ class AprilTagDetector:
         Pass 5 — Strong gamma lift (4.0×) → bilateral smooth → aggressive CLAHE
             Same strong lift but de-noised first.  Last resort for dark,
             noisy frames where shadow boundaries introduce false edges.
+
+        ── Near-black / near-zero passes ──────────────────────────────────────
+        The passes below are for frames where most pixel values are in roughly
+        the 0–20 range.  The tag's white squares are only marginally brighter
+        than its black squares, so the goal is to amplify that tiny relative
+        contrast before handing off to the detector.
+
+        Pass 6 — Extreme gamma lift (8.0×) → aggressive CLAHE
+            Pushes a pixel at value 5 up to ~152.  Fastest near-black pass.
+
+        Pass 7 — Percentile stretch → aggressive CLAHE
+            Maps whatever tonal range actually exists in the frame (even if it
+            is just 2–18) to the full 0–255 scale, then CLAHE enhances local
+            contrast on top.  Most powerful single pass for near-black frames.
+
+        Pass 8 — Gaussian denoise → percentile stretch → aggressive CLAHE
+            De-noises before stretching so sensor noise spikes don't dominate
+            the stretched range.  Best for very dark, high-gain (noisy) frames.
         """
         # Pass 1: standard CLAHE only
         clahe_only = self._clahe.apply(gray)
@@ -163,12 +213,30 @@ class AprilTagDetector:
         )
         gamma_strong_bilateral_clahe_deep = self._clahe_deep.apply(gamma_strong_bilateral)
 
+        # Pass 6: extreme gamma lift then aggressive CLAHE (near-black primary)
+        gamma_extreme = cv2.LUT(gray, self._gamma_lut_extreme)
+        gamma_extreme_clahe_deep = self._clahe_deep.apply(gamma_extreme)
+
+        # Pass 7: percentile stretch then aggressive CLAHE (near-black strongest)
+        stretched = _percentile_stretch(gray)
+        stretched_clahe_deep = self._clahe_deep.apply(stretched)
+
+        # Pass 8: Gaussian denoise → percentile stretch → aggressive CLAHE
+        # Gaussian is cheaper than bilateral and appropriate here since we
+        # want maximum noise floor reduction before the stretch amplifies it.
+        denoised = cv2.GaussianBlur(gray, (5, 5), 0)
+        denoised_stretched = _percentile_stretch(denoised)
+        denoised_stretched_clahe_deep = self._clahe_deep.apply(denoised_stretched)
+
         return [
             clahe_only,
             gamma_moderate_clahe,
             bilateral_clahe,
             gamma_strong_clahe_deep,
             gamma_strong_bilateral_clahe_deep,
+            gamma_extreme_clahe_deep,
+            stretched_clahe_deep,
+            denoised_stretched_clahe_deep,
         ]
 
     def _detect_on_image(self, image: np.ndarray):
