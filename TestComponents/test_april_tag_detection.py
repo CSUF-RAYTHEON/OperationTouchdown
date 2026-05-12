@@ -94,8 +94,18 @@ _PINK_TAG_HSV_RANGES = [
     (np.array([0,   120, 100]), np.array([10,  255, 255])),
 ]
 
-# Overlay color used when drawing a detected pink tag (magenta, B G R)
-_PINK_TAG_OUTLINE_BGR = (255, 0, 200)
+# Outline color for a detected pink tag — green, matching standard tags
+_PINK_TAG_OUTLINE_BGR = (0, 255, 0)
+
+# Semi-transparent pink fill drawn behind the marker polygon to visually
+# indicate that this is the pink-background variant.
+# The green corner outline is drawn on top so the ArUco detection is still clear.
+_PINK_TAG_FILL_BGR   = (180, 105, 255)
+_PINK_TAG_FILL_ALPHA = 0.35            # 0.0 = invisible, 1.0 = fully opaque
+
+# Text color for pink-tag HUD lines (kept pink to distinguish from standard-tag
+# text even though both outlines are green)
+_PINK_TAG_TEXT_BGR = (180, 105, 255)
 
 
 def _replace_pink_with_white(frame: np.ndarray) -> np.ndarray:
@@ -258,6 +268,16 @@ with dai.Device() as device:
                 print("------")
 
                 corners = pink_tag.corners.astype(int)
+
+                # Semi-transparent pink background fill — visually encases the
+                # marker so it is clearly identified as the pink-background variant
+                overlay = frame.copy()
+                cv2.fillPoly(overlay, [corners.reshape((-1, 1, 2))], _PINK_TAG_FILL_BGR)
+                cv2.addWeighted(overlay, _PINK_TAG_FILL_ALPHA,
+                                frame,   1.0 - _PINK_TAG_FILL_ALPHA, 0, frame)
+
+                # Green corner outline drawn on top of the fill — matches the
+                # standard tag outline style and shows the ArUco detection inside
                 for i in range(4):
                     cv2.line(frame,
                              tuple(corners[i]),
@@ -270,12 +290,12 @@ with dai.Device() as device:
                 cv2.putText(
                     frame,
                     f"PINK CAM  x={cam_x:.2f} y={cam_y:.2f} z={cam_z:.2f}",
-                    (10, 56), cv2.FONT_HERSHEY_SIMPLEX, 0.45, _PINK_TAG_OUTLINE_BGR, 1
+                    (10, 56), cv2.FONT_HERSHEY_SIMPLEX, 0.45, _PINK_TAG_TEXT_BGR, 1
                 )
                 cv2.putText(
                     frame,
                     f"PINK BODY x={body_x:.2f} y={body_y:.2f} z={body_z:.2f}",
-                    (10, 74), cv2.FONT_HERSHEY_SIMPLEX, 0.45, _PINK_TAG_OUTLINE_BGR, 1
+                    (10, 74), cv2.FONT_HERSHEY_SIMPLEX, 0.45, _PINK_TAG_TEXT_BGR, 1
                 )
 
             cv2.imshow("AprilTag + Color Detection", frame)
