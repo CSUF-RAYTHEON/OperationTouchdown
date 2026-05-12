@@ -108,6 +108,41 @@ _PINK_TAG_FILL_ALPHA = 0.35            # 0.0 = invisible, 1.0 = fully opaque
 _PINK_TAG_TEXT_BGR = (180, 105, 255)
 
 
+def _tag_is_pink(frame: np.ndarray, corners: np.ndarray) -> bool:
+    """
+    Return True if the interior of the detected tag polygon in the ORIGINAL
+    (un-remapped) *frame* is predominantly hot/neon pink.
+
+    This is used as a mutual-exclusion gate:
+      - The standard detector calls this and SKIPS drawing if True
+        (the tag is actually a pink-variant marker, not a white one).
+      - PinkAprilTagDetector calls this and SKIPS returning if False
+        (no pink found → the detection came from a white marker that happened
+        to survive the preprocessing pipeline after remapping).
+
+    Threshold: if more than 10% of the polygon's pixel area is pink the tag
+    is classified as a pink-variant marker.  10% is intentionally low because
+    only the "white" squares of the marker are pink; the black squares and the
+    border are not, so the overall pink fraction inside the polygon is well
+    below 50% even for a fully pink marker.
+    """
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    region_mask = np.zeros(hsv.shape[:2], dtype=np.uint8)
+    cv2.fillPoly(region_mask, [corners.reshape((-1, 1, 2))], 255)
+
+    pink_mask = np.zeros(hsv.shape[:2], dtype=np.uint8)
+    for (lo, hi) in _PINK_TAG_HSV_RANGES:
+        pink_mask = cv2.bitwise_or(pink_mask, cv2.inRange(hsv, lo, hi))
+
+    inside_total = int(np.sum(region_mask > 0))
+    inside_pink  = int(np.sum(cv2.bitwise_and(pink_mask, region_mask) > 0))
+
+    if inside_total == 0:
+        return False
+    return (inside_pink / inside_total) > 0.10
+
+
 def _replace_pink_with_white(frame: np.ndarray) -> np.ndarray:
     """
     Return a copy of *frame* (BGR) where every hot/neon pink pixel has been
@@ -161,13 +196,25 @@ class PinkAprilTagDetector:
     def get_tag_detection(self, frame):
         """
         Convert pink → white in a frame copy, then run the full AprilTag
-        detection pipeline.  Returns the raw Detection object for the target
-        tag ID, or None if not found.
+        detection pipeline.
+
+        After detection, the returned corners are cross-checked against the
+        ORIGINAL frame using _tag_is_pink().  If the tag region is not
+        predominantly pink the detection is discarded — this prevents a
+        standard white marker from being double-counted here when a scene
+        contains both marker types.
+
+        Returns the raw Detection object for the target tag ID, or None.
         """
         if frame is None:
             return None
         remapped = _replace_pink_with_white(frame)
-        return self._detector.get_tag_detection(remapped)
+        tag = self._detector.get_tag_detection(remapped)
+        if tag is None:
+            return None
+        if not _tag_is_pink(frame, tag.corners.astype(int)):
+            return None
+        return tag
 
 
 # =============================================================================
@@ -214,6 +261,11 @@ with dai.Device() as device:
 
             # ---- STANDARD APRILTAG DETECTION ----
             tag = detector.get_tag_detection(frame)
+
+            # Discard if the detected region is actually a pink-variant marker;
+            # those are handled exclusively by the pink detector below.
+            if tag is not None and _tag_is_pink(frame, tag.corners.astype(int)):
+                tag = None
 
             if tag is not None:
                 t = tag.pose_t
