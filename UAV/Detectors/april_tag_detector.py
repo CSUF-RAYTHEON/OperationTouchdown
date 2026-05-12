@@ -485,8 +485,13 @@ class AprilTagDetector:
             p19, p20, p21, p22, p23, p24, p25, p26, p27,
         ]
 
-    def _detect_on_image(self, image: np.ndarray):
-        """Run the detector and return (x, y, z) for TARGET_TAG_ID, or None."""
+    def _detect_raw(self, image: np.ndarray):
+        """
+        Run the detector on a preprocessed image and return the raw Detection
+        object for TARGET_TAG_ID, or None.  Callers that only need pose should
+        use the returned object's pose_t; callers that need corners/center for
+        visualization use corners and center directly.
+        """
         detections = self.detector.detect(
             image,
             estimate_tag_pose=True,
@@ -495,9 +500,26 @@ class AprilTagDetector:
         )
         for tag in detections:
             if tag.tag_id == TARGET_TAG_ID:
-                t = tag.pose_t
-                return float(t[0][0]), float(t[1][0]), float(t[2][0])
+                return tag
         return None
+
+    def _preprocess_and_find(self, gray: np.ndarray):
+        """
+        Iterate preprocessing variants in order and return the first raw
+        Detection object that succeeds, or None if all variants fail.
+        """
+        for variant in self._preprocess_variants(gray):
+            tag = self._detect_raw(variant)
+            if tag is not None:
+                return tag
+        return None
+
+    def _prepare_gray(self, frame):
+        """Convert frame to undistorted grayscale, updating intrinsics if needed."""
+        if self.camera_matrix is None:
+            self._update_intrinsics(frame)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        return cv2.undistort(gray, self.camera_matrix, self.dist_coeffs)
 
     def get_tag_pose(self, frame):
         """
@@ -512,27 +534,30 @@ class AprilTagDetector:
 
         Returns None if tag not detected.
         """
-
         if frame is None:
             return None
+        tag = self._preprocess_and_find(self._prepare_gray(frame))
+        if tag is None:
+            return None
+        t = tag.pose_t
+        return float(t[0][0]), float(t[1][0]), float(t[2][0])
 
-        if self.camera_matrix is None:
-            self._update_intrinsics(frame)
+    def get_tag_detection(self, frame):
+        """
+        Detect tag and return the raw Detection object for TARGET_TAG_ID,
+        or None if the tag is not found.
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        The Detection object exposes:
+          .tag_id   — integer tag ID
+          .corners  — (4, 2) float32 array of corner pixel coordinates
+          .center   — (2,) float32 center pixel coordinate
+          .pose_t   — (3, 1) translation vector in meters (camera frame)
+          .pose_R   — (3, 3) rotation matrix
 
-        gray = cv2.undistort(
-            gray,
-            self.camera_matrix,
-            self.dist_coeffs
-        )
-
-        # Try each preprocessed variant in order; return on the first hit.
-        # On frames with no shadows all three passes are fast (< 1 ms each at
-        # 300×300), so the fallback chain adds negligible latency.
-        for variant in self._preprocess_variants(gray):
-            result = self._detect_on_image(variant)
-            if result is not None:
-                return result
-
-        return None
+        Use this method when you need corners/center for visualization in
+        addition to the pose.  get_tag_pose() is sufficient when only the
+        3-D position is needed.
+        """
+        if frame is None:
+            return None
+        return self._preprocess_and_find(self._prepare_gray(frame))

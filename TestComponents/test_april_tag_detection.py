@@ -38,10 +38,13 @@ with dai.Device() as device:
 
             frame = in_rgb.getCvFrame()
 
-            result = detector.get_tag_pose(frame)
+            tag = detector.get_tag_detection(frame)
 
-            if result is not None:
-                cam_x, cam_y, cam_z = result
+            if tag is not None:
+                t = tag.pose_t
+                cam_x = float(t[0][0])
+                cam_y = float(t[1][0])
+                cam_z = float(t[2][0])
 
                 body_x = -cam_y
                 body_y = cam_x
@@ -50,6 +53,17 @@ with dai.Device() as device:
                 print(f"CAM:  x={cam_x:.2f}, y={cam_y:.2f}, z={cam_z:.2f}")
                 print(f"BODY: x={body_x:.2f}, y={body_y:.2f}, z={body_z:.2f}")
                 print("------")
+
+                # draw tag outline
+                corners = tag.corners.astype(int)
+                for i in range(4):
+                    cv2.line(frame,
+                             tuple(corners[i]),
+                             tuple(corners[(i + 1) % 4]),
+                             (0, 255, 0), 2)
+
+                center = tuple(tag.center.astype(int))
+                cv2.circle(frame, center, 5, (0, 0, 255), -1)
 
                 cv2.putText(
                     frame,
