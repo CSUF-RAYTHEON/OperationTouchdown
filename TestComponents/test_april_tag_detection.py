@@ -8,7 +8,10 @@ import numpy as np
 import depthai as dai
 from UAV.Detectors.april_tag_detector import AprilTagDetector
 
-# ---- COLOR DETECTION CONFIG ----
+
+# =============================================================================
+# COLOR DETECTION
+# =============================================================================
 # HSV ranges for each target color.
 # OpenCV HSV: H in [0, 180], S and V in [0, 255].
 #
@@ -75,12 +78,101 @@ def detect_colors(frame: np.ndarray) -> None:
             )
 
 
-# ---- MAIN ----
+# =============================================================================
+# PINK APRILTAG DETECTION
+# =============================================================================
+# Hot/neon pink HSV ranges used to identify the "white" regions of a
+# pink-variant AprilTag marker.  These are tighter and more saturated than
+# the general-purpose pink color-detection ranges above so that ordinary
+# skin tones or light-pink objects do not accidentally trigger tag detection.
+#
+# Two ranges are needed because hot/neon pink straddles the hue-wheel seam:
+#   Range 1 — upper magenta/rose band  (H 150–180)
+#   Range 2 — lower red/rose wrap-around (H 0–10)
+_PINK_TAG_HSV_RANGES = [
+    (np.array([150, 120, 100]), np.array([180, 255, 255])),
+    (np.array([0,   120, 100]), np.array([10,  255, 255])),
+]
+
+# Overlay color used when drawing a detected pink tag (magenta, B G R)
+_PINK_TAG_OUTLINE_BGR = (255, 0, 200)
+
+
+def _replace_pink_with_white(frame: np.ndarray) -> np.ndarray:
+    """
+    Return a copy of *frame* (BGR) where every hot/neon pink pixel has been
+    replaced with white (255, 255, 255).
+
+    This remaps the "white" regions of a pink-variant AprilTag marker back to
+    true white so that the standard AprilTag detector — which expects a
+    black-and-white pattern — can process the marker without modification.
+    The black squares of the marker are unaffected.
+
+    A light morphological dilation is applied to the pink mask before
+    substitution so that anti-aliased or slightly under-saturated edge pixels
+    are also captured, preventing a dark fringe from forming around what
+    should be white squares.
+    """
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    mask = np.zeros(hsv.shape[:2], dtype=np.uint8)
+    for (lo, hi) in _PINK_TAG_HSV_RANGES:
+        mask = cv2.bitwise_or(mask, cv2.inRange(hsv, lo, hi))
+
+    # Dilate slightly to capture soft / anti-aliased pink edges
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    mask = cv2.dilate(mask, kernel, iterations=1)
+
+    modified = frame.copy()
+    modified[mask > 0] = [255, 255, 255]
+    return modified
+
+
+class PinkAprilTagDetector:
+    """
+    Detects AprilTag markers whose traditionally white squares are printed in
+    hot/neon pink instead.
+
+    Internally this wraps a standard AprilTagDetector.  Before every detection
+    call the input frame is passed through _replace_pink_with_white() so that
+    pink regions become white, and the detector sees a normal black-and-white
+    pattern.  This means the full 27-pass preprocessing pipeline defined in
+    AprilTagDetector is applied identically — only the colour remapping step
+    is inserted before that pipeline runs.
+
+    Usage is identical to AprilTagDetector.get_tag_detection():
+        pink_detector = PinkAprilTagDetector(calib)
+        tag = pink_detector.get_tag_detection(frame)
+    """
+
+    def __init__(self, calibration_handler):
+        self._detector = AprilTagDetector(calibration_handler)
+
+    def get_tag_detection(self, frame):
+        """
+        Convert pink → white in a frame copy, then run the full AprilTag
+        detection pipeline.  Returns the raw Detection object for the target
+        tag ID, or None if not found.
+        """
+        if frame is None:
+            return None
+        remapped = _replace_pink_with_white(frame)
+        return self._detector.get_tag_detection(remapped)
+
+
+# =============================================================================
+# MAIN
+# =============================================================================
 with dai.Device() as device:
     print("[INFO] Camera started")
 
     calib = device.getCalibration()
+
+    # Standard white AprilTag detector
     detector = AprilTagDetector(calib)
+
+    # Pink-variant AprilTag detector (same preprocessing, pink→white remapping)
+    pink_detector = PinkAprilTagDetector(calib)
 
     # ---- PIPELINE ----
     with dai.Pipeline(device) as pipeline:
@@ -110,7 +202,7 @@ with dai.Device() as device:
             # ---- COLOR DETECTION ----
             detect_colors(frame)
 
-            # ---- APRILTAG DETECTION ----
+            # ---- STANDARD APRILTAG DETECTION ----
             tag = detector.get_tag_detection(frame)
 
             if tag is not None:
@@ -123,11 +215,10 @@ with dai.Device() as device:
                 body_y = cam_x
                 body_z = cam_z
 
-                print(f"CAM:  x={cam_x:.2f}, y={cam_y:.2f}, z={cam_z:.2f}")
-                print(f"BODY: x={body_x:.2f}, y={body_y:.2f}, z={body_z:.2f}")
+                print(f"[TAG]  CAM:  x={cam_x:.2f}, y={cam_y:.2f}, z={cam_z:.2f}")
+                print(f"[TAG]  BODY: x={body_x:.2f}, y={body_y:.2f}, z={body_z:.2f}")
                 print("------")
 
-                # draw tag outline
                 corners = tag.corners.astype(int)
                 for i in range(4):
                     cv2.line(frame,
@@ -140,13 +231,51 @@ with dai.Device() as device:
 
                 cv2.putText(
                     frame,
-                    f"CAM  x={cam_x:.2f} y={cam_y:.2f} z={cam_z:.2f}",
+                    f"TAG  CAM  x={cam_x:.2f} y={cam_y:.2f} z={cam_z:.2f}",
                     (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 1
                 )
                 cv2.putText(
                     frame,
-                    f"BODY x={body_x:.2f} y={body_y:.2f} z={body_z:.2f}",
-                    (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 1
+                    f"TAG  BODY x={body_x:.2f} y={body_y:.2f} z={body_z:.2f}",
+                    (10, 38), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 1
+                )
+
+            # ---- PINK APRILTAG DETECTION ----
+            pink_tag = pink_detector.get_tag_detection(frame)
+
+            if pink_tag is not None:
+                t = pink_tag.pose_t
+                cam_x = float(t[0][0])
+                cam_y = float(t[1][0])
+                cam_z = float(t[2][0])
+
+                body_x = -cam_y
+                body_y = cam_x
+                body_z = cam_z
+
+                print(f"[PINK] CAM:  x={cam_x:.2f}, y={cam_y:.2f}, z={cam_z:.2f}")
+                print(f"[PINK] BODY: x={body_x:.2f}, y={body_y:.2f}, z={body_z:.2f}")
+                print("------")
+
+                corners = pink_tag.corners.astype(int)
+                for i in range(4):
+                    cv2.line(frame,
+                             tuple(corners[i]),
+                             tuple(corners[(i + 1) % 4]),
+                             _PINK_TAG_OUTLINE_BGR, 2)
+
+                center = tuple(pink_tag.center.astype(int))
+                cv2.circle(frame, center, 5, _PINK_TAG_OUTLINE_BGR, -1)
+
+                cv2.putText(
+                    frame,
+                    f"PINK CAM  x={cam_x:.2f} y={cam_y:.2f} z={cam_z:.2f}",
+                    (10, 56), cv2.FONT_HERSHEY_SIMPLEX, 0.45, _PINK_TAG_OUTLINE_BGR, 1
+                )
+                cv2.putText(
+                    frame,
+                    f"PINK BODY x={body_x:.2f} y={body_y:.2f} z={body_z:.2f}",
+                    (10, 74), cv2.FONT_HERSHEY_SIMPLEX, 0.45, _PINK_TAG_OUTLINE_BGR, 1
                 )
 
             cv2.imshow("AprilTag + Color Detection", frame)
