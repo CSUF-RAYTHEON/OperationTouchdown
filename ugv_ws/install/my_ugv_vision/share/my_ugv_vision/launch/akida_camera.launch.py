@@ -1,0 +1,1 @@
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/my_ugv_vision/launch/akida_camera.launch.py

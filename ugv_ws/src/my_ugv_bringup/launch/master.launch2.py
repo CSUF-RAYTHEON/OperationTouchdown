@@ -56,14 +56,20 @@ def generate_launch_description():
     )
 
     oakd_camera = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(oakd_path),
-        launch_arguments={
-            'name': 'oak',
-            'parent_frame': 'base_link',
-            'publish_tf_from_calibration': 'false', 
-            'enable_depth': 'true',
-        }.items()
-    )
+    PythonLaunchDescriptionSource(oakd_path),
+    launch_arguments={
+        'name': 'oak',
+        'parent_frame': 'base_link',
+        'publish_tf_from_calibration': 'false', 
+        'enable_depth': 'true',
+        # --- NEW BUDGET CUTS ---
+        'lr_check': 'true',             # Helps with depth accuracy
+        'enable_rgb': 'false',          # SHUT OFF the color video (Massive CPU saver)
+        'enable_pointcloud': 'false',   # SHUT OFF 3D points (The biggest hog)
+        'enable_imu': 'true',           # Keep this for our EKF!
+        'depth_fps': '10.0',            # Lower from 30fps to 10fps
+    }.items()
+)
 
     depth_to_scan = Node(
         package='depthimage_to_laserscan', executable='depthimage_to_laserscan_node',
@@ -94,7 +100,7 @@ def generate_launch_description():
     
     teleop_node = Node(
         package='teleop_twist_joy', executable='teleop_node', name='teleop_twist_joy_node',
-        parameters=[{'enable_button': 5, 'axis_linear.x': 1, 'axis_angular.yaw': 3, 'scale_linear.x': 3.0, 'scale_angular.yaw': 1.0}]
+        parameters=[{'enable_button': 5, 'axis_linear.x': 3, 'axis_angular.yaw': 1, 'scale_linear.x': 0.5, 'scale_angular.yaw': 0.9}]
     )
 
     # 6. SLAM Configuration

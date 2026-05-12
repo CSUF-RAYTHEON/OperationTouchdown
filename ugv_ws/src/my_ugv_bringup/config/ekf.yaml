@@ -1,7 +1,7 @@
 ekf_filter_node:
   ros__parameters:
     # 1. Timing and Basic Settings
-    frequency: 20.0           # Dropped to 20Hz to give the Pi 5 breathing room
+    frequency: 10.0           # Dropped to 20Hz to give the Pi 5 breathing room
     sensor_timeout: 0.2
     two_d_mode: true          
     publish_tf: true          
@@ -32,7 +32,7 @@ ekf_filter_node:
                   false, false, true,  # Trust IMU Yaw
                   false, false, false, 
                   false, false, true,  # Trust IMU Gyro
-                  false, false, false] 
+                  true, false, false] 
     imu0_differential: false
     imu0_relative: true
     imu0_remove_gravitational_acceleration: true

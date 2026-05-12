@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.16)
+project(TEST_NAME CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/../cmake)
+
+include(akida-model)
+
+file(GLOB SOURCES "*.cpp" "*.h")
+
+set(EXECUTABLE_NAME TEST_NAME)
+add_executable(${EXECUTABLE_NAME} ${SOURCES})
+target_link_libraries(${EXECUTABLE_NAME} PRIVATE akida)
+target_include_directories(${EXECUTABLE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/..)
+install(TARGETS ${EXECUTABLE_NAME} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+

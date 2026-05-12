@@ -1,0 +1,23 @@
+[  1%] Built target depthai_ros_msgs__rosidl_generator_type_description
+[  1%] Built target ament_cmake_python_symlink_depthai_ros_msgs
+[  1%] Built target depthai_ros_msgs__cpp
+[ 27%] Built target depthai_ros_msgs__rosidl_generator_c
+[ 37%] Built target depthai_ros_msgs__rosidl_typesupport_fastrtps_c
+[ 46%] Built target depthai_ros_msgs__rosidl_typesupport_cpp
+[ 56%] Built target depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp
+[ 66%] Built target depthai_ros_msgs__rosidl_typesupport_introspection_c
+[ 76%] Built target depthai_ros_msgs__rosidl_typesupport_c
+[ 85%] Built target depthai_ros_msgs__rosidl_typesupport_introspection_cpp
+[ 85%] Built target depthai_ros_msgs
+[ 86%] Built target depthai_ros_msgs__py
+running egg_info
+[ 95%] Built target depthai_ros_msgs__rosidl_generator_py
+writing depthai_ros_msgs.egg-info/PKG-INFO
+writing dependency_links to depthai_ros_msgs.egg-info/dependency_links.txt
+writing top-level names to depthai_ros_msgs.egg-info/top_level.txt
+[ 97%] Built target depthai_ros_msgs_s__rosidl_typesupport_c
+[ 98%] Built target depthai_ros_msgs_s__rosidl_typesupport_fastrtps_c
+[100%] Built target depthai_ros_msgs_s__rosidl_typesupport_introspection_c
+reading manifest file 'depthai_ros_msgs.egg-info/SOURCES.txt'
+writing manifest file 'depthai_ros_msgs.egg-info/SOURCES.txt'
+[100%] Built target ament_cmake_python_build_depthai_ros_msgs_egg

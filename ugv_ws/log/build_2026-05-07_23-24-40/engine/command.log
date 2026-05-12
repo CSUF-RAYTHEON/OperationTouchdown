@@ -1,0 +1,1 @@
+Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/engine': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_repo/OperationTouchdown/ugv_ws/akida_venv/lib/python3.12/site-packages/akida/engine -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/engine

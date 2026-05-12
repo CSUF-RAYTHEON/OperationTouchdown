@@ -1,0 +1,24 @@
+[0.045s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai_ros_msgs -- -j4 -l4
+[0.190s] [  1%] Built target depthai_ros_msgs__rosidl_generator_type_description
+[0.213s] [  1%] Built target ament_cmake_python_symlink_depthai_ros_msgs
+[0.249s] [  1%] Built target depthai_ros_msgs__cpp
+[0.264s] [ 27%] Built target depthai_ros_msgs__rosidl_generator_c
+[0.336s] [ 36%] Built target depthai_ros_msgs__rosidl_typesupport_cpp
+[0.367s] [ 46%] Built target depthai_ros_msgs__rosidl_typesupport_fastrtps_c
+[0.390s] [ 56%] Built target depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp
+[0.426s] [ 66%] Built target depthai_ros_msgs__rosidl_typesupport_c
+[0.439s] [ 76%] Built target depthai_ros_msgs__rosidl_typesupport_introspection_c
+[0.475s] [ 85%] Built target depthai_ros_msgs__rosidl_typesupport_introspection_cpp
+[0.523s] [ 85%] Built target depthai_ros_msgs
+[0.575s] [ 86%] Built target depthai_ros_msgs__py
+[0.634s] [ 95%] Built target depthai_ros_msgs__rosidl_generator_py
+[0.702s] running egg_info
+[0.750s] [ 96%] Built target depthai_ros_msgs_s__rosidl_typesupport_fastrtps_c
+[0.761s] [ 98%] Built target depthai_ros_msgs_s__rosidl_typesupport_c
+[0.761s] writing depthai_ros_msgs.egg-info/PKG-INFO
+[0.765s] writing dependency_links to depthai_ros_msgs.egg-info/dependency_links.txt
+[0.767s] writing top-level names to depthai_ros_msgs.egg-info/top_level.txt
+[0.767s] [100%] Built target depthai_ros_msgs_s__rosidl_typesupport_introspection_c
+[0.879s] reading manifest file 'depthai_ros_msgs.egg-info/SOURCES.txt'
+[0.881s] writing manifest file 'depthai_ros_msgs.egg-info/SOURCES.txt'
+[0.978s] [100%] Built target ament_cmake_python_build_depthai_ros_msgs_egg

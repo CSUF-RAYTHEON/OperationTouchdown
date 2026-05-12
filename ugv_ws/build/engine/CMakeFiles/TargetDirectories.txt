@@ -1,0 +1,3 @@
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/engine/CMakeFiles/akida_engine.dir
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/engine/CMakeFiles/edit_cache.dir
+/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/engine/CMakeFiles/rebuild_cache.dir

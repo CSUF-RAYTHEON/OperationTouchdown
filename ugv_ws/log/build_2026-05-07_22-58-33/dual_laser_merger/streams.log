@@ -1,0 +1,37 @@
+[0.091s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger -- -j4 -l4
+[0.401s] [ 50%] Built target dual_laser_merger
+[0.490s] [100%] Built target dual_laser_merger_node
+[1.007s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger -- -j4 -l4
+[1.010s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger
+[1.051s] -- Install configuration: ""
+[1.051s] -- Execute custom install script
+[1.051s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib/dual_laser_merger/dual_laser_merger_node
+[1.051s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/include/dual_laser_merger/include/dual_laser_merger/dual_laser_merger.hpp
+[1.052s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/demo_laser_merger.launch.py
+[1.052s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/bag/dual_lidar/dual_lidar_0.mcap
+[1.052s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/bag/dual_lidar/metadata.yaml
+[1.052s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/config/rviz_config.rviz
+[1.052s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/include/dual_laser_merger/dual_laser_merger.hpp
+[1.052s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/library_path.sh
+[1.052s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/library_path.dsv
+[1.052s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib/libdual_laser_merger.so
+[1.056s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/ament_index/resource_index/package_run_dependencies/dual_laser_merger
+[1.057s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/ament_index/resource_index/parent_prefix_path/dual_laser_merger
+[1.057s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/ament_prefix_path.sh
+[1.058s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/ament_prefix_path.dsv
+[1.059s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/path.sh
+[1.059s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/path.dsv
+[1.060s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/local_setup.bash
+[1.060s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/local_setup.sh
+[1.060s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/local_setup.zsh
+[1.061s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/local_setup.dsv
+[1.061s] -- Symlinking: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.dsv
+[1.095s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/ament_index/resource_index/packages/dual_laser_merger
+[1.103s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/ament_index/resource_index/rclcpp_components/dual_laser_merger
+[1.103s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/ament_cmake_export_dependencies-extras.cmake
+[1.104s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/ament_cmake_export_include_directories-extras.cmake
+[1.104s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/ament_cmake_export_libraries-extras.cmake
+[1.104s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/dual_laser_mergerConfig.cmake
+[1.104s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/dual_laser_mergerConfig-version.cmake
+[1.104s] -- Up-to-date symlink: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.xml
+[1.125s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_vision:/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/my_ugv_hardware:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/dual_laser_merger

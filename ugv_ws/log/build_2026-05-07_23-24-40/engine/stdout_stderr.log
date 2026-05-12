@@ -1,0 +1,77 @@
+[33mCMake Warning (dev) in CMakeLists.txt:
+  No project() command is present.  The top-level CMakeLists.txt file must
+  contain a literal, direct call to the project() command.  Add a line of
+  code such as
+
+    project(ProjectName)
+
+  near the top of the file, but after cmake_minimum_required().
+
+  CMake is pretending there is a "project(Project)" command on the first
+  line.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+[0m
+[33mCMake Warning (dev) in CMakeLists.txt:
+  cmake_minimum_required() should be called prior to this top-level project()
+  call.  Please see the cmake-commands(7) manual for usage documentation of
+  both commands.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+[0m
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+[33mCMake Warning (dev) at /usr/share/cmake-3.28/Modules/FetchContent.cmake:1331 (message):
+  The DOWNLOAD_EXTRACT_TIMESTAMP option was not given and policy CMP0135 is
+  not set.  The policy's OLD behavior will be used.  When using a URL
+  download, the timestamps of extracted files should preferably be that of
+  the time of extraction, otherwise code that depends on the extracted
+  contents might not be rebuilt if the URL changes.  The OLD behavior
+  preserves the timestamps from the archive instead, but this is usually not
+  what you want.  Update your project to the NEW behavior or specify the
+  DOWNLOAD_EXTRACT_TIMESTAMP option with a value of true to avoid this
+  robustness issue.
+Call Stack (most recent call first):
+  cmake/akida-engine.cmake:8 (FetchContent_Declare)
+  CMakeLists.txt:6 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+[0m
+-- Populating flatbuffers
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/engine/_deps/flatbuffers-subbuild
+[ 11%] Creating directories for 'flatbuffers-populate'
+[ 22%] Performing download step (download, verify and extract) for 'flatbuffers-populate'
+-- Downloading...
+   dst='/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/engine/_deps/flatbuffers-subbuild/flatbuffers-populate-prefix/src/v2.0.8.tar.gz'
+   timeout='none'
+   inactivity timeout='none'
+-- Using src='https://github.com/google/flatbuffers/archive/v2.0.8.tar.gz'
+-- Downloading... done
+-- extracting...
+     src='/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/engine/_deps/flatbuffers-subbuild/flatbuffers-populate-prefix/src/v2.0.8.tar.gz'
+     dst='/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/engine/_deps/flatbuffers-src'
+-- extracting... [tar xfz]
+-- extracting... [analysis]
+-- extracting... [rename]
+-- extracting... [clean up]
+-- extracting... done
+[ 33%] No update step for 'flatbuffers-populate'
+[ 44%] No patch step for 'flatbuffers-populate'
+[ 55%] No configure step for 'flatbuffers-populate'
+[ 66%] No build step for 'flatbuffers-populate'
+[ 77%] No install step for 'flatbuffers-populate'
+[ 88%] No test step for 'flatbuffers-populate'
+[100%] Completed 'flatbuffers-populate'
+[100%] Built target flatbuffers-populate
+-- Configuring done (2.7s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/engine
