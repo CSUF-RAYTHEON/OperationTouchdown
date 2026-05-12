@@ -4,9 +4,78 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import cv2
+import numpy as np
 import depthai as dai
 from UAV.Detectors.april_tag_detector import AprilTagDetector
 
+# ---- COLOR DETECTION CONFIG ----
+# HSV ranges for each target color.
+# OpenCV HSV: H in [0, 180], S and V in [0, 255].
+#
+# Pink wraps the hue wheel so two ranges are needed (upper-red / magenta band).
+_COLOR_RANGES = {
+    "pink": [
+        (np.array([155, 50,  80]),  np.array([180, 255, 255])),
+        (np.array([0,   50,  80]),  np.array([10,  180, 255])),
+    ],
+    "blue": [
+        (np.array([100, 100, 50]),  np.array([130, 255, 255])),
+    ],
+    "yellow": [
+        (np.array([18,  100, 100]), np.array([35,  255, 255])),
+    ],
+}
+
+# Draw color: (B, G, R)
+_COLOR_BGR = {
+    "pink":   (180, 105, 255),
+    "blue":   (255, 100,   0),
+    "yellow": (  0, 220, 220),
+}
+
+# Minimum contour area (px²) to suppress noise blobs
+_MIN_CONTOUR_AREA = 400
+
+
+def detect_colors(frame: np.ndarray) -> None:
+    """
+    Detect pink, blue, and yellow regions in *frame* (BGR) and draw
+    bounding rectangles + labels directly onto the frame.
+
+    This function is intentionally independent of the AprilTag detector —
+    it operates purely on color information and does not affect tag detection.
+    """
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    for color_name, ranges in _COLOR_RANGES.items():
+        # Combine all HSV ranges for this color into one mask
+        mask = np.zeros(hsv.shape[:2], dtype=np.uint8)
+        for (lo, hi) in ranges:
+            mask = cv2.bitwise_or(mask, cv2.inRange(hsv, lo, hi))
+
+        # Light morphological cleanup to remove noise and fill small holes
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN,  kernel, iterations=1)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel, iterations=1)
+
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        bgr = _COLOR_BGR[color_name]
+
+        for cnt in contours:
+            if cv2.contourArea(cnt) < _MIN_CONTOUR_AREA:
+                continue
+
+            x, y, w, h = cv2.boundingRect(cnt)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), bgr, 2)
+            cv2.putText(
+                frame,
+                color_name,
+                (x, max(y - 6, 10)),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, bgr, 1,
+            )
+
+
+# ---- MAIN ----
 with dai.Device() as device:
     print("[INFO] Camera started")
 
@@ -38,6 +107,10 @@ with dai.Device() as device:
 
             frame = in_rgb.getCvFrame()
 
+            # ---- COLOR DETECTION ----
+            detect_colors(frame)
+
+            # ---- APRILTAG DETECTION ----
             tag = detector.get_tag_detection(frame)
 
             if tag is not None:
@@ -76,7 +149,7 @@ with dai.Device() as device:
                     (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 1
                 )
 
-            cv2.imshow("AprilTag Test", frame)
+            cv2.imshow("AprilTag + Color Detection", frame)
 
             if cv2.waitKey(1) == ord('q'):
                 break
