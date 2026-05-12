@@ -1,34 +1,17 @@
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
 import cv2
 import depthai as dai
-import numpy as np
-from pupil_apriltags import Detector
-
-TAG_SIZE = 0.20
-TARGET_TAG_ID = 67
+from UAV.Detectors.april_tag_detector import AprilTagDetector
 
 with dai.Device() as device:
     print("[INFO] Camera started")
 
-    # Calibration (v3 uses getCalibration)
     calib = device.getCalibration()
-
-    intrinsics = calib.getCameraIntrinsics(
-        dai.CameraBoardSocket.CAM_A,
-        300,
-        300
-    )
-
-    camera_matrix = np.array(intrinsics)
-    dist_coeffs = np.array(
-        calib.getDistortionCoefficients(dai.CameraBoardSocket.CAM_A)
-    )
-
-    FX = camera_matrix[0][0]
-    FY = camera_matrix[1][1]
-    CX = camera_matrix[0][2]
-    CY = camera_matrix[1][2]
-
-    detector = Detector(families="tag36h11")
+    detector = AprilTagDetector(calib)
 
     # ---- PIPELINE ----
     with dai.Pipeline(device) as pipeline:
@@ -55,26 +38,11 @@ with dai.Device() as device:
 
             frame = in_rgb.getCvFrame()
 
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            gray = cv2.undistort(gray, camera_matrix, dist_coeffs)
+            result = detector.get_tag_pose(frame)
 
-            detections = detector.detect(
-                gray,
-                estimate_tag_pose=True,
-                camera_params=(FX, FY, CX, CY),
-                tag_size=TAG_SIZE
-            )
+            if result is not None:
+                cam_x, cam_y, cam_z = result
 
-            for tag in detections:
-                if tag.tag_id != TARGET_TAG_ID:
-                    continue
-
-                t = tag.pose_t
-                cam_x = float(t[0][0])
-                cam_y = float(t[1][0])
-                cam_z = float(t[2][0])
-
-                # YOUR CONVERSION
                 body_x = -cam_y
                 body_y = cam_x
                 body_z = cam_z
@@ -83,16 +51,16 @@ with dai.Device() as device:
                 print(f"BODY: x={body_x:.2f}, y={body_y:.2f}, z={body_z:.2f}")
                 print("------")
 
-                # draw tag
-                corners = tag.corners.astype(int)
-                for i in range(4):
-                    cv2.line(frame,
-                             tuple(corners[i]),
-                             tuple(corners[(i+1)%4]),
-                             (0,255,0), 2)
-
-                center = tuple(tag.center.astype(int))
-                cv2.circle(frame, center, 5, (0,0,255), -1)
+                cv2.putText(
+                    frame,
+                    f"CAM  x={cam_x:.2f} y={cam_y:.2f} z={cam_z:.2f}",
+                    (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 1
+                )
+                cv2.putText(
+                    frame,
+                    f"BODY x={body_x:.2f} y={body_y:.2f} z={body_z:.2f}",
+                    (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 1
+                )
 
             cv2.imshow("AprilTag Test", frame)
 
