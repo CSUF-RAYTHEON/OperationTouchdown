@@ -1,4 +1,5 @@
 import time
+import cv2
 import depthai as dai
 from Detectors.april_tag_detector import AprilTagDetector
 from PixhawkController.stationary_landing_controller import StationaryLandingController
@@ -79,10 +80,10 @@ with dai.Device() as device:
                 continue
 
             frame = in_rgb.getCvFrame()
-            pose = april_tag_detector.get_tag_pose(frame)
+            tag = april_tag_detector.get_tag_detection(frame)
 
             # --- LOGIC: The Fallback State Machine ---
-            if pose is None:
+            if tag is None:
                 landing_confirm_count = 0  # lost the tag — reset confirmation
                 time_lost = time.time() - last_tag_time
 
@@ -98,12 +99,19 @@ with dai.Device() as device:
                     print("[CRITICAL] Tag lost for 12+ seconds. Initiating blind VIO landing...")
                     controller.send_velocity(0, 0, 0.3)
 
+                cv2.imshow("Stationary Landing", frame)
+                if cv2.waitKey(1) == ord('q'):
+                    break
                 continue
 
             # --- LOGIC: Tag is visible ---
             last_tag_time = time.time()
 
-            cam_x, cam_y, cam_z = pose
+            t = tag.pose_t
+            cam_x = float(t[0][0])
+            cam_y = float(t[1][0])
+            cam_z = float(t[2][0])
+
             print(f"[INFO] Tag Position (Camera): X={cam_x:.2f}, Y={cam_y:.2f}, Z={cam_z:.2f} m")
 
             body_x, body_y, body_z = controller.convert_camera_to_body_frame(
@@ -135,3 +143,36 @@ with dai.Device() as device:
                 landing_confirm_count = 0
 
             controller.adjust_velocity_and_send(body_x, body_y, body_z)
+
+            # --- VISUALIZATION ---
+            # Runs after velocity is sent so the flight control path is never
+            # delayed by the display call.
+            corners = tag.corners.astype(int)
+            for i in range(4):
+                cv2.line(frame,
+                         tuple(corners[i]),
+                         tuple(corners[(i + 1) % 4]),
+                         (0, 255, 0), 2)
+
+            center = tuple(tag.center.astype(int))
+            cv2.circle(frame, center, 5, (0, 0, 255), -1)
+
+            status = "ALIGNED" if conditions_met else "ADJUSTING"
+            status_color = (0, 255, 0) if conditions_met else (0, 165, 255)
+            cv2.putText(frame, status,
+                        (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.55, status_color, 2)
+            cv2.putText(frame,
+                        f"CAM  x={cam_x:.2f} y={cam_y:.2f} z={cam_z:.2f}",
+                        (10, 42), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
+            cv2.putText(frame,
+                        f"BODY x={body_x:.2f} y={body_y:.2f} z={body_z:.2f}",
+                        (10, 62), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
+            cv2.putText(frame,
+                        f"CONFIRM {landing_confirm_count}/{LANDING_CONFIRM_FRAMES}",
+                        (10, 82), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
+
+            cv2.imshow("Stationary Landing", frame)
+            if cv2.waitKey(1) == ord('q'):
+                break
+
+cv2.destroyAllWindows()
