@@ -1,3 +1,0 @@
-[console_scripts]
-lora_bridge = my_ugv_hardware.lora_bridge:main
-virtual_odom = my_ugv_hardware.virtual_odom:main
