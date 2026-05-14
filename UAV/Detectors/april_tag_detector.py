@@ -67,9 +67,9 @@ class AprilTagDetector:
         # Load distortion coefficients as well (the detector needs them)
         self.dist_coeffs = np.array(
             self.calibration_handler.getDistortionCoefficients(
-                dai.CameraBoardSocket.RGB
-            )
-        )
+            dai.CameraBoardSocket.CAM_A
+        )[:5]
+)
 
         print(f"[INFO] Intrinsics updated for {w}x{h}")
 

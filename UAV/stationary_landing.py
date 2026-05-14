@@ -134,6 +134,7 @@ with dai.Device() as device:
             ):
                 print("[INFO] Landing conditions reached")
                 controller.stationary_landing()
+                time.sleep(5)
                 controller.disarm_motors()
                 break
 
