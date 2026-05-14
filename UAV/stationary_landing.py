@@ -9,8 +9,8 @@ from PixhawkController.stationary_landing_controller import (
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE = 57600
 
-LANDING_THRESHOLD = 0.4
-TAKEOFF_ALTITUDE = 3  # meters
+LANDING_THRESHOLD = 0.7
+TAKEOFF_ALTITUDE = 6  # meters
 
 HOVER_TIMEOUT = 7.0
 SEARCH_TIMEOUT = 10.0
@@ -39,7 +39,7 @@ with dai.Device() as device:
 
         rgb_out = cam_rgb.requestOutput(
             size=(640, 480),
-            type=dai.ImgFrame.Type.NV12,
+            type=dai.ImgFrame.Type.BGR888p,
             fps=30
         )
 

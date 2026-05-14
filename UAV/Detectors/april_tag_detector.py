@@ -95,12 +95,6 @@ class AprilTagDetector:
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        gray = cv2.undistort(
-            gray,
-            self.camera_matrix,
-            self.dist_coeffs
-        )
-
         detections = self.detector.detect(
             gray,
             estimate_tag_pose=True,
