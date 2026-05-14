@@ -1,2 +1,0 @@
-[console_scripts]
-object_detector = my_ugv_vision.object_detector:main

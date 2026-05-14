@@ -1,9 +1,0 @@
-/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai-ros/CMakeFiles/uninstall.dir
-/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai-ros/CMakeFiles/depthai-ros_uninstall.dir
-/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai-ros/CMakeFiles/test.dir
-/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai-ros/CMakeFiles/edit_cache.dir
-/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai-ros/CMakeFiles/rebuild_cache.dir
-/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai-ros/CMakeFiles/list_install_components.dir
-/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai-ros/CMakeFiles/install.dir
-/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai-ros/CMakeFiles/install/local.dir
-/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/depthai-ros/CMakeFiles/install/strip.dir
