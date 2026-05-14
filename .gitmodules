@@ -4,6 +4,3 @@
 [submodule "ugv_ws/src/rplidar_ros"]
 	path = ugv_ws/src/rplidar_ros
 	url = https://github.com/Slamtec/rplidar_ros
-[submodule "ugv_ws/src/my_ugv_vision/depthai-ros"]
-	path = ugv_ws/src/my_ugv_vision/depthai-ros
-	url = https://github.com/luxonis/depthai-ros/
