@@ -1,7 +1,0 @@
-[31mCMake Error at CMakeLists.txt:8 (include):
-  include could not find requested file:
-
-    akida-model
-
-[0m
--- Configuring incomplete, errors occurred!

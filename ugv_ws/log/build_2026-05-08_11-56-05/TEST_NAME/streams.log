@@ -1,9 +1,0 @@
-[0.070s] Invoking command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/TEST_NAME': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_repo/OperationTouchdown/ugv_ws/akida_venv/lib/python3.12/site-packages/akida/generate/test/engine/app_templates -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/TEST_NAME
-[0.117s] [31mCMake Error at CMakeLists.txt:8 (include):
-[0.118s]   include could not find requested file:
-[0.119s] 
-[0.120s]     akida-model
-[0.122s] 
-[0.124s] [0m
-[0.125s] -- Configuring incomplete, errors occurred!
-[0.128s] Invoked command in '/home/ground/ugv_repo/OperationTouchdown/ugv_ws/build/TEST_NAME' returned '1': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ground/ugv_repo/OperationTouchdown/ugv_ws/akida_venv/lib/python3.12/site-packages/akida/generate/test/engine/app_templates -DCMAKE_INSTALL_PREFIX=/home/ground/ugv_repo/OperationTouchdown/ugv_ws/install/TEST_NAME
