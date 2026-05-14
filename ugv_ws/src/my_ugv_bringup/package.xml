@@ -18,7 +18,4 @@
 
 <exec_depend>launch</exec_depend>
 <exec_depend>launch_ros</exec_depend>
-<exec_depend>my_ugv_description</exec_depend>
-<exec_depend>my_ugv_hardware</exec_depend>
-
 </package>
