@@ -1,1 +1,0 @@
-/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_bringup/launch/navigation_launch.py

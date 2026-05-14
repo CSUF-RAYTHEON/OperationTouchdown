@@ -1,1 +1,0 @@
-/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/my_ugv_bringup/config/install/local_setup.bash

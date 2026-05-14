@@ -1,1 +1,0 @@
-/home/ground/ugv_repo/OperationTouchdown/ugv_ws/src/dual_laser_merger/launch/demo_laser_merger.launch.py
