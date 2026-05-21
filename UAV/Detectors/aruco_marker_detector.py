@@ -223,9 +223,14 @@ class ArucoMarkerDetection:
 
 class ArucoMarkerDetector:
 
-    def __init__(self, calibration_handler):
+    def __init__(self, calibration_handler, dict_id: int = ARUCO_DICT):
         """
         Initialize ArUco detector using calibration from the OAK-D S2.
+
+        dict_id selects the ArUco dictionary used for detection.  Defaults to
+        the module-level ARUCO_DICT so existing callers do not need to change.
+        Pass e.g. cv2.aruco.DICT_APRILTAG_36h11 to detect AprilTag-family
+        markers via the cv2.aruco backend.
         """
         self.calibration_handler = calibration_handler
 
@@ -260,7 +265,7 @@ class ArucoMarkerDetector:
 
         # ArUco detector setup.  Sub-pixel corner refinement gives noticeably
         # more stable pose at 1–4 m for negligible CPU cost.
-        self._aruco_dictionary = aruco.getPredefinedDictionary(ARUCO_DICT)
+        self._aruco_dictionary = aruco.getPredefinedDictionary(dict_id)
         self._aruco_params     = aruco.DetectorParameters()
         self._aruco_params.cornerRefinementMethod = aruco.CORNER_REFINE_SUBPIX
         self._aruco_detector   = aruco.ArucoDetector(
