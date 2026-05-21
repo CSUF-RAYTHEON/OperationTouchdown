@@ -45,7 +45,7 @@ def generate_launch_description():
 
     # 4. Sensors
     rplidar_node = Node(
-        package='rplidar_ros', executable='rplidar_node', name='rplidar_node',
+        package='rplidar_ros', executable='rplidar_composition', name='rplidar_node',
         parameters=[{
             'serial_port': '/dev/ttyUSB0',
             'frame_id': 'laser',
@@ -100,7 +100,13 @@ def generate_launch_description():
     
     teleop_node = Node(
         package='teleop_twist_joy', executable='teleop_node', name='teleop_twist_joy_node',
-        parameters=[{'enable_button': 5, 'axis_linear.x': 3, 'axis_angular.yaw': 1, 'scale_linear.x': 0.5, 'scale_angular.yaw': 0.9}]
+        parameters=[{
+            'enable_button': 5,         # RB (Right Bumper) — hold to enable driving
+            'axis_linear.x': 1,         # Left stick vertical (up/down = forward/back)
+            'axis_angular.yaw': 0,      # Left stick horizontal (left/right = turn)
+            'scale_linear.x': -0.5,     # Negative: Xbox axis 1 is inverted (up = -1)
+            'scale_angular.yaw': -0.9,  # Negative: left = -1 maps to left turn (+angular.z)
+        }]
     )
 
     # 6. SLAM Configuration
