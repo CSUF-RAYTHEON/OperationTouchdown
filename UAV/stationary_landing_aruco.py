@@ -1,13 +1,13 @@
 import time
 import cv2
 import depthai as dai
-from Detectors.april_tag_detector import AprilTagDetector
+from Detectors.aruco_marker_detector import ArucoMarkerDetector
 from PixhawkController.stationary_landing_controller import StationaryLandingController
 
 # Reminder: Make sure this matches what you found via 'ls /dev/tty*'
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE = 57600
-LANDING_THRESHOLD_Z  = 0.4   # meters — trigger landing when tag is this close below
+LANDING_THRESHOLD_Z  = 0.4   # meters — trigger landing when marker is this close below
 LANDING_THRESHOLD_XY = 0.2   # meters — lateral alignment tolerance (each axis)
                               # 0.1 m was too tight; proportional control + filter
                               # lag means both axes rarely hit 10 cm simultaneously
@@ -19,8 +19,8 @@ TAKEOFF_ALTITUDE = 5  # meters
 # of confirmed alignment — enough to filter noise without delaying response.
 LANDING_CONFIRM_FRAMES = 3
 
-# Camera output resolution fed to the AprilTag detector.
-# 640×640 gives good tag visibility at 1–4 m altitude without
+# Camera output resolution fed to the ArUco detector.
+# 640×640 gives good marker visibility at 1–4 m altitude without
 # overwhelming the preprocessing pipeline on the Pi.
 # Lower to (300, 300) if CPU becomes a bottleneck.
 CAMERA_RESOLUTION = (640, 640)
@@ -32,7 +32,7 @@ with dai.Device() as device:
     # Read calibration before starting the pipeline
     calibration = device.getCalibration()
 
-    april_tag_detector = AprilTagDetector(calibration)
+    aruco_marker_detector = ArucoMarkerDetector(calibration)
     controller = StationaryLandingController(CONNECTION_STRING, BAUDRATE)
 
     # 2. Create the Pipeline bound to the device
@@ -89,19 +89,19 @@ with dai.Device() as device:
                 continue
 
             frame = in_rgb.getCvFrame()
-            tag = april_tag_detector.get_tag_detection(frame)
+            tag = aruco_marker_detector.get_tag_detection(frame)
 
             # --- LOGIC: The Fallback State Machine ---
             if tag is None:
-                landing_confirm_count = 0  # lost the tag — reset confirmation
+                landing_confirm_count = 0  # lost the marker — reset confirmation
                 time_lost = time.time() - last_tag_time
 
                 if time_lost < HOVER_TIMEOUT:
-                    print(f"[WARN] Tag lost for {time_lost:.1f}s. Hovering patiently...")
+                    print(f"[WARN] Marker lost for {time_lost:.1f}s. Hovering patiently...")
                     controller.send_velocity(0, 0, 0)
 
                 elif time_lost < SEARCH_TIMEOUT:
-                    print(f"[WARN] Tag lost for {time_lost:.1f}s. Ascending to widen FOV...")
+                    print(f"[WARN] Marker lost for {time_lost:.1f}s. Ascending to widen FOV...")
                     controller.send_velocity(0, 0, -0.2)
 
                 else:
@@ -110,16 +110,16 @@ with dai.Device() as device:
                     # detection loop running indefinitely.  Switching to LAND
                     # mode hands control to ArduCopter's ground-detection so
                     # the script exits cleanly on touchdown.
-                    print("[CRITICAL] Tag lost for 12+ seconds. Committing to LAND mode...")
+                    print("[CRITICAL] Marker lost for 12+ seconds. Committing to LAND mode...")
                     controller.stationary_landing()
                     break
 
-                cv2.imshow("Stationary Landing", frame)
+                cv2.imshow("Stationary Landing (ArUco)", frame)
                 if cv2.waitKey(1) == ord('q'):
                     break
                 continue
 
-            # --- LOGIC: Tag is visible ---
+            # --- LOGIC: Marker is visible ---
             last_tag_time = time.time()
 
             t = tag.pose_t
@@ -127,13 +127,13 @@ with dai.Device() as device:
             cam_y = float(t[1][0])
             cam_z = float(t[2][0])
 
-            print(f"[INFO] Tag Position (Camera): X={cam_x:.2f}, Y={cam_y:.2f}, Z={cam_z:.2f} m")
+            print(f"[INFO] Marker Position (Camera): X={cam_x:.2f}, Y={cam_y:.2f}, Z={cam_z:.2f} m")
 
             body_x, body_y, body_z = controller.convert_camera_to_body_frame(
                 cam_x, cam_y, cam_z
             )
 
-            print(f"[INFO] Tag Position (Body): X={body_x:.2f}, Y={body_y:.2f}, Z={body_z:.2f}")
+            print(f"[INFO] Marker Position (Body): X={body_x:.2f}, Y={body_y:.2f}, Z={body_z:.2f}")
 
             # --- LANDING CONDITION CHECK ---
             conditions_met = (
@@ -186,7 +186,7 @@ with dai.Device() as device:
                         f"CONFIRM {landing_confirm_count}/{LANDING_CONFIRM_FRAMES}",
                         (10, 82), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
 
-            cv2.imshow("Stationary Landing", frame)
+            cv2.imshow("Stationary Landing (ArUco)", frame)
             if cv2.waitKey(1) == ord('q'):
                 break
 

@@ -2,7 +2,7 @@ import time
 import cv2
 import numpy as np
 import depthai as dai
-from pupil_apriltags import Detector
+import cv2.aruco as aruco
 from pymavlink import mavutil
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -13,13 +13,13 @@ CONNECTION_STRING = "/dev/serial0"
 BAUDRATE          = 57600
 TAKEOFF_ALTITUDE  = 5       # meters
 
-# Landing is committed when the tag is within these tolerances for
+# Landing is committed when the marker is within these tolerances for
 # LANDING_CONFIRM_FRAMES consecutive frames.
 LANDING_THRESHOLD_XY   = 0.2   # meters, lateral (each axis)
-LANDING_THRESHOLD_Z    = 0.4   # meters, altitude above tag
+LANDING_THRESHOLD_Z    = 0.4   # meters, altitude above marker
 LANDING_CONFIRM_FRAMES = 3
 
-# Fallback timers when the tag is lost mid-flight
+# Fallback timers when the marker is lost mid-flight
 HOVER_TIMEOUT  = 7.0    # seconds — hover patiently
 SEARCH_TIMEOUT = 10.0   # seconds — ascend to widen FOV; blind land after this
 
@@ -44,8 +44,9 @@ PATROL_SEGMENTS = [
 # Camera Config
 # ─────────────────────────────────────────────────────────────────────────────
 
-# 300×300 matches what is used in the test script and is sufficient for tag
-# detection at 1–4 m.  Raise to (640, 640) if detection range needs to extend.
+# 300×300 matches what is used in the test script and is sufficient for
+# marker detection at 1–4 m.  Raise to (640, 640) if detection range needs
+# to extend.
 CAMERA_RESOLUTION = (300, 300)
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -57,11 +58,12 @@ Kp_z         = 0.3
 MAX_VELOCITY = 0.3
 
 # ─────────────────────────────────────────────────────────────────────────────
-# AprilTag detection — inlined from UAV/Detectors/april_tag_detector.py
+# ArUco detection — inlined from UAV/Detectors/aruco_marker_detector.py
 # ─────────────────────────────────────────────────────────────────────────────
 
-TARGET_TAG_ID = 67
-TAG_SIZE      = 0.20    # 20 cm tag
+TARGET_MARKER_ID = 67
+MARKER_SIZE      = 0.20    # 20 cm marker
+ARUCO_DICT       = aruco.DICT_6X6_250
 
 _GAMMA_MODERATE      = 2.2
 _GAMMA_DEEP          = 4.0
@@ -125,7 +127,19 @@ def _adaptive_thresh(img: np.ndarray, block_size: int, c: int = 5) -> np.ndarray
     )
 
 
-class AprilTagDetector:
+class ArucoMarkerDetection:
+    """Mimics the pupil_apriltags Detection object so callers can use the
+    same fields regardless of which detector is in use."""
+
+    def __init__(self, marker_id, corners, pose_t, pose_R):
+        self.tag_id  = int(marker_id)
+        self.corners = corners.astype(np.float32)
+        self.center  = corners.mean(axis=0).astype(np.float32)
+        self.pose_t  = pose_t
+        self.pose_R  = pose_R
+
+
+class ArucoMarkerDetector:
 
     def __init__(self, calibration_handler):
         self.calibration_handler = calibration_handler
@@ -144,28 +158,35 @@ class AprilTagDetector:
         self._gamma_lut_white_moderate = _build_gamma_lut(_GAMMA_WHITE_MODERATE)
         self._gamma_lut_white_strong   = _build_gamma_lut(_GAMMA_WHITE_STRONG)
 
-        self.detector = Detector(
-            families="tag36h11",
-            nthreads=2,
-            quad_decimate=1.0,
-            quad_sigma=0.8,
-            refine_edges=1,
-            decode_sharpening=0.25,
+        self._aruco_dictionary = aruco.getPredefinedDictionary(ARUCO_DICT)
+        self._aruco_params     = aruco.DetectorParameters()
+        self._aruco_params.cornerRefinementMethod = aruco.CORNER_REFINE_SUBPIX
+        self._aruco_detector   = aruco.ArucoDetector(
+            self._aruco_dictionary, self._aruco_params
         )
-        print("[INFO] AprilTag detector initialized")
+
+        half = MARKER_SIZE / 2.0
+        self._marker_obj_points = np.array([
+            [-half,  half, 0.0],
+            [ half,  half, 0.0],
+            [ half, -half, 0.0],
+            [-half, -half, 0.0],
+        ], dtype=np.float32)
+        print("[INFO] ArUco detector initialized")
 
     def _update_intrinsics(self, frame):
         h, w = frame.shape[:2]
         intrinsics = self.calibration_handler.getCameraIntrinsics(
             dai.CameraBoardSocket.CAM_A, w, h
         )
-        self.camera_matrix = np.array(intrinsics)
+        self.camera_matrix = np.array(intrinsics, dtype=np.float64)
         self.FX = self.camera_matrix[0][0]
         self.FY = self.camera_matrix[1][1]
         self.CX = self.camera_matrix[0][2]
         self.CY = self.camera_matrix[1][2]
         self.dist_coeffs = np.array(
-            self.calibration_handler.getDistortionCoefficients(dai.CameraBoardSocket.CAM_A)
+            self.calibration_handler.getDistortionCoefficients(dai.CameraBoardSocket.CAM_A),
+            dtype=np.float64,
         )
         print(f"[INFO] Intrinsics updated for {w}x{h}")
 
@@ -218,16 +239,33 @@ class AprilTagDetector:
             p19, p20, p21, p22, p23, p24, p25, p26, p27,
         ]
 
-    def _detect_raw(self, image: np.ndarray):
-        detections = self.detector.detect(
-            image,
-            estimate_tag_pose=True,
-            camera_params=(self.FX, self.FY, self.CX, self.CY),
-            tag_size=TAG_SIZE,
+    def _estimate_pose(self, marker_corners: np.ndarray):
+        success, rvec, tvec = cv2.solvePnP(
+            self._marker_obj_points,
+            marker_corners,
+            self.camera_matrix,
+            np.zeros(5, dtype=np.float64),
+            flags=cv2.SOLVEPNP_IPPE_SQUARE,
         )
-        for tag in detections:
-            if tag.tag_id == TARGET_TAG_ID:
-                return tag
+        if not success:
+            return None
+        pose_R, _ = cv2.Rodrigues(rvec)
+        return tvec.reshape(3, 1), pose_R
+
+    def _detect_raw(self, image: np.ndarray):
+        corners, ids, _ = self._aruco_detector.detectMarkers(image)
+        if ids is None:
+            return None
+        ids = ids.flatten()
+        for i, marker_id in enumerate(ids):
+            if int(marker_id) != TARGET_MARKER_ID:
+                continue
+            marker_corners = corners[i].reshape(4, 2)
+            pose = self._estimate_pose(marker_corners)
+            if pose is None:
+                return None
+            pose_t, pose_R = pose
+            return ArucoMarkerDetection(marker_id, marker_corners, pose_t, pose_R)
         return None
 
     def _preprocess_and_find(self, gray: np.ndarray):
@@ -244,7 +282,7 @@ class AprilTagDetector:
         return cv2.undistort(gray, self.camera_matrix, self.dist_coeffs)
 
     def get_tag_detection(self, frame):
-        """Return the raw Detection object for TARGET_TAG_ID, or None."""
+        """Return the ArucoMarkerDetection object for TARGET_MARKER_ID, or None."""
         if frame is None:
             return None
         return self._preprocess_and_find(self._prepare_gray(frame))
@@ -433,7 +471,7 @@ class FlightController:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def draw_tag(frame, tag):
-    """Outline the tag and mark its center."""
+    """Outline the marker and mark its center."""
     corners = tag.corners.astype(int)
     for i in range(4):
         cv2.line(frame, tuple(corners[i]), tuple(corners[(i + 1) % 4]), (0, 255, 0), 2)
@@ -458,10 +496,10 @@ def draw_overlay(frame, phase, cam_x, cam_y, cam_z, body_x, body_y, body_z,
 
 
 def draw_no_tag(frame, phase, time_lost):
-    """Show a minimal overlay when the tag is not visible."""
+    """Show a minimal overlay when the marker is not visible."""
     cv2.putText(frame, f"PHASE   {phase}",
                 (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 0), 1)
-    cv2.putText(frame, f"NO TAG  {time_lost:.1f}s",
+    cv2.putText(frame, f"NO MARKER  {time_lost:.1f}s",
                 (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 1)
 
 
@@ -472,8 +510,8 @@ def draw_no_tag(frame, phase, time_lost):
 def run_patrol(controller, q_rgb, window_title):
     """
     Fly the patrol pattern while streaming the camera feed to the window.
-    The camera runs during the patrol so the user can see when the tag first
-    comes into view, and the window stays live throughout.
+    The camera runs during the patrol so the user can see when the marker
+    first comes into view, and the window stays live throughout.
     """
     print("[INFO] Starting patrol phase...")
     leg_labels = ["forward", "right", "backward", "left"]
@@ -515,13 +553,13 @@ def run_patrol(controller, q_rgb, window_title):
 # Main
 # ─────────────────────────────────────────────────────────────────────────────
 
-WINDOW_TITLE = "Patrol Landing"
+WINDOW_TITLE = "Patrol Landing (ArUco)"
 
 with dai.Device() as device:
     print("[INFO] OAK-D started")
     calibration = device.getCalibration()
 
-    detector   = AprilTagDetector(calibration)
+    detector   = ArucoMarkerDetector(calibration)
     controller = FlightController(CONNECTION_STRING, BAUDRATE)
 
     with dai.Pipeline(device) as pipeline:
@@ -577,10 +615,10 @@ with dai.Device() as device:
                 time_lost = time.time() - last_tag_time
 
                 if time_lost < HOVER_TIMEOUT:
-                    print(f"[WARN] Tag lost for {time_lost:.1f}s — hovering")
+                    print(f"[WARN] Marker lost for {time_lost:.1f}s — hovering")
                     controller.send_velocity(0, 0, 0)
                 elif time_lost < SEARCH_TIMEOUT:
-                    print(f"[WARN] Tag lost for {time_lost:.1f}s — ascending to widen FOV")
+                    print(f"[WARN] Marker lost for {time_lost:.1f}s — ascending to widen FOV")
                     controller.send_velocity(0, 0, -0.2)
                 else:
                     # Previously this branch just sent a downward velocity in
@@ -588,7 +626,7 @@ with dai.Device() as device:
                     # detection loop running indefinitely.  Switching to LAND
                     # mode hands control to ArduCopter's ground-detection so
                     # the script exits cleanly on touchdown.
-                    print("[CRITICAL] Tag lost 10+ s — committing to LAND mode")
+                    print("[CRITICAL] Marker lost 10+ s — committing to LAND mode")
                     draw_no_tag(frame, "LANDING", time_lost)
                     cv2.imshow(WINDOW_TITLE, frame)
                     cv2.waitKey(1)
@@ -601,7 +639,7 @@ with dai.Device() as device:
                     break
                 continue
 
-            # ── Tag visible ───────────────────────────────────────────────────
+            # ── Marker visible ────────────────────────────────────────────────
             last_tag_time = time.time()
 
             t     = tag.pose_t
