@@ -157,7 +157,9 @@ with dai.Device() as device:
                 # we never accidentally latch onto a partial run of noisy frames.
                 landing_confirm_count = 0
 
-            controller.adjust_velocity_and_send(body_x, body_y, body_z)
+            vx_cmd, vy_cmd, vz_cmd = controller.adjust_velocity_and_send(
+                body_x, body_y, body_z
+            )
 
             # --- VISUALIZATION ---
             # Runs after velocity is sent so the flight control path is never
@@ -183,8 +185,11 @@ with dai.Device() as device:
                         f"BODY x={body_x:.2f} y={body_y:.2f} z={body_z:.2f}",
                         (10, 62), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
             cv2.putText(frame,
+                        f"CMD  vx={vx_cmd:+.2f} vy={vy_cmd:+.2f} vz={vz_cmd:+.2f}",
+                        (10, 82), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 200, 0), 1)
+            cv2.putText(frame,
                         f"CONFIRM {landing_confirm_count}/{LANDING_CONFIRM_FRAMES}",
-                        (10, 82), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
+                        (10, 102), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
 
             cv2.imshow("Stationary Landing (ArUco)", frame)
             if cv2.waitKey(1) == ord('q'):

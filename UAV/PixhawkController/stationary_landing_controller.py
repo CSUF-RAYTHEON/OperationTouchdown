@@ -14,13 +14,36 @@
 from pymavlink import mavutil
 import time
 
-# These are proportional control gains (adjust as needed for testing) 
-# Controls how aggressively we move to the tag
-Kp_xy = 0.4
+# PD control gains.  Kp drives the drone toward the tag; Kd opposes the rate
+# of change of the position error so the drone "brakes" as it approaches the
+# target instead of coasting through on inertia.  Pure P-control caused the
+# drone to overshoot the tag and lose it from the camera FOV.
+Kp_xy = 0.35
+Kd_xy = 0.25
 Kp_z  = 0.3
 
-# Safety limit on velocity commands (adjust as we test)
+# Safety cap on velocity commands (m/s) at full altitude.  This is scaled
+# down linearly as the drone descends so low-altitude micro-adjustments
+# can't lunge past the tag.
 MAX_VELOCITY = 0.3
+
+# Below this altitude (m) lateral gain and max velocity are scaled down
+# linearly with altitude.  At touchdown height the gain is reduced to
+# MIN_GAIN_SCALE of its cruise value, giving small, deliberate corrections.
+GAIN_SCALE_ALTITUDE = 1.5
+MIN_GAIN_SCALE = 0.3
+
+# Maximum lateral error allowed before descent is throttled, expressed as a
+# fraction of the current altitude.  Roughly: the tag must stay within a
+# ~20° cone below the drone or descent slows to 20% of its commanded rate.
+# Without this the drone descends while drifting, the camera FOV shrinks,
+# and the tag falls out of frame.
+DESCENT_XY_RATIO = 0.35
+
+# If no measurement has been seen for this many seconds we discard the
+# filter/derivative history and re-seed from the next measurement.  This
+# prevents a giant D-term spike when the tag reappears after a brief loss.
+STALE_STATE_TIMEOUT = 0.5
 
 
 class StationaryLandingController:
@@ -45,6 +68,7 @@ class StationaryLandingController:
         self.prev_x = None
         self.prev_y = None
         self.prev_z = None
+        self.prev_t = None
     
     def heartbeat(self):
         print("Waiting for heartbeat from Pixhawk...")
@@ -315,43 +339,96 @@ class StationaryLandingController:
     
     def adjust_velocity_and_send(self, body_x, body_y, body_z):
         """
-        Apply proportional control and send velocity command
+        PD velocity control with altitude-aware gains for precise landing.
+
+        Four mechanisms work together to prevent the overshoot/tag-loss
+        behaviour seen with pure P-control:
+
+          1. EMA on the measurement rejects single-frame pose noise.
+             alpha=0.5 (was 0.7) — still smooths but with half the lag.
+          2. Derivative term opposes rapid changes in position error so the
+             drone brakes as it nears the target instead of coasting through
+             on inertia.
+          3. Lateral gain and MAX_VELOCITY scale linearly with altitude
+             below GAIN_SCALE_ALTITUDE, so corrections shrink as the camera
+             FOV shrinks.
+          4. Vertical descent is throttled whenever the XY error is large
+             relative to the current altitude (DESCENT_XY_RATIO).  This is
+             the single most important change: without it the drone keeps
+             diving while drifting, the FOV collapses, and the tag falls
+             out of frame.
         """
-        # Seed filter from the first real measurement instead of zero.
-        if self.prev_x is None:
+        now = time.time()
+
+        # (Re-)seed the filter from the first valid measurement, OR after
+        # a long gap (tag was lost) — comparing the current frame against
+        # a stale prev_* would produce a huge spurious D-term spike.
+        if self.prev_x is None or (now - self.prev_t) > STALE_STATE_TIMEOUT:
             self.prev_x = body_x
             self.prev_y = body_y
             self.prev_z = body_z
+            self.prev_t = now
 
-        alpha = 0.7
-        self.prev_x = alpha * self.prev_x + (1 - alpha) * body_x
-        self.prev_y = alpha * self.prev_y + (1 - alpha) * body_y
-        self.prev_z = alpha * self.prev_z + (1 - alpha) * body_z
+        # Lighter EMA than before (was 0.7).  Heavy filtering created lag,
+        # and lag + P-control = overshoot.
+        alpha = 0.5
+        filt_x = alpha * self.prev_x + (1 - alpha) * body_x
+        filt_y = alpha * self.prev_y + (1 - alpha) * body_y
+        filt_z = alpha * self.prev_z + (1 - alpha) * body_z
 
-        body_x = self.prev_x
-        body_y = self.prev_y
-        body_z = self.prev_z
+        # Clamp dt to avoid div-by-zero on the seeded frame and to suppress
+        # D-term spikes after a frame skip.
+        dt = max(min(now - self.prev_t, 0.2), 0.01)
 
-        # this basically makes sure that we arent sending movement if we are already close, so we avoid jerky movements
-        thresh = 0.05
-        body_x = 0 if abs(body_x) < thresh else body_x
-        body_y = 0 if abs(body_y) < thresh else body_y
+        # Derivative of position == derivative of error (target is 0).
+        dx = (filt_x - self.prev_x) / dt
+        dy = (filt_y - self.prev_y) / dt
 
+        # Adaptive deadband — tighter near the ground where every cm matters,
+        # looser at altitude where small offsets aren't worth twitching for.
+        deadband = 0.03 if filt_z < 1.0 else 0.05
+        err_x = 0.0 if abs(filt_x) < deadband else filt_x
+        err_y = 0.0 if abs(filt_y) < deadband else filt_y
+
+        # Smooth altitude taper on lateral authority.  At cruise altitude
+        # gain_scale == 1.0; at touchdown it falls to MIN_GAIN_SCALE.
+        if filt_z < GAIN_SCALE_ALTITUDE:
+            gain_scale = max(MIN_GAIN_SCALE, filt_z / GAIN_SCALE_ALTITUDE)
+        else:
+            gain_scale = 1.0
+
+        vx = gain_scale * (Kp_xy * err_x + Kd_xy * dx)
+        vy = gain_scale * (Kp_xy * err_y + Kd_xy * dy)
+
+        # --- Vertical control ---
         TARGET_Z = 0.3
-        error_z = body_z - TARGET_Z
+        error_z = filt_z - TARGET_Z
+        vz = 0.0 if abs(error_z) < 0.05 else Kp_z * error_z
 
-        vx = Kp_xy * body_x
-        vy = Kp_xy * body_y
-        vz = 0 if abs(error_z) < 0.05 else Kp_z * error_z
+        # Couple descent to XY alignment.  When off-center, slow descent to
+        # 20% of commanded rate (but don't stop entirely — we still want to
+        # make progress while the XY loop catches up).  Only throttles
+        # downward velocity; ascent for "tag too close" is left untouched.
+        xy_err = max(abs(filt_x), abs(filt_y))
+        if vz > 0 and xy_err > DESCENT_XY_RATIO * max(filt_z, 0.3):
+            vz *= 0.2
 
-        # slow down near landing
-        if body_z < 0.5:
-            vx *= 0.5
-            vy *= 0.5
-
-        # Clip velocities
-        vx = max(min(vx, MAX_VELOCITY), -MAX_VELOCITY)
-        vy = max(min(vy, MAX_VELOCITY), -MAX_VELOCITY)
+        # Per-axis cap, scaled with altitude so the drone can't lunge near
+        # the ground.  Vertical cap stays at full MAX_VELOCITY.
+        max_v_xy = MAX_VELOCITY * gain_scale
+        vx = max(min(vx, max_v_xy), -max_v_xy)
+        vy = max(min(vy, max_v_xy), -max_v_xy)
         vz = max(min(vz, MAX_VELOCITY), -MAX_VELOCITY)
 
+        # Persist filtered state for the next call's derivative + EMA.
+        self.prev_x = filt_x
+        self.prev_y = filt_y
+        self.prev_z = filt_z
+        self.prev_t = now
+
         self.send_velocity(vx, vy, vz)
+
+        # Return the commanded velocity so the caller can show it on the OSD
+        # for live tuning.  Existing callers that ignore the return value
+        # continue to work unchanged.
+        return vx, vy, vz
