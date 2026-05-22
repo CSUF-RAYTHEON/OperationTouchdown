@@ -11,7 +11,7 @@ LANDING_THRESHOLD_Z  = 0.4   # meters — trigger landing when tag is this close
 LANDING_THRESHOLD_XY = 0.2   # meters — lateral alignment tolerance (each axis)
                               # 0.1 m was too tight; proportional control + filter
                               # lag means both axes rarely hit 10 cm simultaneously
-TAKEOFF_ALTITUDE = 5  # meters
+TAKEOFF_ALTITUDE = 6  # meters
 
 # Number of consecutive frames that must satisfy the landing conditions
 # before the landing sequence is committed to.  A single-frame trigger

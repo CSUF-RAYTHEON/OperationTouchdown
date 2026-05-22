@@ -11,7 +11,7 @@ from pymavlink import mavutil
 
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE          = 57600
-TAKEOFF_ALTITUDE  = 5       # meters
+TAKEOFF_ALTITUDE  = 6       # meters
 
 # Landing is committed when the marker is within these tolerances for
 # LANDING_CONFIRM_FRAMES consecutive frames.
