@@ -115,13 +115,19 @@ def run_slam(pipeline: dai.Pipeline, device: dai.Device, state: UAVState, cfg):
 
         vo.process(gray, depth_mm)
         pos, yaw_vis = vo.pose()
-
-        state.set_vio_position(Pose3D(
-            x=float(pos[0]),
-            y=float(pos[1]),
-            z=float(pos[2]),
-            yaw=yaw_vis
-        ))
+        
+        # Write to shared memory for telemetry logger
+        with lock:
+            shared_vio[0] = float(pos[0])
+            shared_vio[1] = float(pos[1])
+            shared_vio[2] = float(pos[2])
+            shared_vio[3] = float(yaw_vis)
+                state.set_vio_position(Pose3D(
+                    x=float(pos[0]),
+                    y=float(pos[1]),
+                    z=float(pos[2]),
+                    yaw=yaw_vis
+                ))
 
         if ENABLE_LOOP and loop and vo.status == "TRACKING":
             rgb = msg_group["rgb"].getCvFrame()
