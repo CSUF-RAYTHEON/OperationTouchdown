@@ -30,7 +30,9 @@ from vio_slam.vo_full_v3 import (
 )
 
 # Vision
-from vision.common.detectors.detector_manager import DetectorManager
+#from vision.common.detectors.detector_manager import DetectorManager
+from vision.common.detectors.opencv_helpers import Cv2Detector
+detector = Cv2Detector()
 from vision.common.video.camera_coordinate_transformer import CameraCoordinateTransformer
 
 # Landing
