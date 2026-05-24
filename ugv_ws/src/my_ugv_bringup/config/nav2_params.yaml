@@ -7,18 +7,17 @@ behavior_server:
     
     spin:
       plugin: "nav2_behaviors::Spin"
-      # Adding a bit of logic for the spin
       simulate_ahead_time: 2.0
       max_rotational_vel: 0.4
       
     backup:
       plugin: "nav2_behaviors::BackUp"
-      simulate_ahead_time: 2.0  # How much time to look ahead for collisions while backing up
-      fixed_delay: 1.0         # Pause for 1 second before moving
+      simulate_ahead_time: 2.0
+      fixed_delay: 1.0
       
     wait:
       plugin: "nav2_behaviors::Wait"
-      simulate_ahead_time: 3.0  # The "Crawl" strategy: sit still for 3 seconds
+      simulate_ahead_time: 3.0
 
 bt_navigator:
   ros__parameters:
@@ -26,7 +25,7 @@ bt_navigator:
     global_frame: map
     robot_base_frame: base_footprint
     odom_frame: odom
-    transform_tolerance: 2.0
+    transform_tolerance: 0.5        # Reduced from 2.0
     default_bt_xml_filename: "navigate_to_pose_w_replanning_and_recovery.xml"
     server_timeout: 2.0
 
@@ -34,7 +33,7 @@ controller_server:
   ros__parameters:
     use_sim_time: False
     controller_frequency: 5.0
-    transform_tolerance: 2.0
+    transform_tolerance: 0.5        # Reduced from 2.0
     min_x_velocity_threshold: 0.001
     min_theta_velocity_threshold: 0.001
     failure_tolerance: 0.3
@@ -52,22 +51,22 @@ controller_server:
       yaw_goal_tolerance: 0.2
     FollowPath:
       plugin: "nav2_mppi_controller::MPPIController"
-      transform_tolerance: 2.0
-      time_steps: 15      # Reduced for Pi 5 CPU Stability
+      transform_tolerance: 0.5      # Reduced from 2.0
+      time_steps: 15
       model_dt: 0.2
-      batch_size: 20      # Reduced to 40 to ensure "Solvency"
+      batch_size: 20
       vtheta_max: 1.0
       vx_min: 0.1    
       vx_max: 0.2   
-      visualize_candidates: true  # This lets you see the "Thinking Process" in Foxglove
+      visualize_candidates: true
       motion_model: "DiffDrive"
       ReferenceTrajectory:
         low_cost_priority: true 
       enforce_path_costs: true
-      cost_weight: 7.0 # Increase weight to prioritize NOT hitting things over reaching the goal fast
-      path_align_weight: 10.0    # Forces the rover to actually follow the green curve
-      goal_align_weight: 0.0    # Lowers the urge to "shortcut" straight to the goal
-      path_dist_weight: 5.0     # Keeps the rover close to the global path
+      cost_weight: 7.0
+      path_align_weight: 10.0
+      goal_align_weight: 0.0
+      path_dist_weight: 5.0
       obstacle_dist_weight: 20.0
 
 local_costmap:
@@ -75,9 +74,9 @@ local_costmap:
     ros__parameters:
       update_frequency: 3.0
       publish_frequency: 1.0
-      global_frame: map
+      global_frame: odom            # Changed from map — decouples from SLAM drift
       robot_base_frame: base_footprint
-      transform_tolerance: 2.0
+      transform_tolerance: 0.5     # Reduced from 2.0
       rolling_window: true
       width: 3
       height: 3
@@ -92,14 +91,15 @@ local_costmap:
         enabled: True
         observation_sources: scan
         scan:
-          topic: /scan_merged
+          topic: /scan              # Changed from /scan_merged — RPLidar only outdoors
           max_obstacle_height: 2.0
           clearing: True
           marking: True
           data_type: "LaserScan"
-          obstacle_max_range: 2.5
-          raytrace_max_range: 3.0  # <--- ADD THIS
-          raytrace_min_range: 0.0  # <--- ADD THIS
+          obstacle_max_range: 4.0   # Increased from 2.5
+          obstacle_min_range: 0.4   # Added — filter near-field returns
+          raytrace_max_range: 6.0   # Increased from 3.0 — aggressively clear free space
+          raytrace_min_range: 0.4   # Added — filter near-field returns
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0 
@@ -109,7 +109,7 @@ planner_server:
   ros__parameters:
     expected_planner_frequency: 0.5
     use_sim_time: False
-    transform_tolerance: 2.0
+    transform_tolerance: 0.5       # Reduced from 2.0
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "nav2_navfn_planner::NavfnPlanner"
@@ -124,7 +124,7 @@ global_costmap:
       publish_frequency: 0.5
       global_frame: map
       robot_base_frame: base_footprint
-      transform_tolerance: 2.0
+      transform_tolerance: 0.5     # Reduced from 2.0
       robot_radius: 0.15 
       use_sim_time: False
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
@@ -135,10 +135,12 @@ global_costmap:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         observation_sources: scan
         scan:
-          topic: /scan_merged
+          topic: /scan              # Changed from /scan_merged — RPLidar only outdoors
           data_type: "LaserScan"
-          obstacle_max_range: 2.5
-          raytrace_max_range: 3.0
+          obstacle_max_range: 4.0   # Increased from 2.5
+          obstacle_min_range: 0.4   # Added — filter near-field returns
+          raytrace_max_range: 6.0   # Increased from 3.0 — aggressively clear free space
+          raytrace_min_range: 0.4   # Added — filter near-field returns
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
@@ -163,7 +165,7 @@ collision_monitor:
     observation_sources: ["scan"]
     scan:
       type: "scan"
-      topic: "/scan_merged"
+      topic: "/scan"                # Changed from /scan_merged
 
 docking_server:
   ros__parameters:

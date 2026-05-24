@@ -110,6 +110,11 @@ class RoboteqBridge(Node):
         d_center = (dist_left + dist_right) / 2.0
         d_th = (dist_right - dist_left) / self.WHEEL_BASE
 
+        # Integrate pose
+        self.x += d_center * math.cos(self.th)
+        self.y += d_center * math.sin(self.th)
+        self.th += d_th
+
         # Prepare Message
         odom = Odometry()
         odom.header.stamp = current_time.to_msg()
@@ -121,8 +126,17 @@ class RoboteqBridge(Node):
         odom.pose.pose.orientation.z = math.sin(self.th / 2.0)
         odom.pose.pose.orientation.w = math.cos(self.th / 2.0)
 
+        # Diagonal pose covariance: x=0.1, y=0.1, yaw=0.2
+        odom.pose.covariance[0] = 0.1   # x
+        odom.pose.covariance[7] = 0.1   # y
+        odom.pose.covariance[35] = 0.2  # yaw
+
         odom.twist.twist.linear.x = d_center / dt
         odom.twist.twist.angular.z = d_th / dt
+
+        # Diagonal twist covariance
+        odom.twist.covariance[0] = 0.1   # vx
+        odom.twist.covariance[35] = 0.2  # vyaw
         
         self.odom_pub.publish(odom)
 

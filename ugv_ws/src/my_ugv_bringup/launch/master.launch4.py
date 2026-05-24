@@ -109,8 +109,9 @@ def generate_launch_description():
             launch_arguments={'name': 'oak', 'parent_frame': 'base_link', 'enable_rgb': 'false'}.items()
         ),
 
-        # 10. STATIC TRANSFORMS (The stable positional format)
-        Node(package='tf2_ros', executable='static_transform_publisher', name='odom_to_base_tf', arguments=['0', '0', '0', '0', '0', '0', 'odom', 'base_link']),
+        # 10. STATIC TRANSFORMS
+        # NOTE: odom->base_link is intentionally removed — this must come from the EKF node.
+        # A static odom->base_link would override EKF output and freeze the robot at the origin.
         Node(package='tf2_ros', executable='static_transform_publisher', name='base_to_laser_tf', arguments=['0.1', '0', '0.2', '0', '0', '0', 'base_link', 'laser']),
         Node(package='tf2_ros', executable='static_transform_publisher', name='base_to_oak_tf', arguments=['0.15', '0', '0.3', '0', '0', '0', 'base_link', 'oak']),
 
