@@ -9,10 +9,11 @@ endif()
 find_package(ament_cmake REQUIRED)
 
 # Install directories to the share folder
-install(DIRECTORY 
-  launch 
-  config 
+install(DIRECTORY
+  launch
+  config
   urdf
+  foxglove_layouts
   DESTINATION share/${PROJECT_NAME}
 )
 

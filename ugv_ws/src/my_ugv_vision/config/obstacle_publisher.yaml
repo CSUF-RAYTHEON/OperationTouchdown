@@ -1,0 +1,8 @@
+obstacle_publisher_node:
+  ros__parameters:
+    input_topic: /akida/landmark_array
+    output_topic: /akida/obstacle_points
+    map_frame: map
+    obstacle_hz: 5.0
+    ring_points: 12
+    intensity: 100.0

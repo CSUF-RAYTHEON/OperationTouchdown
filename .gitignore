@@ -4,5 +4,13 @@ __pycache__/
 *$py.class
 *.pyo
 
-# Model artifacts
-ugv_yolo_akida.fbz
+# Large Keras training artifacts (180+ MB).
+# The deployable Akida model (.fbz) and its metadata are committed; the
+# floating-point and intermediate quantized .h5 checkpoints are only needed
+# on the training workstation, not on the UGV.
+akida/*.h5
+
+# colcon build outputs (kept out of repo; built per-machine)
+ugv_ws/build/
+ugv_ws/install/
+ugv_ws/log/

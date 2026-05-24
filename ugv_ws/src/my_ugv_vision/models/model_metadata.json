@@ -1,0 +1,79 @@
+{
+  "trained_at": "2026-05-21T20:01:05.333463",
+  "labels": [
+    "Box",
+    "home-depot-bucket",
+    "traffic_cones"
+  ],
+  "label_to_idx": {
+    "Box": 0,
+    "home-depot-bucket": 1,
+    "traffic_cones": 2
+  },
+  "anchors": [
+    [
+      0.37449,
+      0.44152
+    ],
+    [
+      0.88506,
+      0.93953
+    ],
+    [
+      1.87466,
+      1.40808
+    ],
+    [
+      2.14199,
+      2.77736
+    ],
+    [
+      5.05428,
+      5.53107
+    ]
+  ],
+  "config": {
+    "input_shape": [
+      224,
+      224,
+      3
+    ],
+    "grid_size": [
+      7,
+      7
+    ],
+    "num_anchors": 5,
+    "batch_size": 16,
+    "alpha": 0.5,
+    "quantization": {
+      "input_weight_bits": 8,
+      "weight_bits": 4,
+      "activation_bits": 4
+    }
+  },
+  "dataset": {
+    "workspace_id": "ray-uav-2526",
+    "project_id": "ugv-lze00",
+    "version": 1,
+    "num_train": 1648,
+    "num_train_bal": 450,
+    "num_valid": 187,
+    "num_test": 73,
+    "target_per_class": 150,
+    "name_remap": {
+      "- Traffic Cones - augmentated version": "traffic_cones",
+      "orange": "home-depot-bucket"
+    },
+    "dropped_labels": [
+      "pallet"
+    ]
+  },
+  "artifact_descriptions": {
+    "yolo_float.h5": "Final float Keras model (after Cell 10)",
+    "yolo_float_best.h5": "Best float checkpoint (lowest val_loss during Cell 10)",
+    "yolo_quant.h5": "Initial quantized model (before QAT, from Cell 13)",
+    "yolo_quant_best.h5": "Best QAT checkpoint (lowest val_loss during Cell 14)",
+    "yolo_quant_final.h5": "Final QAT model (end of Cell 14)",
+    "ugv_yolo_akida.fbz": "Akida-converted model (Cell 15) \u2014 deploy this to hardware"
+  }
+}

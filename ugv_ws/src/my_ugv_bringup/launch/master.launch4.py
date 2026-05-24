@@ -103,10 +103,17 @@ def generate_launch_description():
             launch_arguments={'serial_port': '/dev/ttyUSB0', 'serial_baudrate': '115200', 'frame_id': 'laser'}.items()
         ),
 
-        # 9. OAK-D Camera
+        # 9. OAK-D Camera (RGB enabled for AKD1000 YOLO; depth aligned to RGB by default).
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(oakd_launch_path),
-            launch_arguments={'name': 'oak', 'parent_frame': 'base_link', 'enable_rgb': 'false'}.items()
+            launch_arguments={
+                'name': 'oak',
+                'parent_frame': 'base_link',
+                'enable_color': 'true',
+                'enable_depth': 'true',
+                'rectify_rgb': 'true',
+                'pointcloud.enable': 'false',
+            }.items()
         ),
 
         # 10. STATIC TRANSFORMS
