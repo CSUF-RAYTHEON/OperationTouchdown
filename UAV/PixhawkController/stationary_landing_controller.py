@@ -277,7 +277,7 @@ class StationaryLandingController:
         """
         Apply proportional control and send velocity command
         """
-        alpha = 0.9
+        alpha = 0.7
         self.prev_x = alpha*self.prev_x + (1-alpha)*body_x
         self.prev_y = alpha*self.prev_y + (1-alpha)*body_y
         self.prev_z = alpha*self.prev_z + (1-alpha)*body_z

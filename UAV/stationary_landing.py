@@ -145,4 +145,4 @@ with dai.Device() as device:
                 body_z
             )
             # Small sleep to stabilize loop timing
-            time.sleep(0.05)
+            time.sleep(0.01)
