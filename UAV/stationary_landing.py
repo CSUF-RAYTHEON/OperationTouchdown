@@ -9,7 +9,7 @@ from PixhawkController.stationary_landing_controller import (
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE = 57600
 
-LANDING_THRESHOLD = 0.7
+LANDING_THRESHOLD = 0.3
 TAKEOFF_ALTITUDE = 6  # meters
 
 HOVER_TIMEOUT = 7.0
@@ -145,4 +145,4 @@ with dai.Device() as device:
                 body_z
             )
             # Small sleep to stabilize loop timing
-            time.sleep(0.01)
+            time.sleep(0.05)
