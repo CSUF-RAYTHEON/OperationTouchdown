@@ -16,7 +16,7 @@ MIN_DISTANCE = 10
 LK_WIN_SIZE = (21, 21)
 LK_MAX_LEVEL = 3
 
-MIN_PNP_POINTS = 10
+MIN_PNP_POINTS = 17
 DEPTH_MIN_M = 0.10
 DEPTH_MAX_M = 15.0
 REDETECT_EVERY = 10
@@ -195,14 +195,18 @@ class VO_LK:
             minDistance=MIN_DISTANCE, blockSize=7, useHarrisDetector=False
         )
 
+    def _reset_tracking(self, gray, depth_mm):
+        """Forces the algorithm to wipe its memory and start fresh on the next frame."""
+        self.prev_gray = gray.copy()
+        self.prev_depth = depth_mm.copy()
+        self.prev_pts = self._detect(gray)
+
     def process(self, gray, depth_mm, live_yaw_rad):
         self.frame_idx += 1
         W, H = gray.shape[1], gray.shape[0]
 
         if self.prev_gray is None or self.prev_depth is None or self.prev_pts is None:
-            self.prev_gray = gray.copy()
-            self.prev_depth = depth_mm.copy()
-            self.prev_pts = self._detect(gray)
+            self._reset_tracking(gray, depth_mm)
             self.status = "WARMUP"
             return
 
@@ -214,6 +218,7 @@ class VO_LK:
         
         if next_pts is None or st is None:
             self.status = "LK_FAIL"
+            self._reset_tracking(gray, depth_mm) # Reset on fail
             return
 
         st = st.reshape(-1)
@@ -223,6 +228,7 @@ class VO_LK:
 
         if self.num_tracked < MIN_PNP_POINTS:
             self.status = f"LOW_TRACK({self.num_tracked})"
+            self._reset_tracking(gray, depth_mm) # Reset on fail
             return
 
         fx, fy = self.K[0, 0], self.K[1, 1]
@@ -243,6 +249,7 @@ class VO_LK:
 
         if len(obj_pts) < MIN_PNP_POINTS:
             self.status = "DEPTH_FILTER"
+            self._reset_tracking(gray, depth_mm) # Reset on fail
             return
 
         obj_pts = np.asarray(obj_pts, dtype=np.float64)
@@ -256,6 +263,7 @@ class VO_LK:
         
         if not ok or inl is None or len(inl) < 12:
             self.status = "PNP_FAIL"
+            self._reset_tracking(gray, depth_mm) # Reset on fail
             return
 
         R, _ = cv2.Rodrigues(rvec)
@@ -296,7 +304,6 @@ class VO_LK:
         step = clamp_norm(drift, MAX_CORR_STEP_M)
         corr = step * SOFT_CORR_ALPHA
 
-        # Apply soft correction directly to absolute tallies
         self.global_north += corr[0]
         self.global_east += corr[1]
         self.global_down += corr[2]
