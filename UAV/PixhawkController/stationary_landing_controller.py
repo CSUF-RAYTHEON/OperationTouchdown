@@ -277,7 +277,8 @@ class StationaryLandingController:
         """
         Apply proportional control and send velocity command
         """
-        alpha = 0.7
+        # Lowered alpha to 0.3 to reduce lag and stop overcorrection
+        alpha = 0.3 
         self.prev_x = alpha*self.prev_x + (1-alpha)*body_x
         self.prev_y = alpha*self.prev_y + (1-alpha)*body_y
         self.prev_z = alpha*self.prev_z + (1-alpha)*body_z
@@ -286,22 +287,21 @@ class StationaryLandingController:
         body_y = self.prev_y
         body_z = self.prev_z
 
-        # this basically makes sure that we arent sending movement if we are already close, so we avoid jerky movements
-        thresh = 0.05
-        body_x = 0 if abs(body_x) < thresh else body_x
-        body_y = 0 if abs(body_y) < thresh else body_y
-
-        TARGET_Z = 0.3
+        # Changed TARGET_Z to 0.0 so it confidently pushes past the 0.3m LANDING_THRESHOLD
+        TARGET_Z = 0.0 
         error_z = body_z - TARGET_Z
 
+        # Removed the 0.05 deadband. Let the Kp naturally scale the velocity down to near-zero.
         vx = Kp_xy * body_x
         vy = Kp_xy * body_y
-        vz = 0 if abs(error_z) < 0.05 else Kp_z * error_z
+        vz = Kp_z * error_z
 
-        # slow down near landing
-        if body_z < 0.5:
-            vx *= 0.5
-            vy *= 0.5
+        # Slow down near landing, but smoothly
+        if body_z < 0.8:
+            # Scale down proportionally based on height rather than a hard cut
+            scale_factor = max(0.4, body_z / 0.8) 
+            vx *= scale_factor
+            vy *= scale_factor
 
         # Clip velocities
         vx = max(min(vx, MAX_VELOCITY), -MAX_VELOCITY)
