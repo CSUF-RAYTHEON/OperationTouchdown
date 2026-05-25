@@ -302,7 +302,23 @@ class StationaryLandingController:
 
         vx = Kp_xy * body_x
         vy = Kp_xy * body_y
-        vz = 0 if abs(error_z) < 0.15 else Kp_z * error_z
+
+        # --------------------------------
+        # Below 1 meter:
+        # Ignore noisy Z estimate
+        # and descend slowly
+        # --------------------------------
+        if body_z < 1.0:
+
+            # gentler XY corrections
+            vx *= 0.5
+            vy *= 0.5
+
+            # slow constant descent
+            vz = 0.03
+
+        else:
+            vz = 0 if abs(error_z) < 0.15 else Kp_z * error_z
 
         # slow down near landing
         if body_z < 0.5:
