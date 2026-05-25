@@ -261,7 +261,7 @@ class VO_LK:
         R, _ = cv2.Rodrigues(rvec)
         t = tvec.reshape(3, 1)
 
-        t_inv = -R.T @ t
+        t_inv = (-R.T @ t).flatten()
 
         # INSTANT ABSOLUTE INTEGRATION
         step_n, step_e, step_d = vo_step_to_ned(
