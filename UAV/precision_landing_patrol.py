@@ -6,22 +6,40 @@
  What this script does
  ─────────────────────
  Single-file, inline-everything UAV mission that performs an AprilTag-based
- PRECISION LANDING using the autopilot's built-in PrecLand controller.  The
- hand-rolled PD velocity loop used in stationary_landing.py / patrol_landing.py
- is replaced by streaming MAVLink ``LANDING_TARGET`` messages to the FCU; the
- actual descent and corner-of-tag tracking are handled by ArduCopter itself.
+ PRECISION LANDING.  PRECISION_LAND now runs a velocity-PD descent in
+ GUIDED mode (companion-side, mirroring stationary_landing.py) and only
+ commits to ArduCopter LAND mode for the final ~0.6 m of touchdown so the
+ autopilot's ground-detection / auto-disarm finishes the landing cleanly.
+
+ Why not pure ArduCopter PrecLand?  A real flight log on this airframe
+ showed PrecLand's lateral correction was too weak — body-frame offsets
+ persisted around ±1 m through the entire descent and the drone slid
+ past the tag laterally while LAND continued at its normal descent rate.
+ LANDING_TARGET is still streamed for any PrecLand-aware setup downstream
+ but is informational on this airframe; the descent is driven by
+ ``PrecisionLandingController.descent_velocity_command``.
 
  Phase machine
  ─────────────
-   INIT → STABILIZE → PATROL ─tag─▶ TRACK (10 s) ─ready─▶ PRECISION_LAND
-                                       │                       │
-                                       │ tag lost              │ tag lost
-                                       ▼                       ▼
-                                     SEARCH ◀────tag lost──── (low-alt? → LAND)
-                                       │
-                                       │ re-patrol acquires tag
-                                       ▼
+   INIT → STABILIZE → PATROL ─tag─▶ TRACK ─centred/timeout─▶ PRECISION_LAND
+                                       │                          │
+                                       │ tag lost                 │ tag lost
+                                       ▼                          ▼
+                                     SEARCH ◀──tag lost────  (close-tag?
+                                       │                          → LAND)
+                                       │ re-patrol acquires tag   │
+                                       ▼                          ▼
                                      TRACK → PRECISION_LAND → TOUCHDOWN
+
+   TRACK exits early as soon as both filtered |body_x| and |body_y| are
+   below TRACK_CENTER_THRESHOLD_M for TRACK_CENTER_HOLD_FRAMES consecutive
+   frames; TRACK_DURATION_S is just an upper bound.
+
+   Within PRECISION_LAND:
+     * Mode is GUIDED while body_z > TOUCHDOWN_BODY_Z_M; control source
+       is ``descent_velocity_command`` (companion-side velocity-PD).
+     * Mode flips to LAND once body_z < TOUCHDOWN_BODY_Z_M; control
+       source is ArduCopter LAND for ground-detection + auto-disarm.
 
    SEARCH is bounded by MAX_RESEARCH_ATTEMPTS; on exhaustion the script
    commits to a plain LAND descent at the current position.
@@ -39,9 +57,13 @@
    • LANDING_TARGET (MAV_FRAME_BODY_FRD)     .. published at ~10 Hz with the
                                                 angular form (angle_x, angle_y,
                                                 distance) plus the position form
-                                                (x/y/z + position_valid=1) so
-                                                ArduCopter ≥ 4.1 can run its own
-                                                PrecLand descent in LAND mode.
+                                                (x/y/z + position_valid=1).
+                                                Informational on this airframe —
+                                                the actual descent is driven by
+                                                ``descent_velocity_command``;
+                                                LANDING_TARGET is kept so any
+                                                PrecLand-aware setup downstream
+                                                still gets the data.
                                                 Body-frame is mandatory — the AC
                                                 companion driver silently ignores
                                                 LOCAL_NED position payloads.
@@ -135,29 +157,79 @@ GOTO_TIMEOUT           = 20.0     # s — goto_ned() blocking upper bound
 
 TAG_TOO_CLOSE_ALT_M    = 1.5      # if tag is lost below this RELATIVE altitude
                                   # during PRECISION_LAND, commit to plain LAND
-                                  # descent rather than re-searching.  At this
-                                  # height the tag is almost certainly out of
-                                  # the FOV simply because we are nearly on top
-                                  # of it; ArduCopter will continue descending
-                                  # in LAND mode and auto-disarm on touchdown.
+                                  # descent rather than re-searching.  Kept as
+                                  # a SECONDARY fallback only for the case
+                                  # where we have no body_z reading at all
+                                  # (tag never seen during precision_land);
+                                  # the primary close-tag handoff uses
+                                  # CLOSE_TAG_BODY_Z_M because EKF z drifts.
+
+CLOSE_TAG_BODY_Z_M     = 1.0      # m — last body-frame z below which a lost
+                                  # tag is assumed to be out-of-FOV (we're
+                                  # nearly on top of it), not drifted away.
+                                  # Preferred over EKF relative altitude for
+                                  # the close-tag handoff: real-flight log
+                                  # showed EKF z drifting ~3 m so the
+                                  # altitude branch fired at alt=-3.37 m,
+                                  # technically correct but fragile.
+
+# ── Descent (manual velocity-PD, GUIDED mode) ──────────────────────────────
+# When precision-landing on the tag we run a PD controller ourselves rather
+# than rely on ArduCopter PrecLand's lateral correction (which on this
+# airframe was too weak to keep the camera centred — confirmed in flight
+# logs where body-frame offsets persisted around ±1 m through the entire
+# descent).  Mirrors the design in
+# UAV/PixhawkController/stationary_landing_controller.py.
+DESCENT_Kp_XY            = 0.35
+DESCENT_Kd_XY            = 0.25
+DESCENT_MAX_V_XY         = 0.4   # m/s, slightly above TRACK for descent
+DESCENT_TARGET_BZ        = 0.3   # m, desired height above tag during PD
+DESCENT_Kp_Z             = 0.3
+DESCENT_MIN_VZ           = 0.10  # m/s minimum descent rate when centred
+DESCENT_MAX_VZ           = 0.40  # m/s vertical clamp
+DESCENT_XY_ERR_HOLD      = 0.35  # m — beyond this, slow vz to 20 % of cmd
+DESCENT_DEADBAND_XY      = 0.10  # m — ignore tiny offsets
+DESCENT_GAIN_SCALE_BZ    = 1.5   # m — below this, scale XY gains by bz/1.5
+DESCENT_MIN_GAIN_SCALE   = 0.30  # floor for the altitude-scaled XY gain
+DESCENT_EMA_ALPHA        = 0.65  # heavier filter than TRACK (was 0.5)
+DESCENT_STALE_TIMEOUT_S  = 0.5   # re-seed prev_* state after gap longer than this
+TOUCHDOWN_BODY_Z_M       = 0.6   # m — switch to LAND below this body-Z
 
 # ─────────────────────────────────────────────────────────────────────────────
 # TRACK Phase Config — runs between PATROL and PRECISION_LAND.  After the
-# patrol acquires the tag, the drone first holds station above the tag
-# using a velocity-PD loop for TRACK_DURATION_S seconds before handing
-# control to the autopilot's PrecLand controller.  This guarantees the
-# autopilot starts the descent with a centered tag in view; in the old
-# flow the very first LANDING_TARGET was sent from a marginal angle and
-# the descent began before the lateral loop had a chance to converge.
+# patrol acquires the tag, the drone holds station above the tag with a
+# velocity-PD loop until either:
+#   * filtered |body_x| AND |body_y| stay below TRACK_CENTER_THRESHOLD_M
+#     for TRACK_CENTER_HOLD_FRAMES consecutive frames, OR
+#   * TRACK_DURATION_S elapses (upper bound).
+# This guarantees the descent phase starts from a near-centred hover; in
+# an earlier version the loop ran for a fixed 10 s with gains so high the
+# velocity command saturated every frame, so the drone twitched at max
+# speed without ever converging.
 # ─────────────────────────────────────────────────────────────────────────────
 
-TRACK_DURATION_S       = 10.0     # s — total time spent in TRACK
+TRACK_DURATION_S       = 10.0     # s — upper bound on TRACK; converging
+                                  # below TRACK_CENTER_THRESHOLD_M for
+                                  # TRACK_CENTER_HOLD_FRAMES exits earlier.
 TRACK_LOSS_TIMEOUT_S   = 3.0      # s — bail to SEARCH after this much loss
-TRACK_Kp_XY            = 0.35     # P-gain on body-frame position error
+TRACK_Kp_XY            = 0.22     # P-gain on body-frame position error.
+                                  # Lowered from 0.35 because a 1 m offset
+                                  # under the old gain saturated immediately
+                                  # at the velocity clamp every frame
+                                  # (twitching at max speed without
+                                  # converging — confirmed in flight log).
 TRACK_Kd_XY            = 0.25     # D-gain on body-frame position error
-TRACK_MAX_V_XY         = 0.3      # m/s — per-axis horizontal cap
+TRACK_MAX_V_XY         = 0.35     # m/s — per-axis horizontal cap
 TRACK_VZ_HOLD          = 0.0      # vertical hold; LAND-relative descent
                                   # comes only after TRACK completes.
+TRACK_DEADBAND_XY      = 0.08     # m — ignore tiny offsets so AprilTag pose
+                                  # noise doesn't drive a constant tiny
+                                  # velocity command.
+TRACK_CENTER_THRESHOLD_M = 0.25   # m — both filtered |body_x| and |body_y|
+                                  # must drop below this for TRACK to
+                                  # consider itself "centred".
+TRACK_CENTER_HOLD_FRAMES = 8      # consecutive ticks the centred condition
+                                  # must hold before TRACK exits early.
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Camera Config
@@ -447,6 +519,15 @@ class PrecisionLandingController:
         self._track_prev_x = None
         self._track_prev_y = None
         self._track_prev_t = None
+
+        # DESCENT-phase prev state — separate from TRACK so re-entering
+        # PRECISION_LAND after a SEARCH does not carry stale TRACK history.
+        # filt_z is filtered alongside body_z so the vertical command is
+        # computed against the same smoothed signal as the gain-scale.
+        self._descent_prev_x = None
+        self._descent_prev_y = None
+        self._descent_prev_z = None
+        self._descent_prev_t = None
 
         # ── Takeoff anchor ──────────────────────────────────────────────────────
         # LOCAL_POSITION_NED.z is reported relative to the EKF/local origin, NOT
@@ -833,25 +914,30 @@ class PrecisionLandingController:
     # ── TRACK phase: velocity-PD lock over the tag ───────────────────────────
 
     def track_velocity_command(self, body_x, body_y):
-        """Drive the drone to (0, 0) in body-frame XY using a light EMA + PD.
+        """Drive the drone to (0, 0) in body-frame XY using EMA + PD.
 
         Used by the TRACK phase between PATROL and PRECISION_LAND so the
-        drone is centered above the tag BEFORE any descent begins.  The
-        autopilot's own PrecLand controller then takes over.
+        drone is centered above the tag BEFORE any descent begins.
 
         Vertical velocity is held at TRACK_VZ_HOLD (0 m/s by default) —
-        descent is the next phase's job, not this one's.
+        descent is the next phase's job (descent_velocity_command), not
+        this one's.
 
         Filter / derivative state mirrors
         stationary_landing_controller.adjust_velocity_and_send():
           * Re-seed prev state if it is None or older than 0.5 s.  A
             stale buffer would produce a huge spurious D-term spike on
             the next valid frame.
-          * Apply alpha=0.5 EMA on the body-frame inputs.
-          * Compute the derivative on the FILTERED values; the P-term
-            uses the raw input as in the spec.
+          * Apply alpha=0.7 EMA on the body-frame inputs (heavier than
+            the original 0.5 — at 0.5 the filter chased AprilTag pose
+            noise frame-to-frame and saturated the velocity clamp).
+          * Compute the derivative on the FILTERED values.
+          * Apply a TRACK_DEADBAND_XY deadband to the filtered error so
+            sub-cm pose noise doesn't drive a constant tiny velocity.
 
-        Returns the (vx, vy, vz) actually sent so the caller can log it.
+        Returns the (filt_x, filt_y, vx, vy, vz) actually sent so the
+        caller can both log the command and use the filtered offsets to
+        decide TRACK_CENTER_THRESHOLD_M convergence.
         """
         now = time.time()
 
@@ -862,7 +948,7 @@ class PrecisionLandingController:
             self._track_prev_y = body_y
             self._track_prev_t = now
 
-        alpha = 0.5
+        alpha = 0.7
         filt_x = alpha * self._track_prev_x + (1 - alpha) * body_x
         filt_y = alpha * self._track_prev_y + (1 - alpha) * body_y
 
@@ -872,8 +958,13 @@ class PrecisionLandingController:
         dx = (filt_x - self._track_prev_x) / dt
         dy = (filt_y - self._track_prev_y) / dt
 
-        vx = TRACK_Kp_XY * body_x + TRACK_Kd_XY * dx
-        vy = TRACK_Kp_XY * body_y + TRACK_Kd_XY * dy
+        # Deadband on the FILTERED error so AprilTag pose noise inside
+        # ±TRACK_DEADBAND_XY doesn't keep nudging the drone around.
+        err_x = 0.0 if abs(filt_x) < TRACK_DEADBAND_XY else filt_x
+        err_y = 0.0 if abs(filt_y) < TRACK_DEADBAND_XY else filt_y
+
+        vx = TRACK_Kp_XY * err_x + TRACK_Kd_XY * dx
+        vy = TRACK_Kp_XY * err_y + TRACK_Kd_XY * dy
 
         vx = max(min(vx, TRACK_MAX_V_XY), -TRACK_MAX_V_XY)
         vy = max(min(vy, TRACK_MAX_V_XY), -TRACK_MAX_V_XY)
@@ -884,6 +975,103 @@ class PrecisionLandingController:
         self._track_prev_t = now
 
         self.send_velocity(vx, vy, vz)
+        return filt_x, filt_y, vx, vy, vz
+
+    # ── PRECISION_LAND phase: velocity-PD descent ────────────────────────────
+
+    def descent_velocity_command(self, body_x, body_y, body_z):
+        """Velocity-PD descent that keeps the camera centred over the tag.
+
+        Replaces ArduCopter PrecLand's lateral correction (which on this
+        airframe was too weak to centre the descent — flight log showed
+        body-frame offsets persisting around ±1 m all the way down).
+        Mirrors the design in
+        UAV/PixhawkController/stationary_landing_controller.adjust_velocity_and_send:
+        altitude-aware gain scheduling, descent rate coupled to XY error,
+        EMA smoothing.
+
+        Important behaviour vs track_velocity_command:
+          * Commands ``vz`` (descent) — TRACK keeps vz=0.
+          * Heavier EMA (alpha = DESCENT_EMA_ALPHA, 0.65 vs 0.5).
+          * XY gains are scaled DOWN as we get close to the tag so the
+            drone doesn't over-react when small pixel errors translate
+            to small physical errors.
+          * Vertical command is throttled to 20 % whenever the lateral
+            error is larger than DESCENT_XY_ERR_HOLD — recentre first,
+            then descend.
+          * Never commands upward velocity; if filt_z drops below
+            DESCENT_TARGET_BZ the caller is expected to commit to LAND
+            for the final touchdown.
+
+        Returns the (vx, vy, vz) actually sent.
+        """
+        now = time.time()
+
+        # Re-seed on stale state so a tag dropout doesn't yield a huge
+        # D-term spike on the next valid frame.
+        if (self._descent_prev_x is None
+                or self._descent_prev_t is None
+                or (now - self._descent_prev_t) > DESCENT_STALE_TIMEOUT_S):
+            self._descent_prev_x = body_x
+            self._descent_prev_y = body_y
+            self._descent_prev_z = body_z
+            self._descent_prev_t = now
+
+        a = DESCENT_EMA_ALPHA
+        filt_x = a * self._descent_prev_x + (1 - a) * body_x
+        filt_y = a * self._descent_prev_y + (1 - a) * body_y
+        filt_z = a * self._descent_prev_z + (1 - a) * body_z
+
+        dt = max(min(now - self._descent_prev_t, 0.2), 0.01)
+        dx = (filt_x - self._descent_prev_x) / dt
+        dy = (filt_y - self._descent_prev_y) / dt
+
+        # Deadband on filtered XY error.
+        err_x = 0.0 if abs(filt_x) < DESCENT_DEADBAND_XY else filt_x
+        err_y = 0.0 if abs(filt_y) < DESCENT_DEADBAND_XY else filt_y
+
+        # Altitude-aware gain scaling: when we're closer than
+        # DESCENT_GAIN_SCALE_BZ to the tag, attenuate XY gains so a fixed
+        # angular tag-pose error doesn't translate into a too-large
+        # lateral velocity command.
+        if filt_z < DESCENT_GAIN_SCALE_BZ:
+            scale = max(DESCENT_MIN_GAIN_SCALE,
+                        filt_z / DESCENT_GAIN_SCALE_BZ)
+        else:
+            scale = 1.0
+
+        vx = scale * (DESCENT_Kp_XY * err_x + DESCENT_Kd_XY * dx)
+        vy = scale * (DESCENT_Kp_XY * err_y + DESCENT_Kd_XY * dy)
+
+        xy_cap = scale * DESCENT_MAX_V_XY
+        vx = max(min(vx, xy_cap), -xy_cap)
+        vy = max(min(vy, xy_cap), -xy_cap)
+
+        # Vertical command: descend toward DESCENT_TARGET_BZ.
+        error_z = filt_z - DESCENT_TARGET_BZ
+        if error_z > 0.0:
+            vz_cmd = max(DESCENT_MIN_VZ, DESCENT_Kp_Z * error_z)
+            # Slow vz when XY error is still meaningful — recentre first.
+            if max(abs(filt_x), abs(filt_y)) > DESCENT_XY_ERR_HOLD:
+                vz_cmd *= 0.2
+            vz = min(vz_cmd, DESCENT_MAX_VZ)
+        else:
+            # Below target altitude — let caller commit to LAND.  Never
+            # command upward velocity here; we'd just chase noise.
+            vz = 0.0
+
+        self._descent_prev_x = filt_x
+        self._descent_prev_y = filt_y
+        self._descent_prev_z = filt_z
+        self._descent_prev_t = now
+
+        self.send_velocity(vx, vy, vz)
+        # The HUD's LT branch in draw_overlay() should fall back to the
+        # velocity branch during DESCENT — clear the LANDING_TARGET cache
+        # so the operator sees the velocity command driving the airframe.
+        self.last_cmd["lt_x"] = None
+        self.last_cmd["lt_y"] = None
+        self.last_cmd["lt_z"] = None
         return vx, vy, vz
 
     # ── Position control (local NED) ─────────────────────────────────────────
@@ -1401,6 +1589,7 @@ def track_tag(controller, pump, state):
     start         = time.time()
     last_tag_time = time.time()
     last_log      = 0.0
+    centred_count = 0   # consecutive frames inside TRACK_CENTER_THRESHOLD_M
 
     while True:
         controller._drain_messages()
@@ -1427,7 +1616,26 @@ def track_tag(controller, pump, state):
                 cam_x, cam_y, cam_z,
             )
 
-            vx, vy, vz = controller.track_velocity_command(body_x, body_y)
+            filt_x, filt_y, vx, vy, vz = controller.track_velocity_command(
+                body_x, body_y,
+            )
+
+            # Convergence: BOTH filtered axes inside the centre threshold
+            # for TRACK_CENTER_HOLD_FRAMES consecutive ticks.  We use the
+            # filtered values rather than raw body_* so a single noisy
+            # frame doesn't break the streak.
+            if (abs(filt_x) < TRACK_CENTER_THRESHOLD_M
+                    and abs(filt_y) < TRACK_CENTER_THRESHOLD_M):
+                centred_count += 1
+            else:
+                centred_count = 0
+            if centred_count >= TRACK_CENTER_HOLD_FRAMES:
+                controller.send_velocity(0.0, 0.0, 0.0)
+                print(f"[INFO] TRACK centred (|x|<{TRACK_CENTER_THRESHOLD_M:.2f}, "
+                      f"|y|<{TRACK_CENTER_THRESHOLD_M:.2f} for "
+                      f"{TRACK_CENTER_HOLD_FRAMES} frames) — handing off "
+                      "to PRECISION_LAND")
+                return "READY"
 
             state["leg_label"] = (
                 f"TRACK {elapsed:.1f}/{TRACK_DURATION_S:.0f}s "
@@ -1438,9 +1646,14 @@ def track_tag(controller, pump, state):
             if now - last_log > 1.0:
                 print(f"[INFO] TRACK t={elapsed:.1f}/{TRACK_DURATION_S:.0f}s  "
                       f"body=({body_x:+.2f},{body_y:+.2f},{body_z:+.2f})  "
-                      f"v=({vx:+.2f},{vy:+.2f},{vz:+.2f})")
+                      f"filt=({filt_x:+.2f},{filt_y:+.2f})  "
+                      f"v=({vx:+.2f},{vy:+.2f},{vz:+.2f})  "
+                      f"centred={centred_count}/{TRACK_CENTER_HOLD_FRAMES}")
                 last_log = now
         else:
+            # Tag dropped — break the convergence streak so a brief
+            # detection on the next frame doesn't immediately satisfy it.
+            centred_count = 0
             time_lost = time.time() - last_tag_time
             if time_lost > TRACK_LOSS_TIMEOUT_S:
                 print(f"[WARN] Tag lost for {time_lost:.1f}s during TRACK — "
@@ -1463,11 +1676,55 @@ def track_tag(controller, pump, state):
 # ─────────────────────────────────────────────────────────────────────────────
 
 def precision_land(controller, pump, state):
+    """Velocity-PD descent in GUIDED mode, mirroring stationary_landing.py.
+
+    The previous version of this function streamed LANDING_TARGET to the
+    autopilot and switched to LAND mode immediately, relying on ArduCopter
+    PrecLand to do the lateral correction.  On this airframe that lateral
+    authority was too weak — a real flight log showed body-frame offsets
+    persisting around ±1 m for the entire descent, and the drone slid past
+    the tag laterally while LAND continued at its normal descent rate.
+
+    The current version stays in GUIDED, runs a velocity-PD loop locally
+    (descent_velocity_command), and only commits to LAND for the final
+    ~0.6 m so ArduCopter handles ground-detection / auto-disarm.
+    LANDING_TARGET is still published while the tag is visible — purely
+    informational, so any PrecLand-aware setup downstream gets the data,
+    but it is no longer the descent driver on this airframe.
+
+    Tag-loss handling prefers ``last_body_z`` over EKF altitude because
+    flight logs showed EKF z drifting ~3 m during the mission; the
+    EKF-relative altitude branch fired correctly but at a clearly drifted
+    value.  ``CLOSE_TAG_BODY_Z_M`` is the camera-to-tag distance below
+    which a lost tag is assumed to be out of FOV.
+
+    Returns one of:
+      * "TOUCHDOWN" — motors auto-disarmed; mission complete
+      * "TAG_LOST"  — tag missing too long; caller should re-search
+    """
     print("[INFO] Phase: PRECISION_LAND")
     state["phase"] = "PRECISION_LAND"
     last_tag_time = time.time()
-    mode_switched = False
-    sent_initial_lt = False
+    last_body_z   = None
+    last_log      = 0.0
+
+    def _commit_to_land(reason):
+        """Switch to LAND mode and block until motors disarm.
+
+        Used for both the close-tag handoff (final ~0.6 m) and the
+        body_z-based "tag too close to track" fallback when the tag is
+        lost near the ground.
+        """
+        print(f"[INFO] {reason} — committing to LAND descent until touchdown")
+        controller.change_flight_mode("LAND")
+        land_start = time.time()
+        while time.time() - land_start < 30:
+            controller._drain_messages()
+            if not controller.master.motors_armed():
+                print("[INFO] Motors disarmed — touchdown.")
+                return
+            pump()
+            time.sleep(0.1)
 
     while True:
         # Drain telemetry & exit cleanly on disarm.  ArduCopter auto-disarms
@@ -1487,84 +1744,102 @@ def precision_land(controller, pump, state):
             cam_y = float(t[1][0])
             cam_z = float(t[2][0])
 
-            # Body-frame is what ArduCopter PrecLand actually consumes
-            # (MAV_FRAME_BODY_FRD).  No NED conversion in this path.
             body_x, body_y, body_z = PrecisionLandingController.camera_to_body(
                 cam_x, cam_y, cam_z,
             )
+            last_body_z = body_z
 
-            sent = controller.send_landing_target(body_x, body_y, body_z)
-            if sent:
-                safe_bz = max(body_z, 1e-3)
-                ang_x = math.atan2(body_x, safe_bz)
-                ang_y = math.atan2(body_y, safe_bz)
-                dist = math.sqrt(body_x ** 2 + body_y ** 2 + body_z ** 2)
+            # Final-approach handoff: once we're inside TOUCHDOWN_BODY_Z_M
+            # of the tag, hand control to ArduCopter LAND so its ground
+            # detection / auto-disarm finishes the touchdown cleanly.
+            if body_z < TOUCHDOWN_BODY_Z_M:
+                _commit_to_land(
+                    f"body_z={body_z:.2f} m below "
+                    f"TOUCHDOWN_BODY_Z_M={TOUCHDOWN_BODY_Z_M:.2f} m"
+                )
+                return "TOUCHDOWN"
+
+            # Drive the descent ourselves.
+            vx, vy, vz = controller.descent_velocity_command(
+                body_x, body_y, body_z,
+            )
+
+            # Publish LANDING_TARGET for any downstream PrecLand consumer.
+            # On this airframe the descent is driven by descent_velocity_*
+            # above; LANDING_TARGET here is purely informational.
+            controller.send_landing_target(body_x, body_y, body_z)
+            # descent_velocity_command clears last_cmd["lt_*"] so the HUD
+            # falls through to the velocity branch — re-clear here in case
+            # send_landing_target above re-populated them.
+            controller.last_cmd["lt_x"] = None
+            controller.last_cmd["lt_y"] = None
+            controller.last_cmd["lt_z"] = None
+
+            state["leg_label"] = (
+                f"DESCENT bz={body_z:.2f}m err=({body_x:+.2f},{body_y:+.2f})"
+            )
+
+            now = time.time()
+            if now - last_log > 0.5:
                 if (controller.last_pos["z"] is not None and
                         controller.takeoff_z_origin is not None):
                     rel_alt = -(controller.last_pos["z"]
                                 - controller.takeoff_z_origin)
-                    raw_neg_z = -controller.last_pos["z"]
-                    print(f"[INFO] LANDING_TARGET body=({body_x:+.2f}, "
-                          f"{body_y:+.2f}, {body_z:+.2f}) "
-                          f"ang=({ang_x:+.2f},{ang_y:+.2f}) rad  "
-                          f"dist={dist:.2f} m  alt={rel_alt:+.2f} m relative "
-                          f"(raw -z={raw_neg_z:.2f})")
+                    rel_str = f"{rel_alt:+.2f} m rel"
                 else:
-                    raw_neg_z = (-controller.last_pos["z"]
-                                 if controller.last_pos["z"] is not None
-                                 else float("nan"))
-                    print(f"[INFO] LANDING_TARGET body=({body_x:+.2f}, "
-                          f"{body_y:+.2f}, {body_z:+.2f}) "
-                          f"ang=({ang_x:+.2f},{ang_y:+.2f}) rad  "
-                          f"dist={dist:.2f} m  raw -z={raw_neg_z:.2f}")
-                sent_initial_lt = True
-
-            # Hand off to autopilot ONLY after the first LANDING_TARGET has
-            # actually gone out.  If we switch to LAND mode first, the very
-            # first descent step happens without a target and the autopilot
-            # falls back to a plain straight-down LAND.
-            if sent_initial_lt and not mode_switched:
-                controller.change_flight_mode("LAND")
-                mode_switched = True
+                    rel_str = "n/a"
+                print(f"[INFO] DESCENT body=({body_x:+.2f},"
+                      f"{body_y:+.2f},{body_z:+.2f}) "
+                      f"v=({vx:+.2f},{vy:+.2f},{vz:+.2f})  "
+                      f"bz={body_z:.2f} m  alt={rel_str}")
+                last_log = now
 
         else:
+            # Tag not visible this frame.
             elapsed = time.time() - last_tag_time
+
+            # PRIMARY close-tag check: did we recently see the tag at
+            # very low body_z?  Then we're nearly on top of it and it
+            # is simply outside the FOV — commit to LAND, do NOT search.
+            # body_z is the camera-to-tag distance from AprilTag pose
+            # estimation, which does not suffer the EKF drift.
+            if (last_body_z is not None
+                    and last_body_z < CLOSE_TAG_BODY_Z_M):
+                _commit_to_land(
+                    f"Tag too close to track (last bz={last_body_z:.2f} m)"
+                )
+                return "TOUCHDOWN"
+
             if elapsed > TAG_LOSS_TIMEOUT:
-                # Compute relative altitude (against the takeoff anchor) so
-                # we can decide whether the loss is "drone too high; tag
-                # actually gone" vs "drone almost on top of the tag and the
-                # tag has simply left the FOV".  In the latter case, the
-                # autopilot is already in LAND mode and ground-detection
-                # will auto-disarm on touchdown — committing to LAND is
-                # safer than re-flying the search box at <2 m AGL.
+                # SECONDARY fallback (no body_z reading at all): use the
+                # EKF-relative altitude.  Real flight logs showed EKF z
+                # can drift several metres so this branch is fragile —
+                # we only get here if the tag was never seen during
+                # PRECISION_LAND in the first place (so no last_body_z).
                 relative_alt = None
                 if (controller.last_pos["z"] is not None and
                         controller.takeoff_z_origin is not None):
                     relative_alt = -(controller.last_pos["z"]
                                      - controller.takeoff_z_origin)
-                if (relative_alt is not None and
-                        relative_alt < TAG_TOO_CLOSE_ALT_M):
-                    print(f"[INFO] Tag lost at low altitude "
-                          f"({relative_alt:.2f} m) — committing to LAND "
-                          "descent until touchdown")
-                    # Stay in LAND mode (we're already in it).  Loop until
-                    # motors disarm or a generous timeout (30 s) so a
-                    # stuck mode does not leave us hanging forever.
-                    land_start = time.time()
-                    while time.time() - land_start < 30:
-                        controller._drain_messages()
-                        if not controller.master.motors_armed():
-                            print("[INFO] Motors disarmed — touchdown.")
-                            return "TOUCHDOWN"
-                        pump()
-                        time.sleep(0.1)
+                if (last_body_z is None
+                        and relative_alt is not None
+                        and relative_alt < TAG_TOO_CLOSE_ALT_M):
+                    _commit_to_land(
+                        f"Tag never seen and EKF rel-alt "
+                        f"{relative_alt:.2f} m below "
+                        f"TAG_TOO_CLOSE_ALT_M={TAG_TOO_CLOSE_ALT_M:.2f} m"
+                    )
                     return "TOUCHDOWN"
                 print(f"[WARN] Tag lost for {elapsed:.1f}s during "
                       "PRECISION_LAND")
+                controller.send_velocity(0.0, 0.0, 0.0)
                 return "TAG_LOST"
 
-        # ~50 Hz tick — well above the 10 Hz LANDING_TARGET send rate but
-        # comfortable on a Pi while still leaving headroom for detection.
+            # Tag temporarily lost but not yet over the timeout — hover.
+            controller.send_velocity(0.0, 0.0, 0.0)
+
+        # ~50 Hz tick — comfortable on a Pi while leaving headroom for
+        # AprilTag detection.
         time.sleep(0.02)
 
 
