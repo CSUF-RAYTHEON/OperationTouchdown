@@ -41,7 +41,7 @@ def connect_UART3():
     source_system = 1
     source_component = 191
 
-    print("\nConnecting to Pixhawk via UART2 & waiting for heartbeat")
+    print("\nConnecting to Pixhawk via UART3 & waiting for heartbeat")
     master = mavutil.mavlink_connection(serial_port, baud=baudrate, source_system=source_system, source_component=source_component)
     master.target_system = 1 # Send messages to system 1(drone/vehicle #1)
     master.target_component = 1 # Send messages to flight controller "autopilot"
