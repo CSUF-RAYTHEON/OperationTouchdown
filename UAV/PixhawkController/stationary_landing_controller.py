@@ -275,10 +275,9 @@ class StationaryLandingController:
     
     def adjust_velocity_and_send(self, body_x, body_y, body_z):
         """
-        Apply proportional control and send velocity command
+        Apply proportional control with a Staged Descent (Cone of Approach)
         """
-        # Lowered alpha to 0.3 to reduce lag and stop overcorrection
-        alpha = 0.3 
+        alpha = 0.3
         self.prev_x = alpha*self.prev_x + (1-alpha)*body_x
         self.prev_y = alpha*self.prev_y + (1-alpha)*body_y
         self.prev_z = alpha*self.prev_z + (1-alpha)*body_z
@@ -287,23 +286,38 @@ class StationaryLandingController:
         body_y = self.prev_y
         body_z = self.prev_z
 
-        # Changed TARGET_Z to 0.0 so it confidently pushes past the 0.3m LANDING_THRESHOLD
-        TARGET_Z = 0.0 
+        # Calculate how far off-center we are in total (hypotenuse)
+        xy_error = (body_x**2 + body_y**2)**0.5
+
+        # ---------------------------------------------------------
+        # STAGED DESCENT LOGIC
+        # Do not descend unless we are horizontally aligned
+        # ---------------------------------------------------------
+        if xy_error > 0.25:
+            # If we are far off horizontally, hold at 1.0m altitude
+            # This prevents flying into the ground diagonally and keeps the tag in view
+            TARGET_Z = 1.0
+        elif xy_error > 0.08:
+            # If we are getting closer, drop to 0.5m
+            TARGET_Z = 0.5
+        else:
+            # We are perfectly aligned! Commit to the final descent
+            TARGET_Z = 0.0
+            
         error_z = body_z - TARGET_Z
 
-        # Removed the 0.05 deadband. Let the Kp naturally scale the velocity down to near-zero.
+        # Calculate velocities
         vx = Kp_xy * body_x
         vy = Kp_xy * body_y
         vz = Kp_z * error_z
 
-        # Slow down near landing, but smoothly
-        if body_z < 0.8:
-            # Scale down proportionally based on height rather than a hard cut
-            scale_factor = max(0.4, body_z / 0.8) 
+        # Smooth slowdown near the final touchdown
+        if body_z < 0.6 and TARGET_Z == 0.0:
+            scale_factor = max(0.4, body_z / 0.6) 
             vx *= scale_factor
             vy *= scale_factor
 
-        # Clip velocities
+        # Clip velocities for safety
         vx = max(min(vx, MAX_VELOCITY), -MAX_VELOCITY)
         vy = max(min(vy, MAX_VELOCITY), -MAX_VELOCITY)
         vz = max(min(vz, MAX_VELOCITY), -MAX_VELOCITY)
