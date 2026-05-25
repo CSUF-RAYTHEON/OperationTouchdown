@@ -58,6 +58,12 @@ with dai.Device() as device:
         controller.takeoff_to_altitude(TAKEOFF_ALTITUDE)
 
         last_tag_time = time.time()
+        
+        # Track the last known positions for the blind-spot check
+        last_body_x = 99.0
+        last_body_y = 99.0
+        last_body_z = 99.0
+
         while pipeline.isRunning():
             in_rgb = q_rgb.tryGet()
 
@@ -73,27 +79,29 @@ with dai.Device() as device:
 
             # Is tag lost?
             if pose is None:
+                # --- NEW BLIND SPOT OVERRIDE ---
+                # If we lose the tag, but we were low (< 0.5m) and centered, 
+                # we are in the camera blind spot. Commit to the landing!
+                if last_body_z < 0.5 and abs(last_body_x) < 0.20 and abs(last_body_y) < 0.20:
+                    print("[INFO] Tag lost in blind spot. Committing to final touchdown!")
+                    controller.stationary_landing()
+                    time.sleep(5)
+                    controller.disarm_motors()
+                    break
+                # -------------------------------
+
                 time_lost = time.time() - last_tag_time
 
                 if time_lost < HOVER_TIMEOUT:
-                    print(
-                        f"[WARN] Tag lost for "
-                        f"{time_lost:.1f}s. Hovering..."
-                    )
+                    print(f"[WARN] Tag lost for {time_lost:.1f}s. Hovering...")
                     controller.send_velocity(0, 0, 0)
 
                 elif time_lost < SEARCH_TIMEOUT:
-                    print(
-                        f"[WARN] Tag lost for "
-                        f"{time_lost:.1f}s. Ascending..."
-                    )
-                    controller.send_velocity(0, 0, -0.2)
+                    print(f"[WARN] Tag lost for {time_lost:.1f}s. Ascending...")
+                    controller.send_velocity(0, 0, -0.2) # Negative Z is UP
 
                 else:
-                    print(
-                        "[CRITICAL] Tag lost too long. "
-                        "Blind landing..."
-                    )
+                    print("[CRITICAL] Tag lost too long. Blind landing...")
                     controller.stationary_landing()
                     time.sleep(5)
                     controller.disarm_motors()
@@ -104,45 +112,29 @@ with dai.Device() as device:
             # tag detected, reset timer
             last_tag_time = time.time()
             cam_x, cam_y, cam_z = pose
-            print(
-                f"[INFO] Camera Frame | "
-                f"X={cam_x:.2f}, "
-                f"Y={cam_y:.2f}, "
-                f"Z={cam_z:.2f}"
-            )
-
+            
             # camera to body frame conversion
-            body_x, body_y, body_z = (
-                controller.convert_camera_to_body_frame(
-                    cam_x,
-                    cam_y,
-                    cam_z
-                )
-            )
-            print(
-                f"[INFO] Body Frame | "
-                f"X={body_x:.2f}, "
-                f"Y={body_y:.2f}, "
-                f"Z={body_z:.2f}"
-            )
+            body_x, body_y, body_z = controller.convert_camera_to_body_frame(cam_x, cam_y, cam_z)
+            
+            # Update our memory of where we are
+            last_body_x = body_x
+            last_body_y = body_y
+            last_body_z = body_z
 
-            # Check landing conditions
-            if (
-                abs(body_x) < 0.10 and
-                abs(body_y) < 0.10 and
-                body_z < LANDING_THRESHOLD
-            ):
-                print("[INFO] Landing conditions reached")
+            print(f"[INFO] Body Frame | X={body_x:.2f}, Y={body_y:.2f}, Z={body_z:.2f}")
+
+            # --- UPDATED LANDING CONDITIONS ---
+            # Relaxed the X/Y to 0.15m (6 inches) to account for raw camera noise bouncing.
+            # Raised landing trigger to 0.4m (15 inches) to trigger BEFORE the blind spot.
+            if abs(body_x) < 0.15 and abs(body_y) < 0.15 and body_z < 0.4:
+                print("[INFO] Landing conditions reached. Executing Land Mode.")
                 controller.stationary_landing()
                 time.sleep(5)
                 controller.disarm_motors()
                 break
 
             # track the tag by sending velocity commands
-            controller.adjust_velocity_and_send(
-                body_x,
-                body_y,
-                body_z
-            )
+            controller.adjust_velocity_and_send(body_x, body_y, body_z)
+            
             # Small sleep to stabilize loop timing
             time.sleep(0.01)
