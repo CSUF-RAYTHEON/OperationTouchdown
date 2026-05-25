@@ -23,12 +23,12 @@ DEPTH_MAX_M = 15.0
 REDETECT_EVERY = 10
 
 # Loop closure (SLAM)
-KEYFRAME_INTERVAL = 30
+KEYFRAME_INTERVAL = 15
 LOOP_CHECK_INTERVAL = 0.5
 MIN_LOOP_SEPARATION = 10
 MATCH_THRESHOLD = 45
-MAX_KEYFRAMES = 300
-MAX_MATCH_CANDIDATES = 80
+MAX_KEYFRAMES = 600
+MAX_MATCH_CANDIDATES = 300
 ORB_NFEATURES = 400
 ORB_SCALE = 0.5
 
@@ -433,7 +433,7 @@ def test_positioning(position_mutex):
             np.copyto(local_position, shared_position)
 
         print(f"[MISSION CONTROL SIM] Current Position -> North: {local_position[0]:+.2f}m | East: {local_position[1]:+.2f}m | Down: {local_position[2]:+.2f}m")
-        time.sleep(0.5) 
+        time.sleep(0.1) 
 
 if __name__ == "__main__":
     mp.set_start_method('spawn', force=True)
