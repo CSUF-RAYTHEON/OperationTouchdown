@@ -9,11 +9,11 @@ from PixhawkController.stationary_landing_controller import (
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE = 57600
 
-LANDING_THRESHOLD = 0.3
+LANDING_THRESHOLD = 0.7
 TAKEOFF_ALTITUDE = 6  # meters
 
 HOVER_TIMEOUT = 7.0
-SEARCH_TIMEOUT = 15.0
+SEARCH_TIMEOUT = 10.0
 
 # Start the pipeline / camera
 

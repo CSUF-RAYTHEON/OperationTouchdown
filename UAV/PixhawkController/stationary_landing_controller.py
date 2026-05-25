@@ -287,13 +287,7 @@ class StationaryLandingController:
         body_z = self.prev_z
 
         # this basically makes sure that we arent sending movement if we are already close, so we avoid jerky movements
-        if body_z > 2.0:
-            thresh = 0.05
-        elif body_z > 1.0:
-            thresh = 0.08
-        else:
-            thresh = 0.12
-
+        thresh = 0.05
         body_x = 0 if abs(body_x) < thresh else body_x
         body_y = 0 if abs(body_y) < thresh else body_y
 
@@ -302,23 +296,7 @@ class StationaryLandingController:
 
         vx = Kp_xy * body_x
         vy = Kp_xy * body_y
-
-        # --------------------------------
-        # Below 1 meter:
-        # Ignore noisy Z estimate
-        # and descend slowly
-        # --------------------------------
-        if body_z < 1.0:
-
-            # gentler XY corrections
-            vx *= 0.5
-            vy *= 0.5
-
-            # slow constant descent
-            vz = 0.03
-
-        else:
-            vz = 0 if abs(error_z) < 0.15 else Kp_z * error_z
+        vz = 0 if abs(error_z) < 0.05 else Kp_z * error_z
 
         # slow down near landing
         if body_z < 0.5:
