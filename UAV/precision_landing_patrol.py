@@ -405,6 +405,17 @@ class PrecisionLandingController:
         # Rate-limit gate for LANDING_TARGET so the serial link is not flooded.
         self._last_lt_send = 0.0
 
+        # ── Takeoff anchor ──────────────────────────────────────────────────────
+        # LOCAL_POSITION_NED.z is reported relative to the EKF/local origin, NOT
+        # the physical takeoff point.  On airframes with a stale GPS/EKF the
+        # origin can be hundreds of metres off — we saw a real-flight log where
+        # the FIRST LOCAL_POSITION_NED after MAV_CMD_NAV_TAKEOFF reported
+        # -z = 339.88 m while the drone was still on the ground.  We therefore
+        # cache the z at the moment NAV_TAKEOFF is sent and report altitude
+        # RELATIVE TO THAT BASELINE everywhere downstream (takeoff, stabilize,
+        # HUD overlay).  None until takeoff_to_altitude() seeds it.
+        self.takeoff_z_origin = None
+
     # ── Telemetry plumbing ───────────────────────────────────────────────────
 
     def request_telemetry_streams(self):
@@ -580,23 +591,35 @@ class PrecisionLandingController:
     def takeoff_to_altitude(self, meters, pump_fn=None):
         """Send NAV_TAKEOFF and block until within 0.3 m of target.
 
+        Altitude reasoning
+        ──────────────────
+        ``LOCAL_POSITION_NED.z`` is reported relative to the EKF/local origin,
+        NOT the physical takeoff point.  On airframes with a stale GPS/EKF the
+        origin can be hundreds of metres off; in one real-flight log we saw
+        the FIRST LOCAL_POSITION_NED after MAV_CMD_NAV_TAKEOFF report
+        -z = 339.88 m while the drone was still on the ground, which made the
+        old "altitude >= meters - 0.3" check pass instantly and the script
+        proceeded to PATROL with a grounded, armed drone.
+
+        We therefore seed ``self.takeoff_z_origin`` from the freshest
+        LOCAL_POSITION_NED *before* sending NAV_TAKEOFF and use
+        ``relative_alt = -(msg.z - z0)`` as the climb metric everywhere
+        downstream.  We also read COMMAND_ACK so silent FCU rejections
+        (common without solid GPS lock) abort the mission instead of leaving
+        the drone armed-on-ground.
+
         ``pump_fn`` is an optional zero-arg callable invoked between altitude
         polls so the camera preview keeps refreshing during the climb.
         """
-        print(f"[INFO] Taking off to {meters} m...")
-        self.master.mav.command_long_send(
-            self.master.target_system, self.master.target_component,
-            mavutil.mavlink.MAV_CMD_NAV_TAKEOFF,
-            0, 0, 0, 0, 0, 0, 0, meters,
-        )
-        start = time.time()
-        while time.time() - start < 30:
+        # ── Step 1: seed the z anchor from the freshest LOCAL_POSITION_NED ──
+        # We need at least one fresh sample BEFORE issuing NAV_TAKEOFF;
+        # without it we have no baseline to subtract and altitude readings
+        # downstream are meaningless.
+        z0 = None
+        for _ in range(6):
             msg = self.master.recv_match(type="LOCAL_POSITION_NED",
-                                         blocking=True, timeout=1)
+                                         blocking=True, timeout=0.5)
             if msg is not None:
-                # In NED z is down → altitude above home = -z.
-                altitude = -msg.z
-                # Mirror into the cache so overlay sees the climb live.
                 self.last_pos["x"]  = msg.x
                 self.last_pos["y"]  = msg.y
                 self.last_pos["z"]  = msg.z
@@ -604,10 +627,131 @@ class PrecisionLandingController:
                 self.last_pos["vy"] = msg.vy
                 self.last_pos["vz"] = msg.vz
                 self.last_pos["t"]  = time.time()
-                print(f"[INFO] Altitude: {altitude:.2f} m / {meters} m")
-                if altitude >= meters - 0.3:
-                    print(f"[INFO] Target altitude reached ({altitude:.2f} m)")
+                z0 = msg.z
+        if z0 is None:
+            raise RuntimeError(
+                "No LOCAL_POSITION_NED received within 3 s — cannot anchor "
+                "takeoff altitude.  Check the FCU telemetry stream."
+            )
+        self.takeoff_z_origin = z0
+        print(f"[INFO] Takeoff anchor captured: raw -z = {-z0:.2f} m "
+              f"(EKF/local origin offset; relative altitude will be reported "
+              f"against this baseline)")
+
+        # ── Step 2: advisory EKF/health check (does NOT abort) ──────────────
+        # Drain whatever SYS_STATUS / EKF_STATUS_REPORT happens to be in the
+        # buffer right now and surface obvious red flags so the operator can
+        # correlate a later NAV_TAKEOFF rejection with degraded EKF health.
+        # Wrapped in try/except so older pymavlink dialects without these
+        # attributes don't break the main flow.
+        try:
+            ekf = self.master.recv_match(type="EKF_STATUS_REPORT",
+                                         blocking=False)
+            if ekf is not None:
+                flags = getattr(ekf, "flags", None)
+                vel_var = getattr(ekf, "velocity_variance", 0.0)
+                # Bit 8 = EKF_PRED_POS_HORIZ_ABS, bit 9 = EKF_POS_HORIZ_ABS.
+                if flags is not None and (
+                    not (flags & (1 << 8)) or not (flags & (1 << 9))
+                ):
+                    print("[WARN] EKF reports degraded position estimate — "
+                          "takeoff may be rejected by FCU "
+                          f"(flags=0x{flags:04x})")
+                if vel_var is not None and vel_var > 1.0:
+                    print("[WARN] EKF reports degraded position estimate — "
+                          "takeoff may be rejected by FCU "
+                          f"(velocity_variance={vel_var:.2f})")
+            # Also drain a SYS_STATUS if available — purely informational.
+            self.master.recv_match(type="SYS_STATUS", blocking=False)
+        except Exception as e:
+            # Any error here is advisory-only; never block takeoff on it.
+            print(f"[WARN] EKF health probe skipped: {e}")
+
+        # ── Step 3: issue NAV_TAKEOFF ────────────────────────────────────────
+        print(f"[INFO] Taking off to {meters} m...")
+        self.master.mav.command_long_send(
+            self.master.target_system, self.master.target_component,
+            mavutil.mavlink.MAV_CMD_NAV_TAKEOFF,
+            0, 0, 0, 0, 0, 0, 0, meters,
+        )
+
+        # ── Step 4: read COMMAND_ACK for NAV_TAKEOFF (cmd 22) ───────────────
+        # Without this, a silent FCU rejection (very common when GPS/EKF is
+        # not healthy, or pre-arm checks fail post-arm) goes undetected and
+        # we end up "monitoring altitude" of a stationary drone.
+        ack_seen   = False
+        ack_result = None
+        ack_deadline = time.time() + 3.0
+        while time.time() < ack_deadline:
+            ack = self.master.recv_match(type="COMMAND_ACK",
+                                         blocking=True, timeout=0.5)
+            if ack is None:
+                continue
+            if getattr(ack, "command", None) == \
+                    mavutil.mavlink.MAV_CMD_NAV_TAKEOFF:
+                ack_seen   = True
+                ack_result = ack.result
+                break
+        if ack_seen:
+            if ack_result != 0:
+                print(f"[ERROR] Takeoff rejected by FCU "
+                      f"(COMMAND_ACK result={ack_result}) — most likely "
+                      f"EKF/GPS not healthy or pre-arm checks failing")
+                raise RuntimeError(
+                    f"NAV_TAKEOFF rejected by FCU (result={ack_result})"
+                )
+            print("[INFO] NAV_TAKEOFF accepted by FCU")
+        else:
+            print("[WARN] No COMMAND_ACK for NAV_TAKEOFF within 3 s — "
+                  "proceeding but watching for liftoff failure")
+
+        # ── Step 5: monitor climb against the anchored baseline ─────────────
+        start = time.time()
+        liftoff_deadline = start + 6.0   # by 6 s we expect SOME vertical motion
+        liftoff_seen = False
+        last_relative = 0.0
+        while time.time() - start < 30:
+            msg = self.master.recv_match(type="LOCAL_POSITION_NED",
+                                         blocking=True, timeout=1)
+            if msg is not None:
+                self.last_pos["x"]  = msg.x
+                self.last_pos["y"]  = msg.y
+                self.last_pos["z"]  = msg.z
+                self.last_pos["vx"] = msg.vx
+                self.last_pos["vy"] = msg.vy
+                self.last_pos["vz"] = msg.vz
+                self.last_pos["t"]  = time.time()
+
+                # Relative altitude = climb above the takeoff anchor.  Raw -z
+                # is printed alongside so the EKF-origin offset is visible
+                # in the log on every flight.
+                relative_alt = -(msg.z - z0)
+                last_relative = relative_alt
+                print(f"[INFO] Altitude: {relative_alt:+.2f} m relative  "
+                      f"(raw -z = {-msg.z:.2f} m, anchor = {-z0:.2f} m)")
+
+                if abs(relative_alt) > 0.3:
+                    liftoff_seen = True
+
+                if relative_alt >= meters - 0.3:
+                    print(f"[INFO] Target altitude reached "
+                          f"({relative_alt:+.2f} m relative)")
                     return
+
+            # Drone-never-moved guard.  If 6 s after takeoff the drone has
+            # not visibly climbed, the FCU almost certainly dropped the
+            # takeoff (no ACK case above) — abort now rather than continue
+            # to PATROL with a grounded, armed drone.
+            if not liftoff_seen and time.time() > liftoff_deadline:
+                print("[ERROR] Drone never lifted off — relative altitude "
+                      f"{last_relative:+.2f} m after 6 s.  The FCU most "
+                      "likely silently rejected NAV_TAKEOFF (EKF/GPS not "
+                      "healthy or pre-arm checks failing).")
+                raise RuntimeError(
+                    "Drone never lifted off after NAV_TAKEOFF (no vertical "
+                    "motion within 6 s)"
+                )
+
             if pump_fn is not None:
                 pump_fn()
             time.sleep(0.1)
@@ -690,6 +834,7 @@ class PrecisionLandingController:
         ok_since = None
         start = time.time()
         last_print = 0.0
+        warned_no_anchor = False
 
         while time.time() - start < STABILIZE_TIMEOUT_SECONDS:
             cur_x, cur_y, cur_z, cur_vx, cur_vy, _ = self.get_local_position()
@@ -706,8 +851,19 @@ class PrecisionLandingController:
             if x_origin is None:
                 x_origin, y_origin = cur_x, cur_y
 
-            altitude = -cur_z
-            alt_err  = abs(altitude - target_alt)
+            # Use the takeoff anchor so altitude matches takeoff_to_altitude's
+            # frame.  Falling back to absolute -cur_z (the old behaviour) is
+            # only safe when the EKF origin happens to coincide with the
+            # ground; surface a one-time WARN so the regression is visible.
+            if self.takeoff_z_origin is not None:
+                relative_alt = -(cur_z - self.takeoff_z_origin)
+            else:
+                if not warned_no_anchor:
+                    print("[WARN] No takeoff anchor — stabilize altitude "
+                          "check uses absolute -z")
+                    warned_no_anchor = True
+                relative_alt = -cur_z
+            alt_err  = abs(relative_alt - target_alt)
             drift    = math.sqrt((cur_x - x_origin) ** 2 +
                                  (cur_y - y_origin) ** 2)
             hspd     = math.sqrt(cur_vx ** 2 + cur_vy ** 2)
@@ -724,7 +880,8 @@ class PrecisionLandingController:
 
             now = time.time()
             if now - last_print > 0.5:
-                print(f"[INFO] STABILIZE alt_err={alt_err:+.2f} m  "
+                print(f"[INFO] STABILIZE alt={relative_alt:+.2f} m "
+                      f"(raw -z={-cur_z:.2f})  alt_err={alt_err:+.2f} m  "
                       f"drift={drift:.2f} m  hspd={hspd:.2f} m/s  "
                       f"{'OK' if all_ok else 'WAIT'}")
                 last_print = now
@@ -734,7 +891,7 @@ class PrecisionLandingController:
                     ok_since = now
                 elif now - ok_since >= STABILIZE_HOLD_SECONDS:
                     print(f"[INFO] Stabilized — origin=({cur_x:+.2f}, "
-                          f"{cur_y:+.2f})  alt={altitude:.2f} m")
+                          f"{cur_y:+.2f})  alt={relative_alt:+.2f} m")
                     return cur_x, cur_y
             else:
                 ok_since = None
@@ -949,7 +1106,11 @@ def make_pump(q_rgb, detector, controller, state):
         state["flightmode"] = controller.master.flightmode
         state["armed"]      = controller.master.motors_armed()
         if controller.last_pos["z"] is not None:
-            state["altitude"] = -controller.last_pos["z"]
+            if controller.takeoff_z_origin is not None:
+                state["altitude"] = -(controller.last_pos["z"]
+                                      - controller.takeoff_z_origin)
+            else:
+                state["altitude"] = -controller.last_pos["z"]
         state["cmd"] = controller.last_cmd
 
         # 2. Pull the most recent camera frame (if any).  tryGet() never
@@ -1230,7 +1391,16 @@ with dai.Device() as device:
             time.sleep(0.05)
 
         state["phase"] = "TAKEOFF"
-        controller.takeoff_to_altitude(TAKEOFF_ALTITUDE, pump_fn=pump)
+        try:
+            controller.takeoff_to_altitude(TAKEOFF_ALTITUDE, pump_fn=pump)
+        except RuntimeError as e:
+            print(f"[CRITICAL] Takeoff failed: {e}")
+            print("[CRITICAL] Aborting mission — switching to LAND for safety")
+            controller.change_flight_mode("LAND")
+            for _ in range(20):
+                pump()
+                time.sleep(0.1)
+            raise SystemExit(1)
 
         # ── Stabilization ─────────────────────────────────────────────────
         print("[INFO] Phase: STABILIZE")
