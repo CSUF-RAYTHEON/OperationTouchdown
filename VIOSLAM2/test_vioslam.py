@@ -2,7 +2,7 @@ import multiprocessing as mp
 import numpy as np
 from multiprocessing import shared_memory
 from broadcaster import camera_broadcaster
-from calculatevioslam_updateposition1 import calculatevioslam_updateposition
+from VIOSLAM2.positioning import calculatevioslam_updateposition
 from TestComponents import test_getyaw
 from controls import move
 from TestComponents import test_use_externalnav

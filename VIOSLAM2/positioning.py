@@ -2,9 +2,10 @@ import cv2
 import numpy as np
 import time
 import math
+import multiprocessing as mp
+from VIOSLAM2.broadcaster import broadcaster
 from multiprocessing import shared_memory
 from pymavlink import mavutil
-
 
 # -----------------------
 # VIO & SLAM Settings
@@ -21,7 +22,6 @@ DEPTH_MAX_M = 12.0
 REDETECT_EVERY = 10
 
 # Loop closure (SLAM)
-ENABLE_LOOP = True
 KEYFRAME_INTERVAL = 30
 LOOP_CHECK_INTERVAL = 0.5
 MIN_LOOP_SEPARATION = 10
@@ -32,7 +32,6 @@ ORB_NFEATURES = 400
 ORB_SCALE = 0.5
 
 # Soft drift correction
-ENABLE_SOFT_CORRECTION = True
 SOFT_CORR_ALPHA = 0.15
 SOFT_CORR_COOLDOWN = 1.0
 MIN_DRIFT_TO_CORRECT_M = 0.20
@@ -49,15 +48,11 @@ def wrap_deg180(a: float) -> float:
     return a
 
 def wrap_rad_pi(angle_rad: float) -> float:
-    """Wraps an angle in radians to the strictly required [-pi, pi] range."""
     while angle_rad > math.pi:
         angle_rad -= 2.0 * math.pi
     while angle_rad < -math.pi:
         angle_rad += 2.0 * math.pi
     return angle_rad
-
-def rotmat_to_yaw_deg(R: np.ndarray) -> float:
-    return wrap_deg180(math.degrees(math.atan2(R[1, 0], R[0, 0])))
 
 def clamp_norm(vec: np.ndarray, max_norm: float) -> np.ndarray:
     n = float(np.linalg.norm(vec))
@@ -65,25 +60,23 @@ def clamp_norm(vec: np.ndarray, max_norm: float) -> np.ndarray:
         return vec
     return vec * (max_norm / n)
 
-def vo_pose_to_ned(camera_x, camera_y, camera_z, yaw_offset_rad):
+def vo_step_to_ned(rel_x, rel_y, rel_z, live_yaw_rad):
     """
-    1. Swaps OpenCV coordinates to NED for a DOWNWARD-facing camera.
-       (Assumes the top of the camera image points to the front of the drone).
-    2. Rotates the 2D grid to align with the Pixhawk's true magnetic North.
+    Takes the relative camera movement step and instantly aligns it 
+    to the global magnetic NED grid using the drone's live compass.
+    Camera Geometry: Top of image (-Y) is Forward.
     """
-    # --- THE FIX: Downward Camera Geometry ---
-    ned_x_unaligned = -camera_y  # Moving towards top of image = Forward (North)
-    ned_y_unaligned = camera_x   # Moving towards right of image = Right (East)
-    ned_z_final     = camera_z   # Moving straight out of lens = Down
+    step_n_unaligned = -rel_y  
+    step_e_unaligned = rel_x   
+    step_d_final     = rel_z   
 
-    # Rotate the grid using the magnetic yaw offset
-    c = math.cos(yaw_offset_rad)
-    s = math.sin(yaw_offset_rad)
+    c = math.cos(live_yaw_rad)
+    s = math.sin(live_yaw_rad)
 
-    ned_x_final = (ned_x_unaligned * c) - (ned_y_unaligned * s)
-    ned_y_final = (ned_x_unaligned * s) + (ned_y_unaligned * c)
+    step_n_final = (step_n_unaligned * c) - (step_e_unaligned * s)
+    step_e_final = (step_n_unaligned * s) + (step_e_unaligned * c)
 
-    return ned_x_final, ned_y_final, ned_z_final
+    return step_n_final, step_e_final, step_d_final
 
 # -----------------------
 # SLAM (Loop Closure) Class
@@ -115,11 +108,10 @@ class LoopClosureORB:
 
     def add_keyframe(self, frame: np.ndarray, pose_xyz: np.ndarray, frame_id: int, t_sec: float):
         small = self._prep(frame)
-        if small is None:
-            return
+        if small is None: return
+        
         _, des = self.orb.detectAndCompute(small, None)
-        if des is None or len(des) == 0:
-            return
+        if des is None or len(des) == 0: return
 
         self.keyframes.append({
             "id": frame_id,
@@ -133,19 +125,16 @@ class LoopClosureORB:
 
     def check_loop(self, frame: np.ndarray, current_pose_xyz: np.ndarray, frame_id: int):
         now = time.time()
-        if now - self.last_check_wall < LOOP_CHECK_INTERVAL:
-            return None
+        if now - self.last_check_wall < LOOP_CHECK_INTERVAL: return None
         self.last_check_wall = now
 
-        if len(self.keyframes) < (MIN_LOOP_SEPARATION + 1):
-            return None
+        if len(self.keyframes) < (MIN_LOOP_SEPARATION + 1): return None
 
         small = self._prep(frame)
-        if small is None:
-            return None
+        if small is None: return None
+        
         _, des = self.orb.detectAndCompute(small, None)
-        if des is None or len(des) == 0:
-            return None
+        if des is None or len(des) == 0: return None
 
         candidates = self.keyframes[:-MIN_LOOP_SEPARATION]
         if len(candidates) > MAX_MATCH_CANDIDATES:
@@ -155,8 +144,7 @@ class LoopClosureORB:
         best_score = 0
 
         for kf in candidates:
-            if frame_id - kf["id"] < MIN_LOOP_SEPARATION:
-                continue
+            if frame_id - kf["id"] < MIN_LOOP_SEPARATION: continue
             try:
                 matches = self.bf.match(kf["des"], des)
                 score = len(matches)
@@ -166,8 +154,7 @@ class LoopClosureORB:
             except Exception:
                 continue
 
-        if best is None or best_score < MATCH_THRESHOLD:
-            return None
+        if best is None or best_score < MATCH_THRESHOLD: return None
 
         drift_vec = best["pose"] - current_pose_xyz
         drift_m = float(np.linalg.norm(drift_vec))
@@ -187,7 +174,11 @@ class VO_LK:
     def __init__(self, K: np.ndarray):
         self.K = K.astype(np.float64)
         self.dist = np.zeros((4, 1), dtype=np.float64)
-        self.T_w_c = np.eye(4, dtype=np.float64)
+        
+        # Absolute Global Tallies
+        self.global_north = 0.0
+        self.global_east = 0.0
+        self.global_down = 0.0
 
         self.prev_gray = None
         self.prev_depth = None
@@ -195,50 +186,33 @@ class VO_LK:
 
         self.status = "INIT"
         self.num_tracked = 0
-        self.num_used_pnp = 0
-        self.inliers = 0
         self.frame_idx = 0
         self._last_corr_wall = 0.0
 
     def _detect(self, gray):
         return cv2.goodFeaturesToTrack(
-            gray,
-            maxCorners=MAX_CORNERS,
-            qualityLevel=QUALITY_LEVEL,
-            minDistance=MIN_DISTANCE,
-            blockSize=7,
-            useHarrisDetector=False,
+            gray, maxCorners=MAX_CORNERS, qualityLevel=QUALITY_LEVEL,
+            minDistance=MIN_DISTANCE, blockSize=7, useHarrisDetector=False
         )
 
-    def process(self, gray, depth_mm):
+    def process(self, gray, depth_mm, live_yaw_rad):
         self.frame_idx += 1
         W, H = gray.shape[1], gray.shape[0]
 
         if self.prev_gray is None or self.prev_depth is None or self.prev_pts is None:
-            # FIX: Force a physical memory copy!
             self.prev_gray = gray.copy()
             self.prev_depth = depth_mm.copy()
             self.prev_pts = self._detect(gray)
             self.status = "WARMUP"
             return
 
-        if self.prev_pts is None or len(self.prev_pts) < MIN_PNP_POINTS:
-            self.prev_gray = gray.copy()
-            self.prev_depth = depth_mm.copy()
-            self.prev_pts = self._detect(gray)
-            self.status = "REDETECT"
-            return
-
         next_pts, st, _ = cv2.calcOpticalFlowPyrLK(
             self.prev_gray, gray, self.prev_pts, None,
-            winSize=LK_WIN_SIZE,
-            maxLevel=LK_MAX_LEVEL,
-            criteria=(cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 30, 0.01),
+            winSize=LK_WIN_SIZE, maxLevel=LK_MAX_LEVEL,
+            criteria=(cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 30, 0.01)
         )
+        
         if next_pts is None or st is None:
-            self.prev_gray = gray.copy()
-            self.prev_depth = depth_mm.copy()
-            self.prev_pts = self._detect(gray)
             self.status = "LK_FAIL"
             return
 
@@ -248,9 +222,6 @@ class VO_LK:
         self.num_tracked = len(prev_good)
 
         if self.num_tracked < MIN_PNP_POINTS:
-            self.prev_gray = gray.copy()
-            self.prev_depth = depth_mm.copy()
-            self.prev_pts = self._detect(gray)
             self.status = f"LOW_TRACK({self.num_tracked})"
             return
 
@@ -260,24 +231,18 @@ class VO_LK:
         obj_pts, img_pts = [], []
         for (u0, v0), (u1, v1) in zip(prev_good, curr_good):
             x0, y0 = int(round(u0)), int(round(v0))
-            if not (0 <= x0 < W and 0 <= y0 < H):
-                continue
+            if not (0 <= x0 < W and 0 <= y0 < H): continue
 
             z_m = float(self.prev_depth[y0, x0]) / 1000.0
-            if z_m < DEPTH_MIN_M or z_m > DEPTH_MAX_M:
-                continue
+            if z_m < DEPTH_MIN_M or z_m > DEPTH_MAX_M: continue
 
             X = (u0 - cx) * z_m / fx
             Y = (v0 - cy) * z_m / fy
             obj_pts.append([X, Y, z_m])
             img_pts.append([u1, v1])
 
-        self.num_used_pnp = len(obj_pts)
-        if self.num_used_pnp < MIN_PNP_POINTS:
-            self.prev_gray = gray.copy()
-            self.prev_depth = depth_mm.copy()
-            self.prev_pts = curr_good.reshape(-1, 1, 2).astype(np.float32)
-            self.status = f"DEPTH_FILTER({self.num_used_pnp})"
+        if len(obj_pts) < MIN_PNP_POINTS:
+            self.status = "DEPTH_FILTER"
             return
 
         obj_pts = np.asarray(obj_pts, dtype=np.float64)
@@ -285,30 +250,28 @@ class VO_LK:
 
         ok, rvec, tvec, inl = cv2.solvePnPRansac(
             obj_pts, img_pts, self.K, self.dist,
-            flags=cv2.SOLVEPNP_ITERATIVE,
-            reprojectionError=3.0,
-            confidence=0.999,
-            iterationsCount=150
+            flags=cv2.SOLVEPNP_ITERATIVE, reprojectionError=3.0,
+            confidence=0.999, iterationsCount=150
         )
+        
         if not ok or inl is None or len(inl) < 12:
-            self.prev_gray = gray.copy()
-            self.prev_depth = depth_mm.copy()
-            self.prev_pts = curr_good.reshape(-1, 1, 2).astype(np.float32)
             self.status = "PNP_FAIL"
             return
 
-        self.inliers = int(len(inl))
         R, _ = cv2.Rodrigues(rvec)
         t = tvec.reshape(3, 1)
 
-        R_inv = R.T
-        t_inv = -R_inv @ t
+        t_inv = -R.T @ t
 
-        T_prev_cur = np.eye(4, dtype=np.float64)
-        T_prev_cur[:3, :3] = R_inv
-        T_prev_cur[:3, 3:] = t_inv
+        # INSTANT ABSOLUTE INTEGRATION
+        step_n, step_e, step_d = vo_step_to_ned(
+            float(t_inv[0]), float(t_inv[1]), float(t_inv[2]), live_yaw_rad
+        )
 
-        self.T_w_c = self.T_w_c @ T_prev_cur
+        self.global_north += step_n
+        self.global_east += step_e
+        self.global_down += step_d
+
         self.status = "TRACKING"
 
         if (self.frame_idx % REDETECT_EVERY) == 0:
@@ -317,16 +280,14 @@ class VO_LK:
         else:
             self.prev_pts = curr_good.reshape(-1, 1, 2).astype(np.float32)
 
-        # FIX: The final copy assignment at the end of a successful loop
         self.prev_gray = gray.copy()
         self.prev_depth = depth_mm.copy()
 
     def apply_soft_correction(self, target_pose_xyz: np.ndarray):
-        if not ENABLE_SOFT_CORRECTION: return None
         now = time.time()
         if now - self._last_corr_wall < SOFT_CORR_COOLDOWN: return None
 
-        cur = self.T_w_c[:3, 3].reshape(3)
+        cur = np.array([self.global_north, self.global_east, self.global_down])
         drift = target_pose_xyz.reshape(3) - cur
         drift_mag = float(np.linalg.norm(drift))
 
@@ -334,23 +295,23 @@ class VO_LK:
 
         step = clamp_norm(drift, MAX_CORR_STEP_M)
         corr = step * SOFT_CORR_ALPHA
-        self.T_w_c[:3, 3] = (cur + corr).reshape(3)
+
+        # Apply soft correction directly to absolute tallies
+        self.global_north += corr[0]
+        self.global_east += corr[1]
+        self.global_down += corr[2]
+        
         self._last_corr_wall = now
         return True
 
     def pose(self):
-        p = self.T_w_c[:3, 3].copy()
-        yaw_vis = rotmat_to_yaw_deg(self.T_w_c[:3, :3])
-        return p, yaw_vis
-
+        return [self.global_north, self.global_east, self.global_down]
 
 # -----------------------
 # Main Process Function
 # -----------------------
-def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_calibration_mutex, yaw_mutex, position_mutex):
+def positioning(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex):
     W, H = 640, 400
-    
-    # Let the broadcaster initialize the RAM first
     time.sleep(4) 
 
     # --- 1. MEMORY SETUP ---
@@ -358,110 +319,168 @@ def calculatevioslam_updateposition(camera_frame_mutex, uart_tx_mutex, camera_ca
     shm_gray = shared_memory.SharedMemory(name="oak_gray")
     shm_depth = shared_memory.SharedMemory(name="oak_depth")
     shm_calib = shared_memory.SharedMemory(name="oak_calib")
-    shm_yaw = shared_memory.SharedMemory(name="pixhawk_yaw")
-    shm_x_coord = shared_memory.SharedMemory(name="pixhawk_x_coord")
-    shm_y_coord = shared_memory.SharedMemory(name="pixhawk_y_coord")
-    shm_z_coord = shared_memory.SharedMemory(name="pixhawk_z_coord")
+    shm_attitude = shared_memory.SharedMemory(name="attitude")
+    shm_position = shared_memory.SharedMemory(name="position")
 
     shared_calib = np.ndarray((3, 3), dtype=np.float64, buffer=shm_calib.buf)
     shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
     shared_gray = np.ndarray((H, W), dtype=np.uint8, buffer=shm_gray.buf)
     shared_depth = np.ndarray((H, W), dtype=np.uint16, buffer=shm_depth.buf)
-    shared_yaw = np.ndarray((1,), dtype=np.float64, buffer=shm_yaw.buf)
-    shared_x_coord = np.ndarray((1,), dtype=np.float64, buffer=shm_x_coord.buf)
-    shared_y_coord = np.ndarray((1,), dtype=np.float64, buffer=shm_y_coord.buf)
-    shared_z_coord = np.ndarray((1,), dtype=np.float64, buffer=shm_z_coord.buf)
+    shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
+    shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
 
     local_calib = np.zeros((3, 3), dtype=np.float64)
     local_rgb = np.zeros((H, W, 3), dtype=np.uint8)
     local_gray = np.zeros((H, W), dtype=np.uint8)
     local_depth = np.zeros((H, W), dtype=np.uint16)
     
-    # We keep a copy of the previous frame specifically to check if the memory updated
     last_processed_gray = np.zeros((H, W), dtype=np.uint8)
-
-    serial_port = '/dev/serial0'
-    baudrate =  57600
-    source_system = 1
-    source_component = 191
 
     print("[VIO] Connected to Shared Memory. Booting Algorithm...")
 
-    initial_yaw_rad = 0.0
-    with yaw_mutex:
-        initial_yaw_rad = shared_yaw[0]
-        print(f"[VIO] Initial Yaw from Shared Memory: {initial_yaw_rad} radians")
-
-    # --- 2. VIO INIT ---
-    # IMPORTANT: Update this matrix with the actual K matrix printed out in your terminal
-    # when you originally ran vo_full_vers3.py! This is a generic OAK-D placeholder.
     with camera_calibration_mutex:
         np.copyto(local_calib, shared_calib)
-    camera_matrix_K = local_calib.copy()
-
-    vo = VO_LK(K=camera_matrix_K)
-    loop = LoopClosureORB() if ENABLE_LOOP else None
+    
+    vo = VO_LK(K=local_calib.copy())
+    loop = LoopClosureORB()
     
     t0 = time.time()
-    frame_id = 0
-
     print("[VIO] Algorithm running. Calculating poses...\n")
 
     while True:
-        # --- CRITICAL SECTION: RAM COPY ---
+        # --- GET FRESHEST YAW ---
+        with attitude_mutex:
+            live_yaw_rad = shared_attitude[2] # Index 2 is Yaw
+
+        # --- GET FRESHEST IMAGES ---
         with camera_frame_mutex:
             np.copyto(local_rgb, shared_rgb)
             np.copyto(local_gray, shared_gray)
             np.copyto(local_depth, shared_depth)
 
-        # Performance saving step: Did the memory actually change? 
-        # If not, the broadcaster hasn't pushed a new frame yet. Skip the loop so we don't 
-        # run the heavy math twice on the exact same picture.
         if np.array_equal(local_gray, last_processed_gray):
-            time.sleep(0.005) # Rest the CPU for 5ms and check again
+            time.sleep(0.005) 
             continue
             
-        np.copyto(last_processed_gray, local_gray) # Save it for the next check
+        np.copyto(last_processed_gray, local_gray)
 
-        # --- OUTSIDE THE LOCK: HEAVY MATH ---
+        # --- HEAVY MATH ---
         t_sec = time.time() - t0
+        vo.process(local_gray, local_depth, live_yaw_rad)
 
-        # Run Odometry Tracker
-        vo.process(local_gray, local_depth)
-        pos, yaw_vis = vo.pose()
+        # --- SLAM TOGGLE LOGIC ---
+        # Set this to False dynamically when terminal landing sequence begins
+        dynamic_slam_enabled = True 
 
-        # Run Loop Closure SLAM
-        if ENABLE_LOOP and loop is not None and vo.status == "TRACKING":
-            if (frame_id % KEYFRAME_INTERVAL) == 0:
-                loop.add_keyframe(local_rgb, pos, frame_id, t_sec)
+        if dynamic_slam_enabled and vo.status == "TRACKING":
+            pos_array = np.array(vo.pose())
+            
+            # Save keyframes
+            if (vo.frame_idx % KEYFRAME_INTERVAL) == 0:
+                loop.add_keyframe(local_rgb, pos_array, vo.frame_idx, t_sec)
 
-            info = loop.check_loop(local_rgb, pos, frame_id)
+            # Check for map loops and correct drift
+            info = loop.check_loop(local_rgb, pos_array, vo.frame_idx)
             if info is not None:
                 vo.apply_soft_correction(info["matched_pose"])
-                # Refresh position after correction
-                pos, yaw_vis = vo.pose()
 
-        frame_id += 1
-
-        # --- UART TRANSMIT CRITICAL SECTION ---
-        # We only print/transmit if we actually have tracking data
+        # --- PUBLISH POSITION ---
         if vo.status == "TRACKING":
-            aligned_x, aligned_y, aligned_z = vo_pose_to_ned(pos[0], pos[1], pos[2], initial_yaw_rad)
-            aligned_yaw_rad = initial_yaw_rad + math.radians(yaw_vis)
-            aligned_yaw_rad = wrap_rad_pi(aligned_yaw_rad)
-
-            time_usec = int(time.time() * 1e6)
-            with uart_tx_mutex:
-                master = mavutil.mavlink_connection(serial_port, baud=baudrate, source_system=source_system, source_component=source_component)
-                master.target_system = 1 # Send messages to system 1(drone/vehicle #1)
-                master.target_component = 1 # Send messages to flight controller "autopilot"
-                master.mav.vision_position_estimate_send(time_usec, aligned_x, aligned_y, aligned_z, 0.0, 0.0, aligned_yaw_rad)
-                print(f"[UART TX MOCK] ALIGNED NED | North(X):{aligned_x:+.2f}m, East(Y):{aligned_y:+.2f}m, Down(Z):{aligned_z:+.2f}m, Yaw: {aligned_yaw_rad} Rads, Time: {time_usec}us")
-                master.close()
+            pos = vo.pose()
             with position_mutex:
-                shared_x_coord[0] = aligned_x
-                shared_y_coord[0] = aligned_y
-                shared_z_coord[0] = aligned_z
-
+                shared_position[:] = pos
         else:
             print(f"VIO LOST. Status: {vo.status}")
+
+# -----------------------
+# Testing & Printing Process
+# -----------------------
+def test_positioning(position_mutex):
+    # Wait 6 seconds to let the camera boot, memory allocate, and VIO math stabilize
+    time.sleep(6) 
+    
+    # 1. Connect ONLY to the position shared memory
+    shm_position = shared_memory.SharedMemory(name="position")
+    shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
+    local_position = np.zeros((3,), dtype=np.float64)
+
+    print("\n[PRINTER] Connected to Shared Memory. Listening for NED coordinates...\n")
+
+    while True:
+        # 2. Safely grab the latest coordinates
+        with position_mutex:
+            np.copyto(local_position, shared_position)
+
+        # 3. Print them cleanly to the terminal
+        print(f"[MISSION CONTROL SIM] Current Position -> North: {local_position[0]:+.2f}m | East: {local_position[1]:+.2f}m | Down: {local_position[2]:+.2f}m")
+        
+        # Only print twice a second so we don't spam the terminal
+        time.sleep(0.5) 
+
+if __name__ == "__main__":
+    mp.set_start_method('spawn', force=True)
+    
+    W, H = 640, 400
+    RGB_BYTES = W * H * 3
+    GRAY_BYTES = W * H
+    DEPTH_BYTES = W * H * 2 
+    CALIB_BYTES = 3 * 3 * 8 
+    ATTITUDE_BYTES = 3 * 8 
+    POSITION_BYTES = 3 * 8 # 3 float64 numbers (X, Y, Z = 24 bytes)
+
+    # 1. Allocate all 6 shared memory blocks
+    print("Positioning tester allocating shared memory...")
+    shm_rgb = shared_memory.SharedMemory(create=True, size=RGB_BYTES, name="oak_rgb")
+    shm_gray = shared_memory.SharedMemory(create=True, size=GRAY_BYTES, name="oak_gray")
+    shm_depth = shared_memory.SharedMemory(create=True, size=DEPTH_BYTES, name="oak_depth")
+    shm_calib = shared_memory.SharedMemory(create=True, size=CALIB_BYTES, name="oak_calib")
+    shm_attitude = shared_memory.SharedMemory(create=True, size=ATTITUDE_BYTES, name="attitude")
+    shm_position = shared_memory.SharedMemory(create=True, size=POSITION_BYTES, name="position")
+    
+    # 2. Initialize all the locks
+    camera_frame_mutex = mp.Lock()
+    camera_calibration_mutex = mp.Lock()
+    attitude_mutex = mp.Lock()
+    position_mutex = mp.Lock()
+
+    # 3. Define the three independent processes
+    broadcaster_process = mp.Process(target=broadcaster, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex))
+    vio_process = mp.Process(target=positioning, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex))
+    printer_process = mp.Process(target=test_positioning, args=(position_mutex,))
+
+    try:
+        # 4. Start the stack
+        broadcaster_process.start()
+        vio_process.start()
+        printer_process.start()
+
+        # Keep the main process alive while the printer runs
+        printer_process.join()
+        
+    except KeyboardInterrupt:
+        print("\nPositioning tester caught keyboard interrupt. Shutting down...")
+    finally:
+        # 5. Terminate all child processes safely
+        broadcaster_process.terminate()
+        vio_process.terminate()
+        printer_process.terminate()
+        
+        broadcaster_process.join()
+        vio_process.join()
+        printer_process.join()
+
+        # 6. Clean up the shared memory to prevent leaks
+        print("Positioning tester cleaning up shared memory...")
+        shm_rgb.close()
+        shm_rgb.unlink()
+        shm_gray.close()
+        shm_gray.unlink()
+        shm_depth.close()
+        shm_depth.unlink()
+        shm_calib.close()
+        shm_calib.unlink()
+        shm_attitude.close()
+        shm_attitude.unlink()
+        shm_position.close()
+        shm_position.unlink()
+        print("Positioning tester processes terminated safely.")
