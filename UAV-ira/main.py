@@ -12,6 +12,7 @@ import numpy as np
 import depthai as dai
 
 # Multiprocessing-safe state
+
 from core.state import (
     create_shared_state,
     cleanup_shared_state,
@@ -549,4 +550,8 @@ if __name__ == "__main__":
     # CRITICAL: must use 'spawn' method for multiprocessing on Raspberry Pi
     # 'fork' causes issues with DepthAI and OpenCV
     mp.set_start_method('spawn', force=True)
+<<<<<<< HEAD
     main()
+=======
+    main()
+>>>>>>> da5f7c0eef9c7f5898bfcc500a4a2b41e16886df
