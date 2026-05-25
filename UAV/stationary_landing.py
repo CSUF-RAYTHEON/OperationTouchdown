@@ -77,18 +77,21 @@ with dai.Device() as device:
             # Get the x y z from the april tag
             pose = april_tag_detector.get_tag_pose(frame)
 
-            # Is tag lost?
+                # --- BLIND SPOT OVERRIDE WITH GUIDED DESCENT ---
             if pose is None:
-                # --- NEW BLIND SPOT OVERRIDE ---
-                # If we lose the tag, but we were low (< 0.5m) and centered, 
-                # we are in the camera blind spot. Commit to the landing!
                 if last_body_z < 0.5 and abs(last_body_x) < 0.20 and abs(last_body_y) < 0.20:
-                    print("[INFO] Tag lost in blind spot. Committing to final touchdown!")
-                    controller.stationary_landing()
-                    time.sleep(5)
+                    print("[INFO] Tag lost in blind spot. Executing Active Guided Descent.")
+                    
+                    # Push straight down in GUIDED mode to avoid EKF drift
+                    descent_start = time.time()
+                    while time.time() - descent_start < 2.5: # 2.5 seconds to reach the floor
+                        controller.send_velocity(0, 0, 0.25) # 0.25 m/s downwards
+                        time.sleep(0.1)
+                        
+                    print("[INFO] Touchdown assumed. Disarming motors.")
                     controller.disarm_motors()
                     break
-                # -------------------------------
+                # ... (rest of the blind spot hovering logic stays the same)
 
                 time_lost = time.time() - last_tag_time
 
@@ -123,13 +126,17 @@ with dai.Device() as device:
 
             print(f"[INFO] Body Frame | X={body_x:.2f}, Y={body_y:.2f}, Z={body_z:.2f}")
 
-            # --- UPDATED LANDING CONDITIONS ---
-            # Relaxed the X/Y to 0.15m (6 inches) to account for raw camera noise bouncing.
-            # Raised landing trigger to 0.4m (15 inches) to trigger BEFORE the blind spot.
+            # --- NORMAL LANDING TRIGGER WITH GUIDED DESCENT ---
             if abs(body_x) < 0.15 and abs(body_y) < 0.15 and body_z < 0.4:
-                print("[INFO] Landing conditions reached. Executing Land Mode.")
-                controller.stationary_landing()
-                time.sleep(5)
+                print("[INFO] Landing conditions reached. Executing Active Guided Descent.")
+                
+                # Push straight down in GUIDED mode to avoid EKF drift
+                descent_start = time.time()
+                while time.time() - descent_start < 2.5:
+                    controller.send_velocity(0, 0, 0.25) # 0.25 m/s downwards
+                    time.sleep(0.1)
+                    
+                print("[INFO] Touchdown assumed. Disarming motors.")
                 controller.disarm_motors()
                 break
 
