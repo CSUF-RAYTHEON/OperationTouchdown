@@ -13,16 +13,18 @@
 
  Phase machine
  ─────────────
-       ┌──────────┐    arm + takeoff    ┌────────────┐   hold ok    ┌────────┐
-       │   INIT   │ ───────────────────▶│  STABILIZE │ ───────────▶ │ PATROL │
-       └──────────┘                     └────────────┘              └────┬───┘
-                                                                         │ tag
-                                                                         ▼
-                  ┌──────────┐  exhausted   ┌────────┐   tag lost   ┌────────────┐
-                  │TOUCHDOWN │ ◀─────────── │ SEARCH │◀──tag lost── │PRECISION_LAND│
-                  └──────────┘              └────┬───┘              └─────┬──────┘
-                                                 │ tag re-acquired        │
-                                                 └────────────────────────┘ (re-enter)
+   INIT → STABILIZE → PATROL ─tag─▶ TRACK (10 s) ─ready─▶ PRECISION_LAND
+                                       │                       │
+                                       │ tag lost              │ tag lost
+                                       ▼                       ▼
+                                     SEARCH ◀────tag lost──── (low-alt? → LAND)
+                                       │
+                                       │ re-patrol acquires tag
+                                       ▼
+                                     TRACK → PRECISION_LAND → TOUCHDOWN
+
+   SEARCH is bounded by MAX_RESEARCH_ATTEMPTS; on exhaustion the script
+   commits to a plain LAND descent at the current position.
 
  Key MAVLink messages used
  ─────────────────────────
@@ -34,9 +36,15 @@
    • LOCAL_POSITION_NED                      .. ascent monitoring + drift checks
                                                 + drone NED used to anchor the
                                                 LANDING_TARGET we publish
-   • LANDING_TARGET (MAV_FRAME_LOCAL_NED)    .. published at ~10 Hz so the
-                                                autopilot can run its own PrecLand
-                                                descent in LAND mode
+   • LANDING_TARGET (MAV_FRAME_BODY_FRD)     .. published at ~10 Hz with the
+                                                angular form (angle_x, angle_y,
+                                                distance) plus the position form
+                                                (x/y/z + position_valid=1) so
+                                                ArduCopter ≥ 4.1 can run its own
+                                                PrecLand descent in LAND mode.
+                                                Body-frame is mandatory — the AC
+                                                companion driver silently ignores
+                                                LOCAL_NED position payloads.
    • PARAM_SET / PARAM_VALUE                 .. PLND_* enable + ARMING_* unlock
 
  DepthAI v3 pipeline used
@@ -124,6 +132,32 @@ MAX_RESEARCH_ATTEMPTS  = 3        # exhaust then fall back to plain LAND mode
 
 GOTO_TOLERANCE         = 0.5      # m — goto_ned() accept radius
 GOTO_TIMEOUT           = 20.0     # s — goto_ned() blocking upper bound
+
+TAG_TOO_CLOSE_ALT_M    = 1.5      # if tag is lost below this RELATIVE altitude
+                                  # during PRECISION_LAND, commit to plain LAND
+                                  # descent rather than re-searching.  At this
+                                  # height the tag is almost certainly out of
+                                  # the FOV simply because we are nearly on top
+                                  # of it; ArduCopter will continue descending
+                                  # in LAND mode and auto-disarm on touchdown.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TRACK Phase Config — runs between PATROL and PRECISION_LAND.  After the
+# patrol acquires the tag, the drone first holds station above the tag
+# using a velocity-PD loop for TRACK_DURATION_S seconds before handing
+# control to the autopilot's PrecLand controller.  This guarantees the
+# autopilot starts the descent with a centered tag in view; in the old
+# flow the very first LANDING_TARGET was sent from a marginal angle and
+# the descent began before the lateral loop had a chance to converge.
+# ─────────────────────────────────────────────────────────────────────────────
+
+TRACK_DURATION_S       = 10.0     # s — total time spent in TRACK
+TRACK_LOSS_TIMEOUT_S   = 3.0      # s — bail to SEARCH after this much loss
+TRACK_Kp_XY            = 0.35     # P-gain on body-frame position error
+TRACK_Kd_XY            = 0.25     # D-gain on body-frame position error
+TRACK_MAX_V_XY         = 0.3      # m/s — per-axis horizontal cap
+TRACK_VZ_HOLD          = 0.0      # vertical hold; LAND-relative descent
+                                  # comes only after TRACK completes.
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Camera Config
@@ -405,6 +439,15 @@ class PrecisionLandingController:
         # Rate-limit gate for LANDING_TARGET so the serial link is not flooded.
         self._last_lt_send = 0.0
 
+        # TRACK-phase prev state — same EMA + PD pattern as
+        # adjust_velocity_and_send() in stationary_landing_controller.py.
+        # Re-seeded if (now - prev_t) > 0.5 s so a stale buffer (e.g.
+        # after a tag dropout) does not produce a D-term spike on the
+        # next valid frame.
+        self._track_prev_x = None
+        self._track_prev_y = None
+        self._track_prev_t = None
+
         # ── Takeoff anchor ──────────────────────────────────────────────────────
         # LOCAL_POSITION_NED.z is reported relative to the EKF/local origin, NOT
         # the physical takeoff point.  On airframes with a stale GPS/EKF the
@@ -545,6 +588,18 @@ class PrecisionLandingController:
         print("[INFO] Motors disarmed")
 
     # ── ArduCopter PrecLand parameter setup ──────────────────────────────────
+    #
+    # FIRMWARE REQUIREMENT
+    # ────────────────────
+    # The position-form LANDING_TARGET payload (``MAV_FRAME_BODY_FRD`` +
+    # x/y/z + ``position_valid=1``) we publish from
+    # ``send_landing_target()`` only takes effect on ArduCopter ≥ 4.1.
+    # Older builds will silently ignore the position fields and use only
+    # the angular form (``angle_x``, ``angle_y``, ``distance``) — which
+    # is also correctly populated in our payload, so older airframes
+    # still get a usable target, just without the absolute-pose hint.
+    # If a flight log shows the autopilot descending straight down
+    # despite a clearly off-center tag, check the firmware version.
 
     def enable_precland_params(self):
         """Enable ArduCopter's built-in PrecLand controller.
@@ -775,6 +830,62 @@ class PrecisionLandingController:
         self.last_cmd["vy"] = vy
         self.last_cmd["vz"] = vz
 
+    # ── TRACK phase: velocity-PD lock over the tag ───────────────────────────
+
+    def track_velocity_command(self, body_x, body_y):
+        """Drive the drone to (0, 0) in body-frame XY using a light EMA + PD.
+
+        Used by the TRACK phase between PATROL and PRECISION_LAND so the
+        drone is centered above the tag BEFORE any descent begins.  The
+        autopilot's own PrecLand controller then takes over.
+
+        Vertical velocity is held at TRACK_VZ_HOLD (0 m/s by default) —
+        descent is the next phase's job, not this one's.
+
+        Filter / derivative state mirrors
+        stationary_landing_controller.adjust_velocity_and_send():
+          * Re-seed prev state if it is None or older than 0.5 s.  A
+            stale buffer would produce a huge spurious D-term spike on
+            the next valid frame.
+          * Apply alpha=0.5 EMA on the body-frame inputs.
+          * Compute the derivative on the FILTERED values; the P-term
+            uses the raw input as in the spec.
+
+        Returns the (vx, vy, vz) actually sent so the caller can log it.
+        """
+        now = time.time()
+
+        if (self._track_prev_x is None
+                or self._track_prev_t is None
+                or (now - self._track_prev_t) > 0.5):
+            self._track_prev_x = body_x
+            self._track_prev_y = body_y
+            self._track_prev_t = now
+
+        alpha = 0.5
+        filt_x = alpha * self._track_prev_x + (1 - alpha) * body_x
+        filt_y = alpha * self._track_prev_y + (1 - alpha) * body_y
+
+        # Clamp dt to suppress div-by-zero on the seeded frame and
+        # D-term spikes on frame skips.
+        dt = max(min(now - self._track_prev_t, 0.2), 0.01)
+        dx = (filt_x - self._track_prev_x) / dt
+        dy = (filt_y - self._track_prev_y) / dt
+
+        vx = TRACK_Kp_XY * body_x + TRACK_Kd_XY * dx
+        vy = TRACK_Kp_XY * body_y + TRACK_Kd_XY * dy
+
+        vx = max(min(vx, TRACK_MAX_V_XY), -TRACK_MAX_V_XY)
+        vy = max(min(vy, TRACK_MAX_V_XY), -TRACK_MAX_V_XY)
+        vz = TRACK_VZ_HOLD
+
+        self._track_prev_x = filt_x
+        self._track_prev_y = filt_y
+        self._track_prev_t = now
+
+        self.send_velocity(vx, vy, vz)
+        return vx, vy, vz
+
     # ── Position control (local NED) ─────────────────────────────────────────
 
     def goto_ned(self, x, y, z, tolerance=GOTO_TOLERANCE,
@@ -786,6 +897,18 @@ class PrecisionLandingController:
         internally; we just resend the target every 0.5 s and watch our
         LOCAL_POSITION_NED until the horizontal+vertical error is within
         ``tolerance``.
+
+        IMPORTANT — z is ABSOLUTE NED (the same frame as
+        ``LOCAL_POSITION_NED.z``), not a relative-to-takeoff altitude.
+        On airframes with a stale EKF/local origin the takeoff point is
+        offset from z=0 by hundreds of metres (real flight log: ~340 m),
+        so callers must add the offset themselves:
+
+            target_z = controller.takeoff_z_origin - desired_relative_alt
+
+        Passing ``-desired_relative_alt`` directly will command a goto to
+        absolute z=−desired_relative_alt, which on a stale-origin airframe
+        is hundreds of metres above (or below!) the actual takeoff point.
         """
         print(f"[INFO] goto_ned → ({x:+.2f}, {y:+.2f}, {z:+.2f})  "
               f"tol={tolerance:.2f} m")
@@ -908,61 +1031,89 @@ class PrecisionLandingController:
 
     # ── Precision-landing: LANDING_TARGET publication ────────────────────────
 
-    def send_landing_target(self, tag_ned_x, tag_ned_y, tag_ned_z):
-        """Publish a LANDING_TARGET to the FCU.
+    def send_landing_target(self, body_x, body_y, body_z):
+        """Publish a LANDING_TARGET to the FCU in body-frame.
 
-        Frame is MAV_FRAME_LOCAL_NED and we populate the position-form
-        fields (x/y/z).  ArduCopter PrecLand accepts either the angular
-        form (angle_x, angle_y, distance) or the NED-position form; the
-        position form is unambiguous and matches what we already compute
-        for the overlay.
+        The ArduCopter PrecLand companion driver only honors two payload
+        shapes from a MAVLink-source companion: the angular form
+        (angle_x, angle_y, distance) computed from the camera optical
+        axis, OR — on AC ≥ 4.1 — the position form when ``frame`` is
+        ``MAV_FRAME_BODY_FRD`` and ``position_valid`` is 1.  An earlier
+        version of this method sent ``MAV_FRAME_LOCAL_NED`` with absolute
+        NED coordinates and ``angle_x = angle_y = 0``; the autopilot
+        silently ignored the position payload and fell back to "target
+        straight below" (the zero angles), so the drone descended
+        vertically without any lateral correction.  Real-flight log:
+        the tag drifted out of FOV after ~3 m of descent.
+
+        Inputs are body-frame metres relative to the drone:
+            body_x  forward  (+ = nose direction)
+            body_y  right    (+ = starboard)
+            body_z  down     (+ = below the drone — downward camera)
+
+        We compute:
+            distance = ||(body_x, body_y, body_z)||
+            angle_x  = atan2(body_x, body_z)   forward offset, radians
+            angle_y  = atan2(body_y, body_z)   right offset, radians
+        ``body_z`` is clamped to a small positive epsilon before atan2 so
+        the angles stay defined during the brief moment before the
+        autopilot commits to descent (when the tag may briefly read at or
+        slightly above the camera plane due to pose-estimation noise).
 
         Rate-limited to LANDING_TARGET_RATE_HZ (≈10 Hz) — calling more
         frequently just floods the serial link.
 
         Two pymavlink signatures exist in the wild:
-            * MAVLink-2 (14 args, includes q + type + position_valid)
+            * MAVLink-2 (14 args, includes x/y/z + q + type + position_valid)
             * Older MAVLink-1 (9 args, x/y/z/q/type/position_valid absent)
-        We try the modern form first and fall back to the legacy form.
+        We try the modern form first and fall back to the legacy form,
+        keeping the angular form populated in BOTH paths so older builds
+        still get a usable target instead of "straight below".
         """
         now = time.time()
         if now - self._last_lt_send < LANDING_TARGET_MIN_DT:
             return False
         self._last_lt_send = now
 
-        distance = math.sqrt(tag_ned_x ** 2 + tag_ned_y ** 2 + tag_ned_z ** 2)
+        distance = math.sqrt(body_x ** 2 + body_y ** 2 + body_z ** 2)
+        # body_z > 0 means tag is below the drone (downward-facing camera).
+        # Clamp to a small positive epsilon to avoid undefined angles when
+        # the tag is at or above the camera plane.
+        safe_bz = max(body_z, 1e-3)
+        angle_x = math.atan2(body_x, safe_bz)
+        angle_y = math.atan2(body_y, safe_bz)
         time_usec = int(now * 1e6)
 
         try:
             self.master.mav.landing_target_send(
                 time_usec,
                 0,                                              # target_num
-                mavutil.mavlink.MAV_FRAME_LOCAL_NED,
-                0.0, 0.0,                                       # angle_x, y
+                mavutil.mavlink.MAV_FRAME_BODY_FRD,
+                angle_x, angle_y,
                 distance,
                 TAG_SIZE, TAG_SIZE,                             # size_x, y
-                tag_ned_x, tag_ned_y, tag_ned_z,
+                body_x, body_y, body_z,
                 (1.0, 0.0, 0.0, 0.0),                           # identity quat
                 mavutil.mavlink.LANDING_TARGET_TYPE_VISION_OTHER,
                 1,                                              # position_valid
             )
         except TypeError:
-            # Older pymavlink with the 9-arg signature — degrade to the
-            # angular form only.  Pose-form is unavailable on this build,
-            # so we have to project the NED point back into camera angles.
-            # Better than nothing: feeding the (0,0,distance) approximation
-            # lets the autopilot at least know "something below me".
+            # Older pymavlink with the 9-arg signature — fall back to the
+            # angular form on the same body-frame frame.  The angular
+            # payload IS still correct on this path (unlike the previous
+            # implementation which zeroed it).
             try:
                 self.master.mav.landing_target_send(
                     time_usec,
                     0,
-                    mavutil.mavlink.MAV_FRAME_LOCAL_NED,
-                    0.0, 0.0,
+                    mavutil.mavlink.MAV_FRAME_BODY_FRD,
+                    angle_x, angle_y,
                     distance,
                     TAG_SIZE, TAG_SIZE,
                 )
-                print("[WARN] Falling back to 9-arg LANDING_TARGET — pymavlink"
-                      " is older than MAVLink-2; positional pose dropped")
+                print("[WARN] Falling back to 9-arg LANDING_TARGET — "
+                      "pymavlink is older than MAVLink-2; positional "
+                      "pose dropped (angular form retained)")
             except Exception as e:
                 print(f"[WARN] LANDING_TARGET send failed: {e}")
                 return False
@@ -970,9 +1121,9 @@ class PrecisionLandingController:
             print(f"[WARN] LANDING_TARGET send failed: {e}")
             return False
 
-        self.last_cmd["lt_x"] = tag_ned_x
-        self.last_cmd["lt_y"] = tag_ned_y
-        self.last_cmd["lt_z"] = tag_ned_z
+        self.last_cmd["lt_x"] = body_x
+        self.last_cmd["lt_y"] = body_y
+        self.last_cmd["lt_z"] = body_z
         return True
 
     # ── Frame conversions ────────────────────────────────────────────────────
@@ -1056,9 +1207,12 @@ def draw_overlay(frame, state):
     # is active so the operator can see what the autopilot is reacting to.
     # (Caveat: we don't have per-motor PWM telemetry; the published command
     # is the closest stand-in for "which motors are being used".)
+    # The LT payload is body-frame (the autopilot's BODY_FRD), so label
+    # it explicitly — earlier versions stored absolute NED here, and the
+    # mismatch made HUD-debugging the descent confusing.
     if phase in ("PRECISION_LAND", "SEARCH") and cmd.get("lt_x") is not None:
         lines.append((
-            f"LT      x={cmd['lt_x']:+.2f} y={cmd['lt_y']:+.2f} "
+            f"LT body x={cmd['lt_x']:+.2f} y={cmd['lt_y']:+.2f} "
             f"z={cmd['lt_z']:+.2f}",
             color_cmd,
         ))
@@ -1225,6 +1379,84 @@ def run_box_patrol(controller, pump, state, leg_offset=0):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# TRACK phase — runs between PATROL and PRECISION_LAND.  Holds station above
+# the tag with velocity-PD control for TRACK_DURATION_S seconds, regardless
+# of whether the drone has perfectly centered itself.  This guarantees the
+# autopilot's PrecLand controller starts from a near-centered hover; in the
+# old flow the very first LANDING_TARGET went out from a marginal angle
+# and descent began before the lateral loop converged.
+#
+# Returns:
+#   "READY"     — duration elapsed, hand off to PRECISION_LAND
+#   "TAG_LOST"  — tag missing > TRACK_LOSS_TIMEOUT_S; caller should SEARCH
+#   "TOUCHDOWN" — motors disarmed mid-track (defensive — at altitude this
+#                 should not happen, but treat it as a clean exit if it does)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def track_tag(controller, pump, state):
+    print("[INFO] Phase: TRACK")
+    state["phase"]     = "TRACK"
+    state["leg_label"] = f"TRACK 0.0/{TRACK_DURATION_S:.0f}s"
+
+    start         = time.time()
+    last_tag_time = time.time()
+    last_log      = 0.0
+
+    while True:
+        controller._drain_messages()
+        if not controller.master.motors_armed():
+            print("[INFO] Motors disarmed during TRACK — treating as touchdown.")
+            return "TOUCHDOWN"
+
+        elapsed = time.time() - start
+        if elapsed >= TRACK_DURATION_S:
+            controller.send_velocity(0.0, 0.0, 0.0)
+            print(f"[INFO] TRACK duration met ({elapsed:.1f}s) — handing "
+                  "off to PRECISION_LAND")
+            return "READY"
+
+        tag = pump(detect=True)
+
+        if tag is not None:
+            last_tag_time = time.time()
+            t = tag.pose_t
+            cam_x = float(t[0][0])
+            cam_y = float(t[1][0])
+            cam_z = float(t[2][0])
+            body_x, body_y, body_z = PrecisionLandingController.camera_to_body(
+                cam_x, cam_y, cam_z,
+            )
+
+            vx, vy, vz = controller.track_velocity_command(body_x, body_y)
+
+            state["leg_label"] = (
+                f"TRACK {elapsed:.1f}/{TRACK_DURATION_S:.0f}s "
+                f"err=({body_x:+.2f},{body_y:+.2f})"
+            )
+
+            now = time.time()
+            if now - last_log > 1.0:
+                print(f"[INFO] TRACK t={elapsed:.1f}/{TRACK_DURATION_S:.0f}s  "
+                      f"body=({body_x:+.2f},{body_y:+.2f},{body_z:+.2f})  "
+                      f"v=({vx:+.2f},{vy:+.2f},{vz:+.2f})")
+                last_log = now
+        else:
+            time_lost = time.time() - last_tag_time
+            if time_lost > TRACK_LOSS_TIMEOUT_S:
+                print(f"[WARN] Tag lost for {time_lost:.1f}s during TRACK — "
+                      "bailing to SEARCH")
+                controller.send_velocity(0.0, 0.0, 0.0)
+                return "TAG_LOST"
+            controller.send_velocity(0.0, 0.0, 0.0)
+            state["leg_label"] = (
+                f"TRACK {elapsed:.1f}/{TRACK_DURATION_S:.0f}s "
+                f"LOST {time_lost:.1f}s"
+            )
+
+        time.sleep(0.05)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Precision-landing phase.  Returns one of:
 #   "TOUCHDOWN"  — motors auto-disarmed; mission complete
 #   "TAG_LOST"   — tag missing > TAG_LOSS_TIMEOUT; caller should re-search
@@ -1255,15 +1487,36 @@ def precision_land(controller, pump, state):
             cam_y = float(t[1][0])
             cam_z = float(t[2][0])
 
-            # Convert to NED so LANDING_TARGET carries the absolute tag
-            # position — see PrecisionLandingController.tag_camera_to_ned().
-            ned_x, ned_y, ned_z = controller.tag_camera_to_ned(cam_x, cam_y, cam_z)
+            # Body-frame is what ArduCopter PrecLand actually consumes
+            # (MAV_FRAME_BODY_FRD).  No NED conversion in this path.
+            body_x, body_y, body_z = PrecisionLandingController.camera_to_body(
+                cam_x, cam_y, cam_z,
+            )
 
-            sent = controller.send_landing_target(ned_x, ned_y, ned_z)
+            sent = controller.send_landing_target(body_x, body_y, body_z)
             if sent:
-                alt = -controller.last_pos["z"] if controller.last_pos["z"] is not None else float("nan")
-                print(f"[INFO] LANDING_TARGET NED=({ned_x:+.2f}, "
-                      f"{ned_y:+.2f}, {ned_z:+.2f})  alt={alt:.2f} m")
+                safe_bz = max(body_z, 1e-3)
+                ang_x = math.atan2(body_x, safe_bz)
+                ang_y = math.atan2(body_y, safe_bz)
+                dist = math.sqrt(body_x ** 2 + body_y ** 2 + body_z ** 2)
+                if (controller.last_pos["z"] is not None and
+                        controller.takeoff_z_origin is not None):
+                    rel_alt = -(controller.last_pos["z"]
+                                - controller.takeoff_z_origin)
+                    raw_neg_z = -controller.last_pos["z"]
+                    print(f"[INFO] LANDING_TARGET body=({body_x:+.2f}, "
+                          f"{body_y:+.2f}, {body_z:+.2f}) "
+                          f"ang=({ang_x:+.2f},{ang_y:+.2f}) rad  "
+                          f"dist={dist:.2f} m  alt={rel_alt:+.2f} m relative "
+                          f"(raw -z={raw_neg_z:.2f})")
+                else:
+                    raw_neg_z = (-controller.last_pos["z"]
+                                 if controller.last_pos["z"] is not None
+                                 else float("nan"))
+                    print(f"[INFO] LANDING_TARGET body=({body_x:+.2f}, "
+                          f"{body_y:+.2f}, {body_z:+.2f}) "
+                          f"ang=({ang_x:+.2f},{ang_y:+.2f}) rad  "
+                          f"dist={dist:.2f} m  raw -z={raw_neg_z:.2f}")
                 sent_initial_lt = True
 
             # Hand off to autopilot ONLY after the first LANDING_TARGET has
@@ -1275,9 +1528,39 @@ def precision_land(controller, pump, state):
                 mode_switched = True
 
         else:
-            time_lost = time.time() - last_tag_time
-            if time_lost > TAG_LOSS_TIMEOUT:
-                print(f"[WARN] Tag lost for {time_lost:.1f}s during PRECISION_LAND")
+            elapsed = time.time() - last_tag_time
+            if elapsed > TAG_LOSS_TIMEOUT:
+                # Compute relative altitude (against the takeoff anchor) so
+                # we can decide whether the loss is "drone too high; tag
+                # actually gone" vs "drone almost on top of the tag and the
+                # tag has simply left the FOV".  In the latter case, the
+                # autopilot is already in LAND mode and ground-detection
+                # will auto-disarm on touchdown — committing to LAND is
+                # safer than re-flying the search box at <2 m AGL.
+                relative_alt = None
+                if (controller.last_pos["z"] is not None and
+                        controller.takeoff_z_origin is not None):
+                    relative_alt = -(controller.last_pos["z"]
+                                     - controller.takeoff_z_origin)
+                if (relative_alt is not None and
+                        relative_alt < TAG_TOO_CLOSE_ALT_M):
+                    print(f"[INFO] Tag lost at low altitude "
+                          f"({relative_alt:.2f} m) — committing to LAND "
+                          "descent until touchdown")
+                    # Stay in LAND mode (we're already in it).  Loop until
+                    # motors disarm or a generous timeout (30 s) so a
+                    # stuck mode does not leave us hanging forever.
+                    land_start = time.time()
+                    while time.time() - land_start < 30:
+                        controller._drain_messages()
+                        if not controller.master.motors_armed():
+                            print("[INFO] Motors disarmed — touchdown.")
+                            return "TOUCHDOWN"
+                        pump()
+                        time.sleep(0.1)
+                    return "TOUCHDOWN"
+                print(f"[WARN] Tag lost for {elapsed:.1f}s during "
+                      "PRECISION_LAND")
                 return "TAG_LOST"
 
         # ~50 Hz tick — well above the 10 Hz LANDING_TARGET send rate but
@@ -1306,9 +1589,27 @@ def search_and_relocate(controller, pump, state, last_known_xy):
 
     # Climb back via goto_ned — single call covers both the altitude
     # recovery and the lateral repositioning above the last known marker.
-    # NED z is down, so target z = -TAKEOFF_ALTITUDE.
+    # goto_ned takes ABSOLUTE NED z, so we must anchor against the EKF
+    # origin captured at takeoff.  The previous version passed
+    # ``-TAKEOFF_ALTITUDE`` directly, which on a stale-origin airframe
+    # commanded a several-hundred-metre descent (real-flight log:
+    # actual NED z ≈ -345, target z = -6, ~339 m delta) and would have
+    # plowed the drone into the ground if the user had not Ctrl-C'd.
+    if controller.takeoff_z_origin is not None:
+        target_z = controller.takeoff_z_origin - TAKEOFF_ALTITUDE
+    else:
+        # Fall back to relative-only without absolute anchor.  This is
+        # only correct when the EKF origin coincides with the takeoff
+        # point; on stale-origin airframes the goto will be wrong by
+        # whatever the offset is.  Surface a [WARN] so the regression
+        # is visible in the log.
+        print("[WARN] No takeoff anchor — search_and_relocate falling "
+              "back to relative-only goto_ned z (may be wrong by the "
+              "EKF-origin offset on stale-origin airframes)")
+        target_z = -TAKEOFF_ALTITUDE
+
     controller.goto_ned(
-        last_x, last_y, -TAKEOFF_ALTITUDE,
+        last_x, last_y, target_z,
         tolerance=GOTO_TOLERANCE, timeout=GOTO_TIMEOUT,
         pump_fn=lambda: pump(detect=True),
     )
@@ -1428,10 +1729,44 @@ with dai.Device() as device:
                     break
                 time.sleep(0.1)
         else:
-            # ── Precision-landing loop with up to MAX_RESEARCH_ATTEMPTS
-            #    re-locate attempts on tag loss ─────────────────────────────
+            # ── TRACK → PRECISION_LAND loop, with up to MAX_RESEARCH_ATTEMPTS
+            #    re-locate attempts on tag loss in either phase ─────────────
             attempts = 0
             while True:
+                # New TRACK phase: hold over the tag for TRACK_DURATION_S
+                # before handing control to the autopilot's PrecLand.
+                track_result = track_tag(controller, pump, state)
+                if track_result == "TOUCHDOWN":
+                    state["phase"] = "TOUCHDOWN"
+                    break
+                if track_result == "TAG_LOST":
+                    # Tag lost during TRACK counts as one of our
+                    # MAX_RESEARCH_ATTEMPTS re-search attempts.
+                    attempts += 1
+                    if attempts > MAX_RESEARCH_ATTEMPTS:
+                        print(f"[CRITICAL] Exhausted {MAX_RESEARCH_ATTEMPTS}"
+                              " re-search attempts (TRACK loss) — falling "
+                              "back to plain LAND")
+                        state["phase"] = "TOUCHDOWN"
+                        controller.change_flight_mode("LAND")
+                        fail_start = time.time()
+                        while time.time() - fail_start < 30:
+                            pump()
+                            if not controller.master.motors_armed():
+                                print("[INFO] Motors disarmed — touchdown.")
+                                break
+                            time.sleep(0.1)
+                        break
+                    print(f"[INFO] Re-search attempt {attempts}/"
+                          f"{MAX_RESEARCH_ATTEMPTS} (after TRACK loss)")
+                    new_known = search_and_relocate(
+                        controller, pump, state, last_known,
+                    )
+                    if new_known is not None:
+                        last_known = new_known
+                    continue
+
+                # track_result == "READY" → autopilot PrecLand handoff.
                 result = precision_land(controller, pump, state)
                 if result == "TOUCHDOWN":
                     state["phase"] = "TOUCHDOWN"
