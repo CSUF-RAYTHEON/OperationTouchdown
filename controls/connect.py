@@ -6,8 +6,8 @@ from pymavlink import mavutil
 def connect_UART0():
     serial_port = '/dev/ttyAMA0'
     baudrate =  57600
-    source_system = 1
-    source_component = 191
+    source_system = 1 # System/vehicle sending messages is system1(drone/vehicle #1)
+    source_component = 191 # Component sending messages is onboard Computer
 
     print("\nConnecting to Pixhawk via UART0 & waiting for heartbeat")
     master = mavutil.mavlink_connection(serial_port, baud=baudrate, source_system=source_system, source_component=source_component)
@@ -22,8 +22,8 @@ def connect_UART0():
 def connect_UART2():
     serial_port = '/dev/ttyAMA2'
     baudrate =  57600
-    source_system = 1
-    source_component = 191
+    source_system = 1 # System/vehicle sending messages is system1(drone/vehicle #1)
+    source_component = 191 # Component sending messages is onboard Computer
 
     print("\nConnecting to Pixhawk via UART2 & waiting for heartbeat")
     master = mavutil.mavlink_connection(serial_port, baud=baudrate, source_system=source_system, source_component=source_component)
@@ -38,8 +38,8 @@ def connect_UART2():
 def connect_UART3():
     serial_port = '/dev/ttyAMA3'
     baudrate =  57600
-    source_system = 1
-    source_component = 191
+    source_system = 1 # System/vehicle sending messages is system1(drone/vehicle #1)
+    source_component = 191 # Component sending messages is onboard Computer
 
     print("\nConnecting to Pixhawk via UART3 & waiting for heartbeat")
     master = mavutil.mavlink_connection(serial_port, baud=baudrate, source_system=source_system, source_component=source_component)
