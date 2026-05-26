@@ -23,12 +23,15 @@ DEPTH_MAX_M = 15.0
 REDETECT_EVERY = 10
 
 # Loop closure (SLAM)
-KEYFRAME_INTERVAL = 15 # Saves an image every 0.5 seconds(every 15 frames, FPS is 30 so every half second)
+# --- SPATIAL KEYFRAMING SETTINGS ---
+KEYFRAME_MIN_DIST_M = 0.17      # Saves a new map image if drone moves more than 17cm
+KEYFRAME_MIN_YAW_RAD = 0.35    # Saves a new map image if drone rotates more than 0.35 radians
+
 LOOP_CHECK_INTERVAL = 0.6 # Checks for a loop closure every 0.6 seconds
 MIN_LOOP_SEPARATION = 15 # does not compare the live video against the 15 most recent images it just saved.
 MATCH_THRESHOLD = 45
-MAX_KEYFRAMES = 600 # Remembers 600 images (image every 0.5 seconds so 300 seconds so 5 minutes of flight time)
-MAX_MATCH_CANDIDATES = 325 # Checks the last 300 frames for a match
+MAX_KEYFRAMES = 600 # Remembers 600 unique spatial locations
+MAX_MATCH_CANDIDATES = 325 # Checks the last 325 frames for a match
 ORB_NFEATURES = 400
 ORB_SCALE = 0.5
 
@@ -368,6 +371,11 @@ def positioning(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, po
     loop = LoopClosureORB()
     
     t0 = time.time()
+    
+    # --- SPATIAL KEYFRAMING TRACKERS ---
+    last_kf_pos = None
+    last_kf_yaw = None
+    
     print("[VIO] Algorithm running. Calculating poses...\n")
 
     while True:
@@ -399,12 +407,37 @@ def positioning(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, po
         if dynamic_slam_enabled and vo.status == "TRACKING":
             pos_array = np.array(vo.pose())
             
-            if (vo.frame_idx % KEYFRAME_INTERVAL) == 0:
-                loop.add_keyframe(local_rgb, pos_array, vo.frame_idx, t_sec)
+            # --- THE NEW SPATIAL CHECK ---
+            save_kf = False
+            
+            # If we don't have a baseline yet, save the very first frame immediately
+            if last_kf_pos is None:
+                save_kf = True
+            else:
+                # Calculate the 3D physical distance we traveled since the last picture
+                dist_moved = float(np.linalg.norm(pos_array - last_kf_pos))
+                
+                # Calculate how far the drone rotated (in radians) since the last picture
+                yaw_changed = abs(wrap_rad_pi(live_yaw - last_kf_yaw))
+                
+                # If we moved far enough, OR rotated far enough, trigger a save
+                if dist_moved >= KEYFRAME_MIN_DIST_M or yaw_changed >= KEYFRAME_MIN_YAW_RAD:
+                    save_kf = True
 
+            if save_kf:
+                loop.add_keyframe(local_rgb, pos_array, vo.frame_idx, t_sec)
+                # Update our baseline to the exact spot we just saved
+                last_kf_pos = pos_array.copy()
+                last_kf_yaw = live_yaw
+
+            # 2. Check for map loops (Still runs every 0.6 seconds based on wall-clock)
             info = loop.check_loop(local_rgb, pos_array, vo.frame_idx)
             if info is not None:
                 vo.apply_soft_correction(info["matched_pose"])
+                
+                # Optional: Overwrite our last_kf_pos with the newly corrected coordinates 
+                # so the teleport doesn't instantly trigger a false spatial keyframe
+                last_kf_pos = np.array(vo.pose())
 
         # --- PUBLISH POSITION ---
         if vo.status == "TRACKING":
