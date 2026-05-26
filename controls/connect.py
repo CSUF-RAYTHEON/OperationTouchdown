@@ -1,4 +1,4 @@
-# This code establishes a connection to the pixhawk and returns a mavlink master object, depedning on which function is used it will connect to a different UART port on the Pi. 
+# This code establishes a connection to the pixhawk and returns a mavlink master object, depending on which function is used it will connect to a different UART port on the Pi. 
 # Note that only one connection can be established to a UART port at a time, so if you try to connect to the same UART port twice without closing the first connection then the 
 # second connection attempt will fail. A port may only establish a connection with a single process at a time. 
 from pymavlink import mavutil

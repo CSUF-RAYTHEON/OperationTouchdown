@@ -3,7 +3,7 @@ import numpy as np
 import time
 import math
 import multiprocessing as mp
-# Make sure this matches your folder structure
+from controls.connect import connect_UART3
 from VIOSLAM2.broadcaster import broadcaster 
 from multiprocessing import shared_memory
 from pymavlink import mavutil
@@ -25,7 +25,7 @@ REDETECT_EVERY = 10
 # Loop closure (SLAM)
 # --- SPATIAL KEYFRAMING SETTINGS ---
 KEYFRAME_MIN_DIST_M = 0.17      # Saves a new map image if drone moves more than 17cm
-KEYFRAME_MIN_YAW_RAD = 0.35    # Saves a new map image if drone rotates more than 0.35 radians
+KEYFRAME_MIN_YAW_RAD = 0.30    # Saves a new map image if drone rotates more than 0.30 radians
 
 LOOP_CHECK_INTERVAL = 0.6 # Checks for a loop closure every 0.6 seconds
 MIN_LOOP_SEPARATION = 15 # does not compare the live video against the 15 most recent images it just saved.
@@ -36,9 +36,9 @@ ORB_NFEATURES = 400
 ORB_SCALE = 0.5
 
 # Soft drift correction
-SOFT_CORR_ALPHA = 0.15 # Instead of applying the full correction, it multiplies the distance by SOFT_CORR_ALPHA. It only nudges the VIO coordinates 15% closer to the truth.
+SOFT_CORR_ALPHA = 0.20 # Instead of applying the full correction, it multiplies the distance by SOFT_CORR_ALPHA. It only nudges the VIO coordinates 20% closer to the truth.
 SOFT_CORR_COOLDOWN = 0.75 # Time before another soft correction can be applied, in seconds
-MIN_DRIFT_TO_CORRECT_M = 0.17 # minimum drift required to apply a correction in meters (if the drift is smaller than this, we just let it be to avoid over-correcting and adding noise)
+MIN_DRIFT_TO_CORRECT_M = 0.12 # minimum drift required to apply a correction in meters (if the drift is smaller than this, we just let it be to avoid over-correcting and adding noise)
 MAX_CORR_STEP_M = 1.0 # caps the maximum correction distance to 1.0 meter per frame
 
 # -----------------------
@@ -338,7 +338,116 @@ class VO_LK:
 # -----------------------
 # Main Process Function
 # -----------------------
-def positioning(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex):
+def positioning(camera_frame_mutex, camera_calibration_mutex, attitude_mutex):
+    master_uart3 = connect_UART3()
+    W, H = 640, 400
+    # --- 1. MEMORY SETUP ---
+    shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
+    shm_gray = shared_memory.SharedMemory(name="oak_gray")
+    shm_depth = shared_memory.SharedMemory(name="oak_depth")
+    shm_calib = shared_memory.SharedMemory(name="oak_calib")
+    shm_attitude = shared_memory.SharedMemory(name="attitude")
+
+    shared_calib = np.ndarray((3, 3), dtype=np.float64, buffer=shm_calib.buf)
+    shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
+    shared_gray = np.ndarray((H, W), dtype=np.uint8, buffer=shm_gray.buf)
+    shared_depth = np.ndarray((H, W), dtype=np.uint16, buffer=shm_depth.buf)
+    shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
+
+    local_calib = np.zeros((3, 3), dtype=np.float64)
+    local_rgb = np.zeros((H, W, 3), dtype=np.uint8)
+    local_gray = np.zeros((H, W), dtype=np.uint8)
+    local_depth = np.zeros((H, W), dtype=np.uint16)
+    
+    last_processed_gray = np.zeros((H, W), dtype=np.uint8)
+
+    print("[VIO] Connected to Shared Memory. Booting Algorithm...")
+
+    with camera_calibration_mutex:
+        np.copyto(local_calib, shared_calib)
+    
+    vo = VO_LK(K=local_calib.copy())
+    loop = LoopClosureORB()
+    
+    t0 = time.time()
+    
+    # --- SPATIAL KEYFRAMING TRACKERS ---
+    last_kf_pos = None
+    last_kf_yaw = None
+    
+    print("[VIO] Algorithm running. Calculating poses...\n")
+
+    while True:
+        # --- GET FRESHEST ATTITUDE ---
+        with attitude_mutex:
+            live_roll = shared_attitude[0]
+            live_pitch = shared_attitude[1]
+            live_yaw = shared_attitude[2]
+
+        # --- GET FRESHEST IMAGES ---
+        with camera_frame_mutex:
+            np.copyto(local_rgb, shared_rgb)
+            np.copyto(local_gray, shared_gray)
+            np.copyto(local_depth, shared_depth)
+
+        if np.array_equal(local_gray, last_processed_gray):
+            time.sleep(0.005) 
+            continue
+        timestamp_usec = int(time.time() * 1e6)
+        np.copyto(last_processed_gray, local_gray)
+
+        # --- HEAVY MATH ---
+        t_sec = time.time() - t0
+        vo.process(local_gray, local_depth, live_roll, live_pitch, live_yaw)
+
+        # --- SLAM TOGGLE LOGIC ---
+        dynamic_slam_enabled = True 
+
+        if dynamic_slam_enabled and vo.status == "TRACKING":
+            pos_array = np.array(vo.pose())
+            
+            # --- THE NEW SPATIAL CHECK ---
+            save_kf = False
+            
+            # If we don't have a baseline yet, save the very first frame immediately
+            if last_kf_pos is None:
+                save_kf = True
+            else:
+                # Calculate the 3D physical distance we traveled since the last picture
+                dist_moved = float(np.linalg.norm(pos_array - last_kf_pos))
+                
+                # Calculate how far the drone rotated (in radians) since the last picture
+                yaw_changed = abs(wrap_rad_pi(live_yaw - last_kf_yaw))
+                
+                # If we moved far enough, OR rotated far enough, trigger a save
+                if dist_moved >= KEYFRAME_MIN_DIST_M or yaw_changed >= KEYFRAME_MIN_YAW_RAD:
+                    save_kf = True
+
+            if save_kf:
+                loop.add_keyframe(local_rgb, pos_array, vo.frame_idx, t_sec)
+                # Update our baseline to the exact spot we just saved
+                last_kf_pos = pos_array.copy()
+                last_kf_yaw = live_yaw
+
+            # 2. Check for map loops (Still runs every 0.6 seconds based on wall-clock)
+            info = loop.check_loop(local_rgb, pos_array, vo.frame_idx)
+            if info is not None:
+                vo.apply_soft_correction(info["matched_pose"])
+                
+                # Optional: Overwrite our last_kf_pos with the newly corrected coordinates 
+                # so the teleport doesn't instantly trigger a false spatial keyframe
+                last_kf_pos = np.array(vo.pose())
+
+        # --- PUBLISH POSITION ---
+        if vo.status == "TRACKING":
+            pos = vo.pose() # pos[0] = North (X) pos[1] = East (Y) pos[2] = Down (Z)
+            master_uart3.mav.vision_position_estimate_send(timestamp_usec, pos[0], pos[1], pos[2], 0.0, 0.0, 0.0)
+        else:
+            print(f"VIO LOST. Status: {vo.status}")
+# -----------------------
+# Testing & Printing Process
+# -----------------------
+def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex):
     W, H = 640, 400
     # --- 1. MEMORY SETUP ---
     shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
@@ -447,9 +556,6 @@ def positioning(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, po
         else:
             print(f"VIO LOST. Status: {vo.status}")
 
-# -----------------------
-# Testing & Printing Process
-# -----------------------
 def test_positioning(position_mutex):
     time.sleep(6) 
     
@@ -491,27 +597,27 @@ if __name__ == "__main__":
     position_mutex = mp.Lock()
 
     broadcaster_process = mp.Process(target=broadcaster, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex))
-    vio_process = mp.Process(target=positioning, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex))
-    printer_process = mp.Process(target=test_positioning, args=(position_mutex,))
+    vio_process = mp.Process(target=positioning_test, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex))
+    test_process = mp.Process(target=test_positioning, args=(position_mutex,))
 
     try:
         broadcaster_process.start()
         time.sleep(3)
         vio_process.start()
         time.sleep(3)
-        printer_process.start()
-        printer_process.join()
+        test_process.start()
+        test_process.join()
         
     except KeyboardInterrupt:
         print("\nPositioning tester caught keyboard interrupt. Shutting down...")
     finally:
         broadcaster_process.terminate()
         vio_process.terminate()
-        printer_process.terminate()
+        test_process.terminate()
         
         broadcaster_process.join()
         vio_process.join()
-        printer_process.join()
+        test_process.join()
 
         print("Positioning tester cleaning up shared memory...")
         shm_rgb.close()
