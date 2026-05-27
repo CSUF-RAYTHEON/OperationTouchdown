@@ -38,9 +38,11 @@ def generate_launch_description():
         executable='roboteq_bridge.py',
         name='roboteq_bridge',
         parameters=[{
-            'publish_tf': False, 
-            'odom_frame': 'odom', 
+            'publish_tf': False,
+            'odom_frame': 'odom',
             'base_frame': 'base_footprint',
+            'drive_invert_linear': False,  # set True if robot drives backwards on forward command
+            'odom_invert_linear': 1.0,
         }]
     )
 
@@ -108,7 +110,14 @@ def generate_launch_description():
     
     teleop_node = Node(
         package='teleop_twist_joy', executable='teleop_node', name='teleop_twist_joy_node',
-        parameters=[{'enable_button': 5, 'axis_linear.x': 3, 'axis_angular.yaw': 1, 'scale_linear.x': 3.0, 'scale_angular.yaw': 1.0}]
+        parameters=[{
+            'enable_button': 7,          # RB — hold to drive
+            # Linux /dev/input/js0 Xbox: 0=left X, 1=left Y, 2=right X, 3=right Y
+            'axis_linear.x': 0,          # left stick forward/back -> linear.x
+            'axis_angular.yaw': 1,       # right stick left/right -> angular.z
+            'scale_linear.x': 0.6,       # forward stick -> +linear.x
+            'scale_angular.yaw': -0.9,
+        }]
     )
 
     # 7. SLAM
