@@ -9,7 +9,7 @@ def externalnav(master):
 
     # 1. Setting External Navigation parameters for the drone, these parameters dicate what the drone will use for External Navigation and positioning.
     #    These are not all of the parameters however, so if for some reason other parameters are changed then it could fail
-    #    to arm or work properly. We also print out the values it becomes and the associated parameter. Both are printed to the termal for logging purposes.  
+    #    to arm or work properly. We also print out the values it becomes and the associated parameter. Both are printed to the terminal for logging purposes.  
     params = {"EK2_ENABLE": 0, "EK3_ENABLE": 1, "AHRS_EKF_TYPE": 3, "GPS1_TYPE": 0, "GPS_PRIMARY": 0, 
               "EK3_SRC1_POSXY": 6, "EK3_SRC1_VELXY": 0, "EK3_SRC1_POSZ": 6, "EK3_SRC1_VELZ": 0, "EK3_SRC1_YAW": 1}
     for name, value in params.items():
