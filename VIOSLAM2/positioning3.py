@@ -25,8 +25,8 @@ REDETECT_EVERY = 10
 
 # Loop closure (SLAM)
 # --- SPATIAL KEYFRAMING SETTINGS ---
-KEYFRAME_MIN_DIST_M = 0.15      # Saves a new map image if drone moves more than 17cm
-KEYFRAME_MIN_YAW_RAD = 0.30   # Saves a new map image if drone rotates more than 0.30 radians
+KEYFRAME_MIN_DIST_M = 0.08      # Saves a new map image if drone moves more than 8cm
+KEYFRAME_MIN_YAW_RAD = 0.17   # Saves a new map image if drone rotates more than 0.30 radians
 
 LOOP_CHECK_INTERVAL = 0.6 # Checks for a loop closure every 0.6 seconds
 MIN_LOOP_SEPARATION = 15 # does not compare the live video against the 15 most recent images it just saved.
