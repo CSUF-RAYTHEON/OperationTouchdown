@@ -117,7 +117,7 @@ from pymavlink import mavutil
 
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE          = 57600
-TAKEOFF_ALTITUDE  = 4           # meters — matches stationary_landing.py
+TAKEOFF_ALTITUDE  = 5           # meters — matches stationary_landing.py
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Stabilization Config (NEW — not present in stationary_landing.py /
