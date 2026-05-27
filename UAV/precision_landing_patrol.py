@@ -152,6 +152,43 @@ PATROL_SEGMENTS = [
 ]
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Search Climb-Back Config — hard altitude cap.
+# A prior flight test of the SEARCH phase showed the airframe overshooting
+# the requested re-climb altitude by several metres before stabilising
+# (the autopilot's position controller could overshoot a goto_ned z target,
+# and EKF-origin issues compounded it).  We now velocity-control the climb
+# ourselves with a HARD CAP at MAX_SEARCH_ALTITUDE_M.  Defensive coding
+# even though the current main flow does not call search_and_relocate
+# anymore (the IMU tag-loss recovery commits straight to LAND); if SEARCH
+# is ever re-enabled this cap protects against the regression.
+# ─────────────────────────────────────────────────────────────────────────────
+
+MAX_SEARCH_ALTITUDE_M       = TAKEOFF_ALTITUDE  # m — hard cap on relative
+                                                # altitude during SEARCH-
+                                                # climb (matches takeoff
+                                                # altitude per user spec).
+SEARCH_CLIMB_OVERSHOOT_M    = 0.5   # m — tolerance above the cap before
+                                    # we actively command a corrective
+                                    # descent.  Below this margin we just
+                                    # stop climbing (hover).
+SEARCH_CLIMB_VZ             = -0.3  # m/s NED (negative = up).  Mirrors
+                                    # the conservative PATROL_SPEED so
+                                    # the airframe ascends slowly enough
+                                    # that the per-tick altitude check
+                                    # can intervene before overshoot.
+SEARCH_DESCEND_VZ           = 0.3   # m/s NED (positive = down).  Used
+                                    # if rel_alt exceeds the hard cap +
+                                    # overshoot margin — descend back
+                                    # under the cap before continuing.
+SEARCH_CLIMB_TIMEOUT_S      = 20.0  # s — total time budget for the
+                                    # safe climb; on exhaustion we hover
+                                    # and proceed to the lateral move at
+                                    # whatever altitude we achieved.
+SEARCH_TARGET_TOLERANCE_M   = 0.3   # m — treat the climb as "complete"
+                                    # once we are within this margin of
+                                    # the target relative altitude.
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Precision-landing Config
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -2377,9 +2414,131 @@ def precision_land(controller, pump, state):
 # Search / re-locate — climb back, fly to last known tag spot, re-patrol.
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _relative_altitude_m(controller):
+    """Return current altitude above the takeoff anchor in metres, or None
+    if either the LOCAL_POSITION_NED stream or the takeoff anchor has not
+    been seeded yet.  Centralised here because every cap-related check
+    needs the same anchored value, and a fall-through to raw -z would
+    silently mis-cap on a stale-EKF-origin airframe.
+    """
+    cur_z = controller.last_pos.get("z")
+    z0    = controller.takeoff_z_origin
+    if cur_z is None or z0 is None:
+        return None
+    return -(cur_z - z0)
+
+
+def safe_climb_to_altitude(controller, pump, state, target_relative_alt_m,
+                           max_relative_alt_m=MAX_SEARCH_ALTITUDE_M):
+    """Climb to ``target_relative_alt_m`` using body-frame velocity control
+    with a hard cap at ``max_relative_alt_m`` (default
+    MAX_SEARCH_ALTITUDE_M = TAKEOFF_ALTITUDE).
+
+    Why not just goto_ned(z=takeoff_z_origin - target)?  A prior flight
+    test of SEARCH showed the airframe overshooting the requested re-
+    climb altitude by several metres before the autopilot's position
+    controller settled.  goto_ned re-sends a position target every
+    0.5 s and otherwise lets the autopilot do whatever it wants in
+    between — there is no companion-side guard against the overshoot.
+    A velocity-controlled climb monitored every 100 ms here can react
+    to overshoot within ~one tick, and the hard cap immediately reverses
+    to a descent command if the cap is breached.
+
+    Exit conditions:
+      * relative altitude is within SEARCH_TARGET_TOLERANCE_M of
+        ``target_relative_alt_m`` → hover and return
+      * SEARCH_CLIMB_TIMEOUT_S exceeded → hover and return (the lateral
+        move can still continue at whatever altitude was achieved)
+      * motors_armed drops to False (RC failsafe / ground hit) → return
+
+    Detects the tag opportunistically every tick — if the marker is
+    re-acquired before the climb completes, the caller can re-enter
+    TRACK directly without finishing the climb.  Currently the caller
+    does not consume this signal (returns plain None / behaviour
+    matches the old flow); the detection is still useful for the HUD.
+    """
+    cap = max_relative_alt_m
+    print(f"[INFO] SEARCH safe-climb target={target_relative_alt_m:.2f} m "
+          f"(hard cap = {cap:.2f} m + "
+          f"{SEARCH_CLIMB_OVERSHOOT_M:.2f} m overshoot)")
+
+    start = time.time()
+    last_log = 0.0
+
+    while time.time() - start < SEARCH_CLIMB_TIMEOUT_S:
+        controller._drain_messages()
+        if not controller.master.motors_armed():
+            print("[INFO] Motors disarmed mid-SEARCH-climb — bailing.")
+            return
+
+        rel_alt = _relative_altitude_m(controller)
+        if rel_alt is None:
+            # No altitude reading yet — hover and wait one tick.
+            controller.send_velocity(0.0, 0.0, 0.0)
+            state["leg_label"] = "CLIMB  (waiting for altitude)"
+            pump(detect=True)
+            time.sleep(0.1)
+            continue
+
+        if rel_alt > cap + SEARCH_CLIMB_OVERSHOOT_M:
+            # HARD CAP BREACHED — actively descend to bring us back below
+            # the cap.  This is the safety net the prior flight test was
+            # missing.
+            controller.send_velocity(0.0, 0.0, SEARCH_DESCEND_VZ)
+            state["leg_label"] = (
+                f"CLIMB CAP {rel_alt:+.2f}m > {cap:.2f}+"
+                f"{SEARCH_CLIMB_OVERSHOOT_M:.1f}  → DESCEND"
+            )
+            print(f"[WARN] SEARCH altitude cap breached "
+                  f"({rel_alt:+.2f} m > {cap:.2f}+"
+                  f"{SEARCH_CLIMB_OVERSHOOT_M:.1f}) — descending")
+        elif rel_alt >= target_relative_alt_m - SEARCH_TARGET_TOLERANCE_M:
+            # Target reached (or exceeded but within overshoot margin).
+            controller.send_velocity(0.0, 0.0, 0.0)
+            print(f"[INFO] SEARCH target altitude reached "
+                  f"({rel_alt:+.2f} m vs target "
+                  f"{target_relative_alt_m:.2f} m)")
+            return
+        else:
+            # Continue climbing at the configured rate.
+            controller.send_velocity(0.0, 0.0, SEARCH_CLIMB_VZ)
+            state["leg_label"] = (
+                f"CLIMB {rel_alt:+.2f}/"
+                f"{target_relative_alt_m:.1f}m  cap={cap:.1f}"
+            )
+
+        now = time.time()
+        if now - last_log > 1.0:
+            print(f"[INFO] SEARCH climb alt={rel_alt:+.2f} m  "
+                  f"target={target_relative_alt_m:.2f} m  "
+                  f"cap={cap:.2f}+{SEARCH_CLIMB_OVERSHOOT_M:.1f} m")
+            last_log = now
+
+        pump(detect=True)
+        time.sleep(0.1)
+
+    print(f"[WARN] SEARCH climb timeout ({SEARCH_CLIMB_TIMEOUT_S:.0f} s) — "
+          "proceeding at whatever altitude was achieved")
+    controller.send_velocity(0.0, 0.0, 0.0)
+
+
 def search_and_relocate(controller, pump, state, last_known_xy):
-    """Switch to GUIDED, climb back to TAKEOFF_ALTITUDE, fly to the last
-    known marker (x, y), and re-run the box patrol centered there.
+    """Switch to GUIDED, climb back to TAKEOFF_ALTITUDE (with a hard
+    altitude cap), fly to the last known marker (x, y), and re-run the
+    box patrol centered there.
+
+    Climb portion uses safe_climb_to_altitude() — velocity-controlled
+    with a hard cap at MAX_SEARCH_ALTITUDE_M so the airframe cannot
+    overshoot the way it did in a prior flight test.
+
+    Lateral move uses goto_ned() at the achieved altitude (not the
+    requested target), and the pump callback we hand goto_ned actively
+    watches relative altitude every tick — if the autopilot drifts the
+    drone above the cap during the lateral flight, the watchdog
+    injects a corrective vz>0 body-frame velocity command (which
+    overrides the goto position target until goto_ned's next 0.5 s
+    re-send).  This is a soft safety net for the lateral phase; the
+    primary defence is the climb-phase cap above.
 
     Returns the new (last_known_x, last_known_y) if the tag is re-acquired
     during the re-patrol, or ``None`` if the box completed without a hit.
@@ -2392,31 +2551,52 @@ def search_and_relocate(controller, pump, state, last_known_xy):
 
     last_x, last_y = last_known_xy
 
-    # Climb back via goto_ned — single call covers both the altitude
-    # recovery and the lateral repositioning above the last known marker.
-    # goto_ned takes ABSOLUTE NED z, so we must anchor against the EKF
-    # origin captured at takeoff.  The previous version passed
-    # ``-TAKEOFF_ALTITUDE`` directly, which on a stale-origin airframe
-    # commanded a several-hundred-metre descent (real-flight log:
-    # actual NED z ≈ -345, target z = -6, ~339 m delta) and would have
-    # plowed the drone into the ground if the user had not Ctrl-C'd.
-    if controller.takeoff_z_origin is not None:
-        target_z = controller.takeoff_z_origin - TAKEOFF_ALTITUDE
+    # ── Climb phase: velocity-controlled with hard altitude cap ──────────
+    # Target = MAX_SEARCH_ALTITUDE_M (=TAKEOFF_ALTITUDE per user spec).
+    safe_climb_to_altitude(
+        controller, pump, state,
+        target_relative_alt_m=MAX_SEARCH_ALTITUDE_M,
+        max_relative_alt_m=MAX_SEARCH_ALTITUDE_M,
+    )
+
+    # ── Lateral move: goto_ned at the ACHIEVED altitude ─────────────────
+    # Compute z target from the current LOCAL_POSITION_NED.z so the
+    # autopilot is told "hold this altitude, just move x/y" rather than
+    # being asked to climb further.  Fall back chain mirrors the old
+    # search_and_relocate so a missing takeoff anchor still produces a
+    # usable (if approximate) z target.
+    cur_z = controller.last_pos.get("z")
+    if cur_z is not None:
+        target_z = cur_z
+    elif controller.takeoff_z_origin is not None:
+        target_z = controller.takeoff_z_origin - MAX_SEARCH_ALTITUDE_M
     else:
-        # Fall back to relative-only without absolute anchor.  This is
-        # only correct when the EKF origin coincides with the takeoff
-        # point; on stale-origin airframes the goto will be wrong by
-        # whatever the offset is.  Surface a [WARN] so the regression
-        # is visible in the log.
-        print("[WARN] No takeoff anchor — search_and_relocate falling "
-              "back to relative-only goto_ned z (may be wrong by the "
-              "EKF-origin offset on stale-origin airframes)")
-        target_z = -TAKEOFF_ALTITUDE
+        print("[WARN] No takeoff anchor and no LOCAL_POSITION_NED — "
+              "search_and_relocate falling back to "
+              f"target_z=-{MAX_SEARCH_ALTITUDE_M:.2f} (may be wrong by "
+              "the EKF-origin offset on stale-origin airframes)")
+        target_z = -MAX_SEARCH_ALTITUDE_M
+
+    def _capped_pump():
+        """pump() wrapper that also enforces the altitude cap during
+        the lateral goto.  If the autopilot drifts above the cap +
+        overshoot margin, send a body-frame descent command — this
+        will be overridden by goto_ned's next 0.5 s position re-send,
+        but that's fine: it limits sustained over-cap flight to
+        roughly one goto re-send interval.
+        """
+        rel_alt = _relative_altitude_m(controller)
+        if (rel_alt is not None
+                and rel_alt > MAX_SEARCH_ALTITUDE_M + SEARCH_CLIMB_OVERSHOOT_M):
+            controller.send_velocity(0.0, 0.0, SEARCH_DESCEND_VZ)
+            print(f"[WARN] SEARCH lateral-move altitude cap breached "
+                  f"({rel_alt:+.2f} m) — injecting descent")
+        return pump(detect=True)
 
     controller.goto_ned(
         last_x, last_y, target_z,
         tolerance=GOTO_TOLERANCE, timeout=GOTO_TIMEOUT,
-        pump_fn=lambda: pump(detect=True),
+        pump_fn=_capped_pump,
     )
 
     state["leg_label"] = "REPATROL"
