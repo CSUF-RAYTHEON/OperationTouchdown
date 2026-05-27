@@ -25,15 +25,22 @@
                                        │                          │
                                        │ tag lost                 │ tag lost
                                        ▼                          ▼
-                                     SEARCH ◀──tag lost────  (close-tag?
-                                       │                          → LAND)
-                                       │ re-patrol acquires tag   │
-                                       ▼                          ▼
-                                     TRACK → PRECISION_LAND → TOUCHDOWN
+                                  IMU RECOVERY              (close-tag? → LAND)
+                                  (≤3s body-frame                  │
+                                   counter-drift)                  ▼
+                                       │                      IMU RECOVERY
+                                       │ tag back?               (≤3s)
+                                  yes ─┤ ─ no                       │
+                                       ▼      ▼              tag back?
+                                    TRACK   COMMIT             yes/no
+                                            LAND                  │
+                                                      ┌───────────┘
+                                                      ▼
+                                          PRECISION_LAND / COMMIT LAND
 
    TRACK exits early as soon as both filtered |body_x| and |body_y| are
    below TRACK_CENTER_THRESHOLD_M for TRACK_CENTER_HOLD_FRAMES consecutive
-   frames; TRACK_DURATION_S is just an upper bound.
+   frames; TRACK_DURATION_S is just an upper bound (currently 20 s).
 
    Within PRECISION_LAND:
      * Mode is GUIDED while body_z > TOUCHDOWN_BODY_Z_M; control source
@@ -41,8 +48,16 @@
      * Mode flips to LAND once body_z < TOUCHDOWN_BODY_Z_M; control
        source is ArduCopter LAND for ground-detection + auto-disarm.
 
-   SEARCH is bounded by MAX_RESEARCH_ATTEMPTS; on exhaustion the script
-   commits to a plain LAND descent at the current position.
+   IMU RECOVERY (new — see RECOVERY_* config) runs whenever the AprilTag
+   leaves the camera frame during TRACK or PRECISION_LAND.  It snapshots
+   the body-frame drift velocity (Pixhawk EKF, cross-checked against the
+   OAK-D S2 onboard BNO086 accelerometer) at the moment of loss and
+   commands the opposite velocity for up to RECOVERY_DURATION_S (3 s).
+   If the marker reappears we resume the parent phase; if the window
+   expires we commit straight to ArduCopter LAND.  The old
+   search_and_relocate()/MAX_RESEARCH_ATTEMPTS box-re-fly path is no
+   longer triggered from a tag-loss — it is kept in the source as
+   reference but unreachable in the current flow.
 
  Key MAVLink messages used
  ─────────────────────────
@@ -230,6 +245,84 @@ TRACK_CENTER_THRESHOLD_M = 0.25   # m — both filtered |body_x| and |body_y|
                                   # consider itself "centred".
 TRACK_CENTER_HOLD_FRAMES = 8      # consecutive ticks the centred condition
                                   # must hold before TRACK exits early.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# IMU Tag-Loss Recovery Config
+# ─────────────────────────────────────────────────────────────────────────────
+# When the AprilTag falls out of the camera frame mid-flight (most likely
+# cause: a wind gust pushing the airframe laterally), we no longer just hover
+# during the loss window — that lets the drift continue and almost always
+# ends in SEARCH or a bad commit-to-LAND off-target.
+#
+# Instead, at the moment of loss we capture a body-frame "drift snapshot"
+# from two independent IMU-driven signals:
+#
+#   PRIMARY  — Pixhawk LOCAL_POSITION_NED velocity (vx, vy) rotated into
+#              body frame using ATTITUDE.yaw.  These vx/vy are the EKF's
+#              fused estimate, driven primarily by the FCU IMU between
+#              GPS updates, so they are the most accurate body-frame
+#              velocity reading available on this airframe.
+#
+#   BACKUP   — OAK-D S2 onboard BNO086 accelerometer (ACCELEROMETER_RAW),
+#              mapped from camera frame to body frame with the existing
+#              camera_to_body() transform.  Used purely as a confidence
+#              cross-check: if the OAK IMU also sees lateral acceleration
+#              above RECOVERY_OAK_ACCEL_MIN, the Pixhawk-derived drift
+#              estimate is trusted at full gain; otherwise the counter-
+#              command is attenuated to RECOVERY_OAK_DISAGREE_SCALE.
+#
+# During the loss window (RECOVERY_DURATION_S — matches the existing
+# TAG_LOSS_TIMEOUT / TRACK_LOSS_TIMEOUT_S so we replace rather than
+# extend), we command a constant body-frame counter-velocity equal to
+# ``-RECOVERY_KP * drift_snapshot``.  Using a SNAPSHOT (not a closed-loop
+# feedback on current velocity) is deliberate: once the drone decelerates
+# and stops, instantaneous velocity → 0 but we still need to keep flying
+# back toward the marker, so the command must persist.  Magnitude is
+# clamped to RECOVERY_MAX_V_XY and floored at RECOVERY_MIN_V_XY whenever
+# the detected drift is above RECOVERY_DRIFT_DEADBAND.
+#
+# If the marker re-appears before the 3 s window expires we exit recovery
+# and resume the parent phase (TRACK or PRECISION_LAND).  If the window
+# expires without re-acquisition we commit directly to ArduCopter LAND
+# (NOT search_and_relocate) per the user spec.
+
+RECOVERY_DURATION_S        = 3.0   # s — must match TAG_LOSS_TIMEOUT and
+                                   # TRACK_LOSS_TIMEOUT_S; we are REPLACING
+                                   # the old static-hover loss window, not
+                                   # extending it.
+RECOVERY_KP                = 1.2   # gain on the counter-drift velocity
+                                   # (v_cmd_body = -RECOVERY_KP * drift_body)
+RECOVERY_MAX_V_XY          = 0.4   # m/s — per-axis clamp on counter command
+RECOVERY_MIN_V_XY          = 0.10  # m/s — minimum magnitude per axis when
+                                   # drift on that axis is above the
+                                   # deadband; ensures a tiny but real
+                                   # drift still produces real motion
+                                   # rather than collapsing under the clamp
+RECOVERY_DRIFT_DEADBAND    = 0.05  # m/s — body-frame drift below this on
+                                   # both axes is treated as noise (no
+                                   # counter command on that axis)
+RECOVERY_OAK_ACCEL_MIN     = 0.30  # m/s² — minimum OAK-D lateral-accel
+                                   # magnitude (XY in body frame, gravity
+                                   # is on body-Z for a downward camera so
+                                   # XY is gravity-free to first order) to
+                                   # count as "the camera IMU sees motion"
+RECOVERY_OAK_DISAGREE_SCALE = 0.6  # gain scale when the OAK IMU does NOT
+                                   # confirm motion; we still apply the
+                                   # Pixhawk-derived counter command but
+                                   # at reduced authority
+RECOVERY_OAK_EMA_ALPHA     = 0.7   # EMA on OAK accel samples in the pump
+                                   # (heavy filter — BNO086 raw is noisy
+                                   # at the 100 Hz pipeline rate)
+RECOVERY_OAK_IMU_HZ        = 100   # OAK IMU sample rate for both the
+                                   # accelerometer and gyroscope streams
+RECOVERY_FALLBACK_OFFSET_M = 0.20  # m — if BOTH IMU sources show drift
+                                   # below their deadbands at the moment
+                                   # of loss, fall back to the last
+                                   # body-frame TAG OFFSET as the drift
+                                   # direction (drone is on the opposite
+                                   # side of the marker by definition).
+                                   # Below this body-frame offset we give
+                                   # up on direction inference and hover.
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Camera Config
@@ -500,6 +593,36 @@ class PrecisionLandingController:
             "t": 0.0,
         }
 
+        # ATTITUDE cache — needed by body_frame_velocity() to rotate the
+        # NED velocity into the airframe body frame for the IMU tag-loss
+        # recovery.  Yaw alone is sufficient for that rotation; we cache
+        # roll/pitch too so the HUD or future logic can use them.
+        self.last_att = {
+            "roll": None, "pitch": None, "yaw": None,
+            "t": 0.0,
+        }
+
+        # Pixhawk SCALED_IMU cache — body-frame accelerometer in m/s².
+        # SCALED_IMU reports accelerations in mG (milli-g); we convert
+        # to m/s² on intake so downstream consumers don't have to.
+        self.last_pix_imu = {
+            "ax": None, "ay": None, "az": None,
+            "gx": None, "gy": None, "gz": None,
+            "t": 0.0,
+        }
+
+        # OAK-D S2 (BNO086) IMU cache — written by make_pump() as
+        # accelerometer samples arrive on the DepthAI queue.  Stored in
+        # the AIRFRAME body frame (already passed through camera_to_body)
+        # so callers don't need to know about the camera convention.
+        # ema_ax/ay/az are EMA-smoothed (alpha = RECOVERY_OAK_EMA_ALPHA)
+        # to suppress per-sample noise from the 100 Hz raw stream.
+        self.last_oak_imu = {
+            "ax": None, "ay": None, "az": None,
+            "ema_ax": None, "ema_ay": None, "ema_az": None,
+            "t": 0.0,
+        }
+
         # Last commanded velocity — kept here so draw_overlay() can show
         # whichever motor-driving signal is currently active.  We don't have
         # per-motor PWM telemetry on this airframe, so the velocity/throttle
@@ -543,25 +666,38 @@ class PrecisionLandingController:
     # ── Telemetry plumbing ───────────────────────────────────────────────────
 
     def request_telemetry_streams(self):
-        """Ask the FCU to stream LOCAL_POSITION_NED at 10 Hz.
+        """Ask the FCU to stream the messages we rely on at known rates.
 
-        ArduCopter typically sends it by default, but on some configurations
-        it does not — the takeoff and stabilization checks both rely on it,
-        and a missing stream silently breaks them.  Mirrors the call the
-        existing TestComponents/test_*_local_position.py scripts make.
+        ArduCopter typically sends LOCAL_POSITION_NED / ATTITUDE / SCALED_IMU
+        by default, but on some configurations it does not — the takeoff
+        and stabilization checks rely on LOCAL_POSITION_NED, and the new
+        IMU tag-loss recovery (recover_velocity_command) relies on
+        ATTITUDE (for the NED→body yaw rotation) and SCALED_IMU (as a
+        confidence cross-check alongside the OAK-D IMU).  A missing
+        stream silently breaks any of those paths, so request each
+        explicitly at a useful rate.
+
+        Mirrors the call pattern the existing
+        TestComponents/test_*_local_position.py scripts make.
         """
-        try:
-            self.master.mav.command_long_send(
-                self.master.target_system, self.master.target_component,
-                mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL,
-                0,
-                mavutil.mavlink.MAVLINK_MSG_ID_LOCAL_POSITION_NED,
-                1e6 / 10,    # interval in microseconds → 10 Hz
-                0, 0, 0, 0, 0,
-            )
-            print("[INFO] Requested LOCAL_POSITION_NED @ 10 Hz")
-        except Exception as e:
-            print(f"[WARN] Could not request LOCAL_POSITION_NED stream: {e}")
+        streams = [
+            (mavutil.mavlink.MAVLINK_MSG_ID_LOCAL_POSITION_NED, 10, "LOCAL_POSITION_NED"),
+            (mavutil.mavlink.MAVLINK_MSG_ID_ATTITUDE,           20, "ATTITUDE"),
+            (mavutil.mavlink.MAVLINK_MSG_ID_SCALED_IMU,         20, "SCALED_IMU"),
+        ]
+        for msg_id, hz, name in streams:
+            try:
+                self.master.mav.command_long_send(
+                    self.master.target_system, self.master.target_component,
+                    mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL,
+                    0,
+                    msg_id,
+                    1e6 / hz,    # interval in microseconds
+                    0, 0, 0, 0, 0,
+                )
+                print(f"[INFO] Requested {name} @ {hz} Hz")
+            except Exception as e:
+                print(f"[WARN] Could not request {name} stream: {e}")
 
     def _drain_messages(self):
         """Drain the MAVLink buffer non-blockingly, caching latest telemetry.
@@ -571,11 +707,16 @@ class PrecisionLandingController:
         The existing scripts call recv_match(blocking=False) for the same
         reason; this just centralises it and stashes useful fields.
         """
-        for _ in range(20):   # cap per-tick drain so we never spin forever
+        # Bumped from 20 → 40 because three streams are now active
+        # (LOCAL_POSITION_NED @10 Hz + ATTITUDE @20 Hz + SCALED_IMU @20 Hz);
+        # at the old cap a single tick could leave SCALED_IMU stale even
+        # when fresh samples were pending on the buffer.
+        for _ in range(40):
             msg = self.master.recv_match(blocking=False)
             if msg is None:
                 return
-            if msg.get_type() == "LOCAL_POSITION_NED":
+            mtype = msg.get_type()
+            if mtype == "LOCAL_POSITION_NED":
                 self.last_pos["x"]  = msg.x
                 self.last_pos["y"]  = msg.y
                 self.last_pos["z"]  = msg.z
@@ -583,6 +724,26 @@ class PrecisionLandingController:
                 self.last_pos["vy"] = msg.vy
                 self.last_pos["vz"] = msg.vz
                 self.last_pos["t"]  = time.time()
+            elif mtype == "ATTITUDE":
+                # ATTITUDE fields are already in radians; yaw is the
+                # heading angle of the body X axis (forward) measured
+                # CW from North in NED.  Used directly by
+                # body_frame_velocity() to rotate vx/vy into body frame.
+                self.last_att["roll"]  = msg.roll
+                self.last_att["pitch"] = msg.pitch
+                self.last_att["yaw"]   = msg.yaw
+                self.last_att["t"]     = time.time()
+            elif mtype == "SCALED_IMU":
+                # SCALED_IMU.xacc/yacc/zacc are in mG (milli-g, int16);
+                # convert to m/s² here so callers never have to remember
+                # the unit.  gyros are mrad/s.
+                self.last_pix_imu["ax"] = msg.xacc * 9.80665 / 1000.0
+                self.last_pix_imu["ay"] = msg.yacc * 9.80665 / 1000.0
+                self.last_pix_imu["az"] = msg.zacc * 9.80665 / 1000.0
+                self.last_pix_imu["gx"] = msg.xgyro / 1000.0
+                self.last_pix_imu["gy"] = msg.ygyro / 1000.0
+                self.last_pix_imu["gz"] = msg.zgyro / 1000.0
+                self.last_pix_imu["t"]  = time.time()
 
     def get_local_position(self):
         """Return the latest (x, y, z, vx, vy, vz) NED snapshot.
@@ -1074,6 +1235,165 @@ class PrecisionLandingController:
         self.last_cmd["lt_z"] = None
         return vx, vy, vz
 
+    # ── IMU tag-loss recovery (body-frame counter-drift) ─────────────────────
+
+    def body_frame_velocity(self):
+        """Return the airframe's body-frame velocity (vx, vy, vz) in m/s.
+
+        Computed by rotating the EKF's NED velocity (cached in
+        ``last_pos``) by the negative of the body yaw (cached in
+        ``last_att``).  Used by the IMU tag-loss recovery to determine
+        which direction the airframe is drifting in its OWN frame —
+        which is what the velocity-control surface
+        (``send_velocity`` / MAV_FRAME_BODY_NED) speaks.
+
+        The standard NED → body rotation is:
+
+            [body_x]   [ cos(yaw)   sin(yaw)  0 ] [vN]
+            [body_y] = [-sin(yaw)   cos(yaw)  0 ] [vE]
+            [body_z]   [   0          0       1 ] [vD]
+
+        where yaw is the ArduPilot ATTITUDE.yaw — heading of body-X CW
+        from North in NED, radians.
+
+        Returns (None, None, None) if either the velocity or the yaw
+        has not yet been received.  Callers MUST guard against that —
+        the recovery should fall back to its other signals (OAK IMU,
+        last tag offset) when this returns None.
+        """
+        self._drain_messages()
+        vx = self.last_pos.get("vx")
+        vy = self.last_pos.get("vy")
+        vz = self.last_pos.get("vz")
+        yaw = self.last_att.get("yaw")
+        if vx is None or vy is None or yaw is None:
+            return None, None, None
+        c = math.cos(yaw)
+        s = math.sin(yaw)
+        body_vx =  vx * c + vy * s
+        body_vy = -vx * s + vy * c
+        body_vz = vz if vz is not None else 0.0
+        return body_vx, body_vy, body_vz
+
+    def recover_velocity_command(self, drift_snapshot, last_tag_body=None):
+        """Command a body-frame counter-drift velocity to fly back toward
+        a marker that has just left the camera frame.
+
+        ``drift_snapshot`` is the (body_vx, body_vy) sampled at the
+        moment of tag loss (NOT the current instantaneous velocity —
+        see the rationale in the module-level IMU Tag-Loss Recovery
+        Config comment).  ``last_tag_body`` is the (body_x, body_y)
+        offset of the marker on the LAST frame it was visible — used
+        as a fallback drift direction when both the Pixhawk-derived
+        velocity AND the OAK-D IMU show too little motion to be
+        trustworthy (e.g. a perfectly hovering drone hit by a sudden
+        gust just as the marker drifted past the FOV edge).
+
+        Cross-checks the snapshot against the OAK-D BNO086 lateral
+        acceleration cached in ``last_oak_imu`` — if the OAK IMU also
+        sees lateral motion above RECOVERY_OAK_ACCEL_MIN we trust the
+        snapshot at full gain, otherwise we attenuate the command to
+        RECOVERY_OAK_DISAGREE_SCALE.
+
+        Sends a body-frame velocity (vx, vy, 0) and returns a dict
+        describing the action so the caller can log it / surface it on
+        the HUD:
+
+            {
+                "vx": float, "vy": float,
+                "drift_x": float, "drift_y": float,
+                "source": "ekf" | "tag_offset" | "none",
+                "oak_confirm": bool,
+                "scale": float,
+            }
+        """
+        self._drain_messages()
+
+        snap_x, snap_y = drift_snapshot
+        source = "ekf"
+
+        # If the Pixhawk-derived snapshot is below the deadband on both
+        # axes, fall back to the last-tag-offset direction.  A marker
+        # that was at body_x > 0 (in front of the drone) when last seen
+        # implies the drone is BEHIND the marker on the +X side from
+        # the marker's perspective — so to bring the marker back into
+        # FOV, we want to move IN the direction of the last offset
+        # (chase the marker), not opposite.  Wait, that's wrong: the
+        # marker offset is from the drone's POV, so positive body_x
+        # means the marker is forward of the drone; if it just left
+        # the FOV, the drone needs to move FORWARD (+body_x) to recover
+        # it.  So the fallback "drift" we want to counteract is the
+        # NEGATIVE of the last offset — i.e. the drone "drifted away"
+        # in the direction OPPOSITE to where the marker is.
+        snap_mag = max(abs(snap_x), abs(snap_y))
+        if (snap_mag < RECOVERY_DRIFT_DEADBAND
+                and last_tag_body is not None):
+            off_x, off_y = last_tag_body
+            if (abs(off_x) >= RECOVERY_FALLBACK_OFFSET_M
+                    or abs(off_y) >= RECOVERY_FALLBACK_OFFSET_M):
+                # Treat the last offset as drift in the OPPOSITE
+                # direction (drone drifted away from where marker is),
+                # so the counter command will be IN the direction of
+                # the marker.  See sign reasoning above.
+                snap_x = -off_x
+                snap_y = -off_y
+                source = "tag_offset"
+            else:
+                source = "none"
+
+        # OAK-D cross-check: only meaningful if we actually have an EMA
+        # sample.  The OAK accel is body-frame XY (gravity is on body-Z
+        # for a downward camera and rejected here by ignoring az).
+        oak_ax = self.last_oak_imu.get("ema_ax")
+        oak_ay = self.last_oak_imu.get("ema_ay")
+        oak_confirm = False
+        if oak_ax is not None and oak_ay is not None:
+            oak_mag = math.sqrt(oak_ax * oak_ax + oak_ay * oak_ay)
+            oak_confirm = oak_mag >= RECOVERY_OAK_ACCEL_MIN
+
+        # Apply confidence scaling.  When the EKF snapshot itself was
+        # degenerate AND we fell through to "none", we don't have a
+        # direction to command — just hover.
+        if source == "none":
+            scale = 0.0
+        else:
+            scale = 1.0 if oak_confirm else RECOVERY_OAK_DISAGREE_SCALE
+
+        vx_raw = -RECOVERY_KP * snap_x * scale
+        vy_raw = -RECOVERY_KP * snap_y * scale
+
+        # Per-axis minimum: if the axis drift is above its deadband and
+        # we have a direction, ensure the command magnitude is at least
+        # RECOVERY_MIN_V_XY so the drone visibly moves instead of
+        # collapsing under the clamp.  Sign is preserved.
+        def _floor_then_clamp(v, drift_on_axis):
+            if abs(drift_on_axis) < RECOVERY_DRIFT_DEADBAND or scale == 0.0:
+                return 0.0
+            if abs(v) < RECOVERY_MIN_V_XY:
+                v = math.copysign(RECOVERY_MIN_V_XY, v if v != 0 else -drift_on_axis)
+            return max(min(v, RECOVERY_MAX_V_XY), -RECOVERY_MAX_V_XY)
+
+        vx = _floor_then_clamp(vx_raw, snap_x)
+        vy = _floor_then_clamp(vy_raw, snap_y)
+
+        self.send_velocity(vx, vy, 0.0)
+
+        # Same HUD-cache convention as descent_velocity_command — clear
+        # the LANDING_TARGET fields so draw_overlay falls through to
+        # the velocity branch (which is what's actually driving the
+        # motors during recovery).
+        self.last_cmd["lt_x"] = None
+        self.last_cmd["lt_y"] = None
+        self.last_cmd["lt_z"] = None
+
+        return {
+            "vx": vx, "vy": vy,
+            "drift_x": snap_x, "drift_y": snap_y,
+            "source": source,
+            "oak_confirm": oak_confirm,
+            "scale": scale,
+        }
+
     # ── Position control (local NED) ─────────────────────────────────────────
 
     def goto_ned(self, x, y, z, tolerance=GOTO_TOLERANCE,
@@ -1415,7 +1735,16 @@ def draw_overlay(frame, state):
     if tag_seen:
         lines.append(("TAG     VISIBLE", color_tag))
     else:
-        lines.append((f"TAG     LOST ({time_lost:.1f}s)", color_tag))
+        # When the IMU recovery is active during the tag-loss window,
+        # leg_label already carries "TRACK RECOVER..." or "PL RECOVER..."
+        # — surface that on the TAG line too so the operator immediately
+        # sees the recovery is in progress (instead of just "LOST").
+        if "RECOVER" in leg_label:
+            lines.append(
+                (f"TAG     LOST ({time_lost:.1f}s) — IMU RECOVER", color_tag)
+            )
+        else:
+            lines.append((f"TAG     LOST ({time_lost:.1f}s)", color_tag))
 
     for idx, (text, color) in enumerate(lines):
         cv2.putText(frame, text, (10, 20 + idx * 18),
@@ -1430,13 +1759,21 @@ def draw_overlay(frame, state):
 # up — long before any flight command is issued.
 # ─────────────────────────────────────────────────────────────────────────────
 
-def make_pump(q_rgb, detector, controller, state):
+def make_pump(q_rgb, q_oak_imu, detector, controller, state):
     """Build a closure that pulls the latest frame, detects (if requested),
     refreshes the overlay HUD, and pumps cv2.waitKey so the window stays live.
 
     Returns a zero-arg function suitable for handing to long-blocking
     controller methods (takeoff_to_altitude, wait_stabilized, goto_ned)
     so the camera does not freeze during those phases.
+
+    ``q_oak_imu`` is the DepthAI queue for OAK-D S2 accelerometer samples
+    (ACCELEROMETER_RAW @ RECOVERY_OAK_IMU_HZ).  Drained every pump tick and
+    EMA-smoothed into ``controller.last_oak_imu`` for use by the IMU
+    tag-loss recovery (recover_velocity_command).  The transform from the
+    OAK-D camera frame to the airframe body frame uses the existing
+    PrecisionLandingController.camera_to_body() static method — same
+    convention as the AprilTag pose path.
 
     ``state`` is mutated in-place — it is the single shared dictionary
     everything writes to and the overlay reads from.
@@ -1454,6 +1791,56 @@ def make_pump(q_rgb, detector, controller, state):
             else:
                 state["altitude"] = -controller.last_pos["z"]
         state["cmd"] = controller.last_cmd
+
+        # 1b. Drain OAK-D IMU samples and EMA-smooth into the controller
+        #     cache so recover_velocity_command() has a fresh body-frame
+        #     accel reading available the instant the tag is lost.  We
+        #     drain ALL pending packets each tick (not just the latest)
+        #     so the EMA reflects the trajectory of the last ~tick
+        #     window rather than a single point.
+        if q_oak_imu is not None:
+            try:
+                imu_msgs = q_oak_imu.tryGetAll()
+            except Exception:
+                imu_msgs = []
+            alpha = RECOVERY_OAK_EMA_ALPHA
+            for msg in imu_msgs:
+                for pkt in getattr(msg, "packets", []):
+                    accel = getattr(pkt, "acceleroMeter", None)
+                    if accel is None:
+                        accel = getattr(pkt, "accelerometer", None)
+                    if accel is None:
+                        continue
+                    cam_ax = float(accel.x)
+                    cam_ay = float(accel.y)
+                    cam_az = float(accel.z)
+                    # camera_to_body assumes the same downward-camera
+                    # convention as the AprilTag pose path.  IMU axes on
+                    # OAK-D generally track the camera optical axes, so
+                    # the same transform applies — flagged here so the
+                    # mounting convention is visible to future readers.
+                    body_ax, body_ay, body_az = \
+                        PrecisionLandingController.camera_to_body(
+                            cam_ax, cam_ay, cam_az,
+                        )
+                    controller.last_oak_imu["ax"] = body_ax
+                    controller.last_oak_imu["ay"] = body_ay
+                    controller.last_oak_imu["az"] = body_az
+                    prev_ax = controller.last_oak_imu["ema_ax"]
+                    prev_ay = controller.last_oak_imu["ema_ay"]
+                    prev_az = controller.last_oak_imu["ema_az"]
+                    if prev_ax is None:
+                        controller.last_oak_imu["ema_ax"] = body_ax
+                        controller.last_oak_imu["ema_ay"] = body_ay
+                        controller.last_oak_imu["ema_az"] = body_az
+                    else:
+                        controller.last_oak_imu["ema_ax"] = (
+                            alpha * prev_ax + (1 - alpha) * body_ax)
+                        controller.last_oak_imu["ema_ay"] = (
+                            alpha * prev_ay + (1 - alpha) * body_ay)
+                        controller.last_oak_imu["ema_az"] = (
+                            alpha * prev_az + (1 - alpha) * body_az)
+                    controller.last_oak_imu["t"] = time.time()
 
         # 2. Pull the most recent camera frame (if any).  tryGet() never
         #    blocks; if the queue is empty we render the last cached frame
@@ -1501,6 +1888,32 @@ def make_pump(q_rgb, detector, controller, state):
         return tag
 
     return pump
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Commit-to-LAND helper — used by both the close-tag handoff in
+# precision_land() AND the new IMU-recovery timeout in track_tag() /
+# precision_land().  Lifted to module scope so callers in either phase can
+# share it; previously it was a closure inside precision_land().
+# ─────────────────────────────────────────────────────────────────────────────
+
+def commit_to_land(controller, pump, reason):
+    """Switch to ArduCopter LAND mode and block until motors disarm.
+
+    LAND handles ground-detection + auto-disarm, which is exactly what
+    we want for the final touchdown.  We sit in a 30 s pump loop so the
+    HUD keeps updating during the descent.
+    """
+    print(f"[INFO] {reason} — committing to LAND descent until touchdown")
+    controller.change_flight_mode("LAND")
+    land_start = time.time()
+    while time.time() - land_start < 30:
+        controller._drain_messages()
+        if not controller.master.motors_armed():
+            print("[INFO] Motors disarmed — touchdown.")
+            return
+        pump()
+        time.sleep(0.1)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1574,11 +1987,20 @@ def run_box_patrol(controller, pump, state, leg_offset=0):
 # old flow the very first LANDING_TARGET went out from a marginal angle
 # and descent began before the lateral loop converged.
 #
+# Tag-loss handling within TRACK runs the IMU recovery (see
+# recover_velocity_command) — we capture the body-frame drift velocity
+# the instant the marker leaves the FOV and command the opposite
+# direction for up to RECOVERY_DURATION_S.  If the marker re-appears
+# we resume tracking; if the window expires we commit directly to
+# LAND (the user's spec; SEARCH is no longer triggered from TRACK).
+#
 # Returns:
-#   "READY"     — duration elapsed, hand off to PRECISION_LAND
-#   "TAG_LOST"  — tag missing > TRACK_LOSS_TIMEOUT_S; caller should SEARCH
-#   "TOUCHDOWN" — motors disarmed mid-track (defensive — at altitude this
-#                 should not happen, but treat it as a clean exit if it does)
+#   "READY"        — duration elapsed, hand off to PRECISION_LAND
+#   "COMMIT_LAND"  — IMU recovery window expired without re-acquisition;
+#                    caller commits to ArduCopter LAND mode
+#   "TOUCHDOWN"    — motors disarmed mid-track (defensive — at altitude
+#                    this should not happen, but treat it as a clean
+#                    exit if it does)
 # ─────────────────────────────────────────────────────────────────────────────
 
 def track_tag(controller, pump, state):
@@ -1590,6 +2012,17 @@ def track_tag(controller, pump, state):
     last_tag_time = time.time()
     last_log      = 0.0
     centred_count = 0   # consecutive frames inside TRACK_CENTER_THRESHOLD_M
+
+    # IMU recovery state — populated on the first frame after the marker
+    # is lost; cleared the moment the marker re-appears.  All four
+    # together describe "the airframe was moving this way relative to
+    # itself when the marker disappeared, and the marker was last seen
+    # over here in body frame" — that's enough to decide which way to
+    # fly to recover the marker.
+    drift_snapshot = None    # (body_vx, body_vy) m/s at loss
+    last_tag_body  = None    # (body_x,  body_y)  m at last visible frame
+    loss_start     = None    # wall-clock time when loss began
+    last_recovery_log = 0.0
 
     while True:
         controller._drain_messages()
@@ -1607,6 +2040,14 @@ def track_tag(controller, pump, state):
         tag = pump(detect=True)
 
         if tag is not None:
+            # Re-acquisition (or first acquisition) — drop any recovery
+            # state so the next loss starts with a fresh snapshot.
+            if drift_snapshot is not None:
+                print(f"[INFO] TRACK re-acquired tag after "
+                      f"{time.time() - loss_start:.1f}s of IMU recovery")
+                drift_snapshot = None
+                loss_start = None
+
             last_tag_time = time.time()
             t = tag.pose_t
             cam_x = float(t[0][0])
@@ -1615,6 +2056,7 @@ def track_tag(controller, pump, state):
             body_x, body_y, body_z = PrecisionLandingController.camera_to_body(
                 cam_x, cam_y, cam_z,
             )
+            last_tag_body = (body_x, body_y)
 
             filt_x, filt_y, vx, vy, vz = controller.track_velocity_command(
                 body_x, body_y,
@@ -1655,24 +2097,64 @@ def track_tag(controller, pump, state):
             # detection on the next frame doesn't immediately satisfy it.
             centred_count = 0
             time_lost = time.time() - last_tag_time
-            if time_lost > TRACK_LOSS_TIMEOUT_S:
-                print(f"[WARN] Tag lost for {time_lost:.1f}s during TRACK — "
-                      "bailing to SEARCH")
+
+            # First frame of loss: snapshot the body-frame drift NOW,
+            # before the recovery counter command starts changing the
+            # velocity.  Sampling later would just measure our own
+            # counter command rather than the original drift.
+            if drift_snapshot is None:
+                loss_start = time.time()
+                bvx, bvy, _ = controller.body_frame_velocity()
+                if bvx is None or bvy is None:
+                    # No yaw/velocity yet — degenerate snapshot.  The
+                    # recovery method will fall back to last_tag_body
+                    # if that's available, else hover.
+                    bvx, bvy = 0.0, 0.0
+                drift_snapshot = (bvx, bvy)
+                print(f"[INFO] TRACK tag lost — IMU recovery snapshot "
+                      f"body_v=({bvx:+.2f},{bvy:+.2f}) m/s, last_tag_body="
+                      f"{last_tag_body}")
+
+            recovery_elapsed = time.time() - loss_start
+            if recovery_elapsed > RECOVERY_DURATION_S:
+                print(f"[WARN] TRACK IMU recovery exhausted "
+                      f"({recovery_elapsed:.1f}s without re-acquisition) — "
+                      "committing to LAND")
                 controller.send_velocity(0.0, 0.0, 0.0)
-                return "TAG_LOST"
-            controller.send_velocity(0.0, 0.0, 0.0)
-            state["leg_label"] = (
-                f"TRACK {elapsed:.1f}/{TRACK_DURATION_S:.0f}s "
-                f"LOST {time_lost:.1f}s"
+                return "COMMIT_LAND"
+
+            # Active recovery — send a body-frame counter-drift command.
+            rec = controller.recover_velocity_command(
+                drift_snapshot, last_tag_body=last_tag_body,
             )
+
+            state["leg_label"] = (
+                f"TRACK RECOVER {recovery_elapsed:.1f}/"
+                f"{RECOVERY_DURATION_S:.1f}s "
+                f"v=({rec['vx']:+.2f},{rec['vy']:+.2f}) "
+                f"src={rec['source']}"
+            )
+
+            now = time.time()
+            if now - last_recovery_log > 0.5:
+                print(f"[INFO] TRACK RECOVER t={recovery_elapsed:.1f}/"
+                      f"{RECOVERY_DURATION_S:.1f}s  "
+                      f"drift=({rec['drift_x']:+.2f},{rec['drift_y']:+.2f}) "
+                      f"v=({rec['vx']:+.2f},{rec['vy']:+.2f})  "
+                      f"src={rec['source']}  "
+                      f"oak={'yes' if rec['oak_confirm'] else 'no'}  "
+                      f"scale={rec['scale']:.2f}")
+                last_recovery_log = now
 
         time.sleep(0.05)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Precision-landing phase.  Returns one of:
-#   "TOUCHDOWN"  — motors auto-disarmed; mission complete
-#   "TAG_LOST"   — tag missing > TAG_LOSS_TIMEOUT; caller should re-search
+#   "TOUCHDOWN"    — motors auto-disarmed; mission complete (also returned
+#                    after a close-tag or EKF-altitude commit-to-LAND)
+#   "COMMIT_LAND"  — IMU tag-loss recovery window expired without re-
+#                    acquisition; caller commits to ArduCopter LAND mode
 # ─────────────────────────────────────────────────────────────────────────────
 
 def precision_land(controller, pump, state):
@@ -1692,39 +2174,39 @@ def precision_land(controller, pump, state):
     informational, so any PrecLand-aware setup downstream gets the data,
     but it is no longer the descent driver on this airframe.
 
-    Tag-loss handling prefers ``last_body_z`` over EKF altitude because
-    flight logs showed EKF z drifting ~3 m during the mission; the
-    EKF-relative altitude branch fired correctly but at a clearly drifted
-    value.  ``CLOSE_TAG_BODY_Z_M`` is the camera-to-tag distance below
-    which a lost tag is assumed to be out of FOV.
+    Tag-loss handling has two layers:
+
+      1. CLOSE-TAG handoff: if the marker was last seen at body_z <
+         CLOSE_TAG_BODY_Z_M (we're essentially on top of it), commit
+         directly to LAND.  body_z is preferred over EKF altitude
+         because flight logs showed EKF z drifting ~3 m mid-mission.
+
+      2. IMU RECOVERY: for all other losses, capture the body-frame
+         drift velocity at the moment of loss (Pixhawk EKF, cross-
+         checked against the OAK-D S2 onboard IMU) and command the
+         opposite velocity for up to RECOVERY_DURATION_S.  If the
+         marker reappears we resume descent; if the window expires
+         we commit to LAND (the user's spec; SEARCH is no longer
+         triggered from PRECISION_LAND).
 
     Returns one of:
-      * "TOUCHDOWN" — motors auto-disarmed; mission complete
-      * "TAG_LOST"  — tag missing too long; caller should re-search
+      * "TOUCHDOWN"   — motors auto-disarmed; mission complete
+      * "COMMIT_LAND" — IMU recovery window expired; caller commits to LAND
     """
     print("[INFO] Phase: PRECISION_LAND")
     state["phase"] = "PRECISION_LAND"
     last_tag_time = time.time()
     last_body_z   = None
+    last_tag_body = None      # (body_x, body_y) on last frame the tag was seen
     last_log      = 0.0
 
-    def _commit_to_land(reason):
-        """Switch to LAND mode and block until motors disarm.
-
-        Used for both the close-tag handoff (final ~0.6 m) and the
-        body_z-based "tag too close to track" fallback when the tag is
-        lost near the ground.
-        """
-        print(f"[INFO] {reason} — committing to LAND descent until touchdown")
-        controller.change_flight_mode("LAND")
-        land_start = time.time()
-        while time.time() - land_start < 30:
-            controller._drain_messages()
-            if not controller.master.motors_armed():
-                print("[INFO] Motors disarmed — touchdown.")
-                return
-            pump()
-            time.sleep(0.1)
+    # IMU recovery state — see the matching block in track_tag() for
+    # the full rationale.  drift_snapshot is captured on the first
+    # frame after loss and held constant throughout the recovery
+    # window so a freshly-decelerated drone still keeps flying back.
+    drift_snapshot = None
+    loss_start     = None
+    last_recovery_log = 0.0
 
     while True:
         # Drain telemetry & exit cleanly on disarm.  ArduCopter auto-disarms
@@ -1738,6 +2220,14 @@ def precision_land(controller, pump, state):
         tag = pump(detect=True)
 
         if tag is not None:
+            # Re-acquisition — clear recovery state so the next loss
+            # snapshots fresh drift instead of reusing a stale one.
+            if drift_snapshot is not None:
+                print(f"[INFO] PRECISION_LAND re-acquired tag after "
+                      f"{time.time() - loss_start:.1f}s of IMU recovery")
+                drift_snapshot = None
+                loss_start = None
+
             last_tag_time = time.time()
             t = tag.pose_t
             cam_x = float(t[0][0])
@@ -1747,13 +2237,15 @@ def precision_land(controller, pump, state):
             body_x, body_y, body_z = PrecisionLandingController.camera_to_body(
                 cam_x, cam_y, cam_z,
             )
-            last_body_z = body_z
+            last_body_z   = body_z
+            last_tag_body = (body_x, body_y)
 
             # Final-approach handoff: once we're inside TOUCHDOWN_BODY_Z_M
             # of the tag, hand control to ArduCopter LAND so its ground
             # detection / auto-disarm finishes the touchdown cleanly.
             if body_z < TOUCHDOWN_BODY_Z_M:
-                _commit_to_land(
+                commit_to_land(
+                    controller, pump,
                     f"body_z={body_z:.2f} m below "
                     f"TOUCHDOWN_BODY_Z_M={TOUCHDOWN_BODY_Z_M:.2f} m"
                 )
@@ -1800,17 +2292,33 @@ def precision_land(controller, pump, state):
 
             # PRIMARY close-tag check: did we recently see the tag at
             # very low body_z?  Then we're nearly on top of it and it
-            # is simply outside the FOV — commit to LAND, do NOT search.
+            # is simply outside the FOV — commit to LAND, do NOT recover.
             # body_z is the camera-to-tag distance from AprilTag pose
             # estimation, which does not suffer the EKF drift.
             if (last_body_z is not None
                     and last_body_z < CLOSE_TAG_BODY_Z_M):
-                _commit_to_land(
+                commit_to_land(
+                    controller, pump,
                     f"Tag too close to track (last bz={last_body_z:.2f} m)"
                 )
                 return "TOUCHDOWN"
 
-            if elapsed > TAG_LOSS_TIMEOUT:
+            # First frame of loss: snapshot the body-frame drift NOW,
+            # before the recovery counter command starts changing the
+            # velocity.  Same rationale as in track_tag.
+            if drift_snapshot is None:
+                loss_start = time.time()
+                bvx, bvy, _ = controller.body_frame_velocity()
+                if bvx is None or bvy is None:
+                    bvx, bvy = 0.0, 0.0
+                drift_snapshot = (bvx, bvy)
+                print(f"[INFO] PRECISION_LAND tag lost — IMU recovery "
+                      f"snapshot body_v=({bvx:+.2f},{bvy:+.2f}) m/s, "
+                      f"last_tag_body={last_tag_body}, "
+                      f"last_bz={last_body_z}")
+
+            recovery_elapsed = time.time() - loss_start
+            if recovery_elapsed > RECOVERY_DURATION_S:
                 # SECONDARY fallback (no body_z reading at all): use the
                 # EKF-relative altitude.  Real flight logs showed EKF z
                 # can drift several metres so this branch is fragile —
@@ -1824,19 +2332,41 @@ def precision_land(controller, pump, state):
                 if (last_body_z is None
                         and relative_alt is not None
                         and relative_alt < TAG_TOO_CLOSE_ALT_M):
-                    _commit_to_land(
+                    commit_to_land(
+                        controller, pump,
                         f"Tag never seen and EKF rel-alt "
                         f"{relative_alt:.2f} m below "
                         f"TAG_TOO_CLOSE_ALT_M={TAG_TOO_CLOSE_ALT_M:.2f} m"
                     )
                     return "TOUCHDOWN"
-                print(f"[WARN] Tag lost for {elapsed:.1f}s during "
-                      "PRECISION_LAND")
+                print(f"[WARN] PRECISION_LAND IMU recovery exhausted "
+                      f"({recovery_elapsed:.1f}s without re-acquisition) "
+                      f"— total tag-loss {elapsed:.1f}s — committing to LAND")
                 controller.send_velocity(0.0, 0.0, 0.0)
-                return "TAG_LOST"
+                return "COMMIT_LAND"
 
-            # Tag temporarily lost but not yet over the timeout — hover.
-            controller.send_velocity(0.0, 0.0, 0.0)
+            # Active recovery — body-frame counter-drift command.
+            rec = controller.recover_velocity_command(
+                drift_snapshot, last_tag_body=last_tag_body,
+            )
+
+            state["leg_label"] = (
+                f"PL RECOVER {recovery_elapsed:.1f}/"
+                f"{RECOVERY_DURATION_S:.1f}s "
+                f"v=({rec['vx']:+.2f},{rec['vy']:+.2f}) "
+                f"src={rec['source']}"
+            )
+
+            now = time.time()
+            if now - last_recovery_log > 0.5:
+                print(f"[INFO] PRECISION_LAND RECOVER t="
+                      f"{recovery_elapsed:.1f}/{RECOVERY_DURATION_S:.1f}s  "
+                      f"drift=({rec['drift_x']:+.2f},{rec['drift_y']:+.2f}) "
+                      f"v=({rec['vx']:+.2f},{rec['vy']:+.2f})  "
+                      f"src={rec['source']}  "
+                      f"oak={'yes' if rec['oak_confirm'] else 'no'}  "
+                      f"scale={rec['scale']:.2f}")
+                last_recovery_log = now
 
         # ~50 Hz tick — comfortable on a Pi while leaving headroom for
         # AprilTag detection.
@@ -1915,6 +2445,18 @@ with dai.Device() as device:
         )
         q_rgb = rgb_out.createOutputQueue(maxSize=4, blocking=False)
 
+        # OAK-D S2 onboard BNO086 IMU — added for the new tag-loss
+        # recovery (see RECOVERY_* config above).  We enable only the
+        # accelerometer; gyro is not needed for the cross-check at this
+        # time but is cheap to add later if attitude rate-of-change
+        # becomes useful.  Sample rate matches RECOVERY_OAK_IMU_HZ so
+        # the EMA filter in make_pump can settle within a few frames.
+        oak_imu = pipeline.create(dai.node.IMU)
+        oak_imu.enableIMUSensor(dai.IMUSensor.ACCELEROMETER_RAW, RECOVERY_OAK_IMU_HZ)
+        oak_imu.setBatchReportThreshold(1)
+        oak_imu.setMaxBatchReports(10)
+        q_oak_imu = oak_imu.out.createOutputQueue(maxSize=20, blocking=False)
+
         pipeline.start()
         print("[INFO] Pipeline started — opening preview window...")
 
@@ -1939,7 +2481,7 @@ with dai.Device() as device:
             "last_tag":       None,
             "cmd":            controller.last_cmd,
         }
-        pump = make_pump(q_rgb, detector, controller, state)
+        pump = make_pump(q_rgb, q_oak_imu, detector, controller, state)
 
         # Pump for ~0.5 s so the OpenCV window is on-screen with a phase
         # label BEFORE we touch the FCU.
@@ -2004,69 +2546,33 @@ with dai.Device() as device:
                     break
                 time.sleep(0.1)
         else:
-            # ── TRACK → PRECISION_LAND loop, with up to MAX_RESEARCH_ATTEMPTS
-            #    re-locate attempts on tag loss in either phase ─────────────
-            attempts = 0
-            while True:
-                # New TRACK phase: hold over the tag for TRACK_DURATION_S
-                # before handing control to the autopilot's PrecLand.
-                track_result = track_tag(controller, pump, state)
-                if track_result == "TOUCHDOWN":
-                    state["phase"] = "TOUCHDOWN"
-                    break
-                if track_result == "TAG_LOST":
-                    # Tag lost during TRACK counts as one of our
-                    # MAX_RESEARCH_ATTEMPTS re-search attempts.
-                    attempts += 1
-                    if attempts > MAX_RESEARCH_ATTEMPTS:
-                        print(f"[CRITICAL] Exhausted {MAX_RESEARCH_ATTEMPTS}"
-                              " re-search attempts (TRACK loss) — falling "
-                              "back to plain LAND")
-                        state["phase"] = "TOUCHDOWN"
-                        controller.change_flight_mode("LAND")
-                        fail_start = time.time()
-                        while time.time() - fail_start < 30:
-                            pump()
-                            if not controller.master.motors_armed():
-                                print("[INFO] Motors disarmed — touchdown.")
-                                break
-                            time.sleep(0.1)
-                        break
-                    print(f"[INFO] Re-search attempt {attempts}/"
-                          f"{MAX_RESEARCH_ATTEMPTS} (after TRACK loss)")
-                    new_known = search_and_relocate(
-                        controller, pump, state, last_known,
-                    )
-                    if new_known is not None:
-                        last_known = new_known
-                    continue
-
-                # track_result == "READY" → autopilot PrecLand handoff.
+            # ── TRACK → PRECISION_LAND ──────────────────────────────────────
+            # With the IMU tag-loss recovery in place, neither phase returns
+            # "TAG_LOST" anymore — the recovery either re-acquires the
+            # marker (and the phase continues) or its 3-second window
+            # expires and we get "COMMIT_LAND".  In both COMMIT_LAND cases
+            # the user's spec says: skip search_and_relocate (the
+            # box-re-patrol path) entirely and commit straight to LAND.
+            track_result = track_tag(controller, pump, state)
+            if track_result == "TOUCHDOWN":
+                state["phase"] = "TOUCHDOWN"
+            elif track_result == "COMMIT_LAND":
+                state["phase"] = "TOUCHDOWN"
+                commit_to_land(
+                    controller, pump,
+                    "TRACK IMU recovery exhausted — final commit",
+                )
+            else:
+                # track_result == "READY" → descent phase.
                 result = precision_land(controller, pump, state)
                 if result == "TOUCHDOWN":
                     state["phase"] = "TOUCHDOWN"
-                    break
-
-                # TAG_LOST path — try to re-acquire.
-                attempts += 1
-                if attempts > MAX_RESEARCH_ATTEMPTS:
-                    print(f"[CRITICAL] Exhausted {MAX_RESEARCH_ATTEMPTS} "
-                          f"re-search attempts — falling back to plain LAND")
+                elif result == "COMMIT_LAND":
                     state["phase"] = "TOUCHDOWN"
-                    controller.change_flight_mode("LAND")
-                    fail_start = time.time()
-                    while time.time() - fail_start < 30:
-                        pump()
-                        if not controller.master.motors_armed():
-                            print("[INFO] Motors disarmed — touchdown.")
-                            break
-                        time.sleep(0.1)
-                    break
-
-                print(f"[INFO] Re-search attempt {attempts}/{MAX_RESEARCH_ATTEMPTS}")
-                new_known = search_and_relocate(controller, pump, state, last_known)
-                if new_known is not None:
-                    last_known = new_known
+                    commit_to_land(
+                        controller, pump,
+                        "PRECISION_LAND IMU recovery exhausted — final commit",
+                    )
 
         # Final pump so the very last HUD frame is visible briefly before
         # window teardown.
