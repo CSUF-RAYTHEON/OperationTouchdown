@@ -442,7 +442,8 @@ if __name__ == "__main__":
     DEPTH_BYTES = W * H * 2 
     CALIB_BYTES = 3 * 3 * 8 
     ATTITUDE_BYTES = 3 * 8 
-    POSITION_BYTES = 3 * 8 
+    POSITION_BYTES = 3 * 8
+    LOCAL_POSITION_NED_BYTES = 3 * 8
 
     print("Positioning tester allocating shared memory...")
     shm_rgb = shared_memory.SharedMemory(create=True, size=RGB_BYTES, name="oak_rgb")
@@ -451,13 +452,15 @@ if __name__ == "__main__":
     shm_calib = shared_memory.SharedMemory(create=True, size=CALIB_BYTES, name="oak_calib")
     shm_attitude = shared_memory.SharedMemory(create=True, size=ATTITUDE_BYTES, name="attitude")
     shm_position = shared_memory.SharedMemory(create=True, size=POSITION_BYTES, name="position")
+    shm_local_position_ned = shared_memory.SharedMemory(create=True, size=LOCAL_POSITION_NED_BYTES, name="local_position_ned")
     
     camera_frame_mutex = mp.Lock()
     camera_calibration_mutex = mp.Lock()
     attitude_mutex = mp.Lock()
     position_mutex = mp.Lock()
+    local_position_ned_mutex = mp.Lock()
 
-    broadcaster_process = mp.Process(target=broadcaster, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex))
+    broadcaster_process = mp.Process(target=broadcaster, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, local_position_ned_mutex))
     vio_process = mp.Process(target=positioning, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex))
     printer_process = mp.Process(target=test_positioning, args=(position_mutex,))
 
@@ -493,4 +496,6 @@ if __name__ == "__main__":
         shm_attitude.unlink()
         shm_position.close()
         shm_position.unlink()
+        shm_local_position_ned.close()
+        shm_local_position_ned.unlink()
         print("Positioning tester processes terminated safely.")
