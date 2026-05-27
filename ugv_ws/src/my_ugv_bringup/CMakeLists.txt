@@ -9,12 +9,16 @@ endif()
 find_package(ament_cmake REQUIRED)
 
 # Install directories to the share folder
-install(DIRECTORY
-  launch
-  config
+install(DIRECTORY 
+  launch 
+  config 
   urdf
-  foxglove_layouts
   DESTINATION share/${PROJECT_NAME}
+)
+
+install(PROGRAMS
+  scripts/cmd_vel_nav_relay.py
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_package()

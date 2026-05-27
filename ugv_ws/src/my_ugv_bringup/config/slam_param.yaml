@@ -1,44 +1,49 @@
 slam_toolbox:
   ros__parameters:
 
-    # 1. General Logistics
     use_sim_time: false
     odom_frame: odom
     map_frame: map
     base_frame: base_footprint
-    scan_topic: /scan               # Option B: RPLidar only — no depth camera outdoors
+
+    # Use RPLidar only — camera depth scan detects uneven ground/grass as false obstacles
+    # outdoors.  Re-enable merged scan indoors: set scan_topic: /scan_merged and
+    # launch with enable_laser_merger:=true
+    scan_topic: /scan
     mode: mapping
 
-    # 2. DATA INTEGRITY & STABILITY
-    transform_timeout: 0.1
-    scan_buffer_size: 30            # Increased from 10 — more history for open-loop correction
-    scan_buffer_maximum_scan_distance: 8.0  # Reduced from 12.0 — match reliable outdoor range
-    link_match_minimum_response_fine: 0.35  # Increased from 0.1 — reject weak/ambiguous matches
-    link_scan_maximum_distance: 1.5         # Added — limit scan link distance
-    use_scan_matching: true                 # Explicit
-    throttle_scans: 1                       # Process every scan
+    throttle_scans: 1
+    transform_timeout: 1.0
+    tf_buffer_duration: 30.0
+    transform_publish_period: 0.02
+    stack_size_to_use: 40000000
 
-    # 3. Solver settings (Sticking with Ceres)
+    # --- Outdoor / sparse-environment tuning ---
+    # Require meaningful movement before adding a new scan so noise from
+    # vegetation, uneven ground, and dynamic reflectors doesn't accumulate.
+    minimum_time_interval: 0.5
+    minimum_travel_distance: 0.25   # 25 cm — was 0.05, drastically cuts noise scan count
+    minimum_travel_heading: 0.12    # ~7 deg — was 0.05
+    map_update_interval: 3.0        # publish map every 3 s instead of 2 s
+
+    # Tighter scan buffer keeps memory usage down on Pi 5
+    scan_buffer_size: 10
+    scan_buffer_maximum_scan_distance: 10.0  # ignore lidar returns beyond 10 m outdoors
+
+    link_match_minimum_response_fine: 0.1
+
     solver_plugin: solver_plugins::CeresSolver
     ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
     ceres_preconditioner: SCHUR_JACOBI
     ceres_trust_strategy: LEVENBERG_MARQUARDT
 
-    # 4. Mapping Process settings
-    resolution: 0.10               # Increased from 0.05 — coarser reduces noise outdoors
-    do_loop_closure: true
-    loop_search_distance: 15.0     # Increased from 8.0 — larger search for open spaces
-    loop_match_minimum_chain_size: 8          # Added — stricter loop closure validation
-    loop_match_maximum_variance_coarse: 2.0   # Added — reject bad loop candidates
+    # 10 cm cells — slightly coarser than default 8 cm but far less noise in
+    # open outdoor environments where scan returns are sparse
+    resolution: 0.10
+    minimum_laser_range: 0.4  # reject body self-hits and ground returns on uneven terrain
+    max_laser_range: 10.0   # RPLidar returns beyond 10 m are unreliable outdoors
 
-    # 5. RANGE FILTERING (reject ground hits and self-reflections)
-    minimum_laser_range: 0.4       # Added — filter out near-field ground/body returns
-    max_laser_range: 8.0           # Reduced from 12.0 — A1 unreliable at 12m outdoors
-
-    # 6. SCAN ACCEPTANCE THRESHOLDS
-    minimum_time_interval: 0.5     # Increased from 0.3 — avoid redundant scans
-    minimum_travel_distance: 0.3   # Increased from 0.1 — avoid degenerate registration
-    minimum_travel_heading: 0.2    # Increased from 0.1 — ~11 degrees
-
-    transform_publish_period: 0.05  # Keep TF at 20Hz for smooth navigation
-    map_update_interval: 2.0        # Reduced from 5.0 — fresher map updates
+    # Loop closure off by default: outdoor parks have repetitive features
+    # (similar-looking trees) that cause false closures.  Enable once you have
+    # a complete loop and are confident in odometry.
+    do_loop_closing: false

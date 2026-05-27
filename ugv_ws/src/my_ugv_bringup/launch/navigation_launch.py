@@ -23,6 +23,7 @@ from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import LoadComposableNodes, SetParameter
 from launch_ros.actions import Node
 from launch_ros.descriptions import ComposableNode, ParameterFile
+from launch_ros.parameter_descriptions import ParameterValue
 from nav2_common.launch import RewrittenYaml
 
 
@@ -50,7 +51,6 @@ def generate_launch_description():
         'collision_monitor',
         'bt_navigator',
         'waypoint_follower',
-        'docking_server',
     ]
 
     # Map fully qualified names to relative ones so the node's namespace can be prepended.
@@ -60,6 +60,8 @@ def generate_launch_description():
     # TODO(orduno) Substitute with `PushNodeRemapping`
     #              https://github.com/ros2/launch_ros/issues/56
     remappings = [('/tf', 'tf'), ('/tf_static', 'tf_static')]
+    # Isolate Nav2 cmd_vel from teleop; collision_monitor publishes /cmd_vel to the bridge
+    nav_cmd_vel_remap = [('cmd_vel', 'cmd_vel_nav')]
 
     # Create our own temporary YAML files that include substitutions
     param_substitutions = {'autostart': autostart}
@@ -122,6 +124,28 @@ def generate_launch_description():
         'log_level', default_value='info', description='log level'
     )
 
+    declare_nav_invert_cmd = DeclareLaunchArgument(
+        'nav_invert_linear',
+        default_value='false',
+        description=(
+            'Negate Nav2 linear.x on /cmd_vel. Use true only if teleop forward is correct '
+            'but Nav2 still drives away from goals after fixing lidar inverted.'
+        ),
+    )
+
+    nav_invert_linear = LaunchConfiguration('nav_invert_linear')
+
+    cmd_vel_nav_relay = Node(
+        package='my_ugv_bringup',
+        executable='cmd_vel_nav_relay.py',
+        name='cmd_vel_nav_relay',
+        parameters=[{
+            'invert_linear_x': ParameterValue(nav_invert_linear, value_type=bool),
+            'input_topic': 'cmd_vel_nav_out',
+            'output_topic': 'cmd_vel',
+        }],
+    )
+
     load_nodes = GroupAction(
         condition=IfCondition(PythonExpression(['not ', use_composition])),
         actions=[
@@ -134,7 +158,7 @@ def generate_launch_description():
                 respawn_delay=2.0,
                 parameters=[configured_params],
                 arguments=['--ros-args', '--log-level', log_level],
-                remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
+                remappings=remappings + nav_cmd_vel_remap,
             ),
             Node(
                 package='nav2_smoother',
@@ -178,7 +202,7 @@ def generate_launch_description():
                 respawn_delay=2.0,
                 parameters=[configured_params],
                 arguments=['--ros-args', '--log-level', log_level],
-                remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
+                remappings=remappings + nav_cmd_vel_remap,
             ),
             Node(
                 package='nav2_bt_navigator',
@@ -211,8 +235,7 @@ def generate_launch_description():
                 respawn_delay=2.0,
                 parameters=[configured_params],
                 arguments=['--ros-args', '--log-level', log_level],
-                remappings=remappings
-                + [('cmd_vel', 'cmd_vel_nav')],
+                remappings=remappings + nav_cmd_vel_remap,
             ),
             Node(
                 package='nav2_collision_monitor',
@@ -259,7 +282,7 @@ def generate_launch_description():
                         plugin='nav2_controller::ControllerServer',
                         name='controller_server',
                         parameters=[configured_params],
-                        remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
+                        remappings=remappings + nav_cmd_vel_remap,
                     ),
                     ComposableNode(
                         package='nav2_smoother',
@@ -287,7 +310,7 @@ def generate_launch_description():
                         plugin='behavior_server::BehaviorServer',
                         name='behavior_server',
                         parameters=[configured_params],
-                        remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
+                        remappings=remappings,
                     ),
                     ComposableNode(
                         package='nav2_bt_navigator',
@@ -308,8 +331,7 @@ def generate_launch_description():
                         plugin='nav2_velocity_smoother::VelocitySmoother',
                         name='velocity_smoother',
                         parameters=[configured_params],
-                        remappings=remappings
-                        + [('cmd_vel', 'cmd_vel_nav')],
+                        remappings=remappings + nav_cmd_vel_remap,
                     ),
                     ComposableNode(
                         package='nav2_collision_monitor',
@@ -353,7 +375,10 @@ def generate_launch_description():
     ld.add_action(declare_container_name_cmd)
     ld.add_action(declare_use_respawn_cmd)
     ld.add_action(declare_log_level_cmd)
-    # Add the actions to launch all of the navigation nodes
+    ld.add_action(declare_nav_invert_cmd)
+    # Nav2: controller -> cmd_vel_nav -> smoother -> cmd_vel_smoothed -> collision_monitor
+    #       -> cmd_vel_nav_out -> cmd_vel_nav_relay -> /cmd_vel (teleop also uses /cmd_vel)
+    ld.add_action(cmd_vel_nav_relay)
     ld.add_action(load_nodes)
     ld.add_action(load_composable_nodes)
 

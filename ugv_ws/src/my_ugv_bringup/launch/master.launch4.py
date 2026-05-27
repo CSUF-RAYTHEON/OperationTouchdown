@@ -103,22 +103,14 @@ def generate_launch_description():
             launch_arguments={'serial_port': '/dev/ttyUSB0', 'serial_baudrate': '115200', 'frame_id': 'laser'}.items()
         ),
 
-        # 9. OAK-D Camera (RGB enabled for AKD1000 YOLO; depth aligned to RGB by default).
+        # 9. OAK-D Camera
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(oakd_launch_path),
-            launch_arguments={
-                'name': 'oak',
-                'parent_frame': 'base_link',
-                'enable_color': 'true',
-                'enable_depth': 'true',
-                'rectify_rgb': 'true',
-                'pointcloud.enable': 'false',
-            }.items()
+            launch_arguments={'name': 'oak', 'parent_frame': 'base_link', 'enable_rgb': 'false'}.items()
         ),
 
-        # 10. STATIC TRANSFORMS
-        # NOTE: odom->base_link is intentionally removed — this must come from the EKF node.
-        # A static odom->base_link would override EKF output and freeze the robot at the origin.
+        # 10. STATIC TRANSFORMS (The stable positional format)
+        Node(package='tf2_ros', executable='static_transform_publisher', name='odom_to_base_tf', arguments=['0', '0', '0', '0', '0', '0', 'odom', 'base_link']),
         Node(package='tf2_ros', executable='static_transform_publisher', name='base_to_laser_tf', arguments=['0.1', '0', '0.2', '0', '0', '0', 'base_link', 'laser']),
         Node(package='tf2_ros', executable='static_transform_publisher', name='base_to_oak_tf', arguments=['0.15', '0', '0.3', '0', '0', '0', 'base_link', 'oak']),
 

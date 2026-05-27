@@ -1,66 +1,161 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="viet_rover">
 
-    <xacro:property name="base_length" value="0.762"/> 
-    <xacro:property name="base_width"  value="0.610"/> 
-    <xacro:property name="base_height" value="0.200"/> 
-
-    <xacro:property name="wheel_radius" value="0.165"/> 
-    <xacro:property name="laser_x" value="0.095"/> 
-    <xacro:property name="laser_y" value="0.038"/> 
-    <xacro:property name="laser_z" value="0.569"/> 
-    <xacro:property name="cam_x" value="0.15"/> 
-    <xacro:property name="cam_y" value="0.0"/> 
-    <xacro:property name="cam_z" value="0.05"/> 
+    <xacro:property name="body_l" value="0.6096"/> <xacro:property name="body_w" value="0.4572"/> <xacro:property name="body_h" value="0.2794"/> <xacro:property name="plate_l" value="0.7747"/> <xacro:property name="plate_w" value="0.6223"/> <xacro:property name="wheel_rad" value="0.15875"/> <xacro:property name="front_track" value="0.61595"/> <xacro:property name="rear_track" value="0.5588"/>  <xacro:property name="wheel_base" value="0.59055"/> <xacro:property name="front_axle_offset" value="0.0635"/> <material name="grey"> <color rgba="0.5 0.5 0.5 1"/> </material>
+    <material name="blue"> <color rgba="0.1 0.1 0.8 1"/> </material>
+    <material name="black"> <color rgba="0 0 0 1"/> </material>
 
     <link name="base_footprint"/>
-
-    <link name="base_link">
-        <visual>
-            <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
-            <geometry><box size="${base_length} ${base_width} ${base_height}"/></geometry>
-            <material name="grey"><color rgba="0.5 0.5 0.5 1"/></material>
-        </visual>
-        <collision>
-            <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
-            <geometry><box size="${base_length} ${base_width} ${base_height}"/></geometry>
-        </collision>
-    </link>
-
-    <link name="laser">
-        <visual>
-            <geometry><cylinder radius="0.035" length="0.04"/></geometry>
-            <material name="black"><color rgba="0 0 0 1"/></material>
-        </visual>
-        <collision>
-            <geometry><cylinder radius="0.035" length="0.04"/></geometry>
-        </collision>
-    </link>
-
-    <link name="oak_base_frame"/>
-    <link name="oak_rgb_camera_frame"/>
 
     <joint name="base_joint" type="fixed">
         <parent link="base_footprint"/>
         <child link="base_link"/>
-        <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
+        <origin xyz="0 0 ${wheel_rad}" rpy="0 0 0"/>
     </joint>
 
-    <joint name="laser_joint" type="fixed">
+    <link name="base_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="9.07"/> <inertia ixx="1.5" ixy="0" ixz="0" iyy="2.0" iyz="0" izz="2.5"/>
+        </inertial>
+    </link>
+
+    <link name="body_box">
+        <visual>
+            <origin xyz="${-body_l/2 + front_axle_offset} 0 ${body_h/2}" rpy="0 0 0"/>
+            <geometry> <box size="${body_l} ${body_w} ${body_h}"/> </geometry>
+            <material name="grey"/>
+        </visual>
+        <collision>
+            <origin xyz="${-body_l/2 + front_axle_offset} 0 ${body_h/2}" rpy="0 0 0"/>
+            <geometry> <box size="${body_l} ${body_w} ${body_h}"/> </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="${-body_l/2 + front_axle_offset} 0 ${body_h/2}" rpy="0 0 0"/>
+            <mass value="4.0"/>
+            <inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1"/>
+        </inertial>
+    </link>
+
+    <joint name="body_joint" type="fixed">
         <parent link="base_link"/>
-        <child link="laser"/>
-        <origin xyz="${laser_x} ${laser_y} ${laser_z - wheel_radius}" rpy="0 0 3.14159"/>
+        <child link="body_box"/>
+        <origin xyz="0 0 0.06985" rpy="0 0 0"/>
     </joint>
+
+    <xacro:macro name="wheel" params="prefix reflect x_pos joint_type">
+        <link name="${prefix}_wheel">
+            <visual>
+                <origin xyz="0 0 0" rpy="${3.14159/2} 0 0"/>
+                <geometry> <cylinder radius="${wheel_rad}" length="0.08"/> </geometry>
+                <material name="black"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="${3.14159/2} 0 0"/>
+                <geometry> <cylinder radius="${wheel_rad}" length="0.08"/> </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="${3.14159/2} 0 0"/>
+                <mass value="2.0"/>
+                <inertia ixx="0.013" ixy="0" ixz="0" iyy="0.013" iyz="0" izz="0.025"/>
+            </inertial>
+        </link>
+        <joint name="${prefix}_wheel_joint" type="${joint_type}">
+            <parent link="base_link"/>
+            <child link="${prefix}_wheel"/>
+            <origin xyz="${x_pos} ${reflect} 0" rpy="0 0 0"/>
+            <axis xyz="0 1 0"/>
+        </joint>
+        <gazebo reference="${prefix}_wheel">
+            <mu1 value="1.0"/>
+            <mu2 value="1.0"/>
+            <kp value="10000000.0"/>
+            <kd value="1.0"/>
+            <fdir1 value="1 0 0"/>
+            <material>Gazebo/Black</material>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:wheel prefix="left_front" reflect="${front_track/2}" x_pos="0" joint_type="continuous"/>
+    <xacro:wheel prefix="right_front" reflect="-${front_track/2}" x_pos="0" joint_type="continuous"/>
+    <xacro:wheel prefix="left_rear" reflect="${rear_track/2}" x_pos="-${wheel_base}" joint_type="continuous"/>
+    <xacro:wheel prefix="right_rear" reflect="-${rear_track/2}" x_pos="-${wheel_base}" joint_type="continuous"/>
+
+    <link name="top_plate">
+        <visual>
+            <geometry> <box size="${plate_l} ${plate_w} 0.006"/> </geometry>
+            <material name="blue"/>
+        </visual>
+        <inertial>
+            <mass value="1.0"/>
+            <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+        </inertial>
+    </link>
+
+    <joint name="plate_joint" type="fixed">
+        <parent link="body_box"/>
+        <child link="top_plate"/>
+        <origin xyz="${-body_l/2 + front_axle_offset} 0 ${body_h}" rpy="0 0 0"/>
+    </joint>
+
+    <link name="laser">
+        <visual>
+            <geometry> <cylinder radius="0.035" length="0.04"/> </geometry>
+            <material name="black"/>
+        </visual>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+        </inertial>
+    </link>
+
+    <joint name="laser_joint" type="fixed">
+        <parent link="top_plate"/>
+        <child link="laser"/>
+        <origin xyz="${plate_l/2 - 0.0381} 0 0.0635" rpy="0 0 3.14159"/>
+    </joint>
+
+    <link name="camera_link">
+        <visual>
+            <geometry> <box size="0.03 0.1 0.03"/> </geometry>
+            <material name="black"/>
+        </visual>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+        </inertial>
+    </link>
 
     <joint name="camera_joint" type="fixed">
         <parent link="base_link"/>
-        <child link="oak_base_frame"/> <origin xyz="${cam_x} ${cam_y} ${cam_z}" rpy="0 0 0"/> 
+        <child link="camera_link"/>
+        <origin xyz="0.1016 0 0.08509" rpy="0 0 0"/>
     </joint>
 
-    <joint name="oak_base_to_rgb" type="fixed">
-        <parent link="oak_base_frame"/>
-        <child link="oak_rgb_camera_frame"/>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-    </joint>
+    <gazebo>
+        <plugin
+            filename="gz-sim-diff-drive-system"
+            name="gz::sim::systems::DiffDrive">
+            <left_joint>left_front_wheel_joint</left_joint>
+            <right_joint>right_front_wheel_joint</right_joint>
+            <wheel_separation>${front_track}</wheel_separation>
+            <wheel_radius>${wheel_rad}</wheel_radius>
+            <odom_publish_frequency>50</odom_publish_frequency>
+            
+            <kinematic_controls>true</kinematic_controls>
+            
+            <topic>cmd_vel</topic>
+            <odom_topic>odom</odom_topic>
+            <tf_topic>tf</tf_topic>
+            <frame_id>odom</frame_id>
+            <child_frame_id>base_footprint</child_frame_id>
+        </plugin>
+
+        <plugin
+            filename="gz-sim-joint-state-publisher-system"
+            name="gz::sim::systems::JointStatePublisher">
+            <topic>joint_states</topic>
+        </plugin>
+    </gazebo>
 
 </robot>

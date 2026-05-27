@@ -108,7 +108,7 @@ def generate_launch_description():
     
     teleop_node = Node(
         package='teleop_twist_joy', executable='teleop_node', name='teleop_twist_joy_node',
-        parameters=[{'enable_button': 5, 'axis_linear.x': 1, 'axis_angular.yaw': 3, 'scale_linear.x': 3.0, 'scale_angular.yaw': 1.0}]
+        parameters=[{'enable_button': 5, 'axis_linear.x': 3, 'axis_angular.yaw': 1, 'scale_linear.x': 3.0, 'scale_angular.yaw': 1.0}]
     )
 
     # 7. SLAM
