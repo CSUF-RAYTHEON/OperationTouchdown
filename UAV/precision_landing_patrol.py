@@ -272,8 +272,37 @@ TRACK_Kp_XY            = 0.22     # P-gain on body-frame position error.
                                   # converging — confirmed in flight log).
 TRACK_Kd_XY            = 0.25     # D-gain on body-frame position error
 TRACK_MAX_V_XY         = 0.35     # m/s — per-axis horizontal cap
-TRACK_VZ_HOLD          = 0.0      # vertical hold; LAND-relative descent
-                                  # comes only after TRACK completes.
+
+# ── TRACK altitude hold ────────────────────────────────────────────────────
+# The previous behaviour was vz = TRACK_VZ_HOLD = 0 (a body-frame velocity
+# command with no vertical component).  That tells the autopilot "do not
+# command climb or descent" but it does NOT actively HOLD altitude — a
+# downdraft / vertical wind just sinks the airframe because GUIDED-mode
+# body-frame velocity is open-loop on z.  Flight test confirmed this: the
+# drone steadily descended throughout TRACK in moderate wind.
+#
+# We now close the loop on altitude using the relative altitude reported
+# against takeoff_z_origin (same anchor the rest of the script uses).
+# Target = TRACK_TARGET_ALT_M (TAKEOFF_ALTITUDE per the user spec — the
+# "set height").  Each tick:  vz = -TRACK_Kp_Z * (target - rel_alt),
+# deadbanded by TRACK_ALT_DEADBAND_M and clamped to ±TRACK_MAX_VZ.
+# Sign reminder: NED z is down-positive, so vz < 0 commands a climb.
+TRACK_TARGET_ALT_M     = TAKEOFF_ALTITUDE  # m — TRACK actively holds this
+                                           # relative altitude (above
+                                           # takeoff_z_origin).
+TRACK_Kp_Z             = 0.5      # gain on altitude error.  0.5 m/s per
+                                  # m of error means a full-scale
+                                  # TRACK_MAX_VZ correction at ~0.8 m
+                                  # error; intermediate errors get
+                                  # proportional response.
+TRACK_MAX_VZ           = 0.40     # m/s — per-axis vertical clamp during
+                                  # TRACK.  Kept moderate so a brief
+                                  # altitude excursion doesn't trigger
+                                  # an aggressive climb/descend that
+                                  # would also kick the tag out of FOV.
+TRACK_ALT_DEADBAND_M   = 0.10     # m — ignore altitude errors below this
+                                  # so EKF z noise doesn't drive a
+                                  # constant tiny vz command.
 TRACK_DEADBAND_XY      = 0.08     # m — ignore tiny offsets so AprilTag pose
                                   # noise doesn't drive a constant tiny
                                   # velocity command.
@@ -1112,16 +1141,29 @@ class PrecisionLandingController:
     # ── TRACK phase: velocity-PD lock over the tag ───────────────────────────
 
     def track_velocity_command(self, body_x, body_y):
-        """Drive the drone to (0, 0) in body-frame XY using EMA + PD.
+        """Drive the drone to (0, 0) in body-frame XY using EMA + PD,
+        while actively holding altitude at TRACK_TARGET_ALT_M.
 
         Used by the TRACK phase between PATROL and PRECISION_LAND so the
         drone is centered above the tag BEFORE any descent begins.
 
-        Vertical velocity is held at TRACK_VZ_HOLD (0 m/s by default) —
-        descent is the next phase's job (descent_velocity_command), not
-        this one's.
+        Vertical control: the previous version commanded vz = 0 as an
+        "altitude hold", but body-frame velocity is open-loop on z in
+        ArduCopter GUIDED — a downdraft just sinks the airframe.  A
+        flight test confirmed this: the drone steadily descended during
+        TRACK in moderate wind.  We now run a P-loop on the relative
+        altitude (anchored to takeoff_z_origin, same convention as the
+        rest of the script):
 
-        Filter / derivative state mirrors
+            alt_err = TRACK_TARGET_ALT_M - rel_alt   (+ = below target)
+            vz_cmd  = -TRACK_Kp_Z * alt_err          (NED: -vz = climb)
+            vz      = clamp(vz_cmd, ±TRACK_MAX_VZ)
+
+        If either LOCAL_POSITION_NED or the takeoff anchor is missing
+        (degenerate startup), vz falls back to 0 — same behaviour as
+        the old TRACK_VZ_HOLD code so we never make things worse.
+
+        Filter / derivative state for XY mirrors
         stationary_landing_controller.adjust_velocity_and_send():
           * Re-seed prev state if it is None or older than 0.5 s.  A
             stale buffer would produce a huge spurious D-term spike on
@@ -1166,7 +1208,22 @@ class PrecisionLandingController:
 
         vx = max(min(vx, TRACK_MAX_V_XY), -TRACK_MAX_V_XY)
         vy = max(min(vy, TRACK_MAX_V_XY), -TRACK_MAX_V_XY)
-        vz = TRACK_VZ_HOLD
+
+        # ── Active altitude hold ─────────────────────────────────────────
+        # Compute from the same anchored-relative altitude as the rest
+        # of the script (_relative_altitude_m).  Bail-out path keeps
+        # vz = 0 if we have no altitude reading, so the airframe is at
+        # worst no worse off than the previous TRACK_VZ_HOLD behaviour.
+        rel_alt = _relative_altitude_m(self)
+        if rel_alt is None:
+            vz = 0.0
+        else:
+            alt_err = TRACK_TARGET_ALT_M - rel_alt
+            if abs(alt_err) < TRACK_ALT_DEADBAND_M:
+                vz = 0.0
+            else:
+                vz_cmd = -TRACK_Kp_Z * alt_err
+                vz = max(min(vz_cmd, TRACK_MAX_VZ), -TRACK_MAX_VZ)
 
         self._track_prev_x = filt_x
         self._track_prev_y = filt_y
@@ -2123,10 +2180,14 @@ def track_tag(controller, pump, state):
 
             now = time.time()
             if now - last_log > 1.0:
+                rel_alt = _relative_altitude_m(controller)
+                alt_str = (f"{rel_alt:+.2f}/{TRACK_TARGET_ALT_M:.1f}m"
+                           if rel_alt is not None else "n/a")
                 print(f"[INFO] TRACK t={elapsed:.1f}/{TRACK_DURATION_S:.0f}s  "
                       f"body=({body_x:+.2f},{body_y:+.2f},{body_z:+.2f})  "
                       f"filt=({filt_x:+.2f},{filt_y:+.2f})  "
                       f"v=({vx:+.2f},{vy:+.2f},{vz:+.2f})  "
+                      f"alt={alt_str}  "
                       f"centred={centred_count}/{TRACK_CENTER_HOLD_FRAMES}")
                 last_log = now
         else:
