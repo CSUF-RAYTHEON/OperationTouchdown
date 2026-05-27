@@ -102,7 +102,7 @@ from pymavlink import mavutil
 
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE          = 57600
-TAKEOFF_ALTITUDE  = 6           # meters — matches stationary_landing.py
+TAKEOFF_ALTITUDE  = 4           # meters — matches stationary_landing.py
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Stabilization Config (NEW — not present in stationary_landing.py /
@@ -208,7 +208,7 @@ TOUCHDOWN_BODY_Z_M       = 0.6   # m — switch to LAND below this body-Z
 # speed without ever converging.
 # ─────────────────────────────────────────────────────────────────────────────
 
-TRACK_DURATION_S       = 10.0     # s — upper bound on TRACK; converging
+TRACK_DURATION_S       = 20.0     # s — upper bound on TRACK; converging
                                   # below TRACK_CENTER_THRESHOLD_M for
                                   # TRACK_CENTER_HOLD_FRAMES exits earlier.
 TRACK_LOSS_TIMEOUT_S   = 3.0      # s — bail to SEARCH after this much loss
