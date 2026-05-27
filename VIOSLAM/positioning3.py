@@ -592,7 +592,7 @@ def test_positioning(position_mutex):
             np.copyto(local_position, shared_position)
 
         print(f"[MISSION CONTROL SIM] Current Position -> North: {local_position[0]:+.2f}m | East: {local_position[1]:+.2f}m | Down: {local_position[2]:+.2f}m")
-        time.sleep(0.1) 
+        time.sleep(0.2) 
 
 if __name__ == "__main__":
     mp.set_start_method('spawn', force=True)
