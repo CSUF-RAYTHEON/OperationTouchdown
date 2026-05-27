@@ -1,0 +1,10 @@
+repositories:
+  ugv_ws/src/rplidar_ros:
+    type: git
+    url: https://github.com/Slamtec/rplidar_ros
+    version: 2.1.4
+
+  ugv_ws/src/depthai-ros:
+    type: git
+    url: https://github.com/luxonis/depthai-ros
+    version: v2.12.2-jazzy

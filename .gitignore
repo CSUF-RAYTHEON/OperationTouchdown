@@ -14,3 +14,7 @@ akida/*.h5
 ugv_ws/build/
 ugv_ws/install/
 ugv_ws/log/
+
+# External source deps fetched by vcs import (deps.repos)
+ugv_ws/src/rplidar_ros/
+ugv_ws/src/depthai-ros/
