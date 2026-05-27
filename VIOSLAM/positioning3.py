@@ -471,6 +471,10 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
     local_depth = np.zeros((H, W), dtype=np.uint16)
     
     last_processed_gray = np.zeros((H, W), dtype=np.uint8)
+    vo_average_time = 0.0
+    vo_count = 0
+    slam_count = 0
+    slam_average_time = 0.0
 
     print("[VIO] Connected to Shared Memory. Booting Algorithm...")
 
@@ -489,6 +493,7 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
     print("[VIO] Algorithm running. Calculating poses...\n")
 
     while True:
+        start_time = time.perf_counter()
         # --- GET FRESHEST ATTITUDE ---
         with attitude_mutex:
             live_roll = shared_attitude[0]
@@ -510,11 +515,21 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
         # --- HEAVY MATH ---
         t_sec = time.time() - t0
         vo.process(local_gray, local_depth, live_roll, live_pitch, live_yaw)
+        end_time = time.perf_counter()
+        elapsed_ms = (end_time - start_time) * 1000.0
+        vo_count += 1
+        vo_average_time += elapsed_ms
+        if vo_count % 256 == 0:
+            vo_average_time /= vo_count
+            vo_count = 0
+            print(f"[VIO] Average processing time per frame: {vo_average_time:.2f} ms")
+            vo_average_time = 0.0
 
         # --- SLAM TOGGLE LOGIC ---
         dynamic_slam_enabled = True 
 
         if dynamic_slam_enabled and vo.status == "TRACKING":
+            start_time = time.perf_counter()
             pos_array = np.array(vo.pose())
             
             # --- THE NEW SPATIAL CHECK ---
@@ -548,7 +563,15 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
                 # Optional: Overwrite our last_kf_pos with the newly corrected coordinates 
                 # so the teleport doesn't instantly trigger a false spatial keyframe
                 last_kf_pos = np.array(vo.pose())
-
+            end_time = time.perf_counter()
+            elapsed_ms = (end_time - start_time) * 1000.0
+            slam_count += 1
+            slam_average_time += elapsed_ms
+            if slam_count % 32 == 0:
+                slam_average_time /= slam_count
+                slam_count = 0
+                print(f"[SLAM] Average loop check time: {slam_average_time:.2f} ms")
+                slam_average_time = 0.0
         # --- PUBLISH POSITION ---
         if vo.status == "TRACKING":
             pos = vo.pose()

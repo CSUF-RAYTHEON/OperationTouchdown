@@ -7,7 +7,7 @@
 4. turn off desktop display and run stricly in terminal 
 
 5. dynamic slam, add the ability to turn on and off SLAM loop closure so if in non-static enviornments to not mess up positioning like when landing on moving vehicle,
-   make it so other process can turn it on and off also 
+   make it so other process can turn it on and off
 
 6. use cameras dedicated hardware accelerator instead of pi cpu from what AI said: "Right now, your Raspberry Pi 5's CPU is doing a massive amount of heavy lifting. It is pulling 
    raw image arrays from the camera and running cv2.calcOpticalFlowPyrLK on the CPU. The camera you are using has an onboard Intel Myriad X Vision Processing Unit (VPU) that is currently 
@@ -41,4 +41,10 @@
     loop, pull the past and present LiDAR point clouds for that location. Use an ICP (Iterative Closest Point) algorithm to verify that the 3D shapes match, eliminating false camera triggers.
 
 13. increase framerate of camera, because its only 30fps may not give must up to date image, also position calculation may be able to handle 40-60 fps depending on how fast it can do the
-    calculations, also simply increasing the framerate wouldnt hurt at all.
+    calculations, also simply increasing the framerate wouldnt hurt at all. What AI said about what this does: "Increasing the framerate does not make the position coordinates more accurate. 
+    Instead, it raises the maximum physical speed the drone is allowed to fly before the optical flow loses tracking!"
+
+14. For multiframe position estimation limit how fast the drone can move to compensate for the added latency, or only do multi frame position estimation when slam/loop closure is off 
+
+15. On a seperate process have a long expensive loop closure search that takes the current position before calculating its position then calculate psoition based off long expensiev loop closure,
+    then based off how much the drone moved since add the offset to the fast loop. 
