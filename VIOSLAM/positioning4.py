@@ -448,7 +448,7 @@ def positioning(camera_frame_mutex, camera_calibration_mutex, attitude_mutex):
 # -----------------------
 # Testing & Printing Process
 # -----------------------
-def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex):
+def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex, slam_enabled_mutex):
     W, H = 640, 400
     # --- 1. MEMORY SETUP ---
     shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
@@ -457,6 +457,7 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
     shm_calib = shared_memory.SharedMemory(name="oak_calib")
     shm_attitude = shared_memory.SharedMemory(name="attitude")
     shm_position = shared_memory.SharedMemory(name="position")
+    shm_slam_enabled = shared_memory.SharedMemory(name="slam_enabled")
 
     shared_calib = np.ndarray((3, 3), dtype=np.float64, buffer=shm_calib.buf)
     shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
@@ -464,6 +465,7 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
     shared_depth = np.ndarray((H, W), dtype=np.uint16, buffer=shm_depth.buf)
     shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
+    shared_slam_enabled = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_enabled.buf)
 
     local_calib = np.zeros((3, 3), dtype=np.float64)
     local_rgb = np.zeros((H, W, 3), dtype=np.uint8)
@@ -475,6 +477,9 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
     vo_count = 0
     slam_count = 0
     slam_average_time = 0.0
+    slam_enabled = True
+    with slam_enabled_mutex:
+        shared_slam_enabled[0] = slam_enabled
 
     print("[VIO] Connected to Shared Memory. Booting Algorithm...")
 
@@ -526,9 +531,10 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
             vo_average_time = 0.0
 
         # --- SLAM TOGGLE LOGIC ---
-        dynamic_slam_enabled = True 
+        with slam_enabled_mutex:
+            slam_enabled = bool(shared_slam_enabled[0])
 
-        if dynamic_slam_enabled and vo.status == "TRACKING":
+        if slam_enabled and vo.status == "TRACKING":
             start_time = time.perf_counter()
             pos_array = np.array(vo.pose())
             
@@ -580,18 +586,25 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
         else:
             print(f"VIO LOST. Status: {vo.status}")
 
-def test_positioning(position_mutex):    
+def test_positioning(position_mutex, slam_enabled_mutex):    
     shm_position = shared_memory.SharedMemory(name="position")
+    shm_slam_enabled = shared_memory.SharedMemory(name="slam_enabled")
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
+    shared_slam_enabled = np.ndarray((1,), dtype=bool, buffer=shm_slam_enabled.buf)
     local_position = np.zeros((3,), dtype=np.float64)
+
 
     print("\n[PRINTER] Connected to Shared Memory. Listening for NED coordinates...\n")
 
     while True:
         with position_mutex:
             np.copyto(local_position, shared_position)
-
         print(f"[MISSION CONTROL SIM] Current Position -> North: {local_position[0]:+.2f}m | East: {local_position[1]:+.2f}m | Down: {local_position[2]:+.2f}m")
+
+        if local_position[0] >= 9:
+            print("\n[MISSION CONTROL SIM] Target reached! Disabling SLAM corrections...\n")
+            with slam_enabled_mutex:
+                shared_slam_enabled[0] = False
         time.sleep(0.2) 
 
 if __name__ == "__main__":
@@ -605,6 +618,7 @@ if __name__ == "__main__":
     ATTITUDE_BYTES = 3 * 8 
     POSITION_BYTES = 3 * 8 
     LOCAL_POSITION_NED_BYTES = 3 * 8
+    BOOL_BYTES = 1
 
     print("Positioning tester allocating shared memory...")
     shm_rgb = shared_memory.SharedMemory(create=True, size=RGB_BYTES, name="oak_rgb")
@@ -614,17 +628,18 @@ if __name__ == "__main__":
     shm_attitude = shared_memory.SharedMemory(create=True, size=ATTITUDE_BYTES, name="attitude")
     shm_position = shared_memory.SharedMemory(create=True, size=POSITION_BYTES, name="position")
     shm_local_position_ned = shared_memory.SharedMemory(create=True, size=LOCAL_POSITION_NED_BYTES, name="local_position_ned")
-
+    shm_slam_enabled = shared_memory.SharedMemory(create=True, size=BOOL_BYTES, name="slam_enabled")
     
     camera_frame_mutex = mp.Lock()
     camera_calibration_mutex = mp.Lock()
     attitude_mutex = mp.Lock()
     position_mutex = mp.Lock()
     local_position_ned_mutex = mp.Lock()
+    slam_enabled_mutex = mp.Lock()
 
     broadcaster_process = mp.Process(target=broadcaster, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, local_position_ned_mutex))
-    vio_process = mp.Process(target=positioning_test, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex))
-    test_process = mp.Process(target=test_positioning, args=(position_mutex,))
+    vio_process = mp.Process(target=positioning_test, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex, slam_enabled_mutex))
+    test_process = mp.Process(target=test_positioning, args=(position_mutex, slam_enabled_mutex))
 
     try:
         broadcaster_process.start()
