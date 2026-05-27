@@ -34,7 +34,7 @@ def broadcaster(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, lo
     print("Broadcaster shared memory connected")
     # 7. Connect to the Pixhawk via UART2 and request the ATTITUDE message stream at 50ms intervals
     master_uart2 = connect_UART2()
-    request_attitude_messages(master_uart2, 40)
+    request_attitude_messages(master_uart2, 25)
     request_local_nedposition_messages(master_uart2, 40)
 
     with dai.Device() as device:

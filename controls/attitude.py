@@ -15,7 +15,7 @@ def get_attitude(master):
     else:
         return None
 
-def request_attitude_messages(master, interval_ms=50):
+def request_attitude_messages(master, interval_ms=30):
     print(f"Entered request_attitude_messages() for Target System: {master.target_system} & Target Component: {master.target_component} & Requesting ATTITUDE message stream at {interval_ms}ms intervals")
 
     # 1. MAVLink expects the interval parameter in microseconds (us) so wo convert the input interval from milliseconds (ms) to microseconds (us) by multiplying by 1000.

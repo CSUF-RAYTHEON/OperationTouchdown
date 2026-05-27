@@ -3,6 +3,7 @@ import numpy as np
 import time
 import math
 import multiprocessing as mp
+from controls.busywait import delay_busywait
 from controls.connect import connect_UART3
 from VIOSLAM2.broadcaster import broadcaster 
 from multiprocessing import shared_memory
@@ -391,7 +392,7 @@ def positioning(camera_frame_mutex, camera_calibration_mutex, attitude_mutex):
             np.copyto(local_depth, shared_depth)
 
         if np.array_equal(local_gray, last_processed_gray):
-            time.sleep(0.005) 
+            delay_busywait(0.001) 
             continue
         timestamp_usec = int(time.time() * 1e6)
         np.copyto(last_processed_gray, local_gray)
@@ -501,7 +502,7 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
             np.copyto(local_depth, shared_depth)
 
         if np.array_equal(local_gray, last_processed_gray):
-            time.sleep(0.005) 
+            delay_busywait(0.001)
             continue
             
         np.copyto(last_processed_gray, local_gray)
