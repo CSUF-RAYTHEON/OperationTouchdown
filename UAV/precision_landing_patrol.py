@@ -233,19 +233,54 @@ CLOSE_TAG_BODY_Z_M     = 1.0      # m — last body-frame z below which a lost
 # descent).  Mirrors the design in
 # UAV/PixhawkController/stationary_landing_controller.py.
 DESCENT_Kp_XY            = 0.35
-DESCENT_Kd_XY            = 0.25
+DESCENT_Kd_XY            = 0.30  # was 0.25 — extra damping to absorb camera
+                                 # pipeline latency (drone keeps moving for a
+                                 # frame before the next detection updates).
 DESCENT_MAX_V_XY         = 0.4   # m/s, slightly above TRACK for descent
 DESCENT_TARGET_BZ        = 0.3   # m, desired height above tag during PD
 DESCENT_Kp_Z             = 0.3
 DESCENT_MIN_VZ           = 0.10  # m/s minimum descent rate when centred
 DESCENT_MAX_VZ           = 0.40  # m/s vertical clamp
-DESCENT_XY_ERR_HOLD      = 0.35  # m — beyond this, slow vz to 20 % of cmd
-DESCENT_DEADBAND_XY      = 0.10  # m — ignore tiny offsets
+DESCENT_XY_ERR_HOLD      = 0.10  # m — beyond this, slow vz to 20 % of cmd.
+                                 # Tightened from 0.35 so descent is gated on
+                                 # cm-scale lateral alignment, not dm-scale.
+DESCENT_DEADBAND_XY      = 0.03  # m — ignore offsets below ~3 cm (was 0.10).
+                                 # The user wants single-digit-cm precision so
+                                 # the deadband itself must be sub-cm-to-cm.
 DESCENT_GAIN_SCALE_BZ    = 1.5   # m — below this, scale XY gains by bz/1.5
 DESCENT_MIN_GAIN_SCALE   = 0.30  # floor for the altitude-scaled XY gain
 DESCENT_EMA_ALPHA        = 0.65  # heavier filter than TRACK (was 0.5)
 DESCENT_STALE_TIMEOUT_S  = 0.5   # re-seed prev_* state after gap longer than this
-TOUCHDOWN_BODY_Z_M       = 0.6   # m — switch to LAND below this body-Z
+TOUCHDOWN_BODY_Z_M       = 0.6   # m — switch to LAND below this body-Z, BUT
+                                 # only if lateral error is within
+                                 # TOUCHDOWN_XY_M (see commit gate in
+                                 # precision_land).  If lateral is loose we
+                                 # keep doing PD until we either centre or
+                                 # sink to TOUCHDOWN_HARD_FLOOR_BZ_M.
+TOUCHDOWN_XY_M           = 0.05  # m — max lateral error to permit
+                                 # commit-to-LAND.  Single-digit-cm per the
+                                 # user spec; honoured as `max(|filt_x|,
+                                 # |filt_y|) < TOUCHDOWN_XY_M`.
+TOUCHDOWN_HARD_FLOOR_BZ_M = 0.30 # m — below this body-Z, altitude-scaled PD
+                                 # gains are too low to centre anyway; commit
+                                 # to LAND regardless of lateral error to
+                                 # avoid hovering indefinitely on a sub-30cm
+                                 # offset we can't drive out.
+
+# ── Camera / pipeline latency ──────────────────────────────────────────────
+# The PD loops compute a body-frame offset from an AprilTag detection that
+# was captured one camera frame in the past.  Between the capture instant
+# and the moment we feed body_x/y into the controller, the airframe has
+# already moved along the previously commanded vx/vy.  Two mitigations:
+#   1. Skip the PD update entirely if the underlying camera frame is
+#      older than CAMERA_STALE_S — neither the measured offset nor a
+#      dead-reckon correction can be trusted past that window.
+#   2. For frames inside CAMERA_STALE_S, dead-reckon-compensate the body
+#      offset:  body_x ← body_x - last_vx * frame_age   (same for y).
+#      The sign comes from the body-frame convention: body_x > 0 means
+#      tag is forward; commanding vx > 0 moves the drone forward, which
+#      reduces body_x at the same rate.
+CAMERA_STALE_S           = 0.25  # s — older than this, treat as no detection
 
 # ─────────────────────────────────────────────────────────────────────────────
 # TRACK Phase Config — runs between PATROL and PRECISION_LAND.  After the
@@ -264,14 +299,36 @@ TRACK_DURATION_S       = 12.0     # s — upper bound on TRACK; converging
                                   # below TRACK_CENTER_THRESHOLD_M for
                                   # TRACK_CENTER_HOLD_FRAMES exits earlier.
 TRACK_LOSS_TIMEOUT_S   = 3.0      # s — bail to SEARCH after this much loss
-TRACK_Kp_XY            = 0.22     # P-gain on body-frame position error.
-                                  # Lowered from 0.35 because a 1 m offset
-                                  # under the old gain saturated immediately
-                                  # at the velocity clamp every frame
-                                  # (twitching at max speed without
-                                  # converging — confirmed in flight log).
-TRACK_Kd_XY            = 0.25     # D-gain on body-frame position error
+TRACK_Kp_XY            = 0.35     # P-gain on body-frame position error.
+                                  # Raised from 0.22 back to DESCENT's value
+                                  # now that track_velocity_command shares
+                                  # DESCENT's altitude-scaled gain pathway
+                                  # (TRACK_GAIN_SCALE_BZ below):  at cruise
+                                  # altitude (>= TRACK_GAIN_SCALE_BZ) the
+                                  # scale is 1.0 and Kp matches DESCENT, so
+                                  # we converge as fast as DESCENT does; if
+                                  # TRACK is ever entered at low altitude
+                                  # the scale attenuates Kp the same way the
+                                  # descent loop does so we don't twitch.
+TRACK_Kd_XY            = 0.30     # D-gain on body-frame position error.
+                                  # Slightly above DESCENT_Kd_XY old value
+                                  # for extra camera-latency damping.
 TRACK_MAX_V_XY         = 0.35     # m/s — per-axis horizontal cap
+TRACK_GAIN_SCALE_BZ    = 1.5      # m — mirrors DESCENT_GAIN_SCALE_BZ.  Below
+                                  # this body-Z, attenuate XY gains so small
+                                  # angular tag-pose errors don't translate
+                                  # into a large velocity command.  At TRACK
+                                  # altitude (TAKEOFF_ALTITUDE >> 1.5 m) the
+                                  # scale evaluates to 1.0.
+TRACK_MIN_GAIN_SCALE   = 0.30     # floor for the altitude-scaled XY gain
+TRACK_EMA_ALPHA        = 0.6      # was a hard-coded 0.7 inside the function.
+                                  # Lowered slightly so the filter lags the
+                                  # input less — important because the goal
+                                  # of TRACK is precise convergence and a
+                                  # heavy filter hides genuine offset moves
+                                  # behind the noise floor.  Still well
+                                  # above the original 0.5 that chased pose
+                                  # noise.
 
 # ── TRACK altitude hold ────────────────────────────────────────────────────
 # The previous behaviour was vz = TRACK_VZ_HOLD = 0 (a body-frame velocity
@@ -303,14 +360,25 @@ TRACK_MAX_VZ           = 0.40     # m/s — per-axis vertical clamp during
 TRACK_ALT_DEADBAND_M   = 0.10     # m — ignore altitude errors below this
                                   # so EKF z noise doesn't drive a
                                   # constant tiny vz command.
-TRACK_DEADBAND_XY      = 0.08     # m — ignore tiny offsets so AprilTag pose
-                                  # noise doesn't drive a constant tiny
-                                  # velocity command.
-TRACK_CENTER_THRESHOLD_M = 0.25   # m — both filtered |body_x| and |body_y|
+TRACK_DEADBAND_XY      = 0.03     # m — ignore offsets below ~3 cm.  Was
+                                  # 0.08; tightened to single-digit cm so
+                                  # the controller still drives the drone
+                                  # at small errors.  Cap noise from pose
+                                  # estimation is mostly in the sub-cm
+                                  # range at TRACK altitudes.
+TRACK_CENTER_THRESHOLD_M = 0.05   # m — both filtered |body_x| and |body_y|
                                   # must drop below this for TRACK to
-                                  # consider itself "centred".
-TRACK_CENTER_HOLD_FRAMES = 8      # consecutive ticks the centred condition
+                                  # consider itself "centred".  Tightened
+                                  # from 0.25 m to 5 cm per the user spec
+                                  # (single-digit-cm precision).
+TRACK_CENTER_HOLD_FRAMES = 15     # consecutive ticks the centred condition
                                   # must hold before TRACK exits early.
+                                  # Raised from 8 to compensate for the
+                                  # tighter threshold — at the 20 Hz TRACK
+                                  # loop rate (sleep 0.05 s) this is 0.75 s
+                                  # of sustained convergence, robust to a
+                                  # single noisy detection that briefly
+                                  # creeps above 5 cm.
 
 # ─────────────────────────────────────────────────────────────────────────────
 # IMU Tag-Loss Recovery Config
@@ -1140,12 +1208,36 @@ class PrecisionLandingController:
 
     # ── TRACK phase: velocity-PD lock over the tag ───────────────────────────
 
-    def track_velocity_command(self, body_x, body_y):
+    def track_velocity_command(self, body_x, body_y, body_z, frame_age=0.0):
         """Drive the drone to (0, 0) in body-frame XY using EMA + PD,
         while actively holding altitude at TRACK_TARGET_ALT_M.
 
         Used by the TRACK phase between PATROL and PRECISION_LAND so the
         drone is centered above the tag BEFORE any descent begins.
+
+        Now structurally aligned with descent_velocity_command:
+            filter → deadband → derivative → altitude-scaled PD → clamp
+            → send_velocity.
+        body_z is the camera-to-tag distance (m) and feeds the same
+        gain-scale used in descent_velocity_command:  if body_z is
+        below TRACK_GAIN_SCALE_BZ, XY gains and clamp are attenuated
+        so small angular pose errors don't translate into a large
+        velocity command.  At TRACK altitude this evaluates to scale=1.0
+        and the loop behaves like descent's XY PD at cruise.
+
+        frame_age (s) is the wall-clock age of the AprilTag detection
+        (now - frame-capture-time).  We dead-reckon-correct the input
+        body offset by the previously commanded velocity:
+
+            body_x ← body_x - last_vx * frame_age
+            body_y ← body_y - last_vy * frame_age
+
+        The sign comes from the body-frame convention: body_x > 0 means
+        the tag is forward; commanding vx > 0 moves the drone forward,
+        which shrinks body_x at the same rate.  This compensates for the
+        camera-to-control pipeline latency so the controller acts on
+        "where the tag is NOW" rather than "where the tag was when the
+        last frame was captured".
 
         Vertical control: the previous version commanded vz = 0 as an
         "altitude hold", but body-frame velocity is open-loop on z in
@@ -1168,18 +1260,30 @@ class PrecisionLandingController:
           * Re-seed prev state if it is None or older than 0.5 s.  A
             stale buffer would produce a huge spurious D-term spike on
             the next valid frame.
-          * Apply alpha=0.7 EMA on the body-frame inputs (heavier than
-            the original 0.5 — at 0.5 the filter chased AprilTag pose
-            noise frame-to-frame and saturated the velocity clamp).
+          * Apply TRACK_EMA_ALPHA EMA on the body-frame inputs (0.6 —
+            slightly less smoothing than the previous hard-coded 0.7 so
+            the controller responds faster, important now that the
+            convergence threshold is 5 cm not 25 cm).
           * Compute the derivative on the FILTERED values.
-          * Apply a TRACK_DEADBAND_XY deadband to the filtered error so
-            sub-cm pose noise doesn't drive a constant tiny velocity.
+          * Apply a TRACK_DEADBAND_XY (~3 cm) deadband to the filtered
+            error so AprilTag pose noise doesn't drive a constant
+            sub-cm velocity command.
 
         Returns the (filt_x, filt_y, vx, vy, vz) actually sent so the
         caller can both log the command and use the filtered offsets to
         decide TRACK_CENTER_THRESHOLD_M convergence.
         """
         now = time.time()
+
+        # Latency lead/dead-reckon: the camera frame this body offset came
+        # from was captured frame_age seconds ago.  In the meantime we
+        # have been commanding (last_vx, last_vy) for that same window,
+        # so the offset relative to NOW is approximately:
+        #     body_x_now ≈ body_x_measured - last_vx * frame_age
+        # The same sign for body_y.  No correction when frame_age == 0.
+        if frame_age > 0.0:
+            body_x -= self.last_cmd.get("vx", 0.0) * frame_age
+            body_y -= self.last_cmd.get("vy", 0.0) * frame_age
 
         if (self._track_prev_x is None
                 or self._track_prev_t is None
@@ -1188,7 +1292,7 @@ class PrecisionLandingController:
             self._track_prev_y = body_y
             self._track_prev_t = now
 
-        alpha = 0.7
+        alpha = TRACK_EMA_ALPHA
         filt_x = alpha * self._track_prev_x + (1 - alpha) * body_x
         filt_y = alpha * self._track_prev_y + (1 - alpha) * body_y
 
@@ -1203,11 +1307,22 @@ class PrecisionLandingController:
         err_x = 0.0 if abs(filt_x) < TRACK_DEADBAND_XY else filt_x
         err_y = 0.0 if abs(filt_y) < TRACK_DEADBAND_XY else filt_y
 
-        vx = TRACK_Kp_XY * err_x + TRACK_Kd_XY * dx
-        vy = TRACK_Kp_XY * err_y + TRACK_Kd_XY * dy
+        # Altitude-aware gain scaling mirrors descent_velocity_command.
+        # At TRACK cruise altitude (body_z >= TRACK_GAIN_SCALE_BZ) scale
+        # is 1.0 so we run at full gain; only matters if TRACK is ever
+        # re-entered close to the tag.
+        if body_z < TRACK_GAIN_SCALE_BZ:
+            scale = max(TRACK_MIN_GAIN_SCALE,
+                        body_z / TRACK_GAIN_SCALE_BZ)
+        else:
+            scale = 1.0
 
-        vx = max(min(vx, TRACK_MAX_V_XY), -TRACK_MAX_V_XY)
-        vy = max(min(vy, TRACK_MAX_V_XY), -TRACK_MAX_V_XY)
+        vx = scale * (TRACK_Kp_XY * err_x + TRACK_Kd_XY * dx)
+        vy = scale * (TRACK_Kp_XY * err_y + TRACK_Kd_XY * dy)
+
+        xy_cap = scale * TRACK_MAX_V_XY
+        vx = max(min(vx, xy_cap), -xy_cap)
+        vy = max(min(vy, xy_cap), -xy_cap)
 
         # ── Active altitude hold ─────────────────────────────────────────
         # Compute from the same anchored-relative altitude as the rest
@@ -1234,7 +1349,7 @@ class PrecisionLandingController:
 
     # ── PRECISION_LAND phase: velocity-PD descent ────────────────────────────
 
-    def descent_velocity_command(self, body_x, body_y, body_z):
+    def descent_velocity_command(self, body_x, body_y, body_z, frame_age=0.0):
         """Velocity-PD descent that keeps the camera centred over the tag.
 
         Replaces ArduCopter PrecLand's lateral correction (which on this
@@ -1246,24 +1361,38 @@ class PrecisionLandingController:
         EMA smoothing.
 
         Important behaviour vs track_velocity_command:
-          * Commands ``vz`` (descent) — TRACK keeps vz=0.
-          * Heavier EMA (alpha = DESCENT_EMA_ALPHA, 0.65 vs 0.5).
+          * Commands ``vz`` (descent) — TRACK keeps vz tied to altitude.
+          * Heavier EMA (alpha = DESCENT_EMA_ALPHA, 0.65 vs TRACK's 0.6).
           * XY gains are scaled DOWN as we get close to the tag so the
             drone doesn't over-react when small pixel errors translate
             to small physical errors.
           * Vertical command is throttled to 20 % whenever the lateral
-            error is larger than DESCENT_XY_ERR_HOLD — recentre first,
-            then descend.
+            error is larger than DESCENT_XY_ERR_HOLD (now 10 cm) —
+            recentre first, then descend.
           * Never commands upward velocity; if filt_z drops below
             DESCENT_TARGET_BZ the caller is expected to commit to LAND
             for the final touchdown.
 
-        Returns the (vx, vy, vz) actually sent.
+        ``frame_age`` (s) is the wall-clock age of the AprilTag detection
+        used for ``body_x/body_y``.  We dead-reckon-correct by subtracting
+        ``last_vx * frame_age`` (resp. ``last_vy``) from the measured
+        offset before filtering — same rationale as
+        ``track_velocity_command``.  No correction when frame_age is 0.
+
+        Returns the (filt_x, filt_y, vx, vy, vz) actually sent so the
+        precision_land driver can decide whether the lateral error is
+        small enough to commit to LAND without separately re-computing
+        the same EMA + deadband logic.
         """
         now = time.time()
 
-        # Re-seed on stale state so a tag dropout doesn't yield a huge
-        # D-term spike on the next valid frame.
+        # Latency lead/dead-reckon: see track_velocity_command for the
+        # full derivation.  Applied before the EMA so the filter
+        # smooths the *corrected* signal, not the raw one.
+        if frame_age > 0.0:
+            body_x -= self.last_cmd.get("vx", 0.0) * frame_age
+            body_y -= self.last_cmd.get("vy", 0.0) * frame_age
+
         if (self._descent_prev_x is None
                 or self._descent_prev_t is None
                 or (now - self._descent_prev_t) > DESCENT_STALE_TIMEOUT_S):
@@ -1327,7 +1456,7 @@ class PrecisionLandingController:
         self.last_cmd["lt_x"] = None
         self.last_cmd["lt_y"] = None
         self.last_cmd["lt_z"] = None
-        return vx, vy, vz
+        return filt_x, filt_y, vx, vy, vz
 
     # ── IMU tag-loss recovery (body-frame counter-drift) ─────────────────────
 
@@ -1968,10 +2097,14 @@ def make_pump(q_rgb, q_oak_imu, detector, controller, state):
 
         # 2. Pull the most recent camera frame (if any).  tryGet() never
         #    blocks; if the queue is empty we render the last cached frame
-        #    so the overlay still updates.
+        #    so the overlay still updates.  state["last_frame_time"] is
+        #    refreshed ONLY when a genuinely new frame arrives — used by
+        #    the PD loops as a freshness signal so they can skip / dead-
+        #    reckon-correct on stale cached frames.
         in_rgb = q_rgb.tryGet()
         if in_rgb is not None:
             state["frame"] = in_rgb.getCvFrame()
+            state["last_frame_time"] = time.time()
 
         if state.get("frame") is None:
             # No frame yet — nothing to draw.  Pump cv2 events anyway to
@@ -2182,8 +2315,32 @@ def track_tag(controller, pump, state):
             )
             last_tag_body = (body_x, body_y)
 
+            # Frame freshness: pump() refreshes state["last_frame_time"]
+            # only when a genuinely new in_rgb arrives.  If the detector
+            # just re-ran on a cached frame, frame_age is the age of that
+            # cached frame — we either dead-reckon-compensate inside
+            # track_velocity_command or skip the PD entirely if too old.
+            frame_time = state.get("last_frame_time")
+            frame_age = (time.time() - frame_time) if frame_time else 0.0
+
+            if frame_age > CAMERA_STALE_S:
+                # Stale frame — do not feed dead-reckoned data through
+                # the PD; the unmodeled component (wind drift since
+                # capture) is no longer negligible at this age.  Break
+                # the convergence streak too — a frame this old should
+                # not be evidence of centring.
+                centred_count = 0
+                controller.send_velocity(0.0, 0.0, 0.0)
+                now = time.time()
+                if now - last_log > 1.0:
+                    print(f"[INFO] TRACK stale frame (age={frame_age:.2f}s "
+                          f"> {CAMERA_STALE_S:.2f}s) — holding zero velocity")
+                    last_log = now
+                time.sleep(0.05)
+                continue
+
             filt_x, filt_y, vx, vy, vz = controller.track_velocity_command(
-                body_x, body_y,
+                body_x, body_y, body_z, frame_age=frame_age,
             )
 
             # Convergence: BOTH filtered axes inside the centre threshold
@@ -2217,6 +2374,7 @@ def track_tag(controller, pump, state):
                       f"body=({body_x:+.2f},{body_y:+.2f},{body_z:+.2f})  "
                       f"filt=({filt_x:+.2f},{filt_y:+.2f})  "
                       f"v=({vx:+.2f},{vy:+.2f},{vz:+.2f})  "
+                      f"age={frame_age*1000:.0f}ms  "
                       f"alt={alt_str}  "
                       f"centred={centred_count}/{TRACK_CENTER_HOLD_FRAMES}")
                 last_log = now
@@ -2372,21 +2530,74 @@ def precision_land(controller, pump, state):
             last_body_z   = body_z
             last_tag_body = (body_x, body_y)
 
-            # Final-approach handoff: once we're inside TOUCHDOWN_BODY_Z_M
-            # of the tag, hand control to ArduCopter LAND so its ground
-            # detection / auto-disarm finishes the touchdown cleanly.
-            if body_z < TOUCHDOWN_BODY_Z_M:
+            # Frame freshness: pump() refreshes last_frame_time only on
+            # a brand-new in_rgb arrival.  Stale-frame skip and dead-
+            # reckon-compensation rationale documented in track_tag().
+            frame_time = state.get("last_frame_time")
+            frame_age = (time.time() - frame_time) if frame_time else 0.0
+
+            if frame_age > CAMERA_STALE_S:
+                # Detection came from a cached frame older than
+                # CAMERA_STALE_S — don't drive PD or commit-to-LAND on
+                # stale data.  Hover and wait for a fresh detection.
+                controller.send_velocity(0.0, 0.0, 0.0)
+                now = time.time()
+                if now - last_log > 1.0:
+                    print(f"[INFO] DESCENT stale frame "
+                          f"(age={frame_age:.2f}s > {CAMERA_STALE_S:.2f}s) "
+                          "— holding zero velocity")
+                    last_log = now
+                time.sleep(0.02)
+                continue
+
+            # Drive the descent ourselves.  Returns the FILTERED body
+            # offset so the commit-to-LAND gate below can require
+            # cm-scale lateral alignment, not the raw (noisier) offset.
+            filt_x, filt_y, vx, vy, vz = controller.descent_velocity_command(
+                body_x, body_y, body_z, frame_age=frame_age,
+            )
+
+            # Final-approach handoff.  We commit to LAND only when either:
+            #   (a) body_z < TOUCHDOWN_BODY_Z_M AND lateral alignment is
+            #       tighter than TOUCHDOWN_XY_M (single-digit cm), OR
+            #   (b) body_z < TOUCHDOWN_HARD_FLOOR_BZ_M — below that floor
+            #       the altitude-scaled gains can't centre anyway, so
+            #       prolonging PD would waste battery on an offset we
+            #       cannot drive out.
+            # If body_z is between the hard floor and TOUCHDOWN_BODY_Z_M
+            # with a loose lateral, descent_velocity_command's XY_ERR_HOLD
+            # branch is already throttling vz to 20 % so the drone keeps
+            # nudging in laterally before sinking past the hard floor.
+            lateral_err = max(abs(filt_x), abs(filt_y))
+            if body_z < TOUCHDOWN_HARD_FLOOR_BZ_M:
                 commit_to_land(
                     controller, pump,
-                    f"body_z={body_z:.2f} m below "
-                    f"TOUCHDOWN_BODY_Z_M={TOUCHDOWN_BODY_Z_M:.2f} m"
+                    f"body_z={body_z:.2f} m below hard floor "
+                    f"TOUCHDOWN_HARD_FLOOR_BZ_M="
+                    f"{TOUCHDOWN_HARD_FLOOR_BZ_M:.2f} m "
+                    f"(lateral={lateral_err*100:.1f} cm)"
                 )
                 return "TOUCHDOWN"
-
-            # Drive the descent ourselves.
-            vx, vy, vz = controller.descent_velocity_command(
-                body_x, body_y, body_z,
-            )
+            if body_z < TOUCHDOWN_BODY_Z_M:
+                if lateral_err < TOUCHDOWN_XY_M:
+                    commit_to_land(
+                        controller, pump,
+                        f"body_z={body_z:.2f} m below "
+                        f"TOUCHDOWN_BODY_Z_M={TOUCHDOWN_BODY_Z_M:.2f} m "
+                        f"and lateral={lateral_err*100:.1f} cm "
+                        f"< TOUCHDOWN_XY_M={TOUCHDOWN_XY_M*100:.0f} cm"
+                    )
+                    return "TOUCHDOWN"
+                # else: log once that we're deferring commit; the PD
+                # continues to drive us laterally on the next tick.
+                now = time.time()
+                if now - last_log > 0.5:
+                    print(f"[INFO] DESCENT deferring commit-to-LAND: "
+                          f"body_z={body_z:.2f} m below "
+                          f"TOUCHDOWN_BODY_Z_M={TOUCHDOWN_BODY_Z_M:.2f} m "
+                          f"but lateral={lateral_err*100:.1f} cm "
+                          f"> TOUCHDOWN_XY_M={TOUCHDOWN_XY_M*100:.0f} cm")
+                    last_log = now
 
             # Publish LANDING_TARGET for any downstream PrecLand consumer.
             # On this airframe the descent is driven by descent_velocity_*
@@ -2414,8 +2625,10 @@ def precision_land(controller, pump, state):
                     rel_str = "n/a"
                 print(f"[INFO] DESCENT body=({body_x:+.2f},"
                       f"{body_y:+.2f},{body_z:+.2f}) "
+                      f"filt=({filt_x:+.2f},{filt_y:+.2f}) "
                       f"v=({vx:+.2f},{vy:+.2f},{vz:+.2f})  "
-                      f"bz={body_z:.2f} m  alt={rel_str}")
+                      f"bz={body_z:.2f} m  age={frame_age*1000:.0f}ms  "
+                      f"alt={rel_str}")
                 last_log = now
 
         else:
