@@ -260,7 +260,7 @@ TOUCHDOWN_BODY_Z_M       = 0.6   # m — switch to LAND below this body-Z
 # speed without ever converging.
 # ─────────────────────────────────────────────────────────────────────────────
 
-TRACK_DURATION_S       = 20.0     # s — upper bound on TRACK; converging
+TRACK_DURATION_S       = 12.0     # s — upper bound on TRACK; converging
                                   # below TRACK_CENTER_THRESHOLD_M for
                                   # TRACK_CENTER_HOLD_FRAMES exits earlier.
 TRACK_LOSS_TIMEOUT_S   = 3.0      # s — bail to SEARCH after this much loss
@@ -1371,7 +1371,8 @@ class PrecisionLandingController:
 
     def recover_velocity_command(self, drift_snapshot, last_tag_body=None):
         """Command a body-frame counter-drift velocity to fly back toward
-        a marker that has just left the camera frame.
+        a marker that has just left the camera frame, AND actively
+        return to the set altitude (TRACK_TARGET_ALT_M) while doing so.
 
         ``drift_snapshot`` is the (body_vx, body_vy) sampled at the
         moment of tag loss (NOT the current instantaneous velocity —
@@ -1389,13 +1390,24 @@ class PrecisionLandingController:
         snapshot at full gain, otherwise we attenuate the command to
         RECOVERY_OAK_DISAGREE_SCALE.
 
-        Sends a body-frame velocity (vx, vy, 0) and returns a dict
+        Vertical: per user spec the recovery also flies the airframe
+        back UP to TRACK_TARGET_ALT_M (the takeoff "set height", 4 m
+        on this airframe).  Reuses the TRACK altitude-hold P-loop
+        (TRACK_Kp_Z / TRACK_MAX_VZ / TRACK_ALT_DEADBAND_M) so the
+        airframe converges on the same altitude regardless of
+        whether the marker is currently visible.  Important during a
+        tag-loss in PRECISION_LAND: the recovery actively climbs back
+        from whatever descent altitude we were at, giving the camera
+        more vertical headroom to re-acquire the marker.
+
+        Sends a body-frame velocity (vx, vy, vz) and returns a dict
         describing the action so the caller can log it / surface it on
         the HUD:
 
             {
-                "vx": float, "vy": float,
+                "vx": float, "vy": float, "vz": float,
                 "drift_x": float, "drift_y": float,
+                "rel_alt": float | None,
                 "source": "ekf" | "tag_offset" | "none",
                 "oak_confirm": bool,
                 "scale": float,
@@ -1470,7 +1482,24 @@ class PrecisionLandingController:
         vx = _floor_then_clamp(vx_raw, snap_x)
         vy = _floor_then_clamp(vy_raw, snap_y)
 
-        self.send_velocity(vx, vy, 0.0)
+        # ── Active altitude hold during recovery ─────────────────────────
+        # Identical P-loop to track_velocity_command — bring the airframe
+        # back to TRACK_TARGET_ALT_M (the takeoff set-height) regardless
+        # of what altitude the tag was lost at.  Fall back to vz=0 if
+        # the relative-altitude reading is not available (degenerate
+        # startup), same safe behaviour as TRACK.
+        rel_alt = _relative_altitude_m(self)
+        if rel_alt is None:
+            vz = 0.0
+        else:
+            alt_err = TRACK_TARGET_ALT_M - rel_alt
+            if abs(alt_err) < TRACK_ALT_DEADBAND_M:
+                vz = 0.0
+            else:
+                vz_cmd = -TRACK_Kp_Z * alt_err
+                vz = max(min(vz_cmd, TRACK_MAX_VZ), -TRACK_MAX_VZ)
+
+        self.send_velocity(vx, vy, vz)
 
         # Same HUD-cache convention as descent_velocity_command — clear
         # the LANDING_TARGET fields so draw_overlay falls through to
@@ -1481,8 +1510,9 @@ class PrecisionLandingController:
         self.last_cmd["lt_z"] = None
 
         return {
-            "vx": vx, "vy": vy,
+            "vx": vx, "vy": vy, "vz": vz,
             "drift_x": snap_x, "drift_y": snap_y,
+            "rel_alt": rel_alt,
             "source": source,
             "oak_confirm": oak_confirm,
             "scale": scale,
@@ -2229,16 +2259,20 @@ def track_tag(controller, pump, state):
             state["leg_label"] = (
                 f"TRACK RECOVER {recovery_elapsed:.1f}/"
                 f"{RECOVERY_DURATION_S:.1f}s "
-                f"v=({rec['vx']:+.2f},{rec['vy']:+.2f}) "
+                f"v=({rec['vx']:+.2f},{rec['vy']:+.2f},{rec['vz']:+.2f}) "
                 f"src={rec['source']}"
             )
 
             now = time.time()
             if now - last_recovery_log > 0.5:
+                alt_str = (f"{rec['rel_alt']:+.2f}/{TRACK_TARGET_ALT_M:.1f}m"
+                           if rec['rel_alt'] is not None else "n/a")
                 print(f"[INFO] TRACK RECOVER t={recovery_elapsed:.1f}/"
                       f"{RECOVERY_DURATION_S:.1f}s  "
                       f"drift=({rec['drift_x']:+.2f},{rec['drift_y']:+.2f}) "
-                      f"v=({rec['vx']:+.2f},{rec['vy']:+.2f})  "
+                      f"v=({rec['vx']:+.2f},{rec['vy']:+.2f},"
+                      f"{rec['vz']:+.2f})  "
+                      f"alt={alt_str}  "
                       f"src={rec['source']}  "
                       f"oak={'yes' if rec['oak_confirm'] else 'no'}  "
                       f"scale={rec['scale']:.2f}")
@@ -2451,16 +2485,20 @@ def precision_land(controller, pump, state):
             state["leg_label"] = (
                 f"PL RECOVER {recovery_elapsed:.1f}/"
                 f"{RECOVERY_DURATION_S:.1f}s "
-                f"v=({rec['vx']:+.2f},{rec['vy']:+.2f}) "
+                f"v=({rec['vx']:+.2f},{rec['vy']:+.2f},{rec['vz']:+.2f}) "
                 f"src={rec['source']}"
             )
 
             now = time.time()
             if now - last_recovery_log > 0.5:
+                alt_str = (f"{rec['rel_alt']:+.2f}/{TRACK_TARGET_ALT_M:.1f}m"
+                           if rec['rel_alt'] is not None else "n/a")
                 print(f"[INFO] PRECISION_LAND RECOVER t="
                       f"{recovery_elapsed:.1f}/{RECOVERY_DURATION_S:.1f}s  "
                       f"drift=({rec['drift_x']:+.2f},{rec['drift_y']:+.2f}) "
-                      f"v=({rec['vx']:+.2f},{rec['vy']:+.2f})  "
+                      f"v=({rec['vx']:+.2f},{rec['vy']:+.2f},"
+                      f"{rec['vz']:+.2f})  "
+                      f"alt={alt_str}  "
                       f"src={rec['source']}  "
                       f"oak={'yes' if rec['oak_confirm'] else 'no'}  "
                       f"scale={rec['scale']:.2f}")
