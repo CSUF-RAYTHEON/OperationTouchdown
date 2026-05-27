@@ -15,7 +15,13 @@ class RoboteqBridge(Node):
         self.WHEEL_RADIUS = 0.165      
         self.WHEEL_BASE = 0.635        
         self.TICKS_PER_REV = 8000      
-        self.LEFT_TRIM = 1.0 
+        self.LEFT_TRIM = 1.0
+        self.declare_parameter('drive_invert_linear', False)
+        self.declare_parameter('odom_invert_linear', 1.0)
+        self._drive_invert = (
+            -1.0 if self.get_parameter('drive_invert_linear').value else 1.0
+        )
+        self._odom_invert = float(self.get_parameter('odom_invert_linear').value)
 
         try:
             # Use AMA0 for the Pi 5 GPIO serial pins
@@ -67,19 +73,15 @@ class RoboteqBridge(Node):
                     except (IndexError, ValueError):
                         continue
 
-        # --- MOTOR COMMANDS: THE FLIP ---
-        linear = self.linear_x * 350
-        angular = self.angular_z * 100
-        
-        # 1. Calculate "Ideal" Differential Logic
+        # ROS uses +linear.x = forward; drive_invert_linear maps that to motor wiring.
+        linear = self._drive_invert * self.linear_x * 350
+        angular = self.angular_z * 200
+
         ideal_left = linear - angular
         ideal_right = linear + angular
 
-        # 2. APPLY THE "TACOMA" INVERSION
-        # Ch 1 is Right, Ch 2 is Left.
-        # Since Ch 2 is flipped, we invert its ideal command.
         right_motor_cmd = int(ideal_right)
-        left_motor_cmd = int(ideal_left) # This is the "Pivot Fix"
+        left_motor_cmd = int(ideal_left)
 
         command = f"!G 1 {right_motor_cmd}\r!G 2 {left_motor_cmd}\r"
         self.ser.write(command.encode())
@@ -98,24 +100,23 @@ class RoboteqBridge(Node):
 
         d_left_ticks = left_ticks - self.last_left_ticks
         d_right_ticks = right_ticks - self.last_right_ticks
-        
-        # Try adding a slight multiplier to "correct" the physical bias
-# If the rover thinks it's turning left, we need to scale down the right wheel's impact
-# Ensure these lines are perfectly aligned with the block above them
-        dist_right = (d_right_ticks / self.TICKS_PER_REV) * (2 * math.pi * self.WHEEL_RADIUS)
-        dist_left = -(d_left_ticks / self.TICKS_PER_REV) * (2 * math.pi * self.WHEEL_RADIUS) 
-        
-        # --- FIX THIS LINE ---
-        # Make sure there is NO extra space before 'd_center'
-        d_center = (dist_left + dist_right) / 2.0
-        d_th = (dist_right - dist_left) / self.WHEEL_BASE
 
-        # Prepare Message
+        tick_to_m = (2.0 * math.pi * self.WHEEL_RADIUS) / self.TICKS_PER_REV
+        dist_right = d_right_ticks * tick_to_m
+        dist_left = -(d_left_ticks * tick_to_m)  # left encoder counts opposite
+
+        d_center = self._odom_invert * (dist_left + dist_right) / 2.0
+        d_th = (dist_right - dist_left) / self.WHEEL_BASE  # left turn = +angular.z
+
+        self.th += d_th
+        self.x += d_center * math.cos(self.th)
+        self.y += d_center * math.sin(self.th)
+
         odom = Odometry()
         odom.header.stamp = current_time.to_msg()
         odom.header.frame_id = "odom"
-        odom.child_frame_id = "base_footprint" 
-        
+        odom.child_frame_id = "base_footprint"
+
         odom.pose.pose.position.x = self.x
         odom.pose.pose.position.y = self.y
         odom.pose.pose.orientation.z = math.sin(self.th / 2.0)
@@ -123,7 +124,7 @@ class RoboteqBridge(Node):
 
         odom.twist.twist.linear.x = d_center / dt
         odom.twist.twist.angular.z = d_th / dt
-        
+
         self.odom_pub.publish(odom)
 
         self.last_left_ticks = left_ticks

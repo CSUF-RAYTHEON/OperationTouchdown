@@ -1,36 +1,48 @@
 slam_toolbox:
   ros__parameters:
 
-    # 1. General Logistics
     use_sim_time: false
     odom_frame: odom
     map_frame: map
     base_frame: base_footprint
-    scan_topic: /scan_merged    # FIXED: Use the combined asset
+
+    # Use RPLidar only — camera depth scan detects uneven ground/grass as false obstacles
+    # outdoors.  Re-enable merged scan indoors: set scan_topic: /scan_merged and
+    # launch with enable_laser_merger:=true
+    scan_topic: /scan
     mode: mapping
 
-    # 2. DATA INTEGRITY & STABILITY
-    transform_timeout: 0.1         
-    scan_buffer_size: 10          # REDUCED: Lowers memory overhead
-    scan_buffer_maximum_scan_distance: 12.0
-    link_match_minimum_response_fine: 0.1 
+    throttle_scans: 1
+    transform_timeout: 1.0
+    tf_buffer_duration: 30.0
+    transform_publish_period: 0.02
+    stack_size_to_use: 40000000
 
-    # 3. Solver settings (Sticking with Ceres)
+    # --- Outdoor / sparse-environment tuning ---
+    # Require meaningful movement before adding a new scan so noise from
+    # vegetation, uneven ground, and dynamic reflectors doesn't accumulate.
+    minimum_time_interval: 0.5
+    minimum_travel_distance: 0.25   # 25 cm — was 0.05, drastically cuts noise scan count
+    minimum_travel_heading: 0.12    # ~7 deg — was 0.05
+    map_update_interval: 3.0        # publish map every 3 s instead of 2 s
+
+    # Tighter scan buffer keeps memory usage down on Pi 5
+    scan_buffer_size: 10
+    scan_buffer_maximum_scan_distance: 10.0  # ignore lidar returns beyond 10 m outdoors
+
+    link_match_minimum_response_fine: 0.1
+
     solver_plugin: solver_plugins::CeresSolver
     ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
     ceres_preconditioner: SCHUR_JACOBI
     ceres_trust_strategy: LEVENBERG_MARQUARDT
 
-    # 4. Mapping Process settings
-    resolution: 0.05             # High-Def resolution (5cm)
-    do_loop_closure: true
-    loop_search_distance: 8.0     # Wider search for better "Matching"
-    
-    # 5. CPU THROTTLING (The "Efficiency" Policy)
-    max_laser_range: 12.0        # Use the Lidar's full indoor reach
-    minimum_time_interval: 0.3    # Update map 3x per second (Saves CPU)
-    minimum_travel_distance: 0.1  # Only update if robot moves 10cm
-    minimum_travel_heading: 0.1   # Only update if robot turns ~6 degrees
-    
-    transform_publish_period: 0.05 # Keep TF high (20Hz) for smooth navigation
-    map_update_interval: 5.0      # Only re-draw the global map every 5s
+    # 10 cm cells — slightly coarser than default 8 cm but far less noise in
+    # open outdoor environments where scan returns are sparse
+    resolution: 0.10
+    max_laser_range: 10.0   # RPLidar returns beyond 10 m are unreliable outdoors
+
+    # Loop closure off by default: outdoor parks have repetitive features
+    # (similar-looking trees) that cause false closures.  Enable once you have
+    # a complete loop and are confident in odometry.
+    do_loop_closing: false

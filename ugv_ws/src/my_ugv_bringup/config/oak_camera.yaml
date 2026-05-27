@@ -1,0 +1,18 @@
+# RGBD: publishes depth on /oak/stereo/image_raw (Stereo-only pipeline does not).
+/oak:
+  ros__parameters:
+    camera:
+      i_enable_imu: true
+      i_enable_ir: false
+      i_nn_type: none
+      i_pipeline_type: RGBD
+    rgb:
+      i_publish_topic: false
+    stereo:
+      i_publish_topic: true
+      i_fps: 5.0
+      i_subpixel: true
+    left:
+      i_fps: 5.0
+    right:
+      i_fps: 5.0

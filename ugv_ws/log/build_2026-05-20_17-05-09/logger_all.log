@@ -1,0 +1,317 @@
+[0.152s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--symlink-install']
+[0.152s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=True, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=4, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0xffffbd0acb60>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0xffffbd25ce00>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0xffffbd25ce00>>, mixin_verb=('build',))
+[0.209s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.210s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.210s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.210s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.210s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.210s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.210s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/ugv/Desktop/OperationTouchdown/ugv_ws'
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.249s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.249s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.249s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.249s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.249s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(src/build) by extensions ['ignore', 'ignore_ament_install']
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/build) by extension 'ignore'
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/build) ignored
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extensions ['ignore', 'ignore_ament_install']
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'ignore'
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'ignore_ament_install'
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extensions ['colcon_pkg']
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'colcon_pkg'
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extensions ['colcon_meta']
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'colcon_meta'
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extensions ['ros']
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'ros'
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extensions ['cmake', 'python']
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'cmake'
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'python'
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extensions ['python_setup_py']
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/depthai-ros) by extension 'python_setup_py'
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(src/dual_laser_merger) by extensions ['ignore', 'ignore_ament_install']
+[0.253s] Level 1:colcon.colcon_core.package_identification:_identify(src/dual_laser_merger) by extension 'ignore'
+[0.253s] Level 1:colcon.colcon_core.package_identification:_identify(src/dual_laser_merger) by extension 'ignore_ament_install'
+[0.253s] Level 1:colcon.colcon_core.package_identification:_identify(src/dual_laser_merger) by extensions ['colcon_pkg']
+[0.253s] Level 1:colcon.colcon_core.package_identification:_identify(src/dual_laser_merger) by extension 'colcon_pkg'
+[0.253s] Level 1:colcon.colcon_core.package_identification:_identify(src/dual_laser_merger) by extensions ['colcon_meta']
+[0.253s] Level 1:colcon.colcon_core.package_identification:_identify(src/dual_laser_merger) by extension 'colcon_meta'
+[0.253s] Level 1:colcon.colcon_core.package_identification:_identify(src/dual_laser_merger) by extensions ['ros']
+[0.253s] Level 1:colcon.colcon_core.package_identification:_identify(src/dual_laser_merger) by extension 'ros'
+[0.257s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dual_laser_merger' with type 'ros.ament_cmake' and name 'dual_laser_merger'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extensions ['ignore', 'ignore_ament_install']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extension 'ignore'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) ignored
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(src/log) by extensions ['ignore', 'ignore_ament_install']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(src/log) by extension 'ignore'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(src/log) ignored
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extensions ['ignore', 'ignore_ament_install']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extension 'ignore'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extension 'ignore_ament_install'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extensions ['colcon_pkg']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extension 'colcon_pkg'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extensions ['colcon_meta']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extension 'colcon_meta'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extensions ['ros']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(src/my_ugv_bringup) by extension 'ros'
+[0.259s] DEBUG:colcon.colcon_core.package_identification:Package 'src/my_ugv_bringup' with type 'ros.ament_cmake' and name 'my_ugv_bringup'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extensions ['ignore', 'ignore_ament_install']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extension 'ignore'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extension 'ignore_ament_install'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extensions ['colcon_pkg']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extension 'colcon_pkg'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extensions ['colcon_meta']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extension 'colcon_meta'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extensions ['ros']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(src/roboteq_ros2_driver) by extension 'ros'
+[0.261s] DEBUG:colcon.colcon_core.package_identification:Package 'src/roboteq_ros2_driver' with type 'ros.ament_cmake' and name 'roboteq_ros2_driver'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extensions ['ignore', 'ignore_ament_install']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extension 'ignore'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extension 'ignore_ament_install'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extensions ['colcon_pkg']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extension 'colcon_pkg'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extensions ['colcon_meta']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extension 'colcon_meta'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extensions ['ros']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extension 'ros'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extensions ['cmake', 'python']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extension 'cmake'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extension 'python'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extensions ['python_setup_py']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(src/rplidar_ros) by extension 'python_setup_py'
+[0.262s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.262s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.262s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.262s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.262s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.286s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.286s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.288s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 3 installed packages in /home/ugv/Desktop/OperationTouchdown/ugv_ws/install
+[0.291s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 416 installed packages in /opt/ros/jazzy
+[0.294s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.372s] Level 5:colcon.colcon_core.verb:set package 'dual_laser_merger' build argument 'cmake_args' from command line to 'None'
+[0.372s] Level 5:colcon.colcon_core.verb:set package 'dual_laser_merger' build argument 'cmake_target' from command line to 'None'
+[0.372s] Level 5:colcon.colcon_core.verb:set package 'dual_laser_merger' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.372s] Level 5:colcon.colcon_core.verb:set package 'dual_laser_merger' build argument 'cmake_clean_cache' from command line to 'False'
+[0.372s] Level 5:colcon.colcon_core.verb:set package 'dual_laser_merger' build argument 'cmake_clean_first' from command line to 'False'
+[0.373s] Level 5:colcon.colcon_core.verb:set package 'dual_laser_merger' build argument 'cmake_force_configure' from command line to 'False'
+[0.373s] Level 5:colcon.colcon_core.verb:set package 'dual_laser_merger' build argument 'ament_cmake_args' from command line to 'None'
+[0.373s] Level 5:colcon.colcon_core.verb:set package 'dual_laser_merger' build argument 'catkin_cmake_args' from command line to 'None'
+[0.373s] Level 5:colcon.colcon_core.verb:set package 'dual_laser_merger' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.373s] DEBUG:colcon.colcon_core.verb:Building package 'dual_laser_merger' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger', 'merge_install': False, 'path': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/dual_laser_merger', 'symlink_install': True, 'test_result_base': None}
+[0.373s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'cmake_args' from command line to 'None'
+[0.373s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'cmake_target' from command line to 'None'
+[0.373s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.373s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'cmake_clean_cache' from command line to 'False'
+[0.373s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'cmake_clean_first' from command line to 'False'
+[0.373s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'cmake_force_configure' from command line to 'False'
+[0.373s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'ament_cmake_args' from command line to 'None'
+[0.373s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'catkin_cmake_args' from command line to 'None'
+[0.373s] Level 5:colcon.colcon_core.verb:set package 'roboteq_ros2_driver' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.373s] DEBUG:colcon.colcon_core.verb:Building package 'roboteq_ros2_driver' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver', 'merge_install': False, 'path': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/roboteq_ros2_driver', 'symlink_install': True, 'test_result_base': None}
+[0.374s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'cmake_args' from command line to 'None'
+[0.374s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'cmake_target' from command line to 'None'
+[0.374s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.374s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'cmake_clean_cache' from command line to 'False'
+[0.374s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'cmake_clean_first' from command line to 'False'
+[0.374s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'cmake_force_configure' from command line to 'False'
+[0.374s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'ament_cmake_args' from command line to 'None'
+[0.374s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'catkin_cmake_args' from command line to 'None'
+[0.374s] Level 5:colcon.colcon_core.verb:set package 'my_ugv_bringup' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.374s] DEBUG:colcon.colcon_core.verb:Building package 'my_ugv_bringup' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup', 'merge_install': False, 'path': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup', 'symlink_install': True, 'test_result_base': None}
+[0.374s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.375s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.376s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/dual_laser_merger' with build type 'ament_cmake'
+[0.376s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/dual_laser_merger'
+[0.378s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.379s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.379s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.385s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/roboteq_ros2_driver' with build type 'ament_cmake'
+[0.385s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/roboteq_ros2_driver'
+[0.386s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.386s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.400s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/dual_laser_merger -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger
+[0.406s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/roboteq_ros2_driver -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver
+[1.692s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/roboteq_ros2_driver -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver
+[1.692s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver -- -j4 -l4
+[1.777s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver -- -j4 -l4
+[1.797s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver
+[1.843s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(roboteq_ros2_driver)
+[1.844s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver
+[1.848s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver' for CMake module files
+[1.849s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver' for CMake config files
+[1.850s] Level 1:colcon.colcon_core.shell:create_environment_hook('roboteq_ros2_driver', 'cmake_prefix_path')
+[1.851s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/hook/cmake_prefix_path.ps1'
+[1.852s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/hook/cmake_prefix_path.dsv'
+[1.853s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/hook/cmake_prefix_path.sh'
+[1.856s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/lib'
+[1.856s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/bin'
+[1.856s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/lib/pkgconfig/roboteq_ros2_driver.pc'
+[1.856s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/lib/python3.12/site-packages'
+[1.857s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/bin'
+[1.858s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.ps1'
+[1.860s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.dsv'
+[1.861s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.sh'
+[1.863s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.bash'
+[1.864s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.zsh'
+[1.866s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/colcon-core/packages/roboteq_ros2_driver)
+[1.867s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(roboteq_ros2_driver)
+[1.868s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver' for CMake module files
+[1.869s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver' for CMake config files
+[1.869s] Level 1:colcon.colcon_core.shell:create_environment_hook('roboteq_ros2_driver', 'cmake_prefix_path')
+[1.869s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/hook/cmake_prefix_path.ps1'
+[1.870s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/hook/cmake_prefix_path.dsv'
+[1.871s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/hook/cmake_prefix_path.sh'
+[1.872s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/lib'
+[1.873s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/bin'
+[1.873s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/lib/pkgconfig/roboteq_ros2_driver.pc'
+[1.873s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/lib/python3.12/site-packages'
+[1.873s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/bin'
+[1.874s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.ps1'
+[1.875s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.dsv'
+[1.877s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.sh'
+[1.878s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.bash'
+[1.879s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.zsh'
+[1.880s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/colcon-core/packages/roboteq_ros2_driver)
+[5.457s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/dual_laser_merger -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger
+[5.459s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger -- -j4 -l4
+[5.624s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger -- -j4 -l4
+[5.627s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger
+[5.675s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(dual_laser_merger)
+[5.675s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger' for CMake module files
+[5.676s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger
+[5.677s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger' for CMake config files
+[5.677s] Level 1:colcon.colcon_core.shell:create_environment_hook('dual_laser_merger', 'cmake_prefix_path')
+[5.677s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/hook/cmake_prefix_path.ps1'
+[5.678s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/hook/cmake_prefix_path.dsv'
+[5.679s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/hook/cmake_prefix_path.sh'
+[5.680s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib'
+[5.680s] Level 1:colcon.colcon_core.shell:create_environment_hook('dual_laser_merger', 'ld_library_path_lib')
+[5.680s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/hook/ld_library_path_lib.ps1'
+[5.680s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/hook/ld_library_path_lib.dsv'
+[5.681s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/hook/ld_library_path_lib.sh'
+[5.682s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/bin'
+[5.682s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib/pkgconfig/dual_laser_merger.pc'
+[5.682s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib/python3.12/site-packages'
+[5.683s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/bin'
+[5.683s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.ps1'
+[5.684s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.dsv'
+[5.685s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.sh'
+[5.686s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.bash'
+[5.686s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.zsh'
+[5.687s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/colcon-core/packages/dual_laser_merger)
+[5.688s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(dual_laser_merger)
+[5.689s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger' for CMake module files
+[5.690s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger' for CMake config files
+[5.690s] Level 1:colcon.colcon_core.shell:create_environment_hook('dual_laser_merger', 'cmake_prefix_path')
+[5.691s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/hook/cmake_prefix_path.ps1'
+[5.691s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/hook/cmake_prefix_path.dsv'
+[5.692s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/hook/cmake_prefix_path.sh'
+[5.693s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib'
+[5.693s] Level 1:colcon.colcon_core.shell:create_environment_hook('dual_laser_merger', 'ld_library_path_lib')
+[5.693s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/hook/ld_library_path_lib.ps1'
+[5.694s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/hook/ld_library_path_lib.dsv'
+[5.694s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/hook/ld_library_path_lib.sh'
+[5.695s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/bin'
+[5.695s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib/pkgconfig/dual_laser_merger.pc'
+[5.695s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib/python3.12/site-packages'
+[5.696s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/bin'
+[5.696s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.ps1'
+[5.697s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.dsv'
+[5.698s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.sh'
+[5.699s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.bash'
+[5.699s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.zsh'
+[5.700s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/colcon-core/packages/dual_laser_merger)
+[5.701s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup' with build type 'ament_cmake'
+[5.701s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup'
+[5.702s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[5.702s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[5.720s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup': CMAKE_PREFIX_PATH=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup
+[6.269s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup' returned '0': CMAKE_PREFIX_PATH=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup
+[6.270s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup': CMAKE_PREFIX_PATH=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup -- -j4 -l4
+[6.348s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup' returned '0': CMAKE_PREFIX_PATH=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup -- -j4 -l4
+[6.350s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup': CMAKE_PREFIX_PATH=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup
+[6.394s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(my_ugv_bringup)
+[6.395s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup' for CMake module files
+[6.395s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup' returned '0': CMAKE_PREFIX_PATH=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup
+[6.396s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup' for CMake config files
+[6.397s] Level 1:colcon.colcon_core.shell:create_environment_hook('my_ugv_bringup', 'cmake_prefix_path')
+[6.397s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/hook/cmake_prefix_path.ps1'
+[6.398s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/hook/cmake_prefix_path.dsv'
+[6.398s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/hook/cmake_prefix_path.sh'
+[6.399s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/lib'
+[6.400s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/bin'
+[6.400s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/lib/pkgconfig/my_ugv_bringup.pc'
+[6.400s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/lib/python3.12/site-packages'
+[6.401s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/bin'
+[6.401s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.ps1'
+[6.402s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.dsv'
+[6.402s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.sh'
+[6.403s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.bash'
+[6.403s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.zsh'
+[6.404s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/colcon-core/packages/my_ugv_bringup)
+[6.405s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(my_ugv_bringup)
+[6.406s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup' for CMake module files
+[6.406s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup' for CMake config files
+[6.407s] Level 1:colcon.colcon_core.shell:create_environment_hook('my_ugv_bringup', 'cmake_prefix_path')
+[6.407s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/hook/cmake_prefix_path.ps1'
+[6.408s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/hook/cmake_prefix_path.dsv'
+[6.409s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/hook/cmake_prefix_path.sh'
+[6.410s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/lib'
+[6.410s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/bin'
+[6.410s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/lib/pkgconfig/my_ugv_bringup.pc'
+[6.410s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/lib/python3.12/site-packages'
+[6.411s] Level 1:colcon.colcon_core.environment:checking '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/bin'
+[6.411s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.ps1'
+[6.412s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.dsv'
+[6.413s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.sh'
+[6.413s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.bash'
+[6.414s] INFO:colcon.colcon_core.shell:Creating package script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/package.zsh'
+[6.415s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/colcon-core/packages/my_ugv_bringup)
+[6.416s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[6.416s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[6.417s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[6.417s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[6.418s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[6.418s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/local_setup.ps1'
+[6.419s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/_local_setup_util_ps1.py'
+[6.421s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/setup.ps1'
+[6.422s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/local_setup.sh'
+[6.423s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/_local_setup_util_sh.py'
+[6.424s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/setup.sh'
+[6.426s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/local_setup.bash'
+[6.426s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/setup.bash'
+[6.431s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/local_setup.zsh'
+[6.432s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/setup.zsh'

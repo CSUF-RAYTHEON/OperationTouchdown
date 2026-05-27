@@ -1,0 +1,94 @@
+[0.016s] Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/dual_laser_merger -DCMAKE_INSTALL_PREFIX=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger
+[0.047s] -- Found ament_cmake_auto: 2.5.6 (/opt/ros/jazzy/share/ament_cmake_auto/cmake)
+[0.423s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.733s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.761s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.801s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.842s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.069s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[1.076s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[1.246s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.795s] CMake Warning (dev) at /usr/lib/aarch64-linux-gnu/cmake/pcl/Modules/FindFLANN.cmake:45 (find_package):
+[1.795s]   Policy CMP0144 is not set: find_package uses upper-case <PACKAGENAME>_ROOT
+[1.795s]   variables.  Run "cmake --help-policy CMP0144" for policy details.  Use the
+[1.795s]   cmake_policy command to set the policy and suppress this warning.
+[1.795s] 
+[1.795s]   CMake variable FLANN_ROOT is set to:
+[1.796s] 
+[1.796s]     /usr
+[1.796s] 
+[1.796s]   For compatibility, find_package is ignoring the variable, but code in a
+[1.796s]   .cmake module might still use it.
+[1.796s] Call Stack (most recent call first):
+[1.796s]   /usr/lib/aarch64-linux-gnu/cmake/pcl/PCLConfig.cmake:261 (find_package)
+[1.796s]   /usr/lib/aarch64-linux-gnu/cmake/pcl/PCLConfig.cmake:306 (find_flann)
+[1.796s]   /usr/lib/aarch64-linux-gnu/cmake/pcl/PCLConfig.cmake:570 (find_external_library)
+[1.797s]   /opt/ros/jazzy/share/pcl_conversions/cmake/ament_cmake_export_dependencies-extras.cmake:21 (find_package)
+[1.797s]   /opt/ros/jazzy/share/pcl_conversions/cmake/pcl_conversionsConfig.cmake:41 (include)
+[1.797s]   /opt/ros/jazzy/share/ament_cmake_auto/cmake/ament_auto_find_build_dependencies.cmake:67 (find_package)
+[1.797s]   CMakeLists.txt:9 (ament_auto_find_build_dependencies)
+[1.797s] This warning is for project developers.  Use -Wno-dev to suppress it.
+[1.798s] 
+[1.800s] -- Found flann version 1.9.2
+[3.659s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[3.674s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/aarch64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[3.680s] -- Could NOT find Pcap (missing: PCAP_LIBRARIES PCAP_INCLUDE_DIRS) 
+[4.448s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[4.460s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/aarch64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[5.171s] -- Found Qhull version 8.0.2
+[5.880s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[6.859s] -- Found ament_lint_auto: 0.17.5 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[6.954s] In this package, headers install destination is set to `include` by ament_auto_package. It is recommended to install `include/dual_laser_merger` instead and will be the default behavior of ament_auto_package from ROS 2 Kilted Kaiju. On distributions before Kilted, ament_auto_package behaves the same way when you use USE_SCOPED_HEADER_INSTALL_DIR option.
+[6.966s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[6.966s] -- Configured cppcheck include dirs: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/dual_laser_merger/include
+[6.967s] -- Configured cppcheck exclude dirs and/or files: 
+[6.968s] -- Added test 'flake8' to check Python code syntax and style conventions
+[6.968s] -- Configured 'flake8' exclude dirs and/or files: 
+[6.970s] -- Added test 'lint_cmake' to check CMake code style
+[6.971s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[6.974s] -- Added test 'uncrustify' to check C / C++ code style
+[6.975s] -- Configured uncrustify additional arguments: 
+[6.976s] -- Added test 'xmllint' to check XML markup files
+[6.986s] -- Configuring done (6.9s)
+[7.215s] -- Generating done (0.2s)
+[7.233s] -- Build files have been written to: /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger
+[7.284s] Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/dual_laser_merger -DCMAKE_INSTALL_PREFIX=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger
+[7.286s] Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger -- -j4 -l4
+[7.417s] [ 50%] Built target dual_laser_merger_node
+[7.437s] [ 75%] Building CXX object CMakeFiles/dual_laser_merger.dir/src/dual_laser_merger.cpp.o
+[41.001s] [100%] Linking CXX shared library libdual_laser_merger.so
+[46.743s] [100%] Built target dual_laser_merger
+[46.764s] Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger -- -j4 -l4
+[46.785s] Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger
+[46.802s] -- Install configuration: ""
+[46.803s] -- Execute custom install script
+[46.803s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib/dual_laser_merger/dual_laser_merger_node
+[46.804s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/include/dual_laser_merger/include/dual_laser_merger/dual_laser_merger.hpp
+[46.804s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/demo_laser_merger.launch.py
+[46.805s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/bag/dual_lidar/dual_lidar_0.mcap
+[46.805s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/bag/dual_lidar/metadata.yaml
+[46.805s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/config/rviz_config.rviz
+[46.805s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/include/dual_laser_merger/dual_laser_merger.hpp
+[46.806s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/library_path.sh
+[46.806s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/library_path.dsv
+[46.806s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/lib/libdual_laser_merger.so
+[46.807s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/ament_index/resource_index/package_run_dependencies/dual_laser_merger
+[46.807s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/ament_index/resource_index/parent_prefix_path/dual_laser_merger
+[46.807s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/ament_prefix_path.sh
+[46.807s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/ament_prefix_path.dsv
+[46.807s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/path.sh
+[46.808s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/environment/path.dsv
+[46.808s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/local_setup.bash
+[46.808s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/local_setup.sh
+[46.808s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/local_setup.zsh
+[46.808s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/local_setup.dsv
+[46.809s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.dsv
+[46.829s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/ament_index/resource_index/packages/dual_laser_merger
+[46.829s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/ament_index/resource_index/rclcpp_components/dual_laser_merger
+[46.830s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/ament_cmake_export_dependencies-extras.cmake
+[46.830s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/ament_cmake_export_include_directories-extras.cmake
+[46.830s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/ament_cmake_export_libraries-extras.cmake
+[46.830s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/dual_laser_mergerConfig.cmake
+[46.830s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/cmake/dual_laser_mergerConfig-version.cmake
+[46.831s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.xml
+[46.834s] Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/dual_laser_merger

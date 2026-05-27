@@ -16,4 +16,9 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}
 )
 
+install(PROGRAMS
+  scripts/cmd_vel_nav_relay.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 ament_package()

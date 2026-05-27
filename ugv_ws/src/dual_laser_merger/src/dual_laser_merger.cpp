@@ -40,7 +40,8 @@ MergerNode::MergerNode(const rclcpp::NodeOptions & options)
   laser_2_sub.subscribe(this, this->get_parameter("laser_2_topic").as_string(),
       rclcpp::SensorDataQoS().get_rmw_qos_profile());
 
-  tf2_buffer = std::make_shared<tf2_ros::Buffer>(this->get_clock());
+  tf2_buffer = std::make_shared<tf2_ros::Buffer>(
+    this->get_clock(), tf2::durationFromSec(30.0));
   tf2_listener = std::make_shared<tf2_ros::TransformListener>(*tf2_buffer, this);
   message_filter =
     std::make_shared<message_filters::Synchronizer<message_filters::sync_policies::ApproximateTime<
@@ -123,10 +124,12 @@ void MergerNode::sub_callback(
       refresh_param();
     }
 
-    if(enable_average_filter_param) {
+    if (enable_average_filter_param && !lidar_1_msg->ranges.empty() &&
+      !lidar_2_msg->ranges.empty())
+    {
       lidar_1_avg = *lidar_1_msg;
       lidar_2_avg = *lidar_2_msg;
-      for(size_t i = 0; i <= lidar_1_msg->ranges.size(); i++) {
+      for (size_t i = 0; i < lidar_1_msg->ranges.size(); i++) {
         if(i == 0) {
           lidar_1_avg.ranges[i] = (lidar_1_msg->ranges[lidar_1_msg->ranges.size() - 1] +
             lidar_1_msg->ranges[i] + lidar_1_msg->ranges[i + 1]) / 3;
@@ -138,7 +141,7 @@ void MergerNode::sub_callback(
             lidar_1_msg->ranges[i + 1]) / 3;
         }
       }
-      for(size_t i = 0; i <= lidar_2_msg->ranges.size(); i++) {
+      for (size_t i = 0; i < lidar_2_msg->ranges.size(); i++) {
         if(i == 0) {
           lidar_2_avg.ranges[i] = (lidar_2_msg->ranges[lidar_2_msg->ranges.size() - 1] +
             lidar_2_msg->ranges[i] + lidar_2_msg->ranges[i + 1]) / 3;
@@ -153,55 +156,75 @@ void MergerNode::sub_callback(
 
       projector.projectLaser(lidar_1_avg, cloud_in_1);
       projector.projectLaser(lidar_2_avg, cloud_in_2);
-    } else {
+    } else if (!lidar_1_msg->ranges.empty() && !lidar_2_msg->ranges.empty()) {
       projector.projectLaser(*lidar_1_msg, cloud_in_1);
       projector.projectLaser(*lidar_2_msg, cloud_in_2);
+    } else {
+      return;
     }
 
     if (lidar_1_msg->header.frame_id != target_frame_param) {
-      tf2_msg.header = cloud_in_1.header;
-      tf2_msg.child_frame_id = cloud_in_1.header.frame_id + "_calibrated";
-      tf2_msg.transform.translation.x = laser_1_x_offset;
-      tf2_msg.transform.translation.y = laser_1_y_offset;
-      tf2_msg.transform.translation.z = 0.0;
-      tf2_quaternion.setRPY(0, 0, laser_1_yaw_offset);
-      tf2_msg.transform.rotation.x = tf2_quaternion.x();
-      tf2_msg.transform.rotation.y = tf2_quaternion.y();
-      tf2_msg.transform.rotation.z = tf2_quaternion.z();
-      tf2_msg.transform.rotation.w = tf2_quaternion.w();
-      tf2_broadcaster->sendTransform(tf2_msg);
-      cloud_in_1.header.frame_id = tf2_msg.child_frame_id;
+      if (enable_calibration_param) {
+        tf2_msg.header.stamp = cloud_in_1.header.stamp;
+        tf2_msg.header.frame_id = cloud_in_1.header.frame_id;
+        tf2_msg.child_frame_id = cloud_in_1.header.frame_id + "_calibrated";
+        tf2_msg.transform.translation.x = laser_1_x_offset;
+        tf2_msg.transform.translation.y = laser_1_y_offset;
+        tf2_msg.transform.translation.z = 0.0;
+        tf2_quaternion.setRPY(0, 0, laser_1_yaw_offset);
+        tf2_msg.transform.rotation.x = tf2_quaternion.x();
+        tf2_msg.transform.rotation.y = tf2_quaternion.y();
+        tf2_msg.transform.rotation.z = tf2_quaternion.z();
+        tf2_msg.transform.rotation.w = tf2_quaternion.w();
+        tf2_broadcaster->sendTransform(tf2_msg);
+        cloud_in_1.header.frame_id = tf2_msg.child_frame_id;
+      }
 
       try {
         cloud_in_1 = tf2_buffer->transform(
           cloud_in_1, target_frame_param, tf2::durationFromSec(tolerance_param));
       } catch (tf2::TransformException & ex) {
-        RCLCPP_ERROR_STREAM(this->get_logger(), "Transform failure, Laser 1: " << ex.what());
+        RCLCPP_WARN_THROTTLE(
+          this->get_logger(), *this->get_clock(), 5000,
+          "Transform failure, Laser 1: %s", ex.what());
         return;
       }
     }
 
     if (lidar_2_msg->header.frame_id != target_frame_param) {
-      tf2_msg.header = cloud_in_2.header;
-      tf2_msg.child_frame_id = cloud_in_2.header.frame_id + "_calibrated";
-      tf2_msg.transform.translation.x = laser_2_x_offset;
-      tf2_msg.transform.translation.y = laser_2_y_offset;
-      tf2_msg.transform.translation.z = 0.0;
-      tf2_quaternion.setRPY(0, 0, laser_2_yaw_offset);
-      tf2_msg.transform.rotation.x = tf2_quaternion.x();
-      tf2_msg.transform.rotation.y = tf2_quaternion.y();
-      tf2_msg.transform.rotation.z = tf2_quaternion.z();
-      tf2_msg.transform.rotation.w = tf2_quaternion.w();
-      tf2_broadcaster->sendTransform(tf2_msg);
-      cloud_in_2.header.frame_id = tf2_msg.child_frame_id;
+      if (enable_calibration_param) {
+        tf2_msg.header.stamp = cloud_in_2.header.stamp;
+        tf2_msg.header.frame_id = cloud_in_2.header.frame_id;
+        tf2_msg.child_frame_id = cloud_in_2.header.frame_id + "_calibrated";
+        tf2_msg.transform.translation.x = laser_2_x_offset;
+        tf2_msg.transform.translation.y = laser_2_y_offset;
+        tf2_msg.transform.translation.z = 0.0;
+        tf2_quaternion.setRPY(0, 0, laser_2_yaw_offset);
+        tf2_msg.transform.rotation.x = tf2_quaternion.x();
+        tf2_msg.transform.rotation.y = tf2_quaternion.y();
+        tf2_msg.transform.rotation.z = tf2_quaternion.z();
+        tf2_msg.transform.rotation.w = tf2_quaternion.w();
+        tf2_broadcaster->sendTransform(tf2_msg);
+        cloud_in_2.header.frame_id = tf2_msg.child_frame_id;
+      }
 
       try {
         cloud_in_2 = tf2_buffer->transform(
           cloud_in_2, target_frame_param, tf2::durationFromSec(tolerance_param));
       } catch (tf2::TransformException & ex) {
-        RCLCPP_ERROR_STREAM(this->get_logger(), "Transform failure, Laser 2: " << ex.what());
+        RCLCPP_WARN_THROTTLE(
+          this->get_logger(), *this->get_clock(), 5000,
+          "Transform failure, Laser 2: %s", ex.what());
         return;
       }
+    }
+
+    // Skip before pcl::fromROSMsg — empty PointCloud2 triggers [pcl::fromPCLPointCloud2] No data to copy.
+    const auto cloud_has_data = [](const sensor_msgs::msg::PointCloud2 & cloud) {
+      return cloud.width > 0 && cloud.height > 0 && !cloud.data.empty();
+    };
+    if (!cloud_has_data(cloud_in_1) || !cloud_has_data(cloud_in_2)) {
+      return;
     }
 
     pcl::fromROSMsg(cloud_in_1, pcl_cloud_in_1);

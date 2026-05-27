@@ -1,0 +1,67 @@
+[0.021s] Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/roboteq_ros2_driver -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver
+[1.167s] -- The C compiler identification is GNU 13.3.0
+[1.985s] -- The CXX compiler identification is GNU 13.3.0
+[2.050s] -- Detecting C compiler ABI info
+[2.332s] -- Detecting C compiler ABI info - done
+[2.346s] -- Check for working C compiler: /usr/bin/cc - skipped
+[2.347s] -- Detecting C compile features
+[2.348s] -- Detecting C compile features - done
+[2.371s] -- Detecting CXX compiler ABI info
+[2.630s] -- Detecting CXX compiler ABI info - done
+[2.645s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[2.646s] -- Detecting CXX compile features
+[2.646s] -- Detecting CXX compile features - done
+[2.663s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[3.023s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[3.232s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[3.345s] -- Found rclcpp: 28.1.18 (/opt/ros/jazzy/share/rclcpp/cmake)
+[3.592s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[3.634s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[3.702s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[3.764s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[4.025s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[4.040s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[4.336s] -- Found OpenSSL: /usr/lib/aarch64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[4.370s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[4.411s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[4.619s] -- Found rclpy: 7.1.11 (/opt/ros/jazzy/share/rclpy/cmake)
+[4.627s] -- Found geometry_msgs: 5.3.7 (/opt/ros/jazzy/share/geometry_msgs/cmake)
+[4.718s] -- Found tf2_ros: 0.36.20 (/opt/ros/jazzy/share/tf2_ros/cmake)
+[5.080s] -- Found ament_lint_auto: 0.17.5 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[5.350s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[5.351s] -- Configured cppcheck include dirs: 
+[5.351s] -- Configured cppcheck exclude dirs and/or files: 
+[5.354s] -- Added test 'flake8' to check Python code syntax and style conventions
+[5.355s] -- Configured 'flake8' exclude dirs and/or files: 
+[5.361s] -- Added test 'lint_cmake' to check CMake code style
+[5.365s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[5.382s] -- Added test 'uncrustify' to check C / C++ code style
+[5.382s] -- Configured uncrustify additional arguments: 
+[5.386s] -- Added test 'xmllint' to check XML markup files
+[5.391s] -- Configuring done (5.1s)
+[5.400s] -- Generating done (0.0s)
+[5.405s] -- Build files have been written to: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver
+[5.430s] Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/roboteq_ros2_driver -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver
+[5.432s] Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver -- -j4 -l4
+[5.519s] Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver -- -j4 -l4
+[5.521s] Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver
+[5.538s] -- Install configuration: ""
+[5.538s] -- Execute custom install script
+[5.539s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/lib/roboteq_ros2_driver/roboteq_bridge.py
+[5.561s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/ament_index/resource_index/package_run_dependencies/roboteq_ros2_driver
+[5.585s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/ament_index/resource_index/parent_prefix_path/roboteq_ros2_driver
+[5.605s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/ament_prefix_path.sh
+[5.624s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/ament_prefix_path.dsv
+[5.643s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/path.sh
+[5.662s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/path.dsv
+[5.682s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.bash
+[5.702s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.sh
+[5.722s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.zsh
+[5.741s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.dsv
+[5.761s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.dsv
+[5.782s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/ament_index/resource_index/packages/roboteq_ros2_driver
+[5.806s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/cmake/ament_cmake_export_dependencies-extras.cmake
+[5.826s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/cmake/roboteq_ros2_driverConfig.cmake
+[5.846s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/cmake/roboteq_ros2_driverConfig-version.cmake
+[5.865s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.xml
+[5.887s] Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/build/roboteq_ros2_driver
