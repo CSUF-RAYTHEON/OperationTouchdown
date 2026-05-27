@@ -17,7 +17,7 @@ MIN_DISTANCE = 10
 LK_WIN_SIZE = (21, 21)
 LK_MAX_LEVEL = 3
 
-MIN_PNP_POINTS = 13
+MIN_PNP_POINTS = 10
 DEPTH_MIN_M = 0.10
 DEPTH_MAX_M = 15.0
 REDETECT_EVERY = 10
@@ -281,7 +281,7 @@ class VO_LK:
             confidence=0.999, iterationsCount=150
         )
         
-        if not ok or inl is None or len(inl) < 12:
+        if not ok or inl is None or len(inl) < 9:
             self.status = "PNP_FAIL"
             self._reset_tracking(gray, depth_mm) 
             return
