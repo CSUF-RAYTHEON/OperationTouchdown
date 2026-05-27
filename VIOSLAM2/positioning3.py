@@ -18,15 +18,15 @@ MIN_DISTANCE = 10
 LK_WIN_SIZE = (21, 21)
 LK_MAX_LEVEL = 3
 
-MIN_PNP_POINTS = 10
-DEPTH_MIN_M = 0.10
-DEPTH_MAX_M = 15.0
+MIN_PNP_POINTS = 9
+DEPTH_MIN_M = 0.08
+DEPTH_MAX_M = 18.0
 REDETECT_EVERY = 10
 
 # Loop closure (SLAM)
 # --- SPATIAL KEYFRAMING SETTINGS ---
-KEYFRAME_MIN_DIST_M = 0.17      # Saves a new map image if drone moves more than 17cm
-KEYFRAME_MIN_YAW_RAD = 0.30    # Saves a new map image if drone rotates more than 0.30 radians
+KEYFRAME_MIN_DIST_M = 0.15      # Saves a new map image if drone moves more than 17cm
+KEYFRAME_MIN_YAW_RAD = 0.30   # Saves a new map image if drone rotates more than 0.30 radians
 
 LOOP_CHECK_INTERVAL = 0.6 # Checks for a loop closure every 0.6 seconds
 MIN_LOOP_SEPARATION = 15 # does not compare the live video against the 15 most recent images it just saved.
@@ -37,7 +37,7 @@ ORB_NFEATURES = 400
 ORB_SCALE = 0.5
 
 # Soft drift correction
-SOFT_CORR_ALPHA = 0.20 # Instead of applying the full correction, it multiplies the distance by SOFT_CORR_ALPHA. It only nudges the VIO coordinates 20% closer to the truth.
+SOFT_CORR_ALPHA = 0.25 # Instead of applying the full correction, it multiplies the distance by SOFT_CORR_ALPHA. It only nudges the VIO coordinates 25% closer to the truth.
 SOFT_CORR_COOLDOWN = 0.75 # Time before another soft correction can be applied, in seconds
 MIN_DRIFT_TO_CORRECT_M = 0.12 # minimum drift required to apply a correction in meters (if the drift is smaller than this, we just let it be to avoid over-correcting and adding noise)
 MAX_CORR_STEP_M = 1.0 # caps the maximum correction distance to 1.0 meter per frame
@@ -557,9 +557,7 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
         else:
             print(f"VIO LOST. Status: {vo.status}")
 
-def test_positioning(position_mutex):
-    time.sleep(6) 
-    
+def test_positioning(position_mutex):    
     shm_position = shared_memory.SharedMemory(name="position")
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
     local_position = np.zeros((3,), dtype=np.float64)
@@ -611,6 +609,7 @@ if __name__ == "__main__":
         vio_process.start()
         time.sleep(3)
         test_process.start()
+        time.sleep(3)
         test_process.join()
         
     except KeyboardInterrupt:

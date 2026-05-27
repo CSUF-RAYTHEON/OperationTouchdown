@@ -1,0 +1,44 @@
+1. when comparing an image to other key frame images to try and see if it recognizes it to do error/position correction maybe try to compare that image multiple times rotated around
+
+2. do multi-frame estimation instead of only comparing the last two frames 
+
+3. have benchmarking, so time from new image received till new position calculated for both when using slam and not using slam scenarios. 
+
+4. turn off desktop display and run stricly in terminal 
+
+5. dynamic slam, add the ability to turn on and off SLAM loop closure so if in non-static enviornments to not mess up positioning like when landing on moving vehicle,
+   make it so other process can turn it on and off also 
+
+6. use cameras dedicated hardware accelerator instead of pi cpu from what AI said: "Right now, your Raspberry Pi 5's CPU is doing a massive amount of heavy lifting. It is pulling 
+   raw image arrays from the camera and running cv2.calcOpticalFlowPyrLK on the CPU. The camera you are using has an onboard Intel Myriad X Vision Processing Unit (VPU) that is currently 
+   sitting mostly idle. DepthAI has a built-in FeatureTracker node that runs the Shi-Tomasi corner detection and Lucas-Kanade optical flow directly on the camera's silicon. Instead of sending 
+   heavy video frames over the USB/MIPI cable to the Pi and running CPU math, you can link the camera node directly to a FeatureTracker node in your pipeline. The camera will then just send a 
+   tiny text array of [feature_ID, x, y, velocity] directly to your shared memory. This can drop your Pi 5's CPU usage by over 40%, leaving massive headroom for mission control logic.
+
+7. use object detection to detect non-static things like people, cars, etc this way if things are moving in frames it doesnt mess up calculations, it will not take those things into consideration
+   when doing visual odometery or SLAM, maybe it can black out or outline out whatever should not be taken into consideration.
+
+8. do sensor fusion, when at a really high height above whatever the camera can accurately use for depth to calculate height use the barometer or lidar for height. Do something like if the 
+   barometer detects we are above 50+ meters then we know for certain that we are above 50+ meters and not use camera depth at all for height, and then maybe at 20-40 meters this is where 
+   lidar is most accurate so maybe 80% trust lidar and 15% trust barometer and 5% trust camera depth. the lidar in this case is a simple one that only shoots down to calculate height 
+
+9. also when at really high heights to calculate how much we moved we can use the barometer to calcualate how much we moved, so the camera sees two images and in the image a building shifted 
+   right by 20 pixels, if we can get like the angular distance between the 20 pixels and for example it is 10 degrees then we can just use math or trigonometry to calculate how much the angular
+   shift corresponds to in position change using the barometer as our accurate height that will be used for the calculations. 
+
+10. to solve the problem of something getting in front of the camera at high altitude or if terrain is not level it can check the height that it is at first using the barometer, because the
+    barometer is the source of truth for heights above 50+ meters if the depth camera/lidar notices an object or depth of like 10 meters then it knows that because it for sure is 50 + meters that 
+    it couldnt have fallen that much and that something is in front of it so it can block that out when doing its calculations. 
+
+11. if allowed use markers or beacons, like put an arucomarker or april tag and if it detects it then it knows its at a certain position because when it first encountered that marker
+    it associated it with a certain position coordinate (Landmark Anchoring) also UWB (Ultra-Wideband) which does absolute positioning via radio waves bounced between mobile tags and fixed anchors.
+
+12. use more advanced lidar for mapping/SLAM, this is super accurate but still needs error correction, its better for feature-less enviornments like blank walls from AI: "Tightly Coupled Fusion
+    (Recommended for Accuracy): Feed the camera's visual features, depth points, and LiDAR point clouds directly into a single optimization backend (like an Extended Kalman Filter or factor graph).
+    This minimizes drift across all sensors simultaneously. Loosely Coupled Fusion (Recommended for Low Compute): Run your VO-SLAM independently to get a high-frequency position estimate. 
+    Feed that position into the LiDAR SLAM pipeline as an initial guess, speeding up point cloud alignment. Do a two step error correction, first Visual Loop Detection: Use the RGB camera to detect 
+    loops via a "Bag of Words" approach (DBoW2), which recognizes distinct visual scenes much faster than evaluating 3D geometry. secondly, LiDAR Loop Verification: Once the camera flags a potential 
+    loop, pull the past and present LiDAR point clouds for that location. Use an ICP (Iterative Closest Point) algorithm to verify that the 3D shapes match, eliminating false camera triggers.
+
+13. increase framerate of camera, because its only 30fps may not give must up to date image, also position calculation may be able to handle 40-60 fps depending on how fast it can do the
+    calculations, also simply increasing the framerate wouldnt hurt at all.
