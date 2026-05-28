@@ -154,17 +154,35 @@ local_costmap:
         z_voxels: 16
         max_obstacle_height: 2.0
         mark_threshold: 0
-        observation_sources: scan
+        observation_sources: scan camera_scan
         scan:
           topic: /scan
-          max_obstacle_height: 2.0
+          sensor_frame: laser
+          observation_persistence: 0.0
+          expected_update_rate: 0.0
+          data_type: "LaserScan"
           clearing: true
           marking: true
-          data_type: "LaserScan"
-          raytrace_max_range: 10.0
-          raytrace_min_range: 0.0
-          obstacle_max_range: 9.5
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.0
+          obstacle_max_range: 10.0
           obstacle_min_range: 0.0
+          raytrace_max_range: 12.0
+          raytrace_min_range: 0.0
+        camera_scan:
+          topic: /camera_scan
+          sensor_frame: camera_link
+          observation_persistence: 0.0
+          expected_update_rate: 0.0
+          data_type: "LaserScan"
+          clearing: true
+          marking: true
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.0
+          obstacle_max_range: 3.5
+          obstacle_min_range: 0.35
+          raytrace_max_range: 4.0
+          raytrace_min_range: 0.0
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: true
@@ -189,14 +207,18 @@ global_costmap:
         observation_sources: scan
         scan:
           topic: /scan
-          max_obstacle_height: 2.0
+          sensor_frame: laser
+          observation_persistence: 0.0
+          expected_update_rate: 0.0
+          data_type: "LaserScan"
           clearing: true
           marking: true
-          data_type: "LaserScan"
-          raytrace_max_range: 10.0
-          raytrace_min_range: 0.0
-          obstacle_max_range: 9.5
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.0
+          obstacle_max_range: 10.0
           obstacle_min_range: 0.0
+          raytrace_max_range: 12.0
+          raytrace_min_range: 0.0
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: true

@@ -114,7 +114,7 @@ def generate_launch_description():
             'range_min': 0.35,
             'range_max': 3.5,
             'output_frame': 'camera_link',
-            'scan_height': 1,
+            'scan_height': 3,
             'qos_overrides./depth.subscription.reliability': 'reliable',
             'qos_overrides./depth_camera_info.subscription.reliability': 'reliable',
         }]
