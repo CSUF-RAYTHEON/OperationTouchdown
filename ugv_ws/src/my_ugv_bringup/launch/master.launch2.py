@@ -239,9 +239,9 @@ def generate_launch_description():
             'enable_nav2',
             default_value='false',
             description=(
-                'Launch Nav2 autonomy stack. Set true only after a map has been built and saved. '
-                'Mapping mode: ros2 launch my_ugv_bringup master.launch2.py '
-                'Navigation mode: ros2 launch my_ugv_bringup master.launch2.py enable_nav2:=true'
+                'Launch Nav2 autonomy stack alongside slam_toolbox live mapping. '
+                'SLAM starts at t=44s and publishes map→odom TF; Nav2 starts at t=55s. '
+                'Usage: ros2 launch my_ugv_bringup master.launch2.py enable_nav2:=true'
             ),
         ),
         joint_state_publisher,
@@ -265,10 +265,10 @@ def generate_launch_description():
             condition=IfCondition(enable_laser_merger),
         ),
         slam_launch,
-        # Nav2 starts 90s after launch so SLAM has time to build odom->map TF.
-        # Only launched when enable_nav2:=true (requires a saved map first).
+        # Nav2 starts at t=55s: SLAM activates at t=44s, Nav2 waits 11s for first map→odom TF.
+        # slam_toolbox provides live localization — no pre-saved map required.
         TimerAction(
-            period=90.0,
+            period=55.0,
             actions=[navigation],
             condition=IfCondition(enable_nav2),
         ),
