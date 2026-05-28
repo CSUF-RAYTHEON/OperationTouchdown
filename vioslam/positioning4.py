@@ -606,7 +606,7 @@ def test_positioning(position_mutex, slam_enabled_mutex):
             print("\n[MISSION CONTROL SIM] Target reached! Disabling SLAM corrections...\n")
             with slam_enabled_mutex:
                 shared_slam_enabled[0] = False
-        time.sleep(0.1) 
+        time.sleep(0.25) 
 
 if __name__ == "__main__":
     mp.set_start_method('spawn', force=True)
