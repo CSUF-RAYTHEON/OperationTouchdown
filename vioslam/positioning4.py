@@ -33,7 +33,7 @@ MIN_LOOP_SEPARATION = 15 # does not compare the live video against the 15 most r
 MATCH_THRESHOLD = 45
 MAX_KEYFRAMES = 600 # Remembers 600 unique spatial locations
 MAX_MATCH_CANDIDATES = 325 # Checks the last 325 frames for a match
-ORB_NFEATURES = 400
+ORB_NFEATURES = 200
 ORB_SCALE = 0.5
 
 # Soft drift correction
@@ -524,7 +524,7 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
         elapsed_ms = (end_time - start_time) * 1000.0
         vo_count += 1
         vo_average_time += elapsed_ms
-        if vo_count % 128 == 0:
+        if vo_count >= 128:
             vo_average_time /= vo_count
             vo_count = 0
             print(f"[VIO] Average processing time per frame: {vo_average_time:.2f} ms")
