@@ -3,9 +3,18 @@
 <package format="3">
   <name>my_ugv_bringup</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>UGV bringup launch and config files</description>
   <maintainer email="ground@todo.todo">ground</maintainer>
-  <license>TODO: License declaration</license>
+  <license>Apache-2.0</license>
+
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>my_ugv_description</exec_depend>
+  <exec_depend>my_ugv_hardware</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>slam_toolbox</exec_depend>
+  <exec_depend>rplidar_ros</exec_depend>
+  <exec_depend>foxglove_bridge</exec_depend>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

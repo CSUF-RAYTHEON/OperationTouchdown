@@ -1,158 +1,157 @@
+#!/usr/bin/env python3
+"""Master launch — selects operating mode: slam | nav | manual.
+
+Usage:
+  ros2 launch my_ugv_bringup master.launch.py mode:=slam
+  ros2 launch my_ugv_bringup master.launch.py mode:=nav map:=/path/to/map.yaml
+  ros2 launch my_ugv_bringup master.launch.py mode:=manual
+"""
+
 import os
+
+import xacro
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, TimerAction, EmitEvent, RegisterEventHandler
-from launch.launch_description_sources import PythonLaunchDescriptionSource, AnyLaunchDescriptionSource
-from launch_ros.actions import Node, LifecycleNode
-from launch_ros.events.lifecycle import ChangeState
-from launch_ros.event_handlers import OnStateTransition
-from launch.events import matches_action
-import lifecycle_msgs.msg
-import xacro
+from launch.actions import (
+    DeclareLaunchArgument,
+    IncludeLaunchDescription,
+)
+from launch.conditions import IfCondition, UnlessCondition
+from launch.launch_description_sources import (
+    AnyLaunchDescriptionSource,
+    PythonLaunchDescriptionSource,
+)
+from launch.substitutions import (
+    EqualsSubstitution,
+    LaunchConfiguration,
+    NotEqualsSubstitution,
+    PythonExpression,
+)
+from launch_ros.actions import Node
+
 
 def generate_launch_description():
-    pkg_share = get_package_share_directory('my_ugv_bringup')
-    
-    # 1. Process URDF
-    xacro_file = os.path.join(pkg_share, 'urdf', 'my_ugv.urdf.xacro')
+    pkg_bringup     = get_package_share_directory('my_ugv_bringup')
+    pkg_description = get_package_share_directory('my_ugv_description')
+
+    # ── arguments ───────────────────────────────────────────────────────────
+    mode_arg = DeclareLaunchArgument(
+        'mode',
+        default_value='slam',
+        description='Operating mode: slam | nav | manual',
+        choices=['slam', 'nav', 'manual'],
+    )
+    map_arg = DeclareLaunchArgument(
+        'map',
+        default_value='',
+        description='Map YAML path (required for nav mode)',
+    )
+    use_sim_time_arg = DeclareLaunchArgument(
+        'use_sim_time',
+        default_value='false',
+        description='Use simulation clock',
+    )
+    challenge_mode_arg = DeclareLaunchArgument(
+        'challenge_mode',
+        default_value='2',
+        description='Competition challenge: 1, 2, or 3',
+    )
+    use_foxglove_arg = DeclareLaunchArgument(
+        'use_foxglove',
+        default_value='true',
+        description='Launch Foxglove Bridge',
+    )
+
+    mode           = LaunchConfiguration('mode')
+    map_file       = LaunchConfiguration('map')
+    use_sim_time   = LaunchConfiguration('use_sim_time')
+    challenge_mode = LaunchConfiguration('challenge_mode')
+    use_foxglove   = LaunchConfiguration('use_foxglove')
+
+    # ── URDF ─────────────────────────────────────────────────────────────────
+    xacro_file = os.path.join(pkg_description, 'urdf', 'ugv.urdf.xacro')
     robot_description_raw = xacro.process_file(xacro_file).toxml()
 
-    # 2. Paths
-    foxglove_path = os.path.join(get_package_share_directory('foxglove_bridge'), 'launch', 'foxglove_bridge_launch.xml')
-    oakd_path = os.path.join(get_package_share_directory('depthai_ros_driver'), 'launch', 'camera.launch.py')
-    ekf_path = os.path.join(pkg_share, 'config', 'ekf.yaml')
-    slam_params_path = os.path.join(pkg_share, 'config', 'slam_param.yaml')
-
-    # 3. Core Infrastructure Nodes
-    robot_state_publisher = Node(
+    rsp_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='robot_state_publisher',
-        parameters=[{'robot_description': robot_description_raw}]
-    )
-
-    foxglove_bridge = IncludeLaunchDescription(AnyLaunchDescriptionSource(foxglove_path))
-
-    roboteq_bridge = Node(
-        package='roboteq_ros2_driver',
-        executable='roboteq_bridge.py',
-        name='roboteq_bridge',
-        parameters=[{
-            'publish_tf': False, 
-            'odom_frame': 'odom', 
-            'base_frame': 'base_footprint',
-        }]
-    )
-
-    ekf_node = Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='ekf_filter_node',
-        parameters=[ekf_path]
-    )
-
-    # 4. Lidar (Downsampled to 7Hz for Efficiency)
-    rplidar_node = Node(
-        package='rplidar_ros',
-        executable='rplidar_node',
-        name='rplidar_node',
-        parameters=[{
-            'serial_port': '/dev/ttyUSB0',
-            'frame_id': 'laser',
-            'scan_mode': 'Standard',
-            'serial_baudrate': 115200,
-            'inverted': False,
-            'angle_compensate': True,
-            'scan_frequency': 10.0,
-        }],
-        output='screen'
-    )
-
-    oakd_camera = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(oakd_path),
-        launch_arguments={
-            'name': 'oak',
-            'pass_tf_args_as_params': 'true',
-            'parent_frame': 'base_link',
-            'cam_roll': '3.14159',
-            'enable_color': 'false',
-            'rectify_rgb': 'false',
-            'enable_depth': 'true',
-            'depth_module.depth_profile': '640,400,5',
-            # --- ADD THIS TO STOP THE FIGHT ---
-            'publish_tf_from_calibration': 'false', 
-            # ----------------------------------
-        }.items()
-    )
-
-    depth_to_scan = Node(
-        package='depthimage_to_laserscan',
-        executable='depthimage_to_laserscan_node',
-        name='depthimage_to_laserscan',
-        remappings=[
-            ('depth', '/oak/stereo/image_raw'),       
-            ('depth_camera_info', '/oak/stereo/camera_info'), 
-            ('scan', '/camera_scan')
-        ],
-        parameters=[{
-            'output_frame': 'oak_rgb_camera_frame', 
-            'range_min': 0.45,
-            'range_max': 3.5,
-            'scan_height': 1,
-            'scan_time': 0.2
-        }]
-    )
-
-    # 6. User Interface Nodes
-    joy_node = Node(package='joy_linux', executable='joy_linux_node', name='joy_node', parameters=[{'dev': '/dev/input/js0'}])
-    
-    teleop_node = Node(
-        package='teleop_twist_joy', executable='teleop_node', name='teleop_twist_joy_node',
-        parameters=[{'enable_button': 5, 'axis_linear.x': 3, 'axis_angular.yaw': 1, 'scale_linear.x': 3.0, 'scale_angular.yaw': 1.0}]
-    )
-
-    # 7. SLAM
-    slam_toolbox = LifecycleNode(
-        package='slam_toolbox',
-        executable='async_slam_toolbox_node',
-        name='slam_toolbox',
-        namespace='',
         output='screen',
-        parameters=[slam_params_path]
+        parameters=[{
+            'robot_description': robot_description_raw,
+            'use_sim_time':      use_sim_time,
+        }],
     )
 
-    configure_event = EmitEvent(
-        event=ChangeState(
-            lifecycle_node_matcher=matches_action(slam_toolbox),
-            transition_id=lifecycle_msgs.msg.Transition.TRANSITION_CONFIGURE,
-        )
+    # ── Foxglove Bridge (always launched when enabled) ───────────────────────
+    foxglove_bridge = IncludeLaunchDescription(
+        AnyLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory('foxglove_bridge'),
+                'launch',
+                'foxglove_bridge_launch.xml',
+            )
+        ),
+        condition=IfCondition(use_foxglove),
     )
 
-    activate_event = RegisterEventHandler(
-        OnStateTransition(
-            target_lifecycle_node=slam_toolbox,
-            goal_state='inactive',
-            entities=[
-                EmitEvent(
-                    event=ChangeState(
-                        lifecycle_node_matcher=matches_action(slam_toolbox),
-                        transition_id=lifecycle_msgs.msg.Transition.TRANSITION_ACTIVATE,
-                    )
-                )
-            ]
-        )
+    # ── SLAM mode ─────────────────────────────────────────────────────────────
+    slam_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_bringup, 'launch', 'slam.launch.py')
+        ),
+        launch_arguments={
+            'use_sim_time': use_sim_time,
+            'use_foxglove': 'false',   # foxglove already launched above
+        }.items(),
+        condition=IfCondition(PythonExpression(["'", mode, "' == 'slam'"])),
     )
 
-    # 8. Final Return
+    # ── NAV mode ──────────────────────────────────────────────────────────────
+    nav_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_bringup, 'launch', 'navigation.launch.py')
+        ),
+        launch_arguments={
+            'map':            map_file,
+            'use_sim_time':   use_sim_time,
+            'challenge_mode': challenge_mode,
+            'use_foxglove':   'false',
+        }.items(),
+        condition=IfCondition(PythonExpression(["'", mode, "' == 'nav'"])),
+    )
+
+    # ── MANUAL mode ───────────────────────────────────────────────────────────
+    motor_driver_manual = Node(
+        package='my_ugv_hardware',
+        executable='motor_driver',
+        name='roboteq_bridge',
+        output='screen',
+        parameters=[{
+            'serial_port':  '/dev/ttyACM0',
+            'use_sim_time': use_sim_time,
+        }],
+        condition=IfCondition(PythonExpression(["'", mode, "' == 'manual'"])),
+    )
+
+    virtual_odom_manual = Node(
+        package='my_ugv_hardware',
+        executable='virtual_odom',
+        name='virtual_odom',
+        output='screen',
+        condition=IfCondition(PythonExpression(["'", mode, "' == 'manual'"])),
+    )
+
     return LaunchDescription([
-        robot_state_publisher,
+        mode_arg,
+        map_arg,
+        use_sim_time_arg,
+        challenge_mode_arg,
+        use_foxglove_arg,
+        rsp_node,
         foxglove_bridge,
-        roboteq_bridge,
-        ekf_node,
-        rplidar_node,
-        oakd_camera,
-        depth_to_scan, 
-        joy_node,
-        teleop_node,
-        TimerAction(period=3.0, actions=[slam_toolbox, configure_event, activate_event])
+        slam_launch,
+        nav_launch,
+        motor_driver_manual,
+        virtual_odom_manual,
     ])

@@ -1,0 +1,272 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="my_ugv">
+
+  <!-- ===== CONSTANTS ===== -->
+  <xacro:property name="wheel_radius"   value="0.15875"/>    <!-- 6.25 in -->
+  <xacro:property name="wheel_length"   value="0.1016"/>     <!-- 4 in width -->
+  <xacro:property name="track_width"    value="0.5874"/>     <!-- 23.125 in avg -->
+  <xacro:property name="half_track"     value="0.2937"/>
+  <xacro:property name="wheelbase"      value="0.59055"/>    <!-- 23.25 in -->
+  <xacro:property name="half_wb"        value="0.29528"/>
+
+  <xacro:property name="body_length"    value="0.6096"/>     <!-- 24 in -->
+  <xacro:property name="body_width"     value="0.4572"/>     <!-- 18 in -->
+  <xacro:property name="body_height"    value="0.2794"/>     <!-- 11 in -->
+
+  <xacro:property name="caster_radius"  value="0.05"/>
+  <xacro:property name="pi"             value="3.14159265358979"/>
+
+  <!-- ===== MATERIALS ===== -->
+  <material name="black">   <color rgba="0.1 0.1 0.1 1.0"/> </material>
+  <material name="white">   <color rgba="0.9 0.9 0.9 1.0"/> </material>
+  <material name="gray">    <color rgba="0.5 0.5 0.5 1.0"/> </material>
+  <material name="blue">    <color rgba="0.0 0.4 0.8 1.0"/> </material>
+  <material name="red">     <color rgba="0.8 0.1 0.1 1.0"/> </material>
+  <material name="green">   <color rgba="0.0 0.7 0.0 1.0"/> </material>
+  <material name="orange">  <color rgba="1.0 0.5 0.0 1.0"/> </material>
+
+  <!-- ===== WHEEL MACRO ===== -->
+  <xacro:macro name="wheel" params="name x y">
+    <link name="${name}_wheel">
+      <visual>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <mass value="1.5"/>
+        <inertia
+          ixx="${(1.0/12.0)*1.5*(3*wheel_radius*wheel_radius + wheel_length*wheel_length)}"
+          iyy="${(1.0/12.0)*1.5*(3*wheel_radius*wheel_radius + wheel_length*wheel_length)}"
+          izz="${0.5*1.5*wheel_radius*wheel_radius}"
+          ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+    </link>
+
+    <joint name="${name}_wheel_joint" type="continuous">
+      <parent link="base_link"/>
+      <child  link="${name}_wheel"/>
+      <origin xyz="${x} ${y} 0" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <dynamics damping="0.1" friction="0.1"/>
+    </joint>
+
+    <gazebo reference="${name}_wheel">
+      <material>Gazebo/DarkGray</material>
+      <mu1>0.8</mu1>
+      <mu2>0.8</mu2>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- ===== BASE FOOTPRINT ===== -->
+  <link name="base_footprint"/>
+
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child  link="base_link"/>
+    <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ===== BASE LINK ===== -->
+  <!-- base_link is at the drive axle midpoint at ground level (z=0 in footprint frame = wheel_radius height) -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 ${body_height/2}" rpy="0 0 0"/>
+      <mass value="34.0"/>
+      <inertia
+        ixx="${(1.0/12.0)*34.0*(body_width*body_width + body_height*body_height)}"
+        iyy="${(1.0/12.0)*34.0*(body_length*body_length + body_height*body_height)}"
+        izz="${(1.0/12.0)*34.0*(body_length*body_length + body_width*body_width)}"
+        ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- ===== CHASSIS ===== -->
+  <link name="chassis">
+    <visual>
+      <origin xyz="0 0 ${body_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${body_length} ${body_width} ${body_height}"/>
+      </geometry>
+      <material name="gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${body_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${body_length} ${body_width} ${body_height}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 ${body_height/2}" rpy="0 0 0"/>
+      <mass value="20.0"/>
+      <inertia
+        ixx="${(1.0/12.0)*20.0*(body_width*body_width + body_height*body_height)}"
+        iyy="${(1.0/12.0)*20.0*(body_length*body_length + body_height*body_height)}"
+        izz="${(1.0/12.0)*20.0*(body_length*body_length + body_width*body_width)}"
+        ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="chassis_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="chassis"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <gazebo reference="chassis">
+    <material>Gazebo/Gray</material>
+  </gazebo>
+
+  <!-- ===== WHEELS ===== -->
+  <!-- Front-left, front-right, rear-left, rear-right -->
+  <xacro:wheel name="front_left"  x="${half_wb}"  y="${half_track}"/>
+  <xacro:wheel name="front_right" x="${half_wb}"  y="-${half_track}"/>
+  <xacro:wheel name="rear_left"   x="-${half_wb}" y="${half_track}"/>
+  <xacro:wheel name="rear_right"  x="-${half_wb}" y="-${half_track}"/>
+
+  <!-- ===== LIDAR FRAME ===== -->
+  <!-- x=+0.349m, y=0, z=+0.375m relative to base_link -->
+  <link name="laser_frame">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.06"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.06"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="laser_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="laser_frame"/>
+    <origin xyz="0.349 0 0.375" rpy="0 0 0"/>
+  </joint>
+
+  <gazebo reference="laser_frame">
+    <material>Gazebo/Blue</material>
+    <sensor name="lidar" type="ray">
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.15</min>
+          <max>12.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+      <plugin name="scan" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <remapping>~/out:=scan</remapping>
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>laser_frame</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- ===== CAMERA LINK (OAK-D S2) ===== -->
+  <!-- x=+0.292m, y=0, z=+0.244m relative to base_link -->
+  <link name="camera_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.097 0.029 0.028"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.097 0.029 0.028"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.072"/>
+      <inertia ixx="0.00001" iyy="0.00001" izz="0.00001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="camera_link"/>
+    <origin xyz="0.292 0 0.244" rpy="0 0 0"/>
+  </joint>
+
+  <gazebo reference="camera_link">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <!-- OAK-D optical frame (z forward, x right, y down — ROS camera convention) -->
+  <link name="camera_optical_link"/>
+
+  <joint name="camera_optical_joint" type="fixed">
+    <parent link="camera_link"/>
+    <child  link="camera_optical_link"/>
+    <origin xyz="0 0 0" rpy="-1.5707963 0 -1.5707963"/>
+  </joint>
+
+  <!-- ===== IMU LINK (OAK-D S2 IMU — coincident with camera) ===== -->
+  <link name="imu_link"/>
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="camera_link"/>
+    <child  link="imu_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ===== ROS2 CONTROL (DiffDrive — mock for now) ===== -->
+  <ros2_control name="ugv_ros2_control" type="system">
+    <hardware>
+      <plugin>mock_components/GenericSystem</plugin>
+    </hardware>
+    <joint name="front_left_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="velocity"/>
+      <state_interface name="position"/>
+    </joint>
+    <joint name="front_right_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="velocity"/>
+      <state_interface name="position"/>
+    </joint>
+    <joint name="rear_left_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="velocity"/>
+      <state_interface name="position"/>
+    </joint>
+    <joint name="rear_right_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="velocity"/>
+      <state_interface name="position"/>
+    </joint>
+  </ros2_control>
+
+</robot>
