@@ -1,7 +1,7 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, TimerAction
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource, AnyLaunchDescriptionSource
@@ -165,7 +165,7 @@ def generate_launch_description():
     # transitions internally with a matched node reference and is the upstream-supported path.
     # TimerAction gives rplidar + odom time to publish before SLAM tries to subscribe to /scan.
     slam_launch = TimerAction(
-        period=44.0,
+        period=50.0,
         actions=[
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
@@ -180,6 +180,28 @@ def generate_launch_description():
                 }.items(),
             )
         ],
+    )
+
+    # Fallback: if slam_toolbox is still inactive at t=65s (change_state timeout under Pi 5 load),
+    # force-activate it via the lifecycle CLI. No-op if SLAM is already active or not found.
+    slam_activator = TimerAction(
+        period=65.0,
+        actions=[
+            ExecuteProcess(
+                cmd=['bash', '-c',
+                    'source /opt/ros/jazzy/setup.bash && '
+                    'source /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/setup.bash && '
+                    'STATE=$(ros2 lifecycle get /slam_toolbox 2>/dev/null) && '
+                    'echo "SLAM state: $STATE" && '
+                    'echo "$STATE" | grep -q "inactive" && '
+                    'ros2 lifecycle set /slam_toolbox activate && '
+                    'echo "SLAM activated by fallback" || '
+                    'echo "SLAM already active or not found"'
+                ],
+                output='screen',
+                shell=False,
+            )
+        ]
     )
 
     # 7. Competition nodes
@@ -265,7 +287,9 @@ def generate_launch_description():
             condition=IfCondition(enable_laser_merger),
         ),
         slam_launch,
-        # Nav2 starts at t=55s: SLAM activates at t=44s, Nav2 waits 11s for first map→odom TF.
+        slam_activator,
+        # Nav2 starts at t=55s: SLAM starts at t=50s, Nav2 waits 5s for first map→odom TF.
+        # slam_activator at t=65s is a safety net if lifecycle activation timed out under Pi 5 load.
         # slam_toolbox provides live localization — no pre-saved map required.
         TimerAction(
             period=55.0,
