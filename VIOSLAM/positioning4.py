@@ -524,7 +524,7 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
         elapsed_ms = (end_time - start_time) * 1000.0
         vo_count += 1
         vo_average_time += elapsed_ms
-        if vo_count % 256 == 0:
+        if vo_count % 128 == 0:
             vo_average_time /= vo_count
             vo_count = 0
             print(f"[VIO] Average processing time per frame: {vo_average_time:.2f} ms")
@@ -571,10 +571,10 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
                 last_kf_pos = np.array(vo.pose())
             end_time = time.perf_counter()
             elapsed_ms = (end_time - start_time) * 1000.0
-            if elapsed_ms > 12.0:
+            if elapsed_ms > 2.0:
                 slam_count += 1
                 slam_average_time += elapsed_ms
-            if slam_count % 16 == 0:
+            if slam_count >= 16:
                 slam_average_time /= slam_count
                 slam_count = 0
                 print(f"[SLAM] Average loop check time: {slam_average_time:.2f} ms")
