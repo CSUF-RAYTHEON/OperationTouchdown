@@ -602,7 +602,7 @@ def test_positioning(position_mutex, slam_enabled_mutex):
             np.copyto(local_position, shared_position)
         print(f"[MISSION CONTROL SIM] Current Position -> North: {local_position[0]:+.2f}m | East: {local_position[1]:+.2f}m | Down: {local_position[2]:+.2f}m")
 
-        if local_position[0] >= 9:
+        if local_position[0] >= 5:
             print("\n[MISSION CONTROL SIM] Target reached! Disabling SLAM corrections...\n")
             with slam_enabled_mutex:
                 shared_slam_enabled[0] = False
