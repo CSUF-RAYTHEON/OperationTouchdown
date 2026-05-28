@@ -1,15 +1,11 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction, EmitEvent, RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource, AnyLaunchDescriptionSource
-from launch.events import matches_action
-from launch_ros.actions import Node, LifecycleNode
-from launch_ros.event_handlers import OnStateTransition
-from launch_ros.events.lifecycle import ChangeState
-import lifecycle_msgs.msg
+from launch_ros.actions import Node
 import xacro
 
 def generate_launch_description():
@@ -75,7 +71,7 @@ def generate_launch_description():
         package='rplidar_ros', executable='rplidar_composition', name='rplidar_node',
         parameters=[{
             'serial_port': '/dev/ttyUSB0',
-            'frame_id': 'laser',
+            'frame_id': 'laser_frame',
             'scan_mode': 'Standard',
             'serial_baudrate': 115200,
             'scan_frequency': 5.0,
@@ -162,37 +158,28 @@ def generate_launch_description():
         }]
     )
 
-    # 6. SLAM — async + lifecycle (same pattern as slam_toolbox online_async_launch.py)
-    slam_toolbox = LifecycleNode(
-        package='slam_toolbox',
-        executable='async_slam_toolbox_node',
-        name='slam_toolbox',
-        namespace='',  # required in Jazzy; empty = root namespace
-        output='screen',
-        parameters=[slam_params_path, {'use_sim_time': False}],
-    )
-
-    slam_configure = EmitEvent(
-        event=ChangeState(
-            lifecycle_node_matcher=matches_action(slam_toolbox),
-            transition_id=lifecycle_msgs.msg.Transition.TRANSITION_CONFIGURE,
-        )
-    )
-
-    slam_activate = RegisterEventHandler(
-        OnStateTransition(
-            target_lifecycle_node=slam_toolbox,
-            start_state='configuring',
-            goal_state='inactive',
-            entities=[
-                EmitEvent(
-                    event=ChangeState(
-                        lifecycle_node_matcher=matches_action(slam_toolbox),
-                        transition_id=lifecycle_msgs.msg.Transition.TRANSITION_ACTIVATE,
+    # 6. SLAM — delegate lifecycle entirely to slam_toolbox's own online_async_launch.py.
+    # The manual EmitEvent/OnStateTransition chain is unreliable on the Pi 5 under load:
+    # the change_state service response times out during configure, leaving the node
+    # stuck in inactive forever. online_async_launch.py handles the same lifecycle
+    # transitions internally with a matched node reference and is the upstream-supported path.
+    # TimerAction gives rplidar + odom time to publish before SLAM tries to subscribe to /scan.
+    slam_launch = TimerAction(
+        period=44.0,
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    os.path.join(
+                        get_package_share_directory('slam_toolbox'),
+                        'launch', 'online_async_launch.py',
                     )
-                )
-            ],
-        )
+                ),
+                launch_arguments={
+                    'slam_params_file': slam_params_path,
+                    'use_sim_time': 'false',
+                }.items(),
+            )
+        ],
     )
 
     # 7. Competition nodes
@@ -277,8 +264,7 @@ def generate_launch_description():
             actions=[laser_merger_node],
             condition=IfCondition(enable_laser_merger),
         ),
-        slam_activate,
-        TimerAction(period=44.0, actions=[slam_toolbox, slam_configure]),
+        slam_launch,
         # Nav2 starts 90s after launch so SLAM has time to build odom->map TF.
         # Only launched when enable_nav2:=true (requires a saved map first).
         TimerAction(
