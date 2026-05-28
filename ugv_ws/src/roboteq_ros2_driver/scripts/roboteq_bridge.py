@@ -23,15 +23,15 @@ class RoboteqBridge(Node):
         )
         self._odom_invert = float(self.get_parameter('odom_invert_linear').value)
 
+        self.ser = None
         try:
             # Use AMA0 for the Pi 5 GPIO serial pins
             self.ser = serial.Serial('/dev/ttyAMA0', 115200, timeout=0.01)
+            self.ser.write(b"!C 1 0\r!C 2 0\r")
+            time.sleep(0.1)
             self.get_logger().info('Roboteq Bridge: Final Alignment Active')
         except Exception as e:
-            self.get_logger().error(f'Supply Chain Break: {e}')
-        
-        self.ser.write(b"!C 1 0\r!C 2 0\r")
-        time.sleep(0.1) 
+            self.get_logger().error(f'Supply Chain Break — no serial, odom will not publish: {e}')
 
         self.subscription = self.create_subscription(Twist, 'cmd_vel', self.velocity_callback, 10)
         self.odom_pub = self.create_publisher(Odometry, 'odom', 10)
@@ -53,38 +53,44 @@ class RoboteqBridge(Node):
         self.angular_z = msg.angular.z
 
     def update_loop(self):
-        self.ser.write(b"?C\r")
-        time.sleep(0.01)
+        if self.ser is None:
+            return
 
-        if self.ser.in_waiting > 0:
-            raw_data = self.ser.read(self.ser.in_waiting).decode('utf-8', errors='ignore')
-            lines = raw_data.split('\r')
-            for line in lines:
-                clean_line = line.strip()
-                if "C=" in clean_line:
-                    try:
-                        content = clean_line.split('=')[1]
-                        parts = content.split(':')
-                        # Right is Ch 1, Left is Ch 2
-                        right_ticks = int(parts[0])
-                        left_ticks = int(parts[1])
-                        self.calculate_odometry(left_ticks, right_ticks)
-                        break 
-                    except (IndexError, ValueError):
-                        continue
+        try:
+            self.ser.write(b"?C\r")
+            time.sleep(0.01)
 
-        # ROS uses +linear.x = forward; drive_invert_linear maps that to motor wiring.
-        linear = self._drive_invert * self.linear_x * 350
-        angular = self.angular_z * 200
+            if self.ser.in_waiting > 0:
+                raw_data = self.ser.read(self.ser.in_waiting).decode('utf-8', errors='ignore')
+                lines = raw_data.split('\r')
+                for line in lines:
+                    clean_line = line.strip()
+                    if "C=" in clean_line:
+                        try:
+                            content = clean_line.split('=')[1]
+                            parts = content.split(':')
+                            # Right is Ch 1, Left is Ch 2
+                            right_ticks = int(parts[0])
+                            left_ticks = int(parts[1])
+                            self.calculate_odometry(left_ticks, right_ticks)
+                            break
+                        except (IndexError, ValueError):
+                            continue
 
-        ideal_left = linear - angular
-        ideal_right = linear + angular
+            # ROS uses +linear.x = forward; drive_invert_linear maps that to motor wiring.
+            linear = self._drive_invert * self.linear_x * 350
+            angular = self.angular_z * 200
 
-        right_motor_cmd = int(ideal_right)
-        left_motor_cmd = int(ideal_left)
+            ideal_left = linear - angular
+            ideal_right = linear + angular
 
-        command = f"!G 1 {right_motor_cmd}\r!G 2 {left_motor_cmd}\r"
-        self.ser.write(command.encode())
+            right_motor_cmd = int(ideal_right)
+            left_motor_cmd = int(ideal_left)
+
+            command = f"!G 1 {right_motor_cmd}\r!G 2 {left_motor_cmd}\r"
+            self.ser.write(command.encode())
+        except serial.SerialException as e:
+            self.get_logger().error(f'Serial error in update_loop: {e}', throttle_duration_sec=5.0)
 
     def calculate_odometry(self, left_ticks, right_ticks):
         current_time = self.get_clock().now()
@@ -132,8 +138,12 @@ class RoboteqBridge(Node):
         self.last_time = current_time
 
     def destroy_node(self):
-        self.ser.write(b"!G 1 0\r!G 2 0\r")
-        self.ser.close()
+        if self.ser is not None:
+            try:
+                self.ser.write(b"!G 1 0\r!G 2 0\r")
+                self.ser.close()
+            except Exception:
+                pass
         super().destroy_node()
 
 def main(args=None):
