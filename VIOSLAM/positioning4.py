@@ -535,7 +535,6 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
             slam_enabled = bool(shared_slam_enabled[0])
 
         if slam_enabled and vo.status == "TRACKING":
-            start_time = time.perf_counter()
             pos_array = np.array(vo.pose())
             
             # --- THE NEW SPATIAL CHECK ---
@@ -562,6 +561,7 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
                 last_kf_yaw = live_yaw
 
             # 2. Check for map loops (Still runs every 0.6 seconds based on wall-clock)
+            start_time = time.perf_counter()
             info = loop.check_loop(local_rgb, pos_array, vo.frame_idx)
             if info is not None:
                 vo.apply_soft_correction(info["matched_pose"])
@@ -571,9 +571,10 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
                 last_kf_pos = np.array(vo.pose())
             end_time = time.perf_counter()
             elapsed_ms = (end_time - start_time) * 1000.0
-            slam_count += 1
-            slam_average_time += elapsed_ms
-            if slam_count % 32 == 0:
+            if elapsed_ms > 15.0:
+                slam_count += 1
+                slam_average_time += elapsed_ms
+            if slam_count % 16 == 0:
                 slam_average_time /= slam_count
                 slam_count = 0
                 print(f"[SLAM] Average loop check time: {slam_average_time:.2f} ms")
@@ -605,7 +606,7 @@ def test_positioning(position_mutex, slam_enabled_mutex):
             print("\n[MISSION CONTROL SIM] Target reached! Disabling SLAM corrections...\n")
             with slam_enabled_mutex:
                 shared_slam_enabled[0] = False
-        time.sleep(0.2) 
+        time.sleep(0.1) 
 
 if __name__ == "__main__":
     mp.set_start_method('spawn', force=True)
