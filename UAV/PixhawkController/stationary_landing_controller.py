@@ -275,45 +275,37 @@ class StationaryLandingController:
     
     def adjust_velocity_and_send(self, body_x, body_y, body_z):
         """
-        Apply smoothed PD control with Gain Scheduling for precise landing.
+        Apply proportional control and send velocity command
         """
-        # 1. Smoothing: Lower alpha to 0.2 to rely more on the average position.
-        # This acts as a low-pass filter to kill high-frequency jitter.
-        alpha = 0.2
-        self.prev_x = alpha * self.prev_x + (1 - alpha) * body_x
-        self.prev_y = alpha * self.prev_y + (1 - alpha) * body_y
-        self.prev_z = alpha * self.prev_z + (1 - alpha) * body_z
+        alpha = 0.7
+        self.prev_x = alpha*self.prev_x + (1-alpha)*body_x
+        self.prev_y = alpha*self.prev_y + (1-alpha)*body_y
+        self.prev_z = alpha*self.prev_z + (1-alpha)*body_z
 
-        # Use the filtered coordinates
-        bx, by, bz = self.prev_x, self.prev_y, self.prev_z
-        xy_error = (bx**2 + by**2)**0.5
+        body_x = self.prev_x
+        body_y = self.prev_y
+        body_z = self.prev_z
 
-        # 2. Dynamic Gain Scheduling:
-        # If we are far away, use higher gains. If close, use lower gains for precision.
-        # This prevents the "rushing" behavior near the landing spot.
-        Kp_xy_current = 0.4 if xy_error > 0.3 else 0.15
-        Kp_z_current = 0.3 if bz > 0.5 else 0.1
+        # this basically makes sure that we arent sending movement if we are already close, so we avoid jerky movements
+        thresh = 0.05
+        body_x = 0 if abs(body_x) < thresh else body_x
+        body_y = 0 if abs(body_y) < thresh else body_y
 
-        # 3. Staged Descent (Cone of Approach):
-        # We hold altitude until we are aligned to prevent diagonal drifting.
-        if xy_error > 0.25:
-            TARGET_Z = 1.0
-        elif xy_error > 0.08:
-            TARGET_Z = 0.5
-        else:
-            TARGET_Z = 0.0
-            
-        # 4. Calculate Velocities:
-        # We use a deadband (0.03) to stop the motors if we are already close enough.
-        vx = Kp_xy_current * bx if xy_error > 0.03 else 0
-        vy = Kp_xy_current * by if xy_error > 0.03 else 0
-        vz = Kp_z_current * (bz - TARGET_Z)
+        TARGET_Z = 0.3
+        error_z = body_z - TARGET_Z
 
-        # 5. Velocity Clipping:
-        # Reduced max velocity to 0.15 for the final approach to keep it "lazy" and steady.
-        MAX_V = 0.15 
-        vx = max(min(vx, MAX_V), -MAX_V)
-        vy = max(min(vy, MAX_V), -MAX_V)
-        vz = max(min(vz, MAX_V), -MAX_V)
+        vx = Kp_xy * body_x
+        vy = Kp_xy * body_y
+        vz = 0 if abs(error_z) < 0.05 else Kp_z * error_z
+
+        # slow down near landing
+        if body_z < 0.5:
+            vx *= 0.5
+            vy *= 0.5
+
+        # Clip velocities
+        vx = max(min(vx, MAX_VELOCITY), -MAX_VELOCITY)
+        vy = max(min(vy, MAX_VELOCITY), -MAX_VELOCITY)
+        vz = max(min(vz, MAX_VELOCITY), -MAX_VELOCITY)
 
         self.send_velocity(vx, vy, vz)
