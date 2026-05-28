@@ -38,9 +38,13 @@
                                                       ▼
                                           PRECISION_LAND / COMMIT LAND
 
-   TRACK exits early as soon as both filtered |body_x| and |body_y| are
-   below TRACK_CENTER_THRESHOLD_M for TRACK_CENTER_HOLD_FRAMES consecutive
-   frames; TRACK_DURATION_S is just an upper bound (currently 20 s).
+  TRACK exits early as soon as both filtered |body_x| and |body_y| are
+  below TRACK_CENTER_THRESHOLD_M for TRACK_CENTER_HOLD_FRAMES consecutive
+  frames; TRACK_DURATION_S is just an upper bound (currently 25 s).  If
+  the upper bound is reached without the filtered lateral error sitting
+  inside TRACK_HANDOFF_LATERAL_M we treat TRACK as having failed to
+  centre and commit to LAND in place rather than hand an off-centre
+  hover to PRECISION_LAND (which would just descend obliquely).
 
    Within PRECISION_LAND:
      * Mode is GUIDED while body_z > TOUCHDOWN_BODY_Z_M; control source
@@ -251,7 +255,20 @@ DESCENT_Kp_XY            = 0.35
 DESCENT_Kd_XY            = 0.30  # was 0.25 — extra damping to absorb camera
                                  # pipeline latency (drone keeps moving for a
                                  # frame before the next detection updates).
-DESCENT_MAX_V_XY         = 0.4   # m/s, slightly above TRACK for descent
+DESCENT_MAX_V_XY         = 0.70  # m/s.  Raised from 0.4 m/s after a real
+                                 # outdoor flight test of TRACK / DESCENT
+                                 # showed sustained wind drift saturating
+                                 # the previous 0.35–0.40 m/s caps while
+                                 # body-frame offset GROWED rather than
+                                 # shrank (controller permanently fighting
+                                 # wind it could not outpace).  At
+                                 # DESCENT_Kp_XY = 0.35 the unsaturated PD
+                                 # output at 1 m error is ~0.35 m/s, so
+                                 # 0.70 m/s only bites at err > ~2 m — a
+                                 # single noisy detection at small error
+                                 # cannot snap to the cap.  Retune in
+                                 # flight if a more aggressive descent
+                                 # is required.
 DESCENT_TARGET_BZ        = 0.3   # m, desired height above tag during PD
 DESCENT_Kp_Z             = 0.3
 DESCENT_MIN_VZ           = 0.10  # m/s minimum descent rate when centred
@@ -295,7 +312,25 @@ TOUCHDOWN_HARD_FLOOR_BZ_M = 0.30 # m — below this body-Z, altitude-scaled PD
 #      The sign comes from the body-frame convention: body_x > 0 means
 #      tag is forward; commanding vx > 0 moves the drone forward, which
 #      reduces body_x at the same rate.
-CAMERA_STALE_S           = 0.25  # s — older than this, treat as no detection
+CAMERA_STALE_S           = 0.50  # s — older than this, treat the detection
+                                 # as unusable for PD.  Raised from 0.25 s
+                                 # after a flight test showed the normal
+                                 # OAK-D frame cadence sits around
+                                 # 190–240 ms per frame; the old 0.25 s
+                                 # margin was being tripped on nearly every
+                                 # other frame, dropping the controller
+                                 # into the stale-frame branch where it
+                                 # previously commanded zero velocity and
+                                 # let wind drift compound.  At 0.5 s a
+                                 # single genuinely-dropped frame (e.g.
+                                 # garbage-collected DepthAI packet) still
+                                 # trips the branch but normal jitter no
+                                 # longer does.  The stale-frame branch
+                                 # now also runs the EKF-anchored hold
+                                 # (recover_velocity_command) instead of
+                                 # zeroing the command — so even if the
+                                 # gap is large the airframe is no longer
+                                 # free-drifting with the wind.
 
 # ─────────────────────────────────────────────────────────────────────────────
 # TRACK Phase Config — runs between PATROL and PRECISION_LAND.  After the
@@ -310,9 +345,25 @@ CAMERA_STALE_S           = 0.25  # s — older than this, treat as no detection
 # speed without ever converging.
 # ─────────────────────────────────────────────────────────────────────────────
 
-TRACK_DURATION_S       = 12.0     # s — upper bound on TRACK; converging
+TRACK_DURATION_S       = 25.0     # s — upper bound on TRACK; converging
                                   # below TRACK_CENTER_THRESHOLD_M for
                                   # TRACK_CENTER_HOLD_FRAMES exits earlier.
+                                  # Raised from 12 s after a real flight
+                                  # test where the velocity cap was below
+                                  # the wind drift, leaving the controller
+                                  # permanently saturated and unable to
+                                  # close the gap inside 12 s.  Now that
+                                  # TRACK_MAX_V_XY is well above the
+                                  # observed wind drift, 25 s is enough
+                                  # time to drag a multi-metre opening
+                                  # offset down to the 5 cm convergence
+                                  # threshold even with brief stale-frame
+                                  # windows along the way.  If the upper
+                                  # bound is reached without the filtered
+                                  # lateral error being inside
+                                  # TRACK_HANDOFF_LATERAL_M we abort to
+                                  # LAND in place instead of handing an
+                                  # off-centre hover to PRECISION_LAND.
 TRACK_LOSS_TIMEOUT_S   = 3.0      # s — bail to SEARCH after this much loss
 TRACK_Kp_XY            = 0.35     # P-gain on body-frame position error.
                                   # Raised from 0.22 back to DESCENT's value
@@ -328,7 +379,24 @@ TRACK_Kp_XY            = 0.35     # P-gain on body-frame position error.
 TRACK_Kd_XY            = 0.30     # D-gain on body-frame position error.
                                   # Slightly above DESCENT_Kd_XY old value
                                   # for extra camera-latency damping.
-TRACK_MAX_V_XY         = 0.35     # m/s — per-axis horizontal cap
+TRACK_MAX_V_XY         = 0.80     # m/s — per-axis horizontal cap.  Raised
+                                  # from 0.35 m/s after a real outdoor
+                                  # flight test where the controller was
+                                  # commanding the cap on both axes
+                                  # (v=(-0.35,-0.35)) while body offset
+                                  # GROWED from (-0.54,+0.40) to
+                                  # (-1.48,-1.47) over ~9 s — i.e. wind
+                                  # drift exceeded the cap and the
+                                  # controller had zero authority to
+                                  # close the gap.  0.80 m/s gives ~0.45
+                                  # m/s of headroom over the observed
+                                  # drift, while still well above the
+                                  # ~0.35 m/s the PD naturally produces
+                                  # at 1 m error (so a single noisy
+                                  # detection at typical errors does not
+                                  # snap to the cap).  Tune up further if
+                                  # the airframe still cannot outrun the
+                                  # wind on a given day.
 TRACK_GAIN_SCALE_BZ    = 1.5      # m — mirrors DESCENT_GAIN_SCALE_BZ.  Below
                                   # this body-Z, attenuate XY gains so small
                                   # angular tag-pose errors don't translate
@@ -394,6 +462,24 @@ TRACK_CENTER_HOLD_FRAMES = 15     # consecutive ticks the centred condition
                                   # of sustained convergence, robust to a
                                   # single noisy detection that briefly
                                   # creeps above 5 cm.
+TRACK_HANDOFF_LATERAL_M  = 0.15   # m — soft handoff acceptance.  If TRACK
+                                  # hits TRACK_DURATION_S WITHOUT the
+                                  # CENTER_HOLD_FRAMES streak but the most
+                                  # recent filtered lateral error is
+                                  # inside this radius, hand off anyway —
+                                  # PRECISION_LAND's PD can continue to
+                                  # close the residual gap during descent.
+                                  # If the most recent error is OUTSIDE
+                                  # this radius we treat TRACK as having
+                                  # genuinely failed to centre (real
+                                  # cause: wind drift exceeding the
+                                  # velocity cap, or the tag stayed out
+                                  # of FOV for most of the window) and
+                                  # commit to LAND in place — descending
+                                  # at >0.15 m off-centre would only end
+                                  # up landing on the tag's neighbourhood,
+                                  # not the tag itself, and risks the tag
+                                  # leaving the FOV before touchdown.
 
 # ─────────────────────────────────────────────────────────────────────────────
 # IMU Tag-Loss Recovery Config
@@ -2510,6 +2596,32 @@ def track_tag(controller, pump, state):
     loss_start     = None    # wall-clock time when loss began
     last_recovery_log = 0.0
 
+    # ── Stale-frame EKF anchor (NEW) ────────────────────────────────────
+    # Separate from loss_anchor — this fires when the tag IS detected but
+    # the underlying camera frame is older than CAMERA_STALE_S.  The OLD
+    # behaviour in that branch was send_velocity(0,0,0), which is body-
+    # frame "stop accelerating" and does NOT hold position in wind — the
+    # airframe just coasted with whatever the previous velocity command
+    # established.  Flight test showed this turned every stale window
+    # into a free-drift window.
+    #
+    # FIX: on entry to a stale window we snapshot the current Pixhawk EKF
+    # NED position into stale_anchor and run the same closed-loop
+    # position-PD that the tag-loss recovery uses
+    # (recover_velocity_command).  As soon as a fresh frame arrives we
+    # clear stale_anchor and resume normal TRACK PD.  Unlike the tag-loss
+    # recovery this branch has NO timeout to LAND — repeated stale frames
+    # are NOT evidence the marker is gone, just evidence the camera
+    # pipeline lagged.
+    stale_anchor         = None    # (x, y, z) NED at first stale frame
+    stale_drift_snapshot = (0.0, 0.0)  # body-frame v at stale entry
+
+    # Last filtered body offset returned by track_velocity_command —
+    # snapshotted so the TRACK_DURATION_S timeout can compare against
+    # TRACK_HANDOFF_LATERAL_M without re-running the EMA / deadband.
+    last_filt_x = None
+    last_filt_y = None
+
     while True:
         controller._drain_messages()
         if not controller.master.motors_armed():
@@ -2519,9 +2631,35 @@ def track_tag(controller, pump, state):
         elapsed = time.time() - start
         if elapsed >= TRACK_DURATION_S:
             controller.send_velocity(0.0, 0.0, 0.0)
-            print(f"[INFO] TRACK duration met ({elapsed:.1f}s) — handing "
-                  "off to PRECISION_LAND")
-            return "READY"
+            # Soft handoff: only proceed to PRECISION_LAND if the
+            # controller actually got the lateral error inside
+            # TRACK_HANDOFF_LATERAL_M.  An off-centre handoff just makes
+            # PRECISION_LAND descend obliquely and almost always loses
+            # the tag mid-descent (flight log: handoff at body=(-1.5,-1.5)
+            # caused PRECISION_LAND to immediately enter recovery and
+            # commit to LAND without descending a single metre).
+            if (last_filt_x is not None
+                    and last_filt_y is not None
+                    and abs(last_filt_x) < TRACK_HANDOFF_LATERAL_M
+                    and abs(last_filt_y) < TRACK_HANDOFF_LATERAL_M):
+                print(f"[INFO] TRACK duration met ({elapsed:.1f}s) with "
+                      f"lateral |x|={abs(last_filt_x):.2f}m "
+                      f"|y|={abs(last_filt_y):.2f}m both < "
+                      f"TRACK_HANDOFF_LATERAL_M="
+                      f"{TRACK_HANDOFF_LATERAL_M:.2f}m — handing off to "
+                      "PRECISION_LAND")
+                return "READY"
+            if last_filt_x is None or last_filt_y is None:
+                last_str = "no fresh detections during TRACK"
+            else:
+                last_str = (f"|x|={abs(last_filt_x):.2f}m "
+                            f"|y|={abs(last_filt_y):.2f}m")
+            print(f"[WARN] TRACK duration met ({elapsed:.1f}s) WITHOUT "
+                  f"lateral convergence ({last_str} vs handoff "
+                  f"threshold {TRACK_HANDOFF_LATERAL_M:.2f}m) — aborting "
+                  "to LAND in place rather than hand an off-centre "
+                  "hover to PRECISION_LAND")
+            return "COMMIT_LAND"
 
         tag = pump(detect=True)
 
@@ -2554,24 +2692,71 @@ def track_tag(controller, pump, state):
             frame_age = (time.time() - frame_time) if frame_time else 0.0
 
             if frame_age > CAMERA_STALE_S:
-                # Stale frame — do not feed dead-reckoned data through
-                # the PD; the unmodeled component (wind drift since
-                # capture) is no longer negligible at this age.  Break
-                # the convergence streak too — a frame this old should
-                # not be evidence of centring.
+                # Stale frame — the detection is too old to feed through
+                # the body-frame PD (dead-reckon compensation can't
+                # account for the unmodeled wind drift between capture
+                # and now).  Break the convergence streak — a frame
+                # this old is not evidence of centring.
+                #
+                # OLD behaviour was send_velocity(0,0,0), which is a
+                # body-frame "stop accelerating" command and does NOT
+                # hold position in wind.  Flight test confirmed the
+                # airframe free-drifted through every stale window,
+                # compounding the lateral error the next fresh frame
+                # then had to claw back.
+                #
+                # NEW behaviour: snapshot EKF NED on entry to the stale
+                # window and run the closed-loop position-PD the
+                # tag-loss recovery uses (recover_velocity_command).
+                # That actively holds the airframe at the position
+                # where we last had fresh tag data, instead of free-
+                # drifting.  No timeout here — repeated stale frames
+                # are NOT evidence the marker is gone.
                 centred_count = 0
-                controller.send_velocity(0.0, 0.0, 0.0)
+                if stale_anchor is None:
+                    sx, sy, sz, _, _, _ = controller.get_local_position()
+                    if sx is not None and sy is not None:
+                        stale_anchor = (sx, sy,
+                                        sz if sz is not None else 0.0)
+                    bvx, bvy, _ = controller.body_frame_velocity()
+                    if bvx is None or bvy is None:
+                        bvx, bvy = 0.0, 0.0
+                    stale_drift_snapshot = (bvx, bvy)
+                    print(f"[INFO] TRACK stale frame — anchoring at NED="
+                          f"{stale_anchor}, drift_snap="
+                          f"({bvx:+.2f},{bvy:+.2f}) m/s")
+                if stale_anchor is not None:
+                    controller.recover_velocity_command(
+                        stale_drift_snapshot,
+                        last_tag_body=last_tag_body,
+                        loss_anchor=stale_anchor,
+                    )
+                else:
+                    # No EKF position available — fall back to the
+                    # old zero-velocity behaviour so we never end up
+                    # in a worse state than before.
+                    controller.send_velocity(0.0, 0.0, 0.0)
                 now = time.time()
                 if now - last_log > 1.0:
                     print(f"[INFO] TRACK stale frame (age={frame_age:.2f}s "
-                          f"> {CAMERA_STALE_S:.2f}s) — holding zero velocity")
+                          f"> {CAMERA_STALE_S:.2f}s) — holding via EKF "
+                          "anchor")
                     last_log = now
                 time.sleep(0.05)
                 continue
 
+            # Fresh frame — clear any pending stale-frame anchor so the
+            # next stale window starts with a fresh snapshot.
+            if stale_anchor is not None:
+                print("[INFO] TRACK fresh frame — clearing stale anchor")
+                stale_anchor = None
+                stale_drift_snapshot = (0.0, 0.0)
+
             filt_x, filt_y, vx, vy, vz = controller.track_velocity_command(
                 body_x, body_y, body_z, frame_age=frame_age,
             )
+            last_filt_x = filt_x
+            last_filt_y = filt_y
 
             # Convergence: BOTH filtered axes inside the centre threshold
             # for TRACK_CENTER_HOLD_FRAMES consecutive ticks.  We use the
@@ -2763,6 +2948,15 @@ def precision_land(controller, pump, state):
     loss_start     = None
     last_recovery_log = 0.0
 
+    # ── Stale-frame EKF anchor (NEW — see track_tag for full rationale) ──
+    # Same mechanism as in TRACK: when the camera frame is older than
+    # CAMERA_STALE_S but the tag itself is still being detected, hold
+    # position via recover_velocity_command anchored at the EKF NED
+    # snapshot taken on first stale-frame entry, instead of letting the
+    # airframe free-drift while we wait for a fresh frame.
+    stale_anchor         = None
+    stale_drift_snapshot = (0.0, 0.0)
+
     while True:
         # Drain telemetry & exit cleanly on disarm.  ArduCopter auto-disarms
         # on touchdown (LAND mode ground-detection); seeing motors_armed
@@ -2805,16 +2999,55 @@ def precision_land(controller, pump, state):
             if frame_age > CAMERA_STALE_S:
                 # Detection came from a cached frame older than
                 # CAMERA_STALE_S — don't drive PD or commit-to-LAND on
-                # stale data.  Hover and wait for a fresh detection.
-                controller.send_velocity(0.0, 0.0, 0.0)
+                # stale data.
+                #
+                # OLD behaviour was send_velocity(0,0,0), which is a
+                # body-frame "stop accelerating" command and does NOT
+                # hold position in wind.  Flight test showed the
+                # airframe free-drifted through every stale window
+                # during DESCENT, exactly mirroring the TRACK regression.
+                #
+                # NEW behaviour: same EKF-anchored hold the tag-loss
+                # recovery uses — snapshot the current NED position on
+                # entry to the stale window and keep
+                # recover_velocity_command pulling the airframe back to
+                # it until a fresh frame arrives.  No timeout here —
+                # stale frames are NOT evidence the tag is gone.
+                if stale_anchor is None:
+                    sx, sy, sz, _, _, _ = controller.get_local_position()
+                    if sx is not None and sy is not None:
+                        stale_anchor = (sx, sy,
+                                        sz if sz is not None else 0.0)
+                    bvx, bvy, _ = controller.body_frame_velocity()
+                    if bvx is None or bvy is None:
+                        bvx, bvy = 0.0, 0.0
+                    stale_drift_snapshot = (bvx, bvy)
+                    print(f"[INFO] DESCENT stale frame — anchoring at "
+                          f"NED={stale_anchor}, drift_snap="
+                          f"({bvx:+.2f},{bvy:+.2f}) m/s")
+                if stale_anchor is not None:
+                    controller.recover_velocity_command(
+                        stale_drift_snapshot,
+                        last_tag_body=last_tag_body,
+                        loss_anchor=stale_anchor,
+                    )
+                else:
+                    controller.send_velocity(0.0, 0.0, 0.0)
                 now = time.time()
                 if now - last_log > 1.0:
                     print(f"[INFO] DESCENT stale frame "
                           f"(age={frame_age:.2f}s > {CAMERA_STALE_S:.2f}s) "
-                          "— holding zero velocity")
+                          "— holding via EKF anchor")
                     last_log = now
                 time.sleep(0.02)
                 continue
+
+            # Fresh frame — clear any pending stale-frame anchor so the
+            # next stale window starts with a fresh snapshot.
+            if stale_anchor is not None:
+                print("[INFO] DESCENT fresh frame — clearing stale anchor")
+                stale_anchor = None
+                stale_drift_snapshot = (0.0, 0.0)
 
             # Drive the descent ourselves.  Returns the FILTERED body
             # offset so the commit-to-LAND gate below can require
