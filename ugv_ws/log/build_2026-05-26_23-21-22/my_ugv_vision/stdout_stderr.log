@@ -1,0 +1,18 @@
+running develop
+running egg_info
+writing my_ugv_vision.egg-info/PKG-INFO
+writing dependency_links to my_ugv_vision.egg-info/dependency_links.txt
+writing entry points to my_ugv_vision.egg-info/entry_points.txt
+writing requirements to my_ugv_vision.egg-info/requires.txt
+writing top-level names to my_ugv_vision.egg-info/top_level.txt
+reading manifest file 'my_ugv_vision.egg-info/SOURCES.txt'
+writing manifest file 'my_ugv_vision.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my-ugv-vision.egg-link (link to .)
+Installing akida_yolo_node script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/my_ugv_vision
+Installing landmark_tracker_node script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/my_ugv_vision
+Installing object_localizer_node script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/my_ugv_vision
+Installing obstacle_publisher_node script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/my_ugv_vision
+
+Installed /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision
+running symlink_data

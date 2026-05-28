@@ -1,3 +1,11 @@
 # generated from colcon_core/shell/template/command_prefix.sh.em
+. "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_descriptions/share/depthai_descriptions/package.sh"
+. "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/package.sh"
 . "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.sh"
+. "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_description/share/my_ugv_description/package.sh"
+. "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/share/my_ugv_hardware/package.sh"
 . "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.sh"
+. "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/package.sh"
+. "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_bridge/share/depthai_bridge/package.sh"
+. "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_examples/share/depthai_examples/package.sh"
+. "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_driver/share/depthai_ros_driver/package.sh"

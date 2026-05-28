@@ -1,0 +1,60 @@
+running develop
+Removing /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my-ugv-hardware.egg-link (link to .)
+/usr/lib/python3/dist-packages/setuptools/dist.py:744: SetuptoolsDeprecationWarning: Invalid dash-separated options
+!!
+
+        ********************************************************************************
+        Usage of dash-separated 'script-dir' will not be supported in future
+        versions. Please use the underscore name 'script_dir' instead.
+
+        This deprecation is overdue, please update your project and remove deprecated
+        calls to avoid build errors in the future.
+
+        See https://setuptools.pypa.io/en/latest/userguide/declarative_config.html for details.
+        ********************************************************************************
+
+!!
+  opt = self.warn_dash_deprecation(opt, section)
+running egg_info
+writing ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/PKG-INFO
+writing dependency_links to ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/dependency_links.txt
+writing entry points to ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/entry_points.txt
+writing requirements to ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/requires.txt
+writing top-level names to ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/top_level.txt
+reading manifest file '../../build/my_ugv_hardware/my_ugv_hardware.egg-info/SOURCES.txt'
+writing manifest file '../../build/my_ugv_hardware/my_ugv_hardware.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build
+creating /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib
+creating /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware
+copying my_ugv_hardware/__init__.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware
+copying my_ugv_hardware/mission_controller.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware
+copying my_ugv_hardware/roboteq_bridge.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware
+copying my_ugv_hardware/kill_switch.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware
+copying my_ugv_hardware/lora_bridge.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware
+running install
+running install_lib
+creating /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware
+copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware/__init__.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware
+copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware/mission_controller.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware
+copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware/roboteq_bridge.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware
+copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware/kill_switch.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware
+copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware/lora_bridge.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware
+byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware/__init__.py to __init__.cpython-312.pyc
+byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware/mission_controller.py to mission_controller.cpython-312.pyc
+byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware/roboteq_bridge.py to roboteq_bridge.cpython-312.pyc
+byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware/kill_switch.py to kill_switch.cpython-312.pyc
+byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware/lora_bridge.py to lora_bridge.cpython-312.pyc
+running install_data
+copying resource/my_ugv_hardware -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/share/ament_index/resource_index/packages
+copying package.xml -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/share/my_ugv_hardware
+running install_egg_info
+Copying ../../build/my_ugv_hardware/my_ugv_hardware.egg-info to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware-0.0.0-py3.12.egg-info
+running install_scripts
+Installing kill_switch script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+Installing lora_bridge script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+Installing mission_controller script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+Installing motor_driver script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+Installing virtual_odom script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+writing list of installed files to '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/install.log'

@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "depthai_ros_msgs__py",
+		"source" : "/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/depthai_ros_msgs__py"
+	}
+}

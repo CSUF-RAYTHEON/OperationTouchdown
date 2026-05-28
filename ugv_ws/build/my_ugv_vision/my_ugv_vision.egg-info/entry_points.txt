@@ -1,0 +1,5 @@
+[console_scripts]
+akida_yolo_node = my_ugv_vision.akida_yolo_node:main
+landmark_tracker_node = my_ugv_vision.landmark_tracker_node:main
+object_localizer_node = my_ugv_vision.object_localizer_node:main
+obstacle_publisher_node = my_ugv_vision.obstacle_publisher_node:main

@@ -1,0 +1,15 @@
+source;share/my_ugv_hardware/hook/path.ps1
+source;share/my_ugv_hardware/hook/path.dsv
+source;share/my_ugv_hardware/hook/path.sh
+source;share/my_ugv_hardware/hook/pythonpath.ps1
+source;share/my_ugv_hardware/hook/pythonpath.dsv
+source;share/my_ugv_hardware/hook/pythonpath.sh
+source;share/my_ugv_hardware/hook/pythonscriptspath.ps1
+source;share/my_ugv_hardware/hook/pythonscriptspath.dsv
+source;share/my_ugv_hardware/hook/pythonscriptspath.sh
+source;share/my_ugv_hardware/hook/ament_prefix_path.ps1
+source;share/my_ugv_hardware/hook/ament_prefix_path.dsv
+source;share/my_ugv_hardware/hook/ament_prefix_path.sh
+source;../../build/my_ugv_hardware/share/my_ugv_hardware/hook/pythonpath_develop.ps1
+source;../../build/my_ugv_hardware/share/my_ugv_hardware/hook/pythonpath_develop.dsv
+source;../../build/my_ugv_hardware/share/my_ugv_hardware/hook/pythonpath_develop.sh

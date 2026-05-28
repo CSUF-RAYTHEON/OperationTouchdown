@@ -1,0 +1,23 @@
+[0.418s] Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver -- -j4 -l4
+[1.193s] Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver -- -j4 -l4
+[1.301s] Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver
+[1.324s] -- Install configuration: ""
+[1.328s] -- Execute custom install script
+[1.345s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/lib/roboteq_ros2_driver/roboteq_bridge.py
+[1.360s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/ament_index/resource_index/package_run_dependencies/roboteq_ros2_driver
+[1.364s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/ament_index/resource_index/parent_prefix_path/roboteq_ros2_driver
+[1.373s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/ament_prefix_path.sh
+[1.375s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/ament_prefix_path.dsv
+[1.378s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/path.sh
+[1.382s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/path.dsv
+[1.384s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.bash
+[1.387s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.sh
+[1.390s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.zsh
+[1.392s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.dsv
+[1.392s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.dsv
+[1.421s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/ament_index/resource_index/packages/roboteq_ros2_driver
+[1.425s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/cmake/ament_cmake_export_dependencies-extras.cmake
+[1.427s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/cmake/roboteq_ros2_driverConfig.cmake
+[1.428s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/cmake/roboteq_ros2_driverConfig-version.cmake
+[1.430s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.xml
+[1.434s] Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver

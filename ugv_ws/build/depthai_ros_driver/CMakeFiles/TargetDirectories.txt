@@ -1,0 +1,16 @@
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/uninstall.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/depthai_ros_driver_uninstall.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/depthai_ros_driver_common.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/depthai_ros_driver_sensor_nodes.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/depthai_ros_driver_nn_nodes.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/depthai_ros_driver.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/camera_node.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/ament_cmake_python_symlink_depthai_ros_driver.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/ament_cmake_python_build_depthai_ros_driver_egg.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/test.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/edit_cache.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/rebuild_cache.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/list_install_components.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/install.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/install/local.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_driver/CMakeFiles/install/strip.dir

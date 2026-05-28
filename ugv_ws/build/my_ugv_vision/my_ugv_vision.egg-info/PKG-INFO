@@ -1,0 +1,7 @@
+Metadata-Version: 2.1
+Name: my-ugv-vision
+Version: 0.1.0
+Summary: BrainChip Akida AKD1000 perception pipeline for the UGV.
+Maintainer: meow
+Maintainer-email: meow@todo.todo
+License: Apache-2.0

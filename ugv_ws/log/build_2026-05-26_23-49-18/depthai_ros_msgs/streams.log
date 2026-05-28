@@ -1,0 +1,539 @@
+[0.074s] Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/my_ugv_vision:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs
+[0.697s] -- The C compiler identification is GNU 13.3.0
+[0.698s] -- The CXX compiler identification is GNU 13.3.0
+[0.698s] -- Detecting C compiler ABI info
+[0.698s] -- Detecting C compiler ABI info - done
+[0.713s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.713s] -- Detecting C compile features
+[0.713s] -- Detecting C compile features - done
+[0.737s] -- Detecting CXX compiler ABI info
+[1.083s] -- Detecting CXX compiler ABI info - done
+[1.104s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[1.107s] -- Detecting CXX compile features
+[1.107s] -- Detecting CXX compile features - done
+[1.118s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[1.603s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[1.913s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[2.035s] -- ------------------------------------------
+[2.035s] -- Depthai ROS MSGS/INTERFACES is being built using AMENT.
+[2.035s] -- ------------------------------------------
+[2.044s] -- Found geometry_msgs: 5.3.7 (/opt/ros/jazzy/share/geometry_msgs/cmake)
+[2.209s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[2.282s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[2.361s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[2.437s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[2.600s] -- Found vision_msgs: 4.1.1 (/opt/ros/jazzy/share/vision_msgs/cmake)
+[2.667s] -- Found sensor_msgs: 5.3.7 (/opt/ros/jazzy/share/sensor_msgs/cmake)
+[2.754s] -- Found rosidl_default_generators: 1.6.0 (/opt/ros/jazzy/share/rosidl_default_generators/cmake)
+[2.868s] -- Found rosidl_adapter: 4.6.7 (/opt/ros/jazzy/share/rosidl_adapter/cmake)
+[5.226s] -- Found ament_cmake_ros: 0.12.0 (/opt/ros/jazzy/share/ament_cmake_ros/cmake)
+[9.935s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[12.116s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[12.144s] -- Found python_cmake_module: 0.11.1 (/opt/ros/jazzy/share/python_cmake_module/cmake)
+[12.668s] -- Found PythonExtra: /usr/bin/python3  
+[15.554s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter Development NumPy Development.Module Development.Embed 
+[16.570s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[16.666s] -- Configuring done (16.6s)
+[17.098s] -- Generating done (0.3s)
+[17.142s] -- Build files have been written to: /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs
+[17.198s] Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/my_ugv_vision:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/ugv/Desktop/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_msgs -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs
+[17.199s] Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/my_ugv_vision:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs -- -j4 -l4
+[17.384s] [  1%] [34m[1mGenerating type hashes for ROS interfaces[0m
+[17.483s] [  1%] Built target ament_cmake_python_symlink_depthai_ros_msgs
+[17.513s] [  1%] [34m[1mGenerating Rust code for ROS interfaces[0m
+[19.230s] running egg_info
+[19.231s] creating depthai_ros_msgs.egg-info
+[19.402s] writing depthai_ros_msgs.egg-info/PKG-INFO
+[19.403s] writing dependency_links to depthai_ros_msgs.egg-info/dependency_links.txt
+[19.408s] writing top-level names to depthai_ros_msgs.egg-info/top_level.txt
+[19.413s] writing manifest file 'depthai_ros_msgs.egg-info/SOURCES.txt'
+[20.586s] reading manifest file 'depthai_ros_msgs.egg-info/SOURCES.txt'
+[20.595s] writing manifest file 'depthai_ros_msgs.egg-info/SOURCES.txt'
+[21.246s] [  1%] Built target ament_cmake_python_build_depthai_ros_msgs_egg
+[22.085s] [  1%] Built target depthai_ros_msgs__rosidl_generator_type_description
+[22.174s] [  2%] [34m[1mGenerating C code for ROS interfaces[0m
+[22.295s] [  2%] [34m[1mGenerating C++ code for ROS interfaces[0m
+[23.506s] [  2%] Built target depthai_ros_msgs__rs
+[28.570s] [  2%] Built target depthai_ros_msgs__cpp
+[29.840s] [  2%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/auto_focus_ctrl__description.c.o[0m
+[29.855s] [  3%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/auto_focus_ctrl__functions.c.o[0m
+[29.857s] [  4%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/auto_focus_ctrl__type_support.c.o[0m
+[30.053s] [  4%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/hand_landmark__description.c.o[0m
+[30.060s] [  5%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/hand_landmark__functions.c.o[0m
+[30.200s] [  6%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/hand_landmark__type_support.c.o[0m
+[30.267s] [  6%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/hand_landmark_array__description.c.o[0m
+[30.357s] [  7%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/hand_landmark_array__functions.c.o[0m
+[30.407s] [  8%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support.c.o[0m
+[30.469s] [  8%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__description.c.o[0m
+[30.512s] [  9%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__type_support.c.o[0m
+[30.515s] [ 10%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__functions.c.o[0m
+[30.594s] [ 11%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/tracked_feature__description.c.o[0m
+[30.698s] [ 11%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/tracked_feature__functions.c.o[0m
+[30.757s] [ 12%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/tracked_feature__type_support.c.o[0m
+[30.759s] [ 13%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/tracked_features__description.c.o[0m
+[30.856s] [ 13%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/tracked_features__functions.c.o[0m
+[30.967s] [ 14%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/tracked_features__type_support.c.o[0m
+[31.000s] [ 15%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/spatial_detection__description.c.o[0m
+[31.054s] [ 15%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/spatial_detection__functions.c.o[0m
+[31.159s] [ 16%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/spatial_detection__type_support.c.o[0m
+[31.160s] [ 17%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/spatial_detection_array__description.c.o[0m
+[31.269s] [ 17%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/spatial_detection_array__functions.c.o[0m
+[31.380s] [ 18%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/track_detection2_d__description.c.o[0m
+[31.390s] [ 19%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.c.o[0m
+[31.414s] [ 20%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/track_detection2_d__functions.c.o[0m
+[31.543s] [ 20%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/track_detection2_d__type_support.c.o[0m
+[31.549s] [ 21%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/track_detection2_d_array__description.c.o[0m
+[31.684s] [ 22%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/track_detection2_d_array__functions.c.o[0m
+[31.738s] [ 22%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support.c.o[0m
+[31.771s] [ 23%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/srv/detail/trigger_named__description.c.o[0m
+[31.879s] [ 24%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/srv/detail/trigger_named__functions.c.o[0m
+[31.944s] [ 24%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/srv/detail/trigger_named__type_support.c.o[0m
+[31.948s] [ 25%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/srv/detail/normalized_image_crop__description.c.o[0m
+[32.184s] [ 26%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/srv/detail/normalized_image_crop__functions.c.o[0m
+[32.192s] [ 26%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_c.dir/rosidl_generator_c/depthai_ros_msgs/srv/detail/normalized_image_crop__type_support.c.o[0m
+[32.497s] [ 27%] [32m[1mLinking C shared library libdepthai_ros_msgs__rosidl_generator_c.so[0m
+[32.792s] [ 27%] Built target depthai_ros_msgs__rosidl_generator_c
+[32.858s] [ 28%] [34m[1mGenerating C type support for eProsima Fast-RTPS[0m
+[32.866s] [ 28%] [34m[1mGenerating C++ type support for eProsima Fast-RTPS[0m
+[33.870s] [ 28%] [34m[1mGenerating C type support dispatch for ROS interfaces[0m
+[34.895s] [ 29%] [34m[1mGenerating C introspection for ROS interfaces[0m
+[37.214s] [ 30%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/auto_focus_ctrl__type_support.cpp.o[0m
+[37.565s] [ 31%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/hand_landmark__type_support.cpp.o[0m
+[37.737s] [ 32%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/hand_landmark_array__type_support.cpp.o[0m
+[37.874s] [ 32%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/auto_focus_ctrl__type_support_c.cpp.o[0m
+[37.964s] [ 32%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/imu_with_magnetic_field__type_support.cpp.o[0m
+[38.074s] [ 33%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/tracked_feature__type_support.cpp.o[0m
+[38.216s] [ 34%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/tracked_features__type_support.cpp.o[0m
+[38.418s] [ 34%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/spatial_detection__type_support.cpp.o[0m
+[38.507s] [ 35%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/auto_focus_ctrl__type_support.cpp.o[0m
+[38.628s] [ 36%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/spatial_detection_array__type_support.cpp.o[0m
+[38.920s] [ 37%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/track_detection2_d__type_support.cpp.o[0m
+[39.118s] [ 37%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/msg/track_detection2_d_array__type_support.cpp.o[0m
+[39.345s] [ 38%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/srv/trigger_named__type_support.cpp.o[0m
+[39.606s] [ 39%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/depthai_ros_msgs/srv/normalized_image_crop__type_support.cpp.o[0m
+[39.634s] [ 40%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/auto_focus_ctrl__type_support.c.o[0m
+[39.861s] [ 40%] [32m[1mLinking CXX shared library libdepthai_ros_msgs__rosidl_typesupport_c.so[0m
+[39.864s] [ 40%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/hand_landmark__type_support.c.o[0m
+[39.921s] [ 41%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/hand_landmark__type_support_c.cpp.o[0m
+[40.046s] [ 41%] Built target depthai_ros_msgs__rosidl_typesupport_c
+[40.101s] [ 42%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support.c.o[0m
+[40.403s] [ 43%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__type_support.c.o[0m
+[40.615s] [ 44%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/tracked_feature__type_support.c.o[0m
+[40.710s] [ 45%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/hand_landmark__type_support.cpp.o[0m
+[40.787s] [ 45%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/tracked_features__type_support.c.o[0m
+[40.927s] [ 46%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/spatial_detection__type_support.c.o[0m
+[41.173s] [ 47%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.c.o[0m
+[41.471s] [ 47%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/track_detection2_d__type_support.c.o[0m
+[41.775s] [ 48%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support.c.o[0m
+[42.036s] [ 49%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/srv/detail/trigger_named__type_support.c.o[0m
+[42.331s] [ 50%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support_c.cpp.o[0m
+[42.390s] [ 50%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/depthai_ros_msgs/srv/detail/normalized_image_crop__type_support.c.o[0m
+[42.641s] [ 51%] [32m[1mLinking C shared library libdepthai_ros_msgs__rosidl_typesupport_introspection_c.so[0m
+[42.716s] [ 51%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/hand_landmark_array__type_support.cpp.o[0m
+[42.874s] [ 51%] Built target depthai_ros_msgs__rosidl_typesupport_introspection_c
+[44.204s] [ 52%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__type_support_c.cpp.o[0m
+[44.606s] [ 53%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/imu_with_magnetic_field__type_support.cpp.o[0m
+[45.183s] [ 53%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/tracked_feature__type_support_c.cpp.o[0m
+[45.514s] [ 54%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/tracked_feature__type_support.cpp.o[0m
+[46.038s] [ 55%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/tracked_features__type_support_c.cpp.o[0m
+[46.337s] [ 56%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/tracked_features__type_support.cpp.o[0m
+[46.811s] [ 57%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/spatial_detection__type_support_c.cpp.o[0m
+[47.198s] [ 57%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/spatial_detection__type_support.cpp.o[0m
+[47.599s] [ 57%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support_c.cpp.o[0m
+[48.056s] [ 58%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/spatial_detection_array__type_support.cpp.o[0m
+[48.351s] [ 59%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/track_detection2_d__type_support_c.cpp.o[0m
+[48.933s] [ 60%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/track_detection2_d__type_support.cpp.o[0m
+[49.148s] [ 61%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support_c.cpp.o[0m
+[49.820s] [ 61%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/msg/detail/dds_fastrtps/track_detection2_d_array__type_support.cpp.o[0m
+[49.909s] [ 61%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/srv/detail/trigger_named__type_support_c.cpp.o[0m
+[50.741s] [ 62%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/depthai_ros_msgs/srv/detail/normalized_image_crop__type_support_c.cpp.o[0m
+[50.746s] [ 63%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/srv/detail/dds_fastrtps/trigger_named__type_support.cpp.o[0m
+[51.707s] [ 64%] [32m[1mLinking CXX shared library libdepthai_ros_msgs__rosidl_typesupport_fastrtps_c.so[0m
+[51.980s] [ 64%] Built target depthai_ros_msgs__rosidl_typesupport_fastrtps_c
+[52.076s] [ 65%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/srv/detail/dds_fastrtps/normalized_image_crop__type_support.cpp.o[0m
+[53.058s] [ 65%] [32m[1mLinking CXX shared library libdepthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.so[0m
+[53.282s] [ 65%] Built target depthai_ros_msgs__rosidl_typesupport_fastrtps_cpp
+[53.304s] [ 66%] [34m[1mGenerating C++ type support dispatch for ROS interfaces[0m
+[54.460s] [ 67%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/auto_focus_ctrl__type_support.cpp.o[0m
+[54.994s] [ 68%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/hand_landmark_array__type_support.cpp.o[0m
+[55.512s] [ 69%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/imu_with_magnetic_field__type_support.cpp.o[0m
+[56.027s] [ 70%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/tracked_feature__type_support.cpp.o[0m
+[56.570s] [ 70%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/tracked_features__type_support.cpp.o[0m
+[57.098s] [ 71%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/spatial_detection__type_support.cpp.o[0m
+[57.622s] [ 72%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/spatial_detection_array__type_support.cpp.o[0m
+[58.130s] [ 72%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/track_detection2_d__type_support.cpp.o[0m
+[58.668s] [ 73%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/track_detection2_d_array__type_support.cpp.o[0m
+[59.214s] [ 74%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/srv/trigger_named__type_support.cpp.o[0m
+[59.890s] [ 74%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/srv/normalized_image_crop__type_support.cpp.o[0m
+[60.557s] [ 74%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/depthai_ros_msgs/msg/hand_landmark__type_support.cpp.o[0m
+[61.085s] [ 75%] [32m[1mLinking CXX shared library libdepthai_ros_msgs__rosidl_typesupport_cpp.so[0m
+[61.273s] [ 75%] Built target depthai_ros_msgs__rosidl_typesupport_cpp
+[61.296s] [ 76%] [34m[1mGenerating C++ introspection for ROS interfaces[0m
+[62.817s] [ 77%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/auto_focus_ctrl__type_support.cpp.o[0m
+[62.818s] [ 77%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/hand_landmark__type_support.cpp.o[0m
+[63.440s] [ 77%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__type_support.cpp.o[0m
+[63.466s] [ 78%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/tracked_feature__type_support.cpp.o[0m
+[63.539s] [ 79%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support.cpp.o[0m
+[64.236s] [ 80%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/tracked_features__type_support.cpp.o[0m
+[64.301s] [ 81%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/spatial_detection__type_support.cpp.o[0m
+[64.644s] [ 81%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.cpp.o[0m
+[65.112s] [ 82%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/track_detection2_d__type_support.cpp.o[0m
+[65.275s] [ 83%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support.cpp.o[0m
+[65.814s] [ 83%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/srv/detail/trigger_named__type_support.cpp.o[0m
+[66.033s] [ 84%] [32mBuilding CXX object CMakeFiles/depthai_ros_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/depthai_ros_msgs/srv/detail/normalized_image_crop__type_support.cpp.o[0m
+[66.912s] [ 85%] [32m[1mLinking CXX shared library libdepthai_ros_msgs__rosidl_typesupport_introspection_cpp.so[0m
+[67.140s] [ 85%] Built target depthai_ros_msgs__rosidl_typesupport_introspection_cpp
+[67.184s] [ 85%] Built target depthai_ros_msgs
+[67.230s] [ 86%] [34m[1mGenerating Python code for ROS interfaces[0m
+[69.894s] [ 86%] Built target depthai_ros_msgs__py
+[69.941s] [ 87%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_hand_landmark_s.c.o[0m
+[69.941s] [ 87%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_hand_landmark_array_s.c.o[0m
+[69.941s] [ 88%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_auto_focus_ctrl_s.c.o[0m
+[70.415s] [ 89%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_imu_with_magnetic_field_s.c.o[0m
+[70.440s] [ 90%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_tracked_feature_s.c.o[0m
+[70.446s] [ 90%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_tracked_features_s.c.o[0m
+[70.489s] [ 91%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_spatial_detection_s.c.o[0m
+[70.703s] [ 92%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_spatial_detection_array_s.c.o[0m
+[70.878s] [ 92%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_track_detection2_d_s.c.o[0m
+[70.914s] [ 93%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/srv/_trigger_named_s.c.o[0m
+[70.927s] [ 94%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/msg/_track_detection2_d_array_s.c.o[0m
+[71.038s] [ 94%] [32mBuilding C object CMakeFiles/depthai_ros_msgs__rosidl_generator_py.dir/rosidl_generator_py/depthai_ros_msgs/srv/_normalized_image_crop_s.c.o[0m
+[71.418s] [ 95%] [32m[1mLinking C shared library libdepthai_ros_msgs__rosidl_generator_py.so[0m
+[71.547s] [ 95%] Built target depthai_ros_msgs__rosidl_generator_py
+[71.606s] [ 95%] [32mBuilding C object CMakeFiles/depthai_ros_msgs_s__rosidl_typesupport_fastrtps_c.dir/rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c.o[0m
+[71.609s] [ 97%] [32mBuilding C object CMakeFiles/depthai_ros_msgs_s__rosidl_typesupport_c.dir/rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_c.c.o[0m
+[71.609s] [ 97%] [32mBuilding C object CMakeFiles/depthai_ros_msgs_s__rosidl_typesupport_introspection_c.dir/rosidl_generator_py/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_introspection_c.c.o[0m
+[71.947s] [ 98%] [32m[1mLinking C shared module rosidl_generator_py/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_c.so[0m
+[71.970s] [ 99%] [32m[1mLinking C shared module rosidl_generator_py/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_fastrtps_c.so[0m
+[72.004s] [100%] [32m[1mLinking C shared module rosidl_generator_py/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_introspection_c.so[0m
+[72.042s] [100%] Built target depthai_ros_msgs_s__rosidl_typesupport_c
+[72.074s] [100%] Built target depthai_ros_msgs_s__rosidl_typesupport_fastrtps_c
+[72.095s] [100%] Built target depthai_ros_msgs_s__rosidl_typesupport_introspection_c
+[72.128s] Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/my_ugv_vision:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs -- -j4 -l4
+[72.130s] Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/my_ugv_vision:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs
+[72.147s] -- Install configuration: ""
+[72.148s] -- Execute custom install script
+[72.149s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/ament_index/resource_index/rosidl_interfaces/depthai_ros_msgs
+[72.169s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/AutoFocusCtrl.json
+[72.189s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmark.json
+[72.210s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmarkArray.json
+[72.229s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/ImuWithMagneticField.json
+[72.249s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeature.json
+[72.268s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeatures.json
+[72.288s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetection.json
+[72.308s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetectionArray.json
+[72.327s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2D.json
+[72.347s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2DArray.json
+[72.367s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/TriggerNamed.json
+[72.387s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/NormalizedImageCrop.json
+[72.409s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/auto_focus_ctrl.h
+[72.428s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__functions.h
+[72.447s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__struct.h
+[72.467s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__type_support.h
+[72.487s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__functions.h
+[72.507s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__struct.h
+[72.526s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__type_support.h
+[72.546s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__functions.h
+[72.565s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__struct.h
+[72.585s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support.h
+[72.606s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__functions.h
+[72.627s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__struct.h
+[72.648s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__type_support.h
+[72.667s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__functions.h
+[72.692s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__struct.h
+[72.711s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__type_support.h
+[72.731s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__functions.h
+[72.752s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__struct.h
+[72.773s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.h
+[72.792s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__functions.h
+[72.812s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__struct.h
+[72.831s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__type_support.h
+[72.851s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__functions.h
+[72.871s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__struct.h
+[72.892s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support.h
+[72.911s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__functions.h
+[72.930s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__struct.h
+[72.951s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__type_support.h
+[72.970s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__functions.h
+[72.991s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__struct.h
+[73.012s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__type_support.h
+[73.032s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/hand_landmark.h
+[73.052s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/hand_landmark_array.h
+[73.073s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/imu_with_magnetic_field.h
+[73.093s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/rosidl_generator_c__visibility_control.h
+[73.117s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/spatial_detection.h
+[73.141s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/spatial_detection_array.h
+[73.162s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/track_detection2_d.h
+[73.182s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/track_detection2_d_array.h
+[73.202s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/tracked_feature.h
+[73.222s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/tracked_features.h
+[73.242s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__functions.h
+[73.262s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__struct.h
+[73.283s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__type_support.h
+[73.304s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__functions.h
+[73.324s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__struct.h
+[73.345s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__type_support.h
+[73.364s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/normalized_image_crop.h
+[73.389s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/trigger_named.h
+[73.414s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/library_path.sh
+[73.436s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/library_path.dsv
+[73.459s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__rosidl_typesupport_fastrtps_c.h
+[73.479s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__rosidl_typesupport_fastrtps_c.h
+[73.500s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__rosidl_typesupport_fastrtps_c.h
+[73.520s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__rosidl_typesupport_fastrtps_c.h
+[73.539s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__rosidl_typesupport_fastrtps_c.h
+[73.558s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__rosidl_typesupport_fastrtps_c.h
+[73.578s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__rosidl_typesupport_fastrtps_c.h
+[73.599s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__rosidl_typesupport_fastrtps_c.h
+[73.618s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__rosidl_typesupport_fastrtps_c.h
+[73.638s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__rosidl_typesupport_fastrtps_c.h
+[73.659s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[73.682s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__rosidl_typesupport_fastrtps_c.h
+[73.704s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__rosidl_typesupport_fastrtps_c.h
+[73.728s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/auto_focus_ctrl.hpp
+[73.751s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__builder.hpp
+[73.776s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__struct.hpp
+[73.801s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__traits.hpp
+[73.825s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__type_support.hpp
+[73.846s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__builder.hpp
+[73.865s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__struct.hpp
+[73.889s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__traits.hpp
+[73.909s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__type_support.hpp
+[73.928s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__builder.hpp
+[73.947s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__struct.hpp
+[73.966s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__traits.hpp
+[73.986s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__type_support.hpp
+[74.005s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__builder.hpp
+[74.023s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__struct.hpp
+[74.042s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__traits.hpp
+[74.062s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__type_support.hpp
+[74.082s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__builder.hpp
+[74.101s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__struct.hpp
+[74.119s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__traits.hpp
+[74.139s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__type_support.hpp
+[74.158s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__builder.hpp
+[74.178s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__struct.hpp
+[74.197s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__traits.hpp
+[74.216s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__type_support.hpp
+[74.235s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__builder.hpp
+[74.254s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__struct.hpp
+[74.273s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__traits.hpp
+[74.293s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__type_support.hpp
+[74.311s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__builder.hpp
+[74.330s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__struct.hpp
+[74.350s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__traits.hpp
+[74.369s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__type_support.hpp
+[74.388s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__builder.hpp
+[74.410s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__struct.hpp
+[74.429s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__traits.hpp
+[74.448s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__type_support.hpp
+[74.468s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__builder.hpp
+[74.489s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__struct.hpp
+[74.512s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__traits.hpp
+[74.531s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__type_support.hpp
+[74.550s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/hand_landmark.hpp
+[74.570s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/hand_landmark_array.hpp
+[74.591s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/imu_with_magnetic_field.hpp
+[74.609s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/rosidl_generator_cpp__visibility_control.hpp
+[74.628s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/spatial_detection.hpp
+[74.648s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/spatial_detection_array.hpp
+[74.667s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/track_detection2_d.hpp
+[74.686s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/track_detection2_d_array.hpp
+[74.706s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/tracked_feature.hpp
+[74.725s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/tracked_features.hpp
+[74.744s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__builder.hpp
+[74.763s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__struct.hpp
+[74.782s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__traits.hpp
+[74.801s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__type_support.hpp
+[74.820s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__builder.hpp
+[74.839s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__struct.hpp
+[74.858s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__traits.hpp
+[74.877s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__type_support.hpp
+[74.896s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/normalized_image_crop.hpp
+[74.915s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/trigger_named.hpp
+[74.935s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__rosidl_typesupport_fastrtps_cpp.hpp
+[74.954s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__rosidl_typesupport_fastrtps_cpp.hpp
+[74.976s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__rosidl_typesupport_fastrtps_cpp.hpp
+[74.997s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__rosidl_typesupport_fastrtps_cpp.hpp
+[75.016s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__rosidl_typesupport_fastrtps_cpp.hpp
+[75.036s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__rosidl_typesupport_fastrtps_cpp.hpp
+[75.056s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__rosidl_typesupport_fastrtps_cpp.hpp
+[75.086s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__rosidl_typesupport_fastrtps_cpp.hpp
+[75.110s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__rosidl_typesupport_fastrtps_cpp.hpp
+[75.130s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__rosidl_typesupport_fastrtps_cpp.hpp
+[75.151s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[75.171s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__rosidl_typesupport_fastrtps_cpp.hpp
+[75.192s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__rosidl_typesupport_fastrtps_cpp.hpp
+[75.213s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__rosidl_typesupport_introspection_c.h
+[75.233s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__rosidl_typesupport_introspection_c.h
+[75.254s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__rosidl_typesupport_introspection_c.h
+[75.274s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__rosidl_typesupport_introspection_c.h
+[75.295s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__rosidl_typesupport_introspection_c.h
+[75.315s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__rosidl_typesupport_introspection_c.h
+[75.334s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__rosidl_typesupport_introspection_c.h
+[75.354s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__rosidl_typesupport_introspection_c.h
+[75.375s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__rosidl_typesupport_introspection_c.h
+[75.396s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__rosidl_typesupport_introspection_c.h
+[75.416s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[75.436s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__rosidl_typesupport_introspection_c.h
+[75.456s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__rosidl_typesupport_introspection_c.h
+[75.477s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/auto_focus_ctrl__rosidl_typesupport_introspection_cpp.hpp
+[75.498s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark__rosidl_typesupport_introspection_cpp.hpp
+[75.517s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/hand_landmark_array__rosidl_typesupport_introspection_cpp.hpp
+[75.537s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/imu_with_magnetic_field__rosidl_typesupport_introspection_cpp.hpp
+[75.558s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection__rosidl_typesupport_introspection_cpp.hpp
+[75.580s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/spatial_detection_array__rosidl_typesupport_introspection_cpp.hpp
+[75.599s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d__rosidl_typesupport_introspection_cpp.hpp
+[75.619s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/track_detection2_d_array__rosidl_typesupport_introspection_cpp.hpp
+[75.639s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_feature__rosidl_typesupport_introspection_cpp.hpp
+[75.664s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/msg/detail/tracked_features__rosidl_typesupport_introspection_cpp.hpp
+[75.683s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/normalized_image_crop__rosidl_typesupport_introspection_cpp.hpp
+[75.702s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/include/depthai_ros_msgs/depthai_ros_msgs/srv/detail/trigger_named__rosidl_typesupport_introspection_cpp.hpp
+[75.721s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/pythonpath.sh
+[75.742s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/pythonpath.dsv
+[75.761s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs-2.12.2-py3.12.egg-info/PKG-INFO
+[75.781s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs-2.12.2-py3.12.egg-info/SOURCES.txt
+[75.800s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs-2.12.2-py3.12.egg-info/dependency_links.txt
+[75.820s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs-2.12.2-py3.12.egg-info/top_level.txt
+[75.840s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/__init__.py
+[75.859s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_c.c
+[75.880s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
+[75.899s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/_depthai_ros_msgs_s.ep.rosidl_typesupport_introspection_c.c
+[75.918s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_c.so
+[75.938s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_fastrtps_c.so
+[75.957s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_introspection_c.so
+[75.977s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/__init__.py
+[75.998s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_auto_focus_ctrl.py
+[76.016s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_auto_focus_ctrl_s.c
+[76.038s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_hand_landmark.py
+[76.078s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_hand_landmark_array.py
+[76.104s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_hand_landmark_array_s.c
+[76.133s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_hand_landmark_s.c
+[76.173s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_imu_with_magnetic_field.py
+[76.197s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_imu_with_magnetic_field_s.c
+[76.215s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection.py
+[76.234s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection_array.py
+[76.254s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection_array_s.c
+[76.272s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection_s.c
+[76.292s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_track_detection2_d.py
+[76.312s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_track_detection2_d_array.py
+[76.331s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_track_detection2_d_array_s.c
+[76.350s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_track_detection2_d_s.c
+[76.368s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_feature.py
+[76.388s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_feature_s.c
+[76.408s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_features.py
+[76.427s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_features_s.c
+[76.446s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/__init__.py
+[76.465s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/_normalized_image_crop.py
+[76.484s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/_normalized_image_crop_s.c
+[76.503s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/_trigger_named.py
+[76.522s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/_trigger_named_s.c
+[76.542s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_fastrtps_c.so
+[76.542s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_introspection_c.so
+[76.542s] -- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/depthai_ros_msgs_s__rosidl_typesupport_c.so
+[76.543s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/ament_index/resource_index/rust_packages/depthai_ros_msgs
+[76.562s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/rust/Cargo.toml
+[76.582s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/rust/build.rs
+[76.601s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/rust/src/lib.rs
+[76.620s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/rust/src/msg.rs
+[76.639s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/rust/src/msg/rmw.rs
+[76.661s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/rust/src/srv.rs
+[76.682s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/rust/src/srv/rmw.rs
+[76.706s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/AutoFocusCtrl.idl
+[76.730s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmark.idl
+[76.750s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmarkArray.idl
+[76.770s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/ImuWithMagneticField.idl
+[76.792s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeature.idl
+[76.811s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeatures.idl
+[76.831s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetection.idl
+[76.852s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetectionArray.idl
+[76.872s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2D.idl
+[76.893s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2DArray.idl
+[76.913s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/TriggerNamed.idl
+[76.932s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/NormalizedImageCrop.idl
+[76.953s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/AutoFocusCtrl.msg
+[76.974s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmark.msg
+[76.994s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/HandLandmarkArray.msg
+[77.015s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/ImuWithMagneticField.msg
+[77.035s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeature.msg
+[77.055s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackedFeatures.msg
+[77.076s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetection.msg
+[77.097s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/SpatialDetectionArray.msg
+[77.116s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2D.msg
+[77.139s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/msg/TrackDetection2DArray.msg
+[77.158s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/TriggerNamed.srv
+[77.179s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/srv/NormalizedImageCrop.srv
+[77.200s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/ament_index/resource_index/package_run_dependencies/depthai_ros_msgs
+[77.220s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/ament_index/resource_index/parent_prefix_path/depthai_ros_msgs
+[77.239s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/ament_prefix_path.sh
+[77.260s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/ament_prefix_path.dsv
+[77.280s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/path.sh
+[77.302s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/environment/path.dsv
+[77.326s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/local_setup.bash
+[77.345s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/local_setup.sh
+[77.364s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/local_setup.zsh
+[77.385s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/local_setup.dsv
+[77.404s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/package.dsv
+[77.423s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/ament_index/resource_index/packages/depthai_ros_msgs
+[77.442s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/rosidl_cmake-extras.cmake
+[77.461s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/ament_cmake_export_dependencies-extras.cmake
+[77.481s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/ament_cmake_export_include_directories-extras.cmake
+[77.501s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/ament_cmake_export_libraries-extras.cmake
+[77.520s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/ament_cmake_export_targets-extras.cmake
+[77.539s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[77.558s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[77.580s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgsConfig.cmake
+[77.599s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgsConfig-version.cmake
+[77.619s] -- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/package.xml
+[77.639s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_generator_c.so
+[77.640s] -- Set non-toolchain portion of runtime path of "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_generator_c.so" to ""
+[77.641s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_fastrtps_c.so
+[77.641s] -- Set non-toolchain portion of runtime path of "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_fastrtps_c.so" to ""
+[77.641s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.so
+[77.643s] -- Set non-toolchain portion of runtime path of "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_fastrtps_cpp.so" to ""
+[77.643s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_introspection_c.so
+[77.644s] -- Set non-toolchain portion of runtime path of "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_introspection_c.so" to ""
+[77.644s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_c.so
+[77.644s] -- Set non-toolchain portion of runtime path of "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_c.so" to ""
+[77.644s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_introspection_cpp.so
+[77.647s] -- Set non-toolchain portion of runtime path of "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_introspection_cpp.so" to ""
+[77.647s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_cpp.so
+[77.648s] -- Set non-toolchain portion of runtime path of "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_typesupport_cpp.so" to ""
+[77.752s] Listing '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs'...
+[77.752s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/__init__.py'...
+[77.752s] Listing '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg'...
+[77.752s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/__init__.py'...
+[77.753s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_auto_focus_ctrl.py'...
+[77.753s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_hand_landmark.py'...
+[77.753s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_hand_landmark_array.py'...
+[77.753s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_imu_with_magnetic_field.py'...
+[77.753s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection.py'...
+[77.753s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_spatial_detection_array.py'...
+[77.753s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_track_detection2_d.py'...
+[77.753s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_track_detection2_d_array.py'...
+[77.753s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_feature.py'...
+[77.753s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/msg/_tracked_features.py'...
+[77.753s] Listing '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv'...
+[77.754s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/__init__.py'...
+[77.754s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/_normalized_image_crop.py'...
+[77.754s] Compiling '/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/python3.12/site-packages/depthai_ros_msgs/srv/_trigger_named.py'...
+[77.766s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_generator_py.so
+[77.767s] -- Set non-toolchain portion of runtime path of "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/lib/libdepthai_ros_msgs__rosidl_generator_py.so" to ""
+[77.767s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_generator_cExport.cmake
+[77.767s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_generator_cExport-noconfig.cmake
+[77.768s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_typesupport_fastrtps_cExport.cmake
+[77.768s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_typesupport_fastrtps_cExport-noconfig.cmake
+[77.768s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_generator_cppExport.cmake
+[77.768s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_typesupport_fastrtps_cppExport.cmake
+[77.768s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake
+[77.769s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_introspection_cExport.cmake
+[77.769s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_introspection_cExport-noconfig.cmake
+[77.769s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_cExport.cmake
+[77.769s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_cExport-noconfig.cmake
+[77.769s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_introspection_cppExport.cmake
+[77.770s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+[77.770s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_cppExport.cmake
+[77.770s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/depthai_ros_msgs__rosidl_typesupport_cppExport-noconfig.cmake
+[77.770s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_generator_pyExport.cmake
+[77.770s] -- Installing: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_msgs/share/depthai_ros_msgs/cmake/export_depthai_ros_msgs__rosidl_generator_pyExport-noconfig.cmake
+[77.775s] Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/install/my_ugv_vision:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs

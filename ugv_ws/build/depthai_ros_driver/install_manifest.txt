@@ -1,0 +1,8 @@
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib/libdepthai_ros_driver.so
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib/libdepthai_ros_driver_sensor_nodes.so
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib/libdepthai_ros_driver_nn_nodes.so
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_driver/lib/libdepthai_ros_driver_common.so
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_driver/share/depthai_ros_driver/cmake/depthai_ros_driverTargets.cmake
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_driver/share/depthai_ros_driver/cmake/depthai_ros_driverTargets-noconfig.cmake
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_driver/share/depthai_ros_driver/cmake/depthai_ros_driverTargetsExport.cmake
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_ros_driver/share/depthai_ros_driver/cmake/depthai_ros_driverTargetsExport-noconfig.cmake

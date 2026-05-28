@@ -1,0 +1,1 @@
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_driver/launch/camera_as_part_of_a_robot.launch.py

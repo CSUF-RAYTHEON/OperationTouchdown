@@ -1,8 +1,13 @@
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/__pycache__/master.launch.cpython-312.pyc
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/__pycache__/navigation.launch.cpython-312.pyc
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/__pycache__/slam.launch.cpython-312.pyc
 /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/master.launch.py
 /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/master.launch2.py
 /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/master.launch4.py
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/navigation.launch.py
 /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/navigation_launch.py
 /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/oak_camera.launch.py
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/launch/slam.launch.py
 /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/config/ekf.yaml
 /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/config/nav2_params.yaml
 /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/share/my_ugv_bringup/config/oak_camera.yaml

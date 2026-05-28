@@ -1,0 +1,1 @@
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/rosidl_generator_rs/depthai_ros_msgs/rust/src/srv/rmw.rs

@@ -1,0 +1,1 @@
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai-ros/ament_cmake_environment_hooks/local_setup.zsh

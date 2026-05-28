@@ -1,0 +1,36 @@
+[1.881s] Invoking command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware': PYTHONPATH=/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build --no-deps symlink_data
+[2.126s] /usr/lib/python3/dist-packages/setuptools/dist.py:744: SetuptoolsDeprecationWarning: Invalid dash-separated options
+[2.127s] !!
+[2.127s] 
+[2.127s]         ********************************************************************************
+[2.127s]         Usage of dash-separated 'script-dir' will not be supported in future
+[2.127s]         versions. Please use the underscore name 'script_dir' instead.
+[2.127s] 
+[2.127s]         This deprecation is overdue, please update your project and remove deprecated
+[2.127s]         calls to avoid build errors in the future.
+[2.127s] 
+[2.127s]         See https://setuptools.pypa.io/en/latest/userguide/declarative_config.html for details.
+[2.127s]         ********************************************************************************
+[2.128s] 
+[2.128s] !!
+[2.128s]   opt = self.warn_dash_deprecation(opt, section)
+[2.424s] running develop
+[2.727s] running egg_info
+[2.757s] writing my_ugv_hardware.egg-info/PKG-INFO
+[2.757s] writing dependency_links to my_ugv_hardware.egg-info/dependency_links.txt
+[2.757s] writing entry points to my_ugv_hardware.egg-info/entry_points.txt
+[2.758s] writing requirements to my_ugv_hardware.egg-info/requires.txt
+[2.758s] writing top-level names to my_ugv_hardware.egg-info/top_level.txt
+[2.816s] reading manifest file 'my_ugv_hardware.egg-info/SOURCES.txt'
+[2.817s] writing manifest file 'my_ugv_hardware.egg-info/SOURCES.txt'
+[2.845s] running build_ext
+[2.845s] Creating /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my-ugv-hardware.egg-link (link to .)
+[2.846s] Installing kill_switch script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+[2.847s] Installing lora_bridge script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+[2.847s] Installing mission_controller script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+[2.847s] Installing motor_driver script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+[2.847s] Installing virtual_odom script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware
+[2.848s] 
+[2.848s] Installed /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware
+[2.848s] running symlink_data
+[2.948s] Invoked command in '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware' returned '0': PYTHONPATH=/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build --no-deps symlink_data
