@@ -71,7 +71,7 @@ def generate_launch_description():
         package='rplidar_ros', executable='rplidar_composition', name='rplidar_node',
         parameters=[{
             'serial_port': '/dev/ttyUSB0',
-            'frame_id': 'laser_frame',
+            'frame_id': 'laser',
             'scan_mode': 'Standard',
             'serial_baudrate': 115200,
             'scan_frequency': 5.0,
