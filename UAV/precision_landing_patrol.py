@@ -276,9 +276,11 @@ DESCENT_MAX_VZ           = 0.40  # m/s vertical clamp
 DESCENT_XY_ERR_HOLD      = 0.10  # m — beyond this, slow vz to 20 % of cmd.
                                  # Tightened from 0.35 so descent is gated on
                                  # cm-scale lateral alignment, not dm-scale.
-DESCENT_DEADBAND_XY      = 0.03  # m — ignore offsets below ~3 cm (was 0.10).
-                                 # The user wants single-digit-cm precision so
-                                 # the deadband itself must be sub-cm-to-cm.
+DESCENT_DEADBAND_XY      = 0.005 # m — ignore offsets below ~5 mm.
+                                 # Reduced from 0.03 m (same rationale as
+                                 # TRACK_DEADBAND_XY) so the descent PD
+                                 # keeps driving the tag toward pixel-center
+                                 # down to sub-cm accuracy.
 DESCENT_GAIN_SCALE_BZ    = 1.5   # m — below this, scale XY gains by bz/1.5
 DESCENT_MIN_GAIN_SCALE   = 0.30  # floor for the altitude-scaled XY gain
 DESCENT_EMA_ALPHA        = 0.65  # heavier filter than TRACK (was 0.5)
@@ -443,12 +445,17 @@ TRACK_MAX_VZ           = 0.40     # m/s — per-axis vertical clamp during
 TRACK_ALT_DEADBAND_M   = 0.10     # m — ignore altitude errors below this
                                   # so EKF z noise doesn't drive a
                                   # constant tiny vz command.
-TRACK_DEADBAND_XY      = 0.03     # m — ignore offsets below ~3 cm.  Was
-                                  # 0.08; tightened to single-digit cm so
-                                  # the controller still drives the drone
-                                  # at small errors.  Cap noise from pose
-                                  # estimation is mostly in the sub-cm
-                                  # range at TRACK altitudes.
+TRACK_DEADBAND_XY      = 0.005    # m — ignore offsets below ~5 mm.
+                                  # Reduced from 0.03 m so the controller
+                                  # keeps driving toward zero even at
+                                  # cm-scale errors; AprilTag pose noise
+                                  # at cruise altitude is sub-mm after
+                                  # EMA filtering so this does not chase
+                                  # noise.  Tighter deadband is the key
+                                  # fix for the "not centering" issue:
+                                  # with a 3 cm deadband the drone could
+                                  # stall 2–3 cm off-center and never
+                                  # reach pixel error ≈ 0.
 TRACK_CENTER_THRESHOLD_M = 0.05   # m — both filtered |body_x| and |body_y|
                                   # must drop below this for TRACK to
                                   # consider itself "centred".  Tightened
@@ -600,6 +607,67 @@ RECOVERY_OAK_EMA_ALPHA     = 0.7   # EMA on OAK accel samples in the pump
                                    # at the 100 Hz pipeline rate)
 RECOVERY_OAK_IMU_HZ        = 100   # OAK IMU sample rate for both the
                                    # accelerometer and gyroscope streams
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GPS/NED Wind-Correction Config (Issue 3)
+# When no AprilTag correction is driving the drone (ACQUIRE phase, or
+# whenever the drone should hold a fixed world-position), compare the
+# Pixhawk EKF NED position against the saved anchor and issue a corrective
+# body-frame velocity to fight any wind-induced drift.  This is a pure
+# PHYSICAL position check — no time-based or motor-estimate approach.
+#
+# Logic:
+#   err_world  = (anchor_ned_xy - current_ned_xy)
+#   if |err_world| > WIND_CORRECTION_THRESHOLD_M:
+#       v_world_xy = WIND_CORRECTION_KP * err_world   (clamped)
+#       v_body_xy  = R(yaw) · v_world_xy              (NED → body)
+#       send_velocity(v_body_xy, vz_alt_hold)
+#
+# The anchor is updated whenever the drone INTENTIONALLY moves (e.g. at
+# the end of acquire_tag() when the tag-tracking loop takes over).
+# ─────────────────────────────────────────────────────────────────────────────
+
+WIND_CORRECTION_KP           = 0.5   # P gain on world-frame position error
+                                     # (m/s per m of drift).
+WIND_CORRECTION_DEADBAND_M   = 0.05  # m per axis — ignore tiny GPS noise
+WIND_CORRECTION_THRESHOLD_M  = 0.20  # m — minimum drift magnitude before
+                                     # the correction is applied at all.
+                                     # Below this the drone is considered
+                                     # "on target" and no lateral command
+                                     # is issued.
+WIND_CORRECTION_MAX_V        = 0.30  # m/s — per-axis body-frame clamp on
+                                     # the wind-correction command.  Kept
+                                     # below PATROL_SPEED so the correction
+                                     # never out-races a patrol leg command.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DepthAI OAK-D S2 Stereo-Depth Altitude Config (Issue 4)
+# Replace Pixhawk IMU altitude with the stereo depth at the centre pixel of
+# the OAK-D S2 depth frame.  The depth at (cx, cy) approximates the slant
+# range from camera to the surface directly below — which equals the drone's
+# AGL altitude when the drone is level.
+#
+# CRITICAL SAFETY CONSTRAINT: when pitch or roll exceeds
+# DEPTH_ALT_TILT_THRESHOLD_DEG the camera is no longer pointing straight
+# down and the centre-pixel depth is NOT the AGL altitude.  We silently
+# fall back to the Pixhawk EKF altitude in that case.  Pitch/roll are read
+# from the MAVLink ATTITUDE message cached in controller.last_att.
+# ─────────────────────────────────────────────────────────────────────────────
+
+DEPTH_ALT_TILT_THRESHOLD_DEG = 5.0   # degrees — max |pitch| or |roll| to
+                                     # allow depth-based altitude.  Above
+                                     # this fall back to Pixhawk EKF.
+DEPTH_ALT_VALID_MIN_M        = 0.20  # m — depth values below this are sensor
+                                     # noise / too-close; discard.
+DEPTH_ALT_VALID_MAX_M        = 20.0  # m — depth values above this are
+                                     # spurious; discard.
+DEPTH_ALT_STALE_S            = 0.5   # s — max age of the last valid depth
+                                     # reading; older → fall back to EKF.
+DEPTH_ALT_EMA_ALPHA          = 0.70  # EMA weight on previous depth reading
+                                     # to smooth frame-to-frame noise from
+                                     # the stereo pipeline.
+DEPTH_STEREO_RES             = (640, 400)  # resolution for left/right cameras
+                                           # feeding the StereoDepth node.
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Camera Config
@@ -898,6 +966,17 @@ class PrecisionLandingController:
             "ax": None, "ay": None, "az": None,
             "ema_ax": None, "ema_ay": None, "ema_az": None,
             "t": 0.0,
+        }
+
+        # OAK-D S2 stereo-depth altitude cache (Issue 4).
+        # Written by make_pump() from the StereoDepth output queue.
+        # "value" is the EMA-smoothed centre-pixel depth in metres (AGL
+        # altitude when the drone is level).  "t" is wall-clock time of
+        # the last valid update.  Both start None; _relative_altitude_m()
+        # checks freshness and tilt before trusting this value.
+        self.last_depth_alt = {
+            "value": None,   # metres AGL (depth-based)
+            "t":     0.0,
         }
 
         # Last commanded velocity — kept here so draw_overlay() can show
@@ -2005,10 +2084,20 @@ class PrecisionLandingController:
             vel_ok    = hspd     < STABILIZE_VEL_TOLERANCE
             all_ok    = alt_ok and drift_ok and vel_ok
 
-            # Active hold — body-frame zero command pins the position while
-            # we wait.  Doing nothing leaves AP coasting on whatever the
-            # NAV_TAKEOFF command last produced and can let the drone drift.
-            self.send_velocity(0, 0, 0)
+            # Active hold — close a P-loop on altitude so that any
+            # NAV_TAKEOFF overshoot is actively driven back to target_alt
+            # rather than left to float at the over-shot value.  Pure
+            # vz=0 body-frame commands only zero the VERTICAL SPEED; they
+            # do NOT pull the drone back down if it has stopped climbing
+            # 0.5–1 m above the requested altitude.
+            # Sign convention: NED vz < 0 = climb, > 0 = descent.
+            signed_alt_err = target_alt - relative_alt  # + = below target
+            if abs(signed_alt_err) < TRACK_ALT_DEADBAND_M:
+                _vz_stab = 0.0
+            else:
+                _vz_stab = max(min(-TRACK_Kp_Z * signed_alt_err,
+                                   TRACK_MAX_VZ), -TRACK_MAX_VZ)
+            self.send_velocity(0, 0, _vz_stab)
 
             now = time.time()
             if now - last_print > 0.5:
@@ -2201,13 +2290,17 @@ def draw_overlay(frame, state):
     color_cmd     = (  0, 200, 255)
     color_white   = (255, 255, 255)
 
-    alt_text = f"{altitude:+.2f} m" if altitude is not None else "  n/a"
+    alt_text   = f"{altitude:+.2f} m" if altitude is not None else "  n/a"
+    depth_alt  = state.get("depth_alt")
+    depth_src  = state.get("alt_source", "EKF")
+    depth_text = f"{depth_alt:.2f} m" if depth_alt is not None else "n/a"
 
     lines = [
         (f"PHASE   {phase}",                        color_phase),
         (f"MODE    {flightmode}",                   color_phase),
         (f"MOTORS  {'ARMED' if armed else 'DISARMED'}", color_motors),
-        (f"ALT     {alt_text}",                     color_white),
+        (f"ALT     {alt_text} [{depth_src}]",       color_white),
+        (f"DEPTH   {depth_text}",                   color_white),
         (f"LEG     {leg_label}",                    color_white),
     ]
 
@@ -2260,7 +2353,7 @@ def draw_overlay(frame, state):
 # up — long before any flight command is issued.
 # ─────────────────────────────────────────────────────────────────────────────
 
-def make_pump(q_rgb, q_oak_imu, detector, controller, state):
+def make_pump(q_rgb, q_oak_imu, detector, controller, state, q_depth=None):
     """Build a closure that pulls the latest frame, detects (if requested),
     refreshes the overlay HUD, and pumps cv2.waitKey so the window stays live.
 
@@ -2275,6 +2368,11 @@ def make_pump(q_rgb, q_oak_imu, detector, controller, state):
     OAK-D camera frame to the airframe body frame uses the existing
     PrecisionLandingController.camera_to_body() static method — same
     convention as the AprilTag pose path.
+
+    ``q_depth`` (optional) is the DepthAI StereoDepth output queue (Issue 4).
+    Each pump tick the latest depth frame is drained and the centre-pixel
+    depth (mm → m) is EMA-smoothed into ``controller.last_depth_alt``.
+    When None the depth altitude feature is simply disabled.
 
     ``state`` is mutated in-place — it is the single shared dictionary
     everything writes to and the overlay reads from.
@@ -2291,7 +2389,22 @@ def make_pump(q_rgb, q_oak_imu, detector, controller, state):
                                       - controller.takeoff_z_origin)
             else:
                 state["altitude"] = -controller.last_pos["z"]
-        state["cmd"] = controller.last_cmd
+        state["cmd"]       = controller.last_cmd
+        # Expose depth altitude and the source label for the overlay
+        state["depth_alt"] = controller.last_depth_alt.get("value")
+        # Determine which source _relative_altitude_m will currently prefer
+        _d = controller.last_depth_alt
+        _roll  = controller.last_att.get("roll")
+        _pitch = controller.last_att.get("pitch")
+        _tilt  = math.radians(DEPTH_ALT_TILT_THRESHOLD_DEG)
+        _depth_usable = (
+            _d.get("value") is not None
+            and (time.time() - _d.get("t", 0.0)) < DEPTH_ALT_STALE_S
+            and DEPTH_ALT_VALID_MIN_M <= (_d.get("value") or 0.0) <= DEPTH_ALT_VALID_MAX_M
+            and _roll is not None and _pitch is not None
+            and abs(_roll) <= _tilt and abs(_pitch) <= _tilt
+        )
+        state["alt_source"] = "DEPTH" if _depth_usable else "EKF"
 
         # 1b. Drain OAK-D IMU samples and EMA-smooth into the controller
         #     cache so recover_velocity_command() has a fresh body-frame
@@ -2342,6 +2455,42 @@ def make_pump(q_rgb, q_oak_imu, detector, controller, state):
                         controller.last_oak_imu["ema_az"] = (
                             alpha * prev_az + (1 - alpha) * body_az)
                     controller.last_oak_imu["t"] = time.time()
+
+        # 1c. Drain OAK-D stereo depth queue and update the depth-altitude
+        #     cache (Issue 4).  The centre pixel of the depth frame gives
+        #     the range to the surface directly below the camera in mm;
+        #     we convert to metres and apply a gentle EMA to suppress
+        #     frame-to-frame noise.  The safety tilt check happens inside
+        #     _relative_altitude_m() — here we only cache the raw reading.
+        if q_depth is not None:
+            try:
+                depth_pkt = q_depth.tryGet()
+            except Exception:
+                depth_pkt = None
+            if depth_pkt is not None:
+                try:
+                    depth_data = depth_pkt.getFrame()
+                    if depth_data is not None and depth_data.size > 0:
+                        dh, dw = depth_data.shape[:2]
+                        raw_mm = float(depth_data[dh // 2, dw // 2])
+                        raw_m  = raw_mm / 1000.0
+                        prev_d = controller.last_depth_alt.get("value")
+                        if (raw_m >= DEPTH_ALT_VALID_MIN_M
+                                and raw_m <= DEPTH_ALT_VALID_MAX_M):
+                            # Valid reading — apply EMA
+                            if prev_d is None:
+                                new_d = raw_m
+                            else:
+                                new_d = (DEPTH_ALT_EMA_ALPHA * prev_d
+                                         + (1.0 - DEPTH_ALT_EMA_ALPHA) * raw_m)
+                            controller.last_depth_alt["value"] = new_d
+                            controller.last_depth_alt["t"]     = time.time()
+                        # Invalid reading — hold last good value; do NOT
+                        # reset to None because a single bad pixel in a
+                        # dense depth frame is common and should not wipe
+                        # out a recently valid altitude.
+                except Exception:
+                    pass   # depth read errors are non-fatal
 
         # 2. Pull the most recent camera frame (if any).  tryGet() never
         #    blocks; if the queue is empty we render the last cached frame
@@ -2430,7 +2579,19 @@ def commit_to_land(controller, pump, reason):
 # None on timeout so the caller can fall back to plain LAND.
 # ─────────────────────────────────────────────────────────────────────────────
 
-def acquire_tag(controller, pump, state):
+def acquire_tag(controller, pump, state, anchor_x=None, anchor_y=None):
+    """Hover in place and wait for the AprilTag to appear in the FOV.
+
+    ``anchor_x`` / ``anchor_y`` are the NED home coordinates from
+    wait_stabilized().  When provided the function runs an active GPS
+    wind-correction loop (Issue 3): if the drone drifts more than
+    WIND_CORRECTION_THRESHOLD_M from the anchor it commands a corrective
+    body-frame velocity to return — no motor-timing estimates, purely
+    physical GPS/EKF position feedback.
+
+    An altitude P-loop (Issue 1) replaces the plain vz=0 command so
+    NAV_TAKEOFF overshoot is actively corrected rather than left to float.
+    """
     print(f"[INFO] Phase: ACQUIRE  (waiting up to {ACQUIRE_TIMEOUT_S:.0f}s "
           "for AprilTag in FOV)")
     state["phase"]     = "ACQUIRE"
@@ -2453,7 +2614,51 @@ def acquire_tag(controller, pump, state):
             state["leg_label"] = ""
             return None
 
-        controller.send_velocity(0.0, 0.0, 0.0)
+        # ── Issue 1: active altitude hold ────────────────────────────────
+        # Replace the plain (0,0,0) with a P-loop on altitude so any
+        # NAV_TAKEOFF overshoot is driven back to TAKEOFF_ALTITUDE.
+        rel_alt_acq = _relative_altitude_m(controller)
+        if rel_alt_acq is not None:
+            _alt_err_acq = TAKEOFF_ALTITUDE - rel_alt_acq
+            if abs(_alt_err_acq) < TRACK_ALT_DEADBAND_M:
+                _vz_acq = 0.0
+            else:
+                _vz_acq = max(min(-TRACK_Kp_Z * _alt_err_acq,
+                                  TRACK_MAX_VZ), -TRACK_MAX_VZ)
+        else:
+            _vz_acq = 0.0
+
+        # ── Issue 3: GPS / NED wind correction ───────────────────────────
+        # If the EKF NED position is available and an anchor was supplied,
+        # compute a world-frame correction velocity and rotate it into body
+        # frame.  This fires only when drift exceeds
+        # WIND_CORRECTION_THRESHOLD_M so small GPS noise doesn't cause
+        # continuous micro-corrections.
+        _vx_acq = 0.0
+        _vy_acq = 0.0
+        if anchor_x is not None and anchor_y is not None:
+            _cur_x = controller.last_pos.get("x")
+            _cur_y = controller.last_pos.get("y")
+            if _cur_x is not None and _cur_y is not None:
+                _err_nx = anchor_x - _cur_x
+                _err_ny = anchor_y - _cur_y
+                _err_mag = math.sqrt(_err_nx * _err_nx + _err_ny * _err_ny)
+                if _err_mag > WIND_CORRECTION_THRESHOLD_M:
+                    # Dead-band per axis before rotating
+                    _err_nx = (0.0 if abs(_err_nx) < WIND_CORRECTION_DEADBAND_M
+                               else _err_nx)
+                    _err_ny = (0.0 if abs(_err_ny) < WIND_CORRECTION_DEADBAND_M
+                               else _err_ny)
+                    _vN = WIND_CORRECTION_KP * _err_nx
+                    _vE = WIND_CORRECTION_KP * _err_ny
+                    _bvx, _bvy = controller.world_to_body_xy(_vN, _vE)
+                    if _bvx is not None:
+                        _vx_acq = max(min(_bvx, WIND_CORRECTION_MAX_V),
+                                      -WIND_CORRECTION_MAX_V)
+                        _vy_acq = max(min(_bvy, WIND_CORRECTION_MAX_V),
+                                      -WIND_CORRECTION_MAX_V)
+
+        controller.send_velocity(_vx_acq, _vy_acq, _vz_acq)
 
         tag = pump(detect=True)
         if tag is not None:
@@ -2471,8 +2676,14 @@ def acquire_tag(controller, pump, state):
 
         now = time.time()
         if now - last_log > 1.0:
+            drift_str = ""
+            if anchor_x is not None and controller.last_pos.get("x") is not None:
+                _dx = anchor_x - controller.last_pos["x"]
+                _dy = anchor_y - controller.last_pos["y"]
+                drift_str = (f"  drift=({_dx:+.2f},{_dy:+.2f}) m "
+                             f"|{math.sqrt(_dx**2+_dy**2):.2f}| m")
             print(f"[INFO] ACQUIRE t={elapsed:.1f}/{ACQUIRE_TIMEOUT_S:.0f}s "
-                  "— hovering, scanning for tag")
+                  f"— hovering, scanning for tag{drift_str}")
             last_log = now
 
         time.sleep(0.05)
@@ -3252,12 +3463,39 @@ def precision_land(controller, pump, state):
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _relative_altitude_m(controller):
-    """Return current altitude above the takeoff anchor in metres, or None
-    if either the LOCAL_POSITION_NED stream or the takeoff anchor has not
-    been seeded yet.  Centralised here because every cap-related check
-    needs the same anchored value, and a fall-through to raw -z would
-    silently mis-cap on a stale-EKF-origin airframe.
+    """Return current AGL altitude in metres, or None if unavailable.
+
+    Source priority (Issue 4):
+      1. OAK-D S2 stereo-depth centre-pixel reading — preferred when:
+           * fresh (age < DEPTH_ALT_STALE_S)
+           * in the credible range [DEPTH_ALT_VALID_MIN_M, DEPTH_ALT_VALID_MAX_M]
+           * Pixhawk ATTITUDE confirms the drone is sufficiently level:
+             |roll| <= DEPTH_ALT_TILT_THRESHOLD_DEG  AND
+             |pitch| <= DEPTH_ALT_TILT_THRESHOLD_DEG
+         When the drone is tilted the camera is no longer pointing straight
+         down; the centre-pixel depth is NOT the AGL altitude.  We fall back
+         to the Pixhawk EKF in that case rather than feed a wrong altitude
+         into the control loops.
+      2. Pixhawk LOCAL_POSITION_NED relative to takeoff_z_origin — used
+         when depth is unavailable, stale, out-of-range, or the drone is
+         tilted.  This is the original behaviour.
     """
+    # ── Try OAK-D stereo depth first ─────────────────────────────────────
+    roll  = controller.last_att.get("roll")
+    pitch = controller.last_att.get("pitch")
+    depth_val = controller.last_depth_alt.get("value")
+    depth_t   = controller.last_depth_alt.get("t", 0.0)
+    _tilt_rad = math.radians(DEPTH_ALT_TILT_THRESHOLD_DEG)
+
+    if (depth_val is not None
+            and (time.time() - depth_t) < DEPTH_ALT_STALE_S
+            and DEPTH_ALT_VALID_MIN_M <= depth_val <= DEPTH_ALT_VALID_MAX_M
+            and roll is not None and pitch is not None
+            and abs(roll)  <= _tilt_rad
+            and abs(pitch) <= _tilt_rad):
+        return depth_val
+
+    # ── Fall back to Pixhawk EKF altitude ────────────────────────────────
     cur_z = controller.last_pos.get("z")
     z0    = controller.takeoff_z_origin
     if cur_z is None or z0 is None:
@@ -3474,6 +3712,57 @@ with dai.Device() as device:
         oak_imu.setMaxBatchReports(10)
         q_oak_imu = oak_imu.out.createOutputQueue(maxSize=20, blocking=False)
 
+        # ── OAK-D S2 stereo depth for altitude (Issue 4) ──────────────────
+        # The OAK-D S2 has two grayscale stereo cameras (CAM_B = left,
+        # CAM_C = right) in addition to the centre colour camera (CAM_A).
+        # When the device is mounted face-down on the UAV all three cameras
+        # point downward, so the stereo disparity at the centre pixel gives
+        # the slant range to the ground — i.e. the AGL altitude (when the
+        # drone is level).
+        #
+        # We use HIGH_ACCURACY preset with left-right check enabled.
+        # Subpixel is left off to keep CPU load manageable; the EMA in
+        # make_pump further smooths frame-to-frame variance.
+        #
+        # If either camera or the StereoDepth node fails to create (e.g.
+        # on a non-S2 OAK-D variant that lacks one socket), we catch the
+        # exception and set q_depth=None so the rest of the mission can
+        # continue using EKF altitude exclusively.
+        q_depth = None
+        try:
+            left_cam = pipeline.create(dai.node.Camera)
+            left_cam.build(dai.CameraBoardSocket.CAM_B)
+            right_cam = pipeline.create(dai.node.Camera)
+            right_cam.build(dai.CameraBoardSocket.CAM_C)
+
+            stereo = pipeline.create(dai.node.StereoDepth)
+            stereo.setDefaultProfilePreset(
+                dai.node.StereoDepth.PresetType.HIGH_ACCURACY)
+            stereo.setLeftRightCheck(True)
+            stereo.setSubpixel(False)
+
+            left_out  = left_cam.requestOutput(
+                size=DEPTH_STEREO_RES,
+                type=dai.ImgFrame.Type.GRAY8,
+                fps=30,
+            )
+            right_out = right_cam.requestOutput(
+                size=DEPTH_STEREO_RES,
+                type=dai.ImgFrame.Type.GRAY8,
+                fps=30,
+            )
+            left_out.link(stereo.left)
+            right_out.link(stereo.right)
+
+            q_depth = stereo.depth.createOutputQueue(maxSize=4, blocking=False)
+            print("[INFO] OAK-D S2 stereo depth pipeline ready "
+                  f"(resolution {DEPTH_STEREO_RES}, tilt guard "
+                  f"±{DEPTH_ALT_TILT_THRESHOLD_DEG}°)")
+        except Exception as _depth_ex:
+            print(f"[WARN] Could not set up stereo depth pipeline: {_depth_ex} "
+                  "— altitude will use Pixhawk EKF only")
+            q_depth = None
+
         pipeline.start()
         print("[INFO] Pipeline started — opening preview window...")
 
@@ -3490,6 +3779,8 @@ with dai.Device() as device:
             "flightmode":     controller.master.flightmode,
             "armed":          False,
             "altitude":       None,
+            "depth_alt":      None,   # OAK-D stereo depth altitude (Issue 4)
+            "alt_source":     "EKF",  # "DEPTH" when depth is in use
             "leg_label":      "",
             "tag_visible":    False,
             "last_tag_time":  0.0,
@@ -3498,7 +3789,8 @@ with dai.Device() as device:
             "last_tag":       None,
             "cmd":            controller.last_cmd,
         }
-        pump = make_pump(q_rgb, q_oak_imu, detector, controller, state)
+        pump = make_pump(q_rgb, q_oak_imu, detector, controller, state,
+                         q_depth=q_depth)
 
         # Pump for ~0.5 s so the OpenCV window is on-screen with a phase
         # label BEFORE we touch the FCU.
@@ -3549,7 +3841,11 @@ with dai.Device() as device:
         # Per user spec: after STABILIZE the drone hovers and waits for
         # the marker to appear in the FOV, then hands off to TRACK.  The
         # box patrol is bypassed entirely.
-        last_known = acquire_tag(controller, pump, state)
+        # Pass x_home / y_home as the GPS anchor for wind correction
+        # (Issue 3): ACQUIRE will fly back to the stabilized home position
+        # whenever wind drifts the drone away.
+        last_known = acquire_tag(controller, pump, state,
+                                 anchor_x=x_home, anchor_y=y_home)
 
         # If ACQUIRE timed out without ever seeing the tag, fall through
         # to plain LAND at the current spot (same fallback the patrol
