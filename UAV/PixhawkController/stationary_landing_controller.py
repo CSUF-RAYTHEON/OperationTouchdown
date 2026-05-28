@@ -273,9 +273,24 @@ class StationaryLandingController:
 
         return body_x, body_y, body_z
     
+    def manual_blind_descent(self, descent_time=4.0):
+        """
+        Send a steady downward velocity to manually land without MAVLink NAV_LAND.
+        It pushes the drone into the ground gently.
+        """
+        print("[INFO] Initiating manual descent to touchdown...")
+        start_time = time.time()
+        
+        # Command 0.2 m/s straight down for the allotted time
+        while time.time() - start_time < descent_time:
+            self.send_velocity(0.0, 0.0, 0.2)
+            time.sleep(0.1)
+            
+        print("[INFO] Touchdown assumed.")
+
     def adjust_velocity_and_send(self, body_x, body_y, body_z):
         """
-        Apply proportional control and send velocity command
+        Apply proportional control, gain scheduling, and send velocity command
         """
         alpha = 0.7
         self.prev_x = alpha*self.prev_x + (1-alpha)*body_x
@@ -286,26 +301,33 @@ class StationaryLandingController:
         body_y = self.prev_y
         body_z = self.prev_z
 
-        # this basically makes sure that we arent sending movement if we are already close, so we avoid jerky movements
-        thresh = 0.05
+        # --- Gain Scheduling & Dynamic Thresholding ---
+        if body_z < 1.0:
+            # Below 1 meter: increase deadband, slash horizontal gain, cap max speed
+            thresh = 0.10  # 10 cm deadband (ignores minor shifts when tag is huge)
+            current_kp_xy = Kp_xy * 0.4  # Drastically reduce horizontal aggressiveness
+            current_max_vel = MAX_VELOCITY * 0.5 
+        else:
+            # Above 1 meter: normal parameters
+            thresh = 0.05  # 5 cm deadband
+            current_kp_xy = Kp_xy
+            current_max_vel = MAX_VELOCITY
+
+        # Apply the deadband threshold
         body_x = 0 if abs(body_x) < thresh else body_x
         body_y = 0 if abs(body_y) < thresh else body_y
 
-        TARGET_Z = 0.3
+        # Keep a continuous downward target so it doesn't hover at 0.3m
+        TARGET_Z = 0.0 
         error_z = body_z - TARGET_Z
 
-        vx = Kp_xy * body_x
-        vy = Kp_xy * body_y
+        vx = current_kp_xy * body_x
+        vy = current_kp_xy * body_y
         vz = 0 if abs(error_z) < 0.05 else Kp_z * error_z
 
-        # slow down near landing
-        if body_z < 0.5:
-            vx *= 0.5
-            vy *= 0.5
-
-        # Clip velocities
-        vx = max(min(vx, MAX_VELOCITY), -MAX_VELOCITY)
-        vy = max(min(vy, MAX_VELOCITY), -MAX_VELOCITY)
-        vz = max(min(vz, MAX_VELOCITY), -MAX_VELOCITY)
+        # Clip velocities dynamically to ensure it stays within safe limits
+        vx = max(min(vx, current_max_vel), -current_max_vel)
+        vy = max(min(vy, current_max_vel), -current_max_vel)
+        vz = max(min(vz, current_max_vel), -current_max_vel)
 
         self.send_velocity(vx, vy, vz)
