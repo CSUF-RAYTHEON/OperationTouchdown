@@ -48,13 +48,20 @@
      * Mode flips to LAND once body_z < TOUCHDOWN_BODY_Z_M; control
        source is ArduCopter LAND for ground-detection + auto-disarm.
 
-   IMU RECOVERY (new — see RECOVERY_* config) runs whenever the AprilTag
-   leaves the camera frame during TRACK or PRECISION_LAND.  It snapshots
-   the body-frame drift velocity (Pixhawk EKF, cross-checked against the
-   OAK-D S2 onboard BNO086 accelerometer) at the moment of loss and
-   commands the opposite velocity for up to RECOVERY_DURATION_S (3 s).
-   If the marker reappears we resume the parent phase; if the window
-   expires we commit straight to ArduCopter LAND.  The old
+   IMU RECOVERY (see RECOVERY_* config) runs whenever the AprilTag
+   leaves the camera frame during TRACK or PRECISION_LAND.  At the
+   moment of loss it captures the Pixhawk EKF NED position as
+   ``loss_anchor`` and runs a closed-loop position-PD that flies the
+   airframe back to that anchor while a separate altitude P-loop
+   drives it back to TAKEOFF_ALTITUDE — successive losses converge on
+   the same set altitude rather than ratcheting upward.  The OAK-D
+   S2 BNO086 accelerometer is used as a sanity cross-check on the
+   EKF velocity reading (gain attenuation only — the loop itself
+   closes around EKF position).  The window is RECOVERY_DURATION_S
+   (3 s); if the marker reappears we resume the parent phase, and if
+   the window expires (or we've returned to within
+   RECOVERY_ANCHOR_RADIUS_M of the loss anchor without re-acquiring)
+   we commit straight to ArduCopter LAND.  The old
    search_and_relocate()/MAX_RESEARCH_ATTEMPTS box-re-fly path is no
    longer triggered from a tag-loss — it is kept in the source as
    reference but unreachable in the current flow.
@@ -392,79 +399,121 @@ TRACK_CENTER_HOLD_FRAMES = 15     # consecutive ticks the centred condition
 # IMU Tag-Loss Recovery Config
 # ─────────────────────────────────────────────────────────────────────────────
 # When the AprilTag falls out of the camera frame mid-flight (most likely
-# cause: a wind gust pushing the airframe laterally), we no longer just hover
-# during the loss window — that lets the drift continue and almost always
-# ends in SEARCH or a bad commit-to-LAND off-target.
+# cause: a wind gust pushing the airframe laterally), we no longer just
+# hover during the loss window — that lets the drift continue and almost
+# always ends in SEARCH or a bad commit-to-LAND off-target.
 #
-# Instead, at the moment of loss we capture a body-frame "drift snapshot"
-# from two independent IMU-driven signals:
+# The recovery is now a CLOSED-LOOP POSITION RECOVERY anchored at the
+# Pixhawk-EKF NED position the airframe was at the instant the marker
+# was lost (``loss_anchor_ned``).  Each tick we read the current EKF
+# NED position and command a velocity that drives the airframe back
+# toward that anchor:
 #
-#   PRIMARY  — Pixhawk LOCAL_POSITION_NED velocity (vx, vy) rotated into
-#              body frame using ATTITUDE.yaw.  These vx/vy are the EKF's
-#              fused estimate, driven primarily by the FCU IMU between
-#              GPS updates, so they are the most accurate body-frame
-#              velocity reading available on this airframe.
+#     v_world_xy = RECOVERY_POS_KP * (anchor_xy - current_xy)
+#                + RECOVERY_POS_KD * (-current_world_velocity_xy)
 #
+# The +Kd term explicitly damps any wind-induced motion that the EKF
+# is still measuring — the controller is closing the loop on actual
+# position, not on a one-shot drift snapshot, so a sustained gust no
+# longer beats us into a stagnant hover.  The world-frame command is
+# then rotated into body frame (using current ATTITUDE.yaw) before
+# being shipped through ``send_velocity`` (MAV_FRAME_BODY_NED).
+#
+# Vertical control during recovery is a separate closed loop on the
+# anchored relative altitude with target = TAKEOFF_ALTITUDE — using the
+# loss-anchor's z would carry forward the descent altitude that
+# PRECISION_LAND was at when it lost the tag, which is the opposite of
+# what we want.  Successive losses therefore converge on the SAME set
+# altitude rather than ratcheting higher each time.
+#
+# Cross-check sources (used for confidence scaling, not as the loop
+# itself):
+#   PRIMARY  — Pixhawk LOCAL_POSITION_NED (x, y, vx, vy) — the EKF's
+#              fused estimate.  This is the only source the loop
+#              actually closes around.
 #   BACKUP   — OAK-D S2 onboard BNO086 accelerometer (ACCELEROMETER_RAW),
 #              mapped from camera frame to body frame with the existing
-#              camera_to_body() transform.  Used purely as a confidence
-#              cross-check: if the OAK IMU also sees lateral acceleration
-#              above RECOVERY_OAK_ACCEL_MIN, the Pixhawk-derived drift
-#              estimate is trusted at full gain; otherwise the counter-
-#              command is attenuated to RECOVERY_OAK_DISAGREE_SCALE.
+#              camera_to_body() transform.  Used purely as a sanity
+#              cross-check: if the EKF reports meaningful body-frame
+#              velocity but the OAK IMU sees no matching lateral
+#              acceleration we attenuate the lateral command to
+#              RECOVERY_OAK_DISAGREE_SCALE (a soft "trust EKF less"
+#              when the two IMU stacks disagree).  ``drift_snapshot``
+#              taken at the moment of loss is still passed through for
+#              this check and for HUD/log purposes.
 #
-# During the loss window (RECOVERY_DURATION_S — matches the existing
-# TAG_LOSS_TIMEOUT / TRACK_LOSS_TIMEOUT_S so we replace rather than
-# extend), we command a constant body-frame counter-velocity equal to
-# ``-RECOVERY_KP * drift_snapshot``.  Using a SNAPSHOT (not a closed-loop
-# feedback on current velocity) is deliberate: once the drone decelerates
-# and stops, instantaneous velocity → 0 but we still need to keep flying
-# back toward the marker, so the command must persist.  Magnitude is
-# clamped to RECOVERY_MAX_V_XY and floored at RECOVERY_MIN_V_XY whenever
-# the detected drift is above RECOVERY_DRIFT_DEADBAND.
-#
-# If the marker re-appears before the 3 s window expires we exit recovery
+# If the marker re-appears before RECOVERY_DURATION_S we exit recovery
 # and resume the parent phase (TRACK or PRECISION_LAND).  If the window
 # expires without re-acquisition we commit directly to ArduCopter LAND
-# (NOT search_and_relocate) per the user spec.
+# (NOT search_and_relocate) per the user spec.  Optionally, if we
+# return to within RECOVERY_ANCHOR_RADIUS_M of the loss anchor and
+# still have not re-acquired, the marker is deemed truly gone and we
+# commit to LAND early rather than running out the timer.
 
 RECOVERY_DURATION_S        = 3.0   # s — must match TAG_LOSS_TIMEOUT and
                                    # TRACK_LOSS_TIMEOUT_S; we are REPLACING
                                    # the old static-hover loss window, not
                                    # extending it.
-RECOVERY_KP                = 1.2   # gain on the counter-drift velocity
-                                   # (v_cmd_body = -RECOVERY_KP * drift_body)
-RECOVERY_MAX_V_XY          = 0.4   # m/s — per-axis clamp on counter command
-RECOVERY_MIN_V_XY          = 0.10  # m/s — minimum magnitude per axis when
-                                   # drift on that axis is above the
-                                   # deadband; ensures a tiny but real
-                                   # drift still produces real motion
-                                   # rather than collapsing under the clamp
-RECOVERY_DRIFT_DEADBAND    = 0.05  # m/s — body-frame drift below this on
-                                   # both axes is treated as noise (no
-                                   # counter command on that axis)
+RECOVERY_POS_KP            = 0.8   # P gain on the world-frame position
+                                   # error (anchor_xy - current_xy).  Tune
+                                   # up for snappier recovery, down if the
+                                   # airframe overshoots the anchor.
+RECOVERY_POS_KD            = 0.6   # D gain on the world-frame velocity.
+                                   # Acts as direct damping on whatever
+                                   # the EKF is currently measuring —
+                                   # this is the term that fights an
+                                   # ongoing wind gust.  Tune up if the
+                                   # response oscillates around the
+                                   # anchor; down if it feels sluggish.
+RECOVERY_MAX_V_XY          = 0.4   # m/s — per-axis clamp on the body-frame
+                                   # counter command after rotation from
+                                   # world frame.
+RECOVERY_MIN_V_XY          = 0.10  # m/s — minimum magnitude per axis once
+                                   # the position error on that axis is
+                                   # above RECOVERY_POS_DEADBAND_M; ensures
+                                   # the airframe visibly moves instead of
+                                   # collapsing under the cap on a small
+                                   # but real error.
+RECOVERY_POS_DEADBAND_M    = 0.05  # m — world-frame position error per
+                                   # axis below this is treated as zero
+                                   # (no lateral command on that axis).
+RECOVERY_ANCHOR_RADIUS_M   = 0.30  # m — if the airframe returns to within
+                                   # this horizontal radius of the loss
+                                   # anchor and still has not re-acquired
+                                   # the tag, commit to LAND early rather
+                                   # than running out RECOVERY_DURATION_S.
+RECOVERY_ALT_KP            = 0.6   # gain on (TAKEOFF_ALTITUDE - rel_alt)
+                                   # for the recovery vertical loop.
+                                   # Independent from TRACK_Kp_Z so the
+                                   # recovery climb-back can be tuned
+                                   # without changing TRACK behaviour.
+RECOVERY_MAX_VZ            = 0.5   # m/s — per-axis vertical clamp during
+                                   # recovery.  Slightly above TRACK_MAX_VZ
+                                   # so a recovery that starts well below
+                                   # TAKEOFF_ALTITUDE (e.g. mid-descent)
+                                   # can climb back faster than TRACK
+                                   # would.
+RECOVERY_ALT_DEADBAND_M    = 0.10  # m — relative-altitude error below this
+                                   # is treated as on-target (vz = 0).
+RECOVERY_DRIFT_DEADBAND    = 0.05  # m/s — body-frame drift snapshot below
+                                   # this on both axes is treated as
+                                   # "EKF saw no motion at loss"; used by
+                                   # the OAK confidence check.
 RECOVERY_OAK_ACCEL_MIN     = 0.30  # m/s² — minimum OAK-D lateral-accel
                                    # magnitude (XY in body frame, gravity
                                    # is on body-Z for a downward camera so
                                    # XY is gravity-free to first order) to
                                    # count as "the camera IMU sees motion"
-RECOVERY_OAK_DISAGREE_SCALE = 0.6  # gain scale when the OAK IMU does NOT
-                                   # confirm motion; we still apply the
-                                   # Pixhawk-derived counter command but
-                                   # at reduced authority
+RECOVERY_OAK_DISAGREE_SCALE = 0.6  # gain scale when the EKF reports
+                                   # body-frame motion but the OAK IMU
+                                   # does NOT confirm it; we still close
+                                   # the position loop but at reduced
+                                   # lateral authority.
 RECOVERY_OAK_EMA_ALPHA     = 0.7   # EMA on OAK accel samples in the pump
                                    # (heavy filter — BNO086 raw is noisy
                                    # at the 100 Hz pipeline rate)
 RECOVERY_OAK_IMU_HZ        = 100   # OAK IMU sample rate for both the
                                    # accelerometer and gyroscope streams
-RECOVERY_FALLBACK_OFFSET_M = 0.20  # m — if BOTH IMU sources show drift
-                                   # below their deadbands at the moment
-                                   # of loss, fall back to the last
-                                   # body-frame TAG OFFSET as the drift
-                                   # direction (drone is on the opposite
-                                   # side of the marker by definition).
-                                   # Below this body-frame offset we give
-                                   # up on direction inference and hover.
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Camera Config
@@ -1506,36 +1555,64 @@ class PrecisionLandingController:
         body_vz = vz if vz is not None else 0.0
         return body_vx, body_vy, body_vz
 
-    def recover_velocity_command(self, drift_snapshot, last_tag_body=None):
-        """Command a body-frame counter-drift velocity to fly back toward
-        a marker that has just left the camera frame, AND actively
-        return to the set altitude (TRACK_TARGET_ALT_M) while doing so.
+    def world_to_body_xy(self, vN, vE):
+        """Rotate a world-frame (NED) horizontal velocity into the body
+        frame using the cached ATTITUDE.yaw.
 
-        ``drift_snapshot`` is the (body_vx, body_vy) sampled at the
-        moment of tag loss (NOT the current instantaneous velocity —
-        see the rationale in the module-level IMU Tag-Loss Recovery
-        Config comment).  ``last_tag_body`` is the (body_x, body_y)
-        offset of the marker on the LAST frame it was visible — used
-        as a fallback drift direction when both the Pixhawk-derived
-        velocity AND the OAK-D IMU show too little motion to be
-        trustworthy (e.g. a perfectly hovering drone hit by a sudden
-        gust just as the marker drifted past the FOV edge).
+        Same rotation as ``body_frame_velocity`` but applied to an
+        arbitrary world-frame XY vector — used by the recovery loop to
+        convert its world-frame position-PD command into the body-frame
+        signal that ``send_velocity`` (MAV_FRAME_BODY_NED) ships.
 
-        Cross-checks the snapshot against the OAK-D BNO086 lateral
-        acceleration cached in ``last_oak_imu`` — if the OAK IMU also
-        sees lateral motion above RECOVERY_OAK_ACCEL_MIN we trust the
-        snapshot at full gain, otherwise we attenuate the command to
-        RECOVERY_OAK_DISAGREE_SCALE.
+        Returns (None, None) if yaw has not yet been received — the
+        caller is expected to fall back to a hover command in that
+        case rather than send a wrong-frame velocity.
+        """
+        yaw = self.last_att.get("yaw")
+        if yaw is None:
+            return None, None
+        c = math.cos(yaw)
+        s = math.sin(yaw)
+        body_vx =  vN * c + vE * s
+        body_vy = -vN * s + vE * c
+        return body_vx, body_vy
 
-        Vertical: per user spec the recovery also flies the airframe
-        back UP to TRACK_TARGET_ALT_M (the takeoff "set height", 4 m
-        on this airframe).  Reuses the TRACK altitude-hold P-loop
-        (TRACK_Kp_Z / TRACK_MAX_VZ / TRACK_ALT_DEADBAND_M) so the
-        airframe converges on the same altitude regardless of
-        whether the marker is currently visible.  Important during a
-        tag-loss in PRECISION_LAND: the recovery actively climbs back
-        from whatever descent altitude we were at, giving the camera
-        more vertical headroom to re-acquire the marker.
+    def recover_velocity_command(self, drift_snapshot, last_tag_body=None,
+                                 loss_anchor=None):
+        """Closed-loop position recovery toward the NED position the
+        airframe was at the instant the AprilTag was lost, while
+        actively returning to TAKEOFF_ALTITUDE on the vertical axis.
+
+        ``loss_anchor`` is the (x_loss, y_loss, z_loss) Pixhawk-EKF NED
+        position captured at the moment of loss.  When provided, the
+        loop is:
+
+            err_world  = (anchor_xy - cur_xy)
+            v_world_xy = RECOVERY_POS_KP * err_world
+                       + RECOVERY_POS_KD * (-cur_world_velocity_xy)
+            v_body_xy  = R(yaw) · v_world_xy             # NED → body
+            send_velocity(v_body_xy, vz_alt_loop)
+
+        The +Kd term explicitly damps any residual world-frame velocity
+        (i.e. ongoing wind drift the EKF is still measuring) — this is
+        the term that prevents the old open-loop counter-drift design
+        from sitting stagnant in a steady wind.  Vertical control is a
+        separate P-loop on (TAKEOFF_ALTITUDE - rel_alt) using
+        RECOVERY_ALT_KP / RECOVERY_MAX_VZ so the airframe converges on
+        the same set altitude regardless of where in the flight it
+        was lost.  ``loss_anchor.z`` is intentionally NOT used for
+        vertical control: in PRECISION_LAND it would carry the descent
+        altitude forward, which is the opposite of what we want.
+
+        Backwards-compat: ``drift_snapshot`` (the body-frame velocity
+        sampled at loss) and ``last_tag_body`` (the last visible body
+        offset) are still accepted so the per-tick log can show the
+        original drift direction and so the OAK-D BNO086 cross-check
+        still has a value to compare against.  When ``loss_anchor`` is
+        omitted the function falls back to the legacy open-loop
+        counter-drift behaviour (only used as a degenerate fallback
+        if EKF position is unavailable at the moment of loss; the
+        normal call path always passes ``loss_anchor``).
 
         Sends a body-frame velocity (vx, vy, vz) and returns a dict
         describing the action so the caller can log it / surface it on
@@ -1544,97 +1621,171 @@ class PrecisionLandingController:
             {
                 "vx": float, "vy": float, "vz": float,
                 "drift_x": float, "drift_y": float,
+                "err_x": float, "err_y": float,
+                "err_xy": float,
                 "rel_alt": float | None,
-                "source": "ekf" | "tag_offset" | "none",
+                "alt_err": float | None,
+                "source": "pos" | "ekf" | "tag_offset" | "none",
                 "oak_confirm": bool,
                 "scale": float,
+                "in_anchor_radius": bool,
             }
         """
         self._drain_messages()
 
         snap_x, snap_y = drift_snapshot
-        source = "ekf"
 
-        # If the Pixhawk-derived snapshot is below the deadband on both
-        # axes, fall back to the last-tag-offset direction.  A marker
-        # that was at body_x > 0 (in front of the drone) when last seen
-        # implies the drone is BEHIND the marker on the +X side from
-        # the marker's perspective — so to bring the marker back into
-        # FOV, we want to move IN the direction of the last offset
-        # (chase the marker), not opposite.  Wait, that's wrong: the
-        # marker offset is from the drone's POV, so positive body_x
-        # means the marker is forward of the drone; if it just left
-        # the FOV, the drone needs to move FORWARD (+body_x) to recover
-        # it.  So the fallback "drift" we want to counteract is the
-        # NEGATIVE of the last offset — i.e. the drone "drifted away"
-        # in the direction OPPOSITE to where the marker is.
-        snap_mag = max(abs(snap_x), abs(snap_y))
-        if (snap_mag < RECOVERY_DRIFT_DEADBAND
-                and last_tag_body is not None):
-            off_x, off_y = last_tag_body
-            if (abs(off_x) >= RECOVERY_FALLBACK_OFFSET_M
-                    or abs(off_y) >= RECOVERY_FALLBACK_OFFSET_M):
-                # Treat the last offset as drift in the OPPOSITE
-                # direction (drone drifted away from where marker is),
-                # so the counter command will be IN the direction of
-                # the marker.  See sign reasoning above.
-                snap_x = -off_x
-                snap_y = -off_y
-                source = "tag_offset"
-            else:
-                source = "none"
-
-        # OAK-D cross-check: only meaningful if we actually have an EMA
-        # sample.  The OAK accel is body-frame XY (gravity is on body-Z
-        # for a downward camera and rejected here by ignoring az).
-        oak_ax = self.last_oak_imu.get("ema_ax")
-        oak_ay = self.last_oak_imu.get("ema_ay")
-        oak_confirm = False
-        if oak_ax is not None and oak_ay is not None:
-            oak_mag = math.sqrt(oak_ax * oak_ax + oak_ay * oak_ay)
-            oak_confirm = oak_mag >= RECOVERY_OAK_ACCEL_MIN
-
-        # Apply confidence scaling.  When the EKF snapshot itself was
-        # degenerate AND we fell through to "none", we don't have a
-        # direction to command — just hover.
-        if source == "none":
-            scale = 0.0
-        else:
-            scale = 1.0 if oak_confirm else RECOVERY_OAK_DISAGREE_SCALE
-
-        vx_raw = -RECOVERY_KP * snap_x * scale
-        vy_raw = -RECOVERY_KP * snap_y * scale
-
-        # Per-axis minimum: if the axis drift is above its deadband and
-        # we have a direction, ensure the command magnitude is at least
-        # RECOVERY_MIN_V_XY so the drone visibly moves instead of
-        # collapsing under the clamp.  Sign is preserved.
-        def _floor_then_clamp(v, drift_on_axis):
-            if abs(drift_on_axis) < RECOVERY_DRIFT_DEADBAND or scale == 0.0:
-                return 0.0
-            if abs(v) < RECOVERY_MIN_V_XY:
-                v = math.copysign(RECOVERY_MIN_V_XY, v if v != 0 else -drift_on_axis)
-            return max(min(v, RECOVERY_MAX_V_XY), -RECOVERY_MAX_V_XY)
-
-        vx = _floor_then_clamp(vx_raw, snap_x)
-        vy = _floor_then_clamp(vy_raw, snap_y)
-
-        # ── Active altitude hold during recovery ─────────────────────────
-        # Identical P-loop to track_velocity_command — bring the airframe
-        # back to TRACK_TARGET_ALT_M (the takeoff set-height) regardless
-        # of what altitude the tag was lost at.  Fall back to vz=0 if
-        # the relative-altitude reading is not available (degenerate
-        # startup), same safe behaviour as TRACK.
+        # ── Vertical loop (closed on relative altitude vs TAKEOFF_ALTITUDE) ──
+        # Independent of the lateral source so a degenerate position read
+        # never blocks the altitude correction.
         rel_alt = _relative_altitude_m(self)
+        alt_err = None
         if rel_alt is None:
             vz = 0.0
         else:
-            alt_err = TRACK_TARGET_ALT_M - rel_alt
-            if abs(alt_err) < TRACK_ALT_DEADBAND_M:
+            alt_err = TAKEOFF_ALTITUDE - rel_alt
+            if abs(alt_err) < RECOVERY_ALT_DEADBAND_M:
                 vz = 0.0
             else:
-                vz_cmd = -TRACK_Kp_Z * alt_err
-                vz = max(min(vz_cmd, TRACK_MAX_VZ), -TRACK_MAX_VZ)
+                vz_cmd = -RECOVERY_ALT_KP * alt_err
+                vz = max(min(vz_cmd, RECOVERY_MAX_VZ), -RECOVERY_MAX_VZ)
+
+        # ── Lateral loop selection ──────────────────────────────────────────
+        # Primary: closed-loop NED position-PD anchored at loss_anchor.
+        # Fallback: legacy body-frame counter-drift on drift_snapshot
+        # (used only when loss_anchor is unavailable or current EKF
+        # position / yaw is degenerate this tick).
+        cur_x = self.last_pos.get("x")
+        cur_y = self.last_pos.get("y")
+        cur_vN = self.last_pos.get("vx")
+        cur_vE = self.last_pos.get("vy")
+        yaw = self.last_att.get("yaw")
+
+        err_x = 0.0
+        err_y = 0.0
+        err_xy = 0.0
+        in_anchor_radius = False
+        source = "none"
+        oak_confirm = False
+        scale = 1.0
+        vx = 0.0
+        vy = 0.0
+
+        if (loss_anchor is not None
+                and cur_x is not None and cur_y is not None
+                and yaw is not None):
+            # ── Position-PD path (primary) ───────────────────────────────
+            anchor_x, anchor_y, _anchor_z = loss_anchor
+            err_x = anchor_x - cur_x
+            err_y = anchor_y - cur_y
+            err_xy = math.sqrt(err_x * err_x + err_y * err_y)
+            in_anchor_radius = err_xy < RECOVERY_ANCHOR_RADIUS_M
+            source = "pos"
+
+            # OAK-D BNO086 sanity check on the EKF velocity reading.
+            # If the EKF reports body-frame motion (drift_snapshot above
+            # deadband) but the OAK accelerometer sees nothing the two
+            # IMU stacks disagree — soften the lateral command so a bad
+            # EKF velocity bias can't drive the airframe sideways at
+            # full authority.  When EKF reports near-zero motion we
+            # ignore the cross-check entirely (no disagreement to
+            # arbitrate).
+            ekf_drift_mag = math.sqrt(snap_x * snap_x + snap_y * snap_y)
+            if ekf_drift_mag >= RECOVERY_DRIFT_DEADBAND:
+                oak_ax = self.last_oak_imu.get("ema_ax")
+                oak_ay = self.last_oak_imu.get("ema_ay")
+                if oak_ax is not None and oak_ay is not None:
+                    oak_mag = math.sqrt(oak_ax * oak_ax + oak_ay * oak_ay)
+                    oak_confirm = oak_mag >= RECOVERY_OAK_ACCEL_MIN
+                    if not oak_confirm:
+                        scale = RECOVERY_OAK_DISAGREE_SCALE
+
+            # World-frame PD.  Kd term takes the NEGATIVE of the
+            # current world velocity so it actively damps whatever
+            # drift the EKF is still measuring (the whole point of
+            # the closed-loop fix).
+            vN_cmd = (RECOVERY_POS_KP * err_x
+                      + RECOVERY_POS_KD * (-(cur_vN or 0.0)))
+            vE_cmd = (RECOVERY_POS_KP * err_y
+                      + RECOVERY_POS_KD * (-(cur_vE or 0.0)))
+
+            # Rotate world → body, apply confidence scale, deadband,
+            # min-floor, then per-axis clamp.
+            body_vx, body_vy = self.world_to_body_xy(vN_cmd, vE_cmd)
+            if body_vx is None:
+                # Yaw vanished between the guard above and here — hover
+                # rather than send a wrong-frame velocity.
+                vx = 0.0
+                vy = 0.0
+            else:
+                body_vx *= scale
+                body_vy *= scale
+
+                def _floor_then_clamp(v, axis_err):
+                    if abs(axis_err) < RECOVERY_POS_DEADBAND_M:
+                        return 0.0
+                    if abs(v) < RECOVERY_MIN_V_XY:
+                        # Sign of v_cmd is preferred; if v_cmd happens to
+                        # be exactly 0 (Kp and Kd cancel), use the sign
+                        # of the position error so we still close in.
+                        sign_src = v if v != 0.0 else axis_err
+                        v = math.copysign(RECOVERY_MIN_V_XY, sign_src)
+                    return max(min(v, RECOVERY_MAX_V_XY), -RECOVERY_MAX_V_XY)
+
+                # err_x, err_y are world-frame; for the deadband decision
+                # we project them through the same yaw rotation so the
+                # axis check matches the command we're about to send.
+                berr_x, berr_y = self.world_to_body_xy(err_x, err_y)
+                if berr_x is None:
+                    berr_x, berr_y = 0.0, 0.0
+                vx = _floor_then_clamp(body_vx, berr_x)
+                vy = _floor_then_clamp(body_vy, berr_y)
+        else:
+            # ── Legacy fallback path: body-frame counter-drift ───────────
+            # Reached when EKF position / yaw is unavailable AND
+            # loss_anchor was therefore never captured (or capture
+            # failed).  Behaviour matches the pre-closed-loop design
+            # so the recovery still does *something* in that case.
+            source = "ekf"
+            snap_mag = max(abs(snap_x), abs(snap_y))
+            if (snap_mag < RECOVERY_DRIFT_DEADBAND
+                    and last_tag_body is not None):
+                off_x, off_y = last_tag_body
+                if (abs(off_x) >= RECOVERY_POS_DEADBAND_M
+                        or abs(off_y) >= RECOVERY_POS_DEADBAND_M):
+                    snap_x = -off_x
+                    snap_y = -off_y
+                    source = "tag_offset"
+                else:
+                    source = "none"
+
+            oak_ax = self.last_oak_imu.get("ema_ax")
+            oak_ay = self.last_oak_imu.get("ema_ay")
+            if oak_ax is not None and oak_ay is not None:
+                oak_mag = math.sqrt(oak_ax * oak_ax + oak_ay * oak_ay)
+                oak_confirm = oak_mag >= RECOVERY_OAK_ACCEL_MIN
+
+            if source == "none":
+                scale = 0.0
+            else:
+                scale = 1.0 if oak_confirm else RECOVERY_OAK_DISAGREE_SCALE
+
+            # Reuse RECOVERY_POS_KP as the velocity-counter gain in the
+            # fallback path; the magnitude scales aren't directly
+            # comparable but keeping a single tunable simplifies tuning.
+            vx_raw = -RECOVERY_POS_KP * snap_x * scale
+            vy_raw = -RECOVERY_POS_KP * snap_y * scale
+
+            def _floor_then_clamp_v(v, drift_on_axis):
+                if abs(drift_on_axis) < RECOVERY_DRIFT_DEADBAND or scale == 0.0:
+                    return 0.0
+                if abs(v) < RECOVERY_MIN_V_XY:
+                    v = math.copysign(RECOVERY_MIN_V_XY,
+                                      v if v != 0 else -drift_on_axis)
+                return max(min(v, RECOVERY_MAX_V_XY), -RECOVERY_MAX_V_XY)
+
+            vx = _floor_then_clamp_v(vx_raw, snap_x)
+            vy = _floor_then_clamp_v(vy_raw, snap_y)
 
         self.send_velocity(vx, vy, vz)
 
@@ -1649,10 +1800,13 @@ class PrecisionLandingController:
         return {
             "vx": vx, "vy": vy, "vz": vz,
             "drift_x": snap_x, "drift_y": snap_y,
+            "err_x": err_x, "err_y": err_y, "err_xy": err_xy,
             "rel_alt": rel_alt,
+            "alt_err": alt_err,
             "source": source,
             "oak_confirm": oak_confirm,
             "scale": scale,
+            "in_anchor_radius": in_anchor_radius,
         }
 
     # ── Position control (local NED) ─────────────────────────────────────────
@@ -2312,11 +2466,14 @@ def run_box_patrol(controller, pump, state, leg_offset=0):
 # and descent began before the lateral loop converged.
 #
 # Tag-loss handling within TRACK runs the IMU recovery (see
-# recover_velocity_command) — we capture the body-frame drift velocity
-# the instant the marker leaves the FOV and command the opposite
-# direction for up to RECOVERY_DURATION_S.  If the marker re-appears
-# we resume tracking; if the window expires we commit directly to
-# LAND (the user's spec; SEARCH is no longer triggered from TRACK).
+# recover_velocity_command) — we capture the EKF NED position at the
+# instant of loss and run a closed-loop position-PD back toward that
+# anchor for up to RECOVERY_DURATION_S, with a separate altitude
+# P-loop pulling the airframe back to TAKEOFF_ALTITUDE.  If the marker
+# re-appears we resume tracking; if the window expires (or we've
+# already returned to within RECOVERY_ANCHOR_RADIUS_M of the anchor
+# without re-acquiring) we commit directly to LAND (the user's spec;
+# SEARCH is no longer triggered from TRACK).
 #
 # Returns:
 #   "READY"        — duration elapsed, hand off to PRECISION_LAND
@@ -2338,13 +2495,18 @@ def track_tag(controller, pump, state):
     centred_count = 0   # consecutive frames inside TRACK_CENTER_THRESHOLD_M
 
     # IMU recovery state — populated on the first frame after the marker
-    # is lost; cleared the moment the marker re-appears.  All four
-    # together describe "the airframe was moving this way relative to
-    # itself when the marker disappeared, and the marker was last seen
-    # over here in body frame" — that's enough to decide which way to
-    # fly to recover the marker.
+    # is lost; cleared the moment the marker re-appears.  Together they
+    # describe:
+    #   * loss_anchor   — Pixhawk-EKF NED position at loss; the recovery
+    #                     loop closes around this.
+    #   * drift_snapshot — body-frame velocity at loss; informational and
+    #                     used by the OAK-D BNO086 sanity cross-check
+    #                     inside recover_velocity_command.
+    #   * last_tag_body — last visible body offset of the marker; legacy
+    #                     fallback for the degenerate-no-EKF case.
     drift_snapshot = None    # (body_vx, body_vy) m/s at loss
     last_tag_body  = None    # (body_x,  body_y)  m at last visible frame
+    loss_anchor    = None    # (x, y, z) NED at loss (Pixhawk EKF)
     loss_start     = None    # wall-clock time when loss began
     last_recovery_log = 0.0
 
@@ -2370,6 +2532,7 @@ def track_tag(controller, pump, state):
                 print(f"[INFO] TRACK re-acquired tag after "
                       f"{time.time() - loss_start:.1f}s of IMU recovery")
                 drift_snapshot = None
+                loss_anchor = None
                 loss_start = None
 
             last_tag_time = time.time()
@@ -2451,21 +2614,28 @@ def track_tag(controller, pump, state):
             centred_count = 0
             time_lost = time.time() - last_tag_time
 
-            # First frame of loss: snapshot the body-frame drift NOW,
-            # before the recovery counter command starts changing the
-            # velocity.  Sampling later would just measure our own
-            # counter command rather than the original drift.
+            # First frame of loss: capture the closed-loop anchor (EKF
+            # NED position at the instant of loss) AND the body-frame
+            # drift snapshot.  The anchor is what the recovery actually
+            # closes the loop on; the drift snapshot is informational
+            # and used by the OAK-D sanity check.  Sampling later would
+            # just measure our own counter command rather than the
+            # original drift / position.
             if drift_snapshot is None:
                 loss_start = time.time()
                 bvx, bvy, _ = controller.body_frame_velocity()
                 if bvx is None or bvy is None:
-                    # No yaw/velocity yet — degenerate snapshot.  The
-                    # recovery method will fall back to last_tag_body
-                    # if that's available, else hover.
                     bvx, bvy = 0.0, 0.0
                 drift_snapshot = (bvx, bvy)
+
+                ax, ay, az, _, _, _ = controller.get_local_position()
+                if ax is not None and ay is not None:
+                    loss_anchor = (ax, ay, az if az is not None else 0.0)
+                else:
+                    loss_anchor = None
                 print(f"[INFO] TRACK tag lost — IMU recovery snapshot "
-                      f"body_v=({bvx:+.2f},{bvy:+.2f}) m/s, last_tag_body="
+                      f"body_v=({bvx:+.2f},{bvy:+.2f}) m/s, "
+                      f"anchor_ned={loss_anchor}, last_tag_body="
                       f"{last_tag_body}")
 
             recovery_elapsed = time.time() - loss_start
@@ -2476,28 +2646,50 @@ def track_tag(controller, pump, state):
                 controller.send_velocity(0.0, 0.0, 0.0)
                 return "COMMIT_LAND"
 
-            # Active recovery — send a body-frame counter-drift command.
             rec = controller.recover_velocity_command(
                 drift_snapshot, last_tag_body=last_tag_body,
+                loss_anchor=loss_anchor,
             )
+
+            # Early commit-to-LAND: we've actively flown back to within
+            # RECOVERY_ANCHOR_RADIUS_M of where we lost the tag and it
+            # still isn't visible — this is much stronger evidence the
+            # marker is genuinely gone than a stationary timer expiry,
+            # so cut the recovery short instead of running the clock
+            # out hovering on a tag that won't reappear.  Require at
+            # least 0.5 s of recovery first so a tag that was lost for
+            # a single frame at the anchor doesn't immediately trip it.
+            if (rec.get("in_anchor_radius")
+                    and recovery_elapsed > 0.5
+                    and rec["source"] == "pos"):
+                print(f"[INFO] TRACK recovery returned to within "
+                      f"{RECOVERY_ANCHOR_RADIUS_M:.2f} m of loss anchor "
+                      f"(err_xy={rec['err_xy']:.2f} m) without "
+                      "re-acquiring tag — committing to LAND")
+                controller.send_velocity(0.0, 0.0, 0.0)
+                return "COMMIT_LAND"
 
             state["leg_label"] = (
                 f"TRACK RECOVER {recovery_elapsed:.1f}/"
                 f"{RECOVERY_DURATION_S:.1f}s "
                 f"v=({rec['vx']:+.2f},{rec['vy']:+.2f},{rec['vz']:+.2f}) "
-                f"src={rec['source']}"
+                f"err={rec['err_xy']:.2f}m src={rec['source']}"
             )
 
             now = time.time()
             if now - last_recovery_log > 0.5:
-                alt_str = (f"{rec['rel_alt']:+.2f}/{TRACK_TARGET_ALT_M:.1f}m"
+                alt_str = (f"{rec['rel_alt']:+.2f}/{TAKEOFF_ALTITUDE:.1f}m"
                            if rec['rel_alt'] is not None else "n/a")
+                alt_err_str = (f"{rec['alt_err']:+.2f}m"
+                               if rec['alt_err'] is not None else "n/a")
                 print(f"[INFO] TRACK RECOVER t={recovery_elapsed:.1f}/"
                       f"{RECOVERY_DURATION_S:.1f}s  "
+                      f"err=({rec['err_x']:+.2f},{rec['err_y']:+.2f})|"
+                      f"{rec['err_xy']:.2f}m  "
                       f"drift=({rec['drift_x']:+.2f},{rec['drift_y']:+.2f}) "
                       f"v=({rec['vx']:+.2f},{rec['vy']:+.2f},"
                       f"{rec['vz']:+.2f})  "
-                      f"alt={alt_str}  "
+                      f"alt={alt_str} alt_err={alt_err_str}  "
                       f"src={rec['source']}  "
                       f"oak={'yes' if rec['oak_confirm'] else 'no'}  "
                       f"scale={rec['scale']:.2f}")
@@ -2538,13 +2730,16 @@ def precision_land(controller, pump, state):
          directly to LAND.  body_z is preferred over EKF altitude
          because flight logs showed EKF z drifting ~3 m mid-mission.
 
-      2. IMU RECOVERY: for all other losses, capture the body-frame
-         drift velocity at the moment of loss (Pixhawk EKF, cross-
-         checked against the OAK-D S2 onboard IMU) and command the
-         opposite velocity for up to RECOVERY_DURATION_S.  If the
-         marker reappears we resume descent; if the window expires
-         we commit to LAND (the user's spec; SEARCH is no longer
-         triggered from PRECISION_LAND).
+      2. IMU RECOVERY: for all other losses, capture the EKF NED
+         position at the moment of loss and run a closed-loop
+         position-PD back to that anchor for up to
+         RECOVERY_DURATION_S, with a separate altitude P-loop pulling
+         the airframe back to TAKEOFF_ALTITUDE.  The OAK-D S2 BNO086
+         accelerometer is used as a sanity cross-check on the EKF
+         velocity reading.  If the marker reappears we resume
+         descent; if the window expires (or we've already returned to
+         within RECOVERY_ANCHOR_RADIUS_M of the anchor without re-
+         acquiring) we commit to LAND.
 
     Returns one of:
       * "TOUCHDOWN"   — motors auto-disarmed; mission complete
@@ -2558,10 +2753,13 @@ def precision_land(controller, pump, state):
     last_log      = 0.0
 
     # IMU recovery state — see the matching block in track_tag() for
-    # the full rationale.  drift_snapshot is captured on the first
-    # frame after loss and held constant throughout the recovery
-    # window so a freshly-decelerated drone still keeps flying back.
+    # the full rationale.  loss_anchor + drift_snapshot are captured on
+    # the first frame after loss and held constant throughout the
+    # recovery window — the closed-loop position-PD inside
+    # recover_velocity_command actively measures position error against
+    # loss_anchor on every tick.
     drift_snapshot = None
+    loss_anchor    = None
     loss_start     = None
     last_recovery_log = 0.0
 
@@ -2583,6 +2781,7 @@ def precision_land(controller, pump, state):
                 print(f"[INFO] PRECISION_LAND re-acquired tag after "
                       f"{time.time() - loss_start:.1f}s of IMU recovery")
                 drift_snapshot = None
+                loss_anchor = None
                 loss_start = None
 
             last_tag_time = time.time()
@@ -2715,17 +2914,26 @@ def precision_land(controller, pump, state):
                 )
                 return "TOUCHDOWN"
 
-            # First frame of loss: snapshot the body-frame drift NOW,
-            # before the recovery counter command starts changing the
-            # velocity.  Same rationale as in track_tag.
+            # First frame of loss: capture the closed-loop NED anchor and
+            # the body-frame drift snapshot.  Same rationale as
+            # track_tag — recovery_velocity_command closes on the
+            # anchor every tick, drift_snapshot is informational +
+            # used by the OAK-D sanity check.
             if drift_snapshot is None:
                 loss_start = time.time()
                 bvx, bvy, _ = controller.body_frame_velocity()
                 if bvx is None or bvy is None:
                     bvx, bvy = 0.0, 0.0
                 drift_snapshot = (bvx, bvy)
+
+                ax, ay, az, _, _, _ = controller.get_local_position()
+                if ax is not None and ay is not None:
+                    loss_anchor = (ax, ay, az if az is not None else 0.0)
+                else:
+                    loss_anchor = None
                 print(f"[INFO] PRECISION_LAND tag lost — IMU recovery "
                       f"snapshot body_v=({bvx:+.2f},{bvy:+.2f}) m/s, "
+                      f"anchor_ned={loss_anchor}, "
                       f"last_tag_body={last_tag_body}, "
                       f"last_bz={last_body_z}")
 
@@ -2757,28 +2965,45 @@ def precision_land(controller, pump, state):
                 controller.send_velocity(0.0, 0.0, 0.0)
                 return "COMMIT_LAND"
 
-            # Active recovery — body-frame counter-drift command.
             rec = controller.recover_velocity_command(
                 drift_snapshot, last_tag_body=last_tag_body,
+                loss_anchor=loss_anchor,
             )
+
+            # Early commit-to-LAND: see matching block in track_tag().
+            # Same logic — if we've flown back to the loss anchor and
+            # the tag still isn't visible the marker is genuinely gone.
+            if (rec.get("in_anchor_radius")
+                    and recovery_elapsed > 0.5
+                    and rec["source"] == "pos"):
+                print(f"[INFO] PRECISION_LAND recovery returned to within "
+                      f"{RECOVERY_ANCHOR_RADIUS_M:.2f} m of loss anchor "
+                      f"(err_xy={rec['err_xy']:.2f} m) without "
+                      "re-acquiring tag — committing to LAND")
+                controller.send_velocity(0.0, 0.0, 0.0)
+                return "COMMIT_LAND"
 
             state["leg_label"] = (
                 f"PL RECOVER {recovery_elapsed:.1f}/"
                 f"{RECOVERY_DURATION_S:.1f}s "
                 f"v=({rec['vx']:+.2f},{rec['vy']:+.2f},{rec['vz']:+.2f}) "
-                f"src={rec['source']}"
+                f"err={rec['err_xy']:.2f}m src={rec['source']}"
             )
 
             now = time.time()
             if now - last_recovery_log > 0.5:
-                alt_str = (f"{rec['rel_alt']:+.2f}/{TRACK_TARGET_ALT_M:.1f}m"
+                alt_str = (f"{rec['rel_alt']:+.2f}/{TAKEOFF_ALTITUDE:.1f}m"
                            if rec['rel_alt'] is not None else "n/a")
+                alt_err_str = (f"{rec['alt_err']:+.2f}m"
+                               if rec['alt_err'] is not None else "n/a")
                 print(f"[INFO] PRECISION_LAND RECOVER t="
                       f"{recovery_elapsed:.1f}/{RECOVERY_DURATION_S:.1f}s  "
+                      f"err=({rec['err_x']:+.2f},{rec['err_y']:+.2f})|"
+                      f"{rec['err_xy']:.2f}m  "
                       f"drift=({rec['drift_x']:+.2f},{rec['drift_y']:+.2f}) "
                       f"v=({rec['vx']:+.2f},{rec['vy']:+.2f},"
                       f"{rec['vz']:+.2f})  "
-                      f"alt={alt_str}  "
+                      f"alt={alt_str} alt_err={alt_err_str}  "
                       f"src={rec['source']}  "
                       f"oak={'yes' if rec['oak_confirm'] else 'no'}  "
                       f"scale={rec['scale']:.2f}")
