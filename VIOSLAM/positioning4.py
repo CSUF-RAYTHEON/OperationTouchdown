@@ -571,7 +571,7 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
                 last_kf_pos = np.array(vo.pose())
             end_time = time.perf_counter()
             elapsed_ms = (end_time - start_time) * 1000.0
-            if elapsed_ms > 15.0:
+            if elapsed_ms > 12.0:
                 slam_count += 1
                 slam_average_time += elapsed_ms
             if slam_count % 16 == 0:
