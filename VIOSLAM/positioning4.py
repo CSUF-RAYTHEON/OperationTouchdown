@@ -677,4 +677,6 @@ if __name__ == "__main__":
         shm_position.unlink()
         shm_local_position_ned.close()
         shm_local_position_ned.unlink()
+        shm_slam_enabled.close()
+        shm_slam_enabled.unlink()
         print("Positioning tester processes terminated safely.")
