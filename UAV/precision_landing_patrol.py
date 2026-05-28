@@ -21,7 +21,7 @@
 
  Phase machine
  ─────────────
-   INIT → STABILIZE → PATROL ─tag─▶ TRACK ─centred/timeout─▶ PRECISION_LAND
+   INIT → STABILIZE → ACQUIRE ─tag─▶ TRACK ─centred/timeout─▶ PRECISION_LAND
                                        │                          │
                                        │ tag lost                 │ tag lost
                                        ▼                          ▼
@@ -150,6 +150,14 @@ PATROL_SEGMENTS = [
     (-PATROL_SPEED,  0.0,          0.0, LEG_DURATION, "back"),
     ( 0.0,          -PATROL_SPEED, 0.0, LEG_DURATION, "left"),
 ]
+
+# Acquire-tag phase: replaces the box patrol per user spec — after STABILIZE
+# the drone hovers in place and waits for the AprilTag to appear in the
+# camera frame, then hands directly off to TRACK.  Assumes the tag is at
+# (or very near) the takeoff point.  If the timeout expires without a
+# detection we fall back to plain LAND at the current spot (same fallback
+# the patrol path used when it returned None).
+ACQUIRE_TIMEOUT_S = 30.0
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Search Climb-Back Config — hard altitude cap.
@@ -2174,9 +2182,68 @@ def commit_to_land(controller, pump, reason):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Acquire — hover in place after STABILIZE and wait for the AprilTag.  This
+# replaces the box patrol per user spec: the drone holds station at the
+# takeoff anchor and runs the detector every tick until the marker shows
+# up in the FOV, then hands off to TRACK.  Returns the local NED position
+# at acquisition (used the same way last_known was used downstream), or
+# None on timeout so the caller can fall back to plain LAND.
+# ─────────────────────────────────────────────────────────────────────────────
+
+def acquire_tag(controller, pump, state):
+    print(f"[INFO] Phase: ACQUIRE  (waiting up to {ACQUIRE_TIMEOUT_S:.0f}s "
+          "for AprilTag in FOV)")
+    state["phase"]     = "ACQUIRE"
+    state["leg_label"] = f"ACQUIRE 0.0/{ACQUIRE_TIMEOUT_S:.0f}s"
+
+    start    = time.time()
+    last_log = 0.0
+
+    while True:
+        controller._drain_messages()
+        if not controller.master.motors_armed():
+            print("[INFO] Motors disarmed during ACQUIRE — exiting.")
+            return None
+
+        elapsed = time.time() - start
+        if elapsed >= ACQUIRE_TIMEOUT_S:
+            print(f"[WARN] ACQUIRE timeout ({ACQUIRE_TIMEOUT_S:.0f}s) — "
+                  "tag never entered FOV")
+            controller.send_velocity(0.0, 0.0, 0.0)
+            state["leg_label"] = ""
+            return None
+
+        controller.send_velocity(0.0, 0.0, 0.0)
+
+        tag = pump(detect=True)
+        if tag is not None:
+            pos = controller.get_local_position()
+            if pos[0] is not None:
+                last_x, last_y = pos[0], pos[1]
+            else:
+                last_x, last_y = 0.0, 0.0
+            print(f"[INFO] Tag acquired after {elapsed:.1f}s — last known "
+                  f"NED=({last_x:+.2f}, {last_y:+.2f})")
+            controller.send_velocity(0.0, 0.0, 0.0)
+            return last_x, last_y
+
+        state["leg_label"] = f"ACQUIRE {elapsed:.1f}/{ACQUIRE_TIMEOUT_S:.0f}s"
+
+        now = time.time()
+        if now - last_log > 1.0:
+            print(f"[INFO] ACQUIRE t={elapsed:.1f}/{ACQUIRE_TIMEOUT_S:.0f}s "
+                  "— hovering, scanning for tag")
+            last_log = now
+
+        time.sleep(0.05)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Patrol — body-frame velocity legs, with mid-patrol tag-detection abort.
 # Returns (last_known_x, last_known_y) if the tag was found during patrol,
 # or None if the full box was flown without seeing the tag.
+# NOTE: No longer called from main() — kept here as reference for the
+# previous flow.  See acquire_tag() above for the current behaviour.
 # ─────────────────────────────────────────────────────────────────────────────
 
 def run_box_patrol(controller, pump, state, leg_offset=0):
@@ -3020,13 +3087,17 @@ with dai.Device() as device:
         )
         print(f"[INFO] Home anchor captured: ({x_home:+.2f}, {y_home:+.2f})")
 
-        # ── First patrol (no last-known yet → patrol around home) ─────────
-        last_known = run_box_patrol(controller, pump, state)
+        # ── Acquire the AprilTag in place (no patrol) ─────────────────────
+        # Per user spec: after STABILIZE the drone hovers and waits for
+        # the marker to appear in the FOV, then hands off to TRACK.  The
+        # box patrol is bypassed entirely.
+        last_known = acquire_tag(controller, pump, state)
 
-        # If patrol completed without a tag, the user's spec doesn't define
-        # a recovery; fall through to plain LAND mode at the current spot.
+        # If ACQUIRE timed out without ever seeing the tag, fall through
+        # to plain LAND at the current spot (same fallback the patrol
+        # path used when it returned None).
         if last_known is None:
-            print("[WARN] Patrol completed without acquiring tag — "
+            print("[WARN] ACQUIRE completed without acquiring tag — "
                   "committing to plain LAND at current position")
             state["phase"] = "TOUCHDOWN"
             controller.change_flight_mode("LAND")
