@@ -195,6 +195,29 @@ def generate_launch_description():
         )
     )
 
+    # 7. Competition nodes
+    lora_bridge = Node(
+        package='my_ugv_hardware',
+        executable='lora_bridge',
+        name='lora_bridge',
+        output='screen',
+    )
+
+    mission_controller = Node(
+        package='my_ugv_hardware',
+        executable='mission_controller',
+        name='mission_controller',
+        output='screen',
+        parameters=[{'challenge_mode': LaunchConfiguration('challenge_mode')}],
+    )
+
+    kill_switch = Node(
+        package='my_ugv_hardware',
+        executable='kill_switch',
+        name='kill_switch',
+        output='screen',
+    )
+
     enable_laser_merger = LaunchConfiguration('enable_laser_merger')
     enable_nav2 = LaunchConfiguration('enable_nav2')
 
@@ -209,8 +232,13 @@ def generate_launch_description():
         }.items(),
     )
 
-    # 7. Final Return with Staggered Timers
+    # 8. Final Return with Staggered Timers
     return LaunchDescription([
+        DeclareLaunchArgument(
+            'challenge_mode',
+            default_value='2',
+            description='Competition challenge mode: 1 (straight), 2 (Nav2 goal), or 3 (Nav2 goal + obstacles)',
+        ),
         DeclareLaunchArgument(
             'enable_laser_merger',
             default_value='false',
@@ -240,6 +268,9 @@ def generate_launch_description():
         depth_to_scan,
         joy_node,
         teleop_node,
+        lora_bridge,
+        mission_controller,
+        kill_switch,
         # Merger after OAK depth + TF are ready (oak ~6s; allow margin for /camera_scan and static TFs)
         TimerAction(
             period=42.0,
