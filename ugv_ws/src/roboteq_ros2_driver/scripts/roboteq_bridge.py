@@ -154,8 +154,15 @@ def main(args=None):
     except KeyboardInterrupt:
         pass
     finally:
-        bridge.destroy_node()
-        rclpy.shutdown()
+        try:
+            bridge.destroy_node()
+        except Exception:
+            pass
+        try:
+            if rclpy.ok():
+                rclpy.shutdown()
+        except Exception:
+            pass
 
 if __name__ == '__main__':
     main()

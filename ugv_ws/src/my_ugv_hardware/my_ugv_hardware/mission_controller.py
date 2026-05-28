@@ -271,8 +271,11 @@ class MissionController(Node):
         self._transition(MissionState.AT_GOAL)
 
     def _stop_motors(self):
-        cmd = Twist()
-        self._cmd_pub.publish(cmd)
+        try:
+            cmd = Twist()
+            self._cmd_pub.publish(cmd)
+        except Exception:
+            pass
         self.get_logger().info('Motors stopped')
 
     def destroy_node(self):
@@ -288,8 +291,15 @@ def main(args=None):
     except KeyboardInterrupt:
         pass
     finally:
-        node.destroy_node()
-        rclpy.shutdown()
+        try:
+            node.destroy_node()
+        except Exception:
+            pass
+        try:
+            if rclpy.ok():
+                rclpy.shutdown()
+        except Exception:
+            pass
 
 
 if __name__ == '__main__':
