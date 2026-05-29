@@ -134,6 +134,8 @@ def slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, sl
     last_kf_pos = None
     last_kf_yaw = None
     slam_frame_id = 0
+    with slam_enabled_mutex:
+        shared_slam_enabled[0] = True
     print("SLAM setup complete and running")
 
     while True:
@@ -211,6 +213,8 @@ def test_latency_slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enab
     last_kf_pos = None
     last_kf_yaw = None
     slam_frame_id = 0
+    with slam_enabled_mutex:
+        shared_slam_enabled[0] = True
     print("SLAM setup complete and running")
 
     while True:
@@ -295,7 +299,7 @@ if __name__ == "__main__":
     BOOL_BYTES = 1
     TARGET_BYTES = 3 * 8
 
-    print("VIO tester allocating shared memory...")
+    print("SLAM tester allocating shared memory...")
     shm_rgb = shared_memory.SharedMemory(create=True, size=RGB_BYTES, name="oak_rgb")
     shm_gray = shared_memory.SharedMemory(create=True, size=GRAY_BYTES, name="oak_gray")
     shm_depth = shared_memory.SharedMemory(create=True, size=DEPTH_BYTES, name="oak_depth")
@@ -306,7 +310,7 @@ if __name__ == "__main__":
     shm_slam_enabled = shared_memory.SharedMemory(create=True, size=BOOL_BYTES, name="slam_enabled")
     shm_slam_target = shared_memory.SharedMemory(create=True, size=TARGET_BYTES, name="slam_target")
     shm_slam_trigger = shared_memory.SharedMemory(create=True, size=BOOL_BYTES, name="slam_trigger")
-    print("VIO tester finished allocating shared memory...")
+    print("SLAM tester finished allocating shared memory...")
 
     rgb_frame_mutex = mp.Lock()
     gray_frame_mutex = mp.Lock()
@@ -335,7 +339,7 @@ if __name__ == "__main__":
         main_process.join()
         
     except KeyboardInterrupt:
-        print("VIO tester caught keyboard interrupt. Shutting down...")
+        print("SLAM tester caught keyboard interrupt. Shutting down...")
     finally:
         broadcaster_process.terminate()
         vio_process.terminate()
@@ -347,7 +351,7 @@ if __name__ == "__main__":
         slam_process.join()
         main_process.join()
 
-        print("VIO tester cleaning up shared memory...")
+        print("SLAM tester cleaning up shared memory...")
         shm_rgb.close()
         shm_rgb.unlink()
         shm_gray.close()
@@ -368,4 +372,4 @@ if __name__ == "__main__":
         shm_slam_target.unlink()
         shm_slam_trigger.close()
         shm_slam_trigger.unlink()
-        print("VIO tester processes terminated safely.")
+        print("SLAM tester processes terminated safely.")
