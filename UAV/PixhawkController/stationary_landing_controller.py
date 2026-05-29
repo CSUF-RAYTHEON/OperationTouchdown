@@ -16,7 +16,7 @@ import time
 
 # These are proportional control gains (adjust as needed for testing) 
 # Controls how aggressively we move to the tag
-Kp_xy = 0.4
+Kp_xy = 0.5
 Kp_z  = 0.3
 Ki_xy = 0.1
 
