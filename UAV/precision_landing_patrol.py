@@ -3736,8 +3736,14 @@ with dai.Device() as device:
             right_cam.build(dai.CameraBoardSocket.CAM_C)
 
             stereo = pipeline.create(dai.node.StereoDepth)
-            stereo.setDefaultProfilePreset(
-                dai.node.StereoDepth.PresetType.HIGH_ACCURACY)
+            # PresetType was removed/renamed in some depthai builds; fall back
+            # to manual config so the node is always fully initialised.
+            if hasattr(dai.node.StereoDepth, 'PresetType'):
+                stereo.setDefaultProfilePreset(
+                    dai.node.StereoDepth.PresetType.HIGH_ACCURACY)
+            else:
+                stereo.initialConfig.setConfidenceThreshold(200)
+                stereo.setRectifyEdgeFillColor(0)
             stereo.setLeftRightCheck(True)
             stereo.setSubpixel(False)
 
