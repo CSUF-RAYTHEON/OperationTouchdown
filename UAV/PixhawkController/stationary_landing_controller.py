@@ -307,9 +307,14 @@ class StationaryLandingController:
             thresh = 0.10  # 10 cm deadband (ignores minor shifts when tag is huge)
             current_kp_xy = Kp_xy * 0.4  # Drastically reduce horizontal aggressiveness
             current_max_vel = MAX_VELOCITY * 0.5 
+        elif body_z < 3.0:
+            # Between 1 and 3 meters: moderate parameters
+            thresh = 0.10  # 10 cm deadband
+            current_kp_xy = Kp_xy * 0.7
+            current_max_vel = MAX_VELOCITY * 0.8
         else:
-            # Above 1 meter: normal parameters
-            thresh = 0.2  # 5 cm deadband
+            # Above 3 meters: normal parameters
+            thresh = 0.05  # 5 cm deadband
             current_kp_xy = Kp_xy
             current_max_vel = MAX_VELOCITY
 
