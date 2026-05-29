@@ -13,7 +13,7 @@ LANDING_THRESHOLD = 0.4
 TAKEOFF_ALTITUDE = 6  # meters
 
 HOVER_TIMEOUT = 7.0
-SEARCH_TIMEOUT = 10.0
+SEARCH_TIMEOUT = 3.0
 
 # Start the pipeline / camera
 

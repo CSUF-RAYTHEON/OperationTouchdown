@@ -309,7 +309,7 @@ class StationaryLandingController:
             current_max_vel = MAX_VELOCITY * 0.5 
         else:
             # Above 1 meter: normal parameters
-            thresh = 0.05  # 5 cm deadband
+            thresh = 0.2  # 5 cm deadband
             current_kp_xy = Kp_xy
             current_max_vel = MAX_VELOCITY
 
