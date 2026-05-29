@@ -129,6 +129,11 @@ from pymavlink import mavutil
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE          = 57600
 TAKEOFF_ALTITUDE  = 5           # meters — matches stationary_landing.py
+TAKEOFF_ALT_TOLERANCE_M = 0.20  # m — authoritative-altitude band for declaring
+                                # the takeoff target reached (depth-preferred,
+                                # see _altitude_reading / _relative_altitude_m).
+TAKEOFF_TIMEOUT_S       = 30.0  # s — overall climb-monitor budget before we
+                                # warn and proceed (was an inline literal).
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Stabilization Config (NEW — not present in stationary_landing.py /
@@ -1358,44 +1363,83 @@ class PrecisionLandingController:
             print("[WARN] No COMMAND_ACK for NAV_TAKEOFF within 3 s — "
                   "proceeding but watching for liftoff failure")
 
-        # ── Step 5: monitor climb against the anchored baseline ─────────────
+        # ── Step 5: climb monitor — altitude is verified against the
+        #    AUTHORITATIVE AGL source (OAK-D stereo depth when usable, EKF
+        #    fallback; see _altitude_reading).  NAV_TAKEOFF gets the airframe
+        #    off the ground; once airborne we hold horizontal position and
+        #    drive the FCU's z setpoint (via _altitude_setpoint_z) so the
+        #    DEPTH-measured ground distance — not the EKF z — converges on
+        #    the target.  The EKF-origin offset that previously left
+        #    relative_alt plateauing below target (and timing out) is thus
+        #    corrected: depth measures the true distance to the ground.
         start = time.time()
         liftoff_deadline = start + 6.0   # by 6 s we expect SOME vertical motion
         liftoff_seen = False
         last_relative = 0.0
-        while time.time() - start < 30:
-            msg = self.master.recv_match(type="LOCAL_POSITION_NED",
-                                         blocking=True, timeout=1)
-            if msg is not None:
-                self.last_pos["x"]  = msg.x
-                self.last_pos["y"]  = msg.y
-                self.last_pos["z"]  = msg.z
-                self.last_pos["vx"] = msg.vx
-                self.last_pos["vy"] = msg.vy
-                self.last_pos["vz"] = msg.vz
-                self.last_pos["t"]  = time.time()
+        last_log = 0.0
+        x_hold = None
+        y_hold = None
+        last_pos_cmd = 0.0
+        while time.time() - start < TAKEOFF_TIMEOUT_S:
+            self._drain_messages()
+            if pump_fn is not None:
+                pump_fn()
 
-                # Relative altitude = climb above the takeoff anchor.  Raw -z
-                # is printed alongside so the EKF-origin offset is visible
-                # in the log on every flight.
-                relative_alt = -(msg.z - z0)
-                last_relative = relative_alt
-                print(f"[INFO] Altitude: {relative_alt:+.2f} m relative  "
-                      f"(raw -z = {-msg.z:.2f} m, anchor = {-z0:.2f} m)")
-
-                if abs(relative_alt) > 0.3:
+            now = time.time()
+            cur_z = self.last_pos.get("z")
+            # Liftoff is detected from the EKF (always available) — it is a
+            # motion check, not an altitude-source decision.
+            ekf_rel = None
+            if cur_z is not None:
+                ekf_rel = -(cur_z - z0)
+                last_relative = ekf_rel
+                if abs(ekf_rel) > 0.3:
                     liftoff_seen = True
 
-                if relative_alt >= meters - 0.15:
-                    print(f"[INFO] Target altitude reached "
-                          f"({relative_alt:+.2f} m relative)")
-                    return
+            alt, alt_src = _altitude_reading(self)
+
+            # Once airborne, hold XY and steer the FCU z target toward the
+            # depth-measured altitude.  Position targets are withheld until
+            # liftoff so they cannot fight NAV_TAKEOFF's initial climb.
+            if liftoff_seen and now - last_pos_cmd >= 0.5:
+                if x_hold is None and self.last_pos.get("x") is not None:
+                    x_hold = self.last_pos["x"]
+                    y_hold = self.last_pos["y"]
+                z_set = _altitude_setpoint_z(self, meters)
+                if x_hold is not None and z_set is not None:
+                    self.master.mav.set_position_target_local_ned_send(
+                        0,
+                        self.master.target_system,
+                        self.master.target_component,
+                        mavutil.mavlink.MAV_FRAME_LOCAL_NED,
+                        TYPEMASK_POSITION_ONLY,
+                        x_hold, y_hold, z_set,
+                        0, 0, 0,
+                        0, 0, 0,
+                        0, 0,
+                    )
+                    last_pos_cmd = now
+
+            if alt is not None and now - last_log >= 0.5:
+                raw_z_txt = f"{-cur_z:.2f}" if cur_z is not None else "n/a"
+                print(f"[INFO] Altitude: {alt:+.2f} m [{alt_src}]  "
+                      f"(raw -z = {raw_z_txt} m, anchor = {-z0:.2f} m)")
+                last_log = now
+
+            # Completion is decided on the authoritative altitude (depth when
+            # usable) rather than the EKF z, and only after liftoff so an
+            # on-ground depth reading cannot satisfy it.
+            if (liftoff_seen and alt is not None
+                    and alt >= meters - TAKEOFF_ALT_TOLERANCE_M):
+                print(f"[INFO] Target altitude reached "
+                      f"({alt:+.2f} m [{alt_src}], target {meters} m)")
+                return
 
             # Drone-never-moved guard.  If 6 s after takeoff the drone has
             # not visibly climbed, the FCU almost certainly dropped the
             # takeoff (no ACK case above) — abort now rather than continue
-            # to PATROL with a grounded, armed drone.
-            if not liftoff_seen and time.time() > liftoff_deadline:
+            # with a grounded, armed drone.
+            if not liftoff_seen and now > liftoff_deadline:
                 print("[ERROR] Drone never lifted off — relative altitude "
                       f"{last_relative:+.2f} m after 6 s.  The FCU most "
                       "likely silently rejected NAV_TAKEOFF (EKF/GPS not "
@@ -1405,8 +1449,6 @@ class PrecisionLandingController:
                     "motion within 6 s)"
                 )
 
-            if pump_fn is not None:
-                pump_fn()
             time.sleep(0.1)
         print("[WARN] Altitude timeout — proceeding anyway")
 
@@ -2063,18 +2105,19 @@ class PrecisionLandingController:
             if x_origin is None:
                 x_origin, y_origin = cur_x, cur_y
 
-            # Use the takeoff anchor so altitude matches takeoff_to_altitude's
-            # frame.  Falling back to absolute -cur_z (the old behaviour) is
-            # only safe when the EKF origin happens to coincide with the
-            # ground; surface a one-time WARN so the regression is visible.
-            if self.takeoff_z_origin is not None:
-                relative_alt = -(cur_z - self.takeoff_z_origin)
-            else:
+            # Altitude uses the authoritative AGL source (OAK-D depth when
+            # usable, EKF fallback — _altitude_reading), matching the
+            # convention takeoff_to_altitude now climbs to.  Absolute -cur_z
+            # is only used when neither depth nor a takeoff anchor exists;
+            # surface a one-time WARN so that regression is visible.
+            relative_alt, alt_src = _altitude_reading(self)
+            if relative_alt is None:
                 if not warned_no_anchor:
-                    print("[WARN] No takeoff anchor — stabilize altitude "
-                          "check uses absolute -z")
+                    print("[WARN] No depth altitude and no takeoff anchor — "
+                          "stabilize altitude check uses absolute -z")
                     warned_no_anchor = True
                 relative_alt = -cur_z
+                alt_src = "EKF-abs"
             alt_err  = abs(relative_alt - target_alt)
             drift    = math.sqrt((cur_x - x_origin) ** 2 +
                                  (cur_y - y_origin) ** 2)
@@ -2091,9 +2134,12 @@ class PrecisionLandingController:
             # internal position controller after NAV_TAKEOFF and caused the
             # drone to descend despite receiving climb commands; delegating
             # altitude control to the FCU position PID is more reliable.
+            # _altitude_setpoint_z steers that z target off the depth
+            # reading (and degrades exactly to takeoff_z_origin - target_alt
+            # when depth is unavailable), so the hold matches the climb.
             now = time.time()
-            if self.takeoff_z_origin is not None:
-                z_hold = self.takeoff_z_origin - target_alt  # absolute NED z
+            z_hold = _altitude_setpoint_z(self, target_alt)  # absolute NED z
+            if z_hold is not None:
                 if now - _last_pos_cmd >= 0.5:
                     self.master.mav.set_position_target_local_ned_send(
                         0,
@@ -2107,10 +2153,10 @@ class PrecisionLandingController:
                     )
                     _last_pos_cmd = now
             else:
-                # No takeoff anchor yet — safe fallback: zero velocity.
+                # No altitude reading yet — safe fallback: zero velocity.
                 self.send_velocity(0, 0, 0)
             if now - last_print > 0.5:
-                print(f"[INFO] STABILIZE alt={relative_alt:+.2f} m "
+                print(f"[INFO] STABILIZE alt={relative_alt:+.2f} m [{alt_src}] "
                       f"(raw -z={-cur_z:.2f})  alt_err={alt_err:+.2f} m  "
                       f"drift={drift:.2f} m  hspd={hspd:.2f} m/s  "
                       f"{'OK' if all_ok else 'WAIT'}")
@@ -2815,6 +2861,11 @@ def track_tag(controller, pump, state):
     last_tag_body  = None    # (body_x,  body_y)  m at last visible frame
     loss_anchor    = None    # (x, y, z) NED at loss (Pixhawk EKF)
     loss_start     = None    # wall-clock time when loss began
+    departed_anchor = False  # True once recovery has actually drifted beyond
+                             # RECOVERY_ANCHOR_RADIUS_M of the loss anchor —
+                             # gates the "returned to anchor" early commit so a
+                             # tag lost while hovering AT the anchor doesn't
+                             # trip it on the 0.5 s minimum.
     last_recovery_log = 0.0
 
     # ── Stale-frame EKF anchor (NEW) ────────────────────────────────────
@@ -2893,6 +2944,7 @@ def track_tag(controller, pump, state):
                 drift_snapshot = None
                 loss_anchor = None
                 loss_start = None
+                departed_anchor = False
 
             last_tag_time = time.time()
             t = tag.pose_t
@@ -3057,15 +3109,28 @@ def track_tag(controller, pump, state):
                 loss_anchor=loss_anchor,
             )
 
+            # Track whether recovery has actually drifted clear of the
+            # anchor.  At the instant of loss the airframe IS the anchor, so
+            # "returned to anchor" is only meaningful once it has first left
+            # the radius — otherwise a tag that flickers out while hovering
+            # centred (common at TAKEOFF_ALTITUDE where the tag is small and
+            # near the FOV edge) trips the early commit on the 0.5 s floor.
+            if rec.get("err_xy") is not None \
+                    and rec["err_xy"] > RECOVERY_ANCHOR_RADIUS_M:
+                departed_anchor = True
+
             # Early commit-to-LAND: we've actively flown back to within
             # RECOVERY_ANCHOR_RADIUS_M of where we lost the tag and it
             # still isn't visible — this is much stronger evidence the
             # marker is genuinely gone than a stationary timer expiry,
             # so cut the recovery short instead of running the clock
             # out hovering on a tag that won't reappear.  Require at
-            # least 0.5 s of recovery first so a tag that was lost for
-            # a single frame at the anchor doesn't immediately trip it.
+            # least 0.5 s of recovery first, AND that recovery actually
+            # had to fly back (departed_anchor) so a tag lost while already
+            # centred over the anchor uses the full RECOVERY_DURATION_S
+            # window before committing.
             if (rec.get("in_anchor_radius")
+                    and departed_anchor
                     and recovery_elapsed > 0.5
                     and rec["source"] == "pos"):
                 print(f"[INFO] TRACK recovery returned to within "
@@ -3167,6 +3232,11 @@ def precision_land(controller, pump, state):
     drift_snapshot = None
     loss_anchor    = None
     loss_start     = None
+    departed_anchor = False  # True once recovery has actually drifted beyond
+                             # RECOVERY_ANCHOR_RADIUS_M of the loss anchor —
+                             # gates the "returned to anchor" early commit so a
+                             # tag lost while hovering AT the anchor doesn't
+                             # trip it on the 0.5 s minimum.
     last_recovery_log = 0.0
 
     # ── Stale-frame EKF anchor (NEW — see track_tag for full rationale) ──
@@ -3198,6 +3268,7 @@ def precision_land(controller, pump, state):
                 drift_snapshot = None
                 loss_anchor = None
                 loss_start = None
+                departed_anchor = False
 
             last_tag_time = time.time()
             t = tag.pose_t
@@ -3424,10 +3495,23 @@ def precision_land(controller, pump, state):
                 loss_anchor=loss_anchor,
             )
 
+            # Track whether recovery has actually drifted clear of the
+            # anchor.  At the instant of loss the airframe IS the anchor, so
+            # "returned to anchor" is only meaningful once it has first left
+            # the radius — otherwise a tag that flickers out while hovering
+            # centred trips the early commit on the 0.5 s floor.
+            if rec.get("err_xy") is not None \
+                    and rec["err_xy"] > RECOVERY_ANCHOR_RADIUS_M:
+                departed_anchor = True
+
             # Early commit-to-LAND: see matching block in track_tag().
             # Same logic — if we've flown back to the loss anchor and
             # the tag still isn't visible the marker is genuinely gone.
+            # Require departed_anchor first so a tag lost while already
+            # centred over the anchor uses the full RECOVERY_DURATION_S
+            # window before committing.
             if (rec.get("in_anchor_radius")
+                    and departed_anchor
                     and recovery_elapsed > 0.5
                     and rec["source"] == "pos"):
                 print(f"[INFO] PRECISION_LAND recovery returned to within "
@@ -3472,10 +3556,15 @@ def precision_land(controller, pump, state):
 # Search / re-locate — climb back, fly to last known tag spot, re-patrol.
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _relative_altitude_m(controller):
-    """Return current AGL altitude in metres, or None if unavailable.
+def _altitude_reading(controller):
+    """Return ``(altitude_m, source)`` where ``source`` is ``"DEPTH"`` or
+    ``"EKF"``.
 
-    Source priority (Issue 4):
+    Single source of truth for AGL altitude (Issue 4).  ``_relative_altitude_m``
+    and the altitude-hold helpers all delegate here so the depth-vs-EKF
+    selection is identical everywhere and can be logged.
+
+    Source priority:
       1. OAK-D S2 stereo-depth centre-pixel reading — preferred when:
            * fresh (age < DEPTH_ALT_STALE_S)
            * in the credible range [DEPTH_ALT_VALID_MIN_M, DEPTH_ALT_VALID_MAX_M]
@@ -3489,6 +3578,8 @@ def _relative_altitude_m(controller):
       2. Pixhawk LOCAL_POSITION_NED relative to takeoff_z_origin — used
          when depth is unavailable, stale, out-of-range, or the drone is
          tilted.  This is the original behaviour.
+
+    ``altitude_m`` is None only when neither source is available.
     """
     # ── Try OAK-D stereo depth first ─────────────────────────────────────
     roll  = controller.last_att.get("roll")
@@ -3503,19 +3594,55 @@ def _relative_altitude_m(controller):
             and roll is not None and pitch is not None
             and abs(roll)  <= _tilt_rad
             and abs(pitch) <= _tilt_rad):
-        return depth_val
+        return depth_val, "DEPTH"
 
     # ── Fall back to Pixhawk EKF altitude ────────────────────────────────
     cur_z = controller.last_pos.get("z")
     z0    = controller.takeoff_z_origin
     if cur_z is None or z0 is None:
-        return None
+        return None, "EKF"
     alt = -(cur_z - z0)
     # A negative result means the EKF thinks the drone is below the
     # takeoff anchor — physically impossible during normal flight and a
     # sign of EKF divergence.  Clamp to 0 so control loops remain active
     # and drive a strong climb rather than receiving a nonsense reading.
-    return max(0.0, alt)
+    return max(0.0, alt), "EKF"
+
+
+def _relative_altitude_m(controller):
+    """Return current AGL altitude in metres, or None if unavailable.
+
+    Thin wrapper over ``_altitude_reading`` (depth-preferred, EKF fallback);
+    kept for the existing call sites that only need the value.
+    """
+    return _altitude_reading(controller)[0]
+
+
+def _altitude_setpoint_z(controller, target_alt_m):
+    """NED z setpoint (absolute, same frame as LOCAL_POSITION_NED.z) that
+    drives the *authoritative* AGL altitude to ``target_alt_m`` via the FCU
+    position controller.
+
+    When depth is usable this nudges the FCU's z target so the measured
+    ground distance converges on ``target_alt_m``:
+
+        z_set = cur_z - (target_alt_m - depth)
+
+    When depth is unavailable/tilted/stale it degrades *exactly* to the
+    original EKF-frame hold (``takeoff_z_origin - target_alt_m``), because
+    with the EKF altitude ``alt = -(cur_z - z0)`` the expression collapses
+    to ``z0 - target_alt_m``.  Delegating the inner loop to the FCU position
+    PID (rather than a companion velocity loop) mirrors the lesson baked into
+    wait_stabilized — a velocity P-loop fought ArduCopter's controller after
+    NAV_TAKEOFF and sank the airframe.
+
+    Returns None when neither current z nor an altitude reading is available.
+    """
+    cur_z = controller.last_pos.get("z")
+    alt, _src = _altitude_reading(controller)
+    if cur_z is None or alt is None:
+        return None
+    return cur_z - (target_alt_m - alt)
 
 
 def safe_climb_to_altitude(controller, pump, state, target_relative_alt_m,
