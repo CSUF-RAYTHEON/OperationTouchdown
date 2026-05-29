@@ -60,6 +60,8 @@ with dai.Device() as device:
         controller.takeoff_to_altitude(TAKEOFF_ALTITUDE)
 
         last_tag_time = time.time()
+        is_escaping_ground = False
+        escape_target_z = 0.0
         while pipeline.isRunning():
             in_rgb = q_rgb.tryGet()
 
@@ -76,28 +78,61 @@ with dai.Device() as device:
             # Is tag lost?
             if pose is None:
                 time_lost = time.time() - last_tag_time
+                COAST_BOOST = 1.3  
 
-                if time_lost < HOVER_TIMEOUT:
+                # --- 1. EMERGENCY GROUND ESCAPE FAILSAFE ---
+                # If we are already in escape-climb mode, or if we just breached the 0.2m deck
+                if is_escaping_ground or controller.prev_z < 0.2:
+                    if not is_escaping_ground:
+                        is_escaping_ground = True
+                        escape_target_z = controller.prev_z + 0.5
+                        print(
+                            f"[CRITICAL] Dangerously low ({controller.prev_z:.2f}m) while blind! "
+                            f"Forcing 0.5m escape climb to target {escape_target_z:.2f}m..."
+                        )
+
+                    # Keep climbing until we cross our target altitude threshold
+                    if controller.prev_z < escape_target_z:
+                        # Ascend firmly (-0.3 m/s) while continuing to match the tag's predicted speed
+                        controller.send_velocity(controller.last_vx * COAST_BOOST, controller.last_vy * COAST_BOOST, -0.3)
+                        continue  # Bypass all other timers; focus entirely on escaping the floor
+                    else:
+                        print(f"[INFO] Ground escape successful! Reached {controller.prev_z:.2f}m. Resuming search.")
+                        is_escaping_ground = False  # Reset flag to return to normal tracking
+
+                # --- 2. LOW ALTITUDE LAND FAILSAFE ---
+                # If we are low (below 0.6m) but haven't hit the 0.2m absolute danger floor,
+                # land immediately if the tag stays missing to avoid drifting blindly.
+                elif controller.prev_z < 0.6:
+                    print(
+                        f"[CRITICAL] Tag lost at low altitude ({controller.prev_z:.2f}m). "
+                        "Aborting and forcing immediate touchdown!"
+                    )
+                    controller.smart_touchdown(timeout=3.0)
+                    controller.disarm_motors()
+                    break
+
+                # --- 3. Standard Search Tiers (Only runs if safely above 0.6m) ---
+                elif time_lost < HOVER_TIMEOUT:
                     print(
                         f"[WARN] Tag lost for "
-                        f"{time_lost:.1f}s. Hovering..."
+                        f"{time_lost:.1f}s. Coasting on predicted path..."
                     )
-                    controller.coast_on_last_velocity(boost_multiplier=COAST_BOOST, vertical_velocity=-0.0)
+                    controller.coast_on_last_velocity(boost_multiplier=COAST_BOOST, vertical_velocity=0.0)
 
                 elif time_lost < SEARCH_TIMEOUT:
                     print(
                         f"[WARN] Tag lost for "
-                        f"{time_lost:.1f}s. Ascending..."
+                        f"{time_lost:.1f}s. Ascending to widen FOV..."
                     )
-                    controller.coast_on_last_velocity(boost_multiplier=COAST_BOOST, vertical_velocity=-0.4)
+                    controller.coast_on_last_velocity(boost_multiplier=COAST_BOOST, vertical_velocity=-0.2)
 
                 else:
                     print(
-                        "[CRITICAL] Tag lost too long. "
-                        "Blind landing..."
+                        "[CRITICAL] Tag lost too long high up. "
+                        "Emergency blind landing..."
                     )
-                    controller.stationary_landing()
-                    time.sleep(5)
+                    controller.smart_touchdown(timeout=6.0)
                     controller.disarm_motors()
                     break
 
