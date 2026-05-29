@@ -340,9 +340,9 @@ class StationaryLandingController:
     def adjust_velocity_and_send(self, body_x, body_y, body_z):
         """
         Apply full PID (Proportional-Integral-Derivative) control, 
-        gain scheduling, and send velocity command.
+        gain scheduling, anti-ground effect, and send velocity command.
         """
-        # Smooth the camera data to prevent twitching
+        # --- 1. Signal Smoothing ---
         alpha = 0.7
         self.prev_x = alpha*self.prev_x + (1-alpha)*body_x
         self.prev_y = alpha*self.prev_y + (1-alpha)*body_y
@@ -352,27 +352,25 @@ class StationaryLandingController:
         body_y = self.prev_y
         body_z = self.prev_z
 
-        # --- PREDICTIVE TRACKING (Derivative Control) ---
+        # --- 2. Predictive Tracking (Derivative Control) ---
         current_time = time.time()
         dt = current_time - self.last_time
         if dt <= 0: 
             dt = 0.01  # Prevent division by zero
 
-        # Calculate how fast the tag is moving away from (or towards) us
         derivative_x = (body_x - self.last_error_x) / dt
         derivative_y = (body_y - self.last_error_y) / dt
 
-        # Save current state for the next loop's prediction
         self.last_error_x = body_x
         self.last_error_y = body_y
         self.last_time = current_time
 
-        # --- Gain Scheduling & Dynamic Thresholding ---
+        # --- 3. Gain Scheduling & Dynamic Thresholding ---
         if body_z < 0.5:
             thresh = 0.10  
             current_kp_xy = Kp_xy * 0.4  
             current_max_vel = MAX_VELOCITY * 0.5 
-        elif body_z < 2:
+        elif body_z < 2.0:
             thresh = 0.10  
             current_kp_xy = Kp_xy * 0.7
             current_max_vel = MAX_VELOCITY * 0.8
@@ -381,10 +379,11 @@ class StationaryLandingController:
             current_kp_xy = Kp_xy
             current_max_vel = MAX_VELOCITY
 
+        # Apply deadband
         body_x = 0 if abs(body_x) < thresh else body_x
         body_y = 0 if abs(body_y) < thresh else body_y
 
-        # --- Speed Matching (Integral Control) ---
+        # --- 4. Speed Matching (Integral Control) ---
         if abs(body_x) > 0:
             self.integral_x += body_x * dt
         else:
@@ -395,23 +394,31 @@ class StationaryLandingController:
         else:
             self.integral_y *= 0.9
 
+        # Anti-windup cap
         max_integral = 0.2
         self.integral_x = max(min(self.integral_x, max_integral), -max_integral)
         self.integral_y = max(min(self.integral_y, max_integral), -max_integral)
 
-        TARGET_Z = 0.3
+        # --- 5. Vertical Target ---
+        TARGET_Z = 0.0  # Kept at 0.0 so error remains high all the way to the floor
         error_z = body_z - TARGET_Z
 
-        # --- FINAL VELOCITY MATH (P + I + D) ---
+        # --- 6. Final Velocity Math (P + I + D) ---
         vx = (current_kp_xy * body_x) + (Ki_xy * self.integral_x) + (Kd_xy * derivative_x)
         vy = (current_kp_xy * body_y) + (Ki_xy * self.integral_y) + (Kd_xy * derivative_y)
         vz = 0 if abs(error_z) < 0.05 else Kp_z * error_z
 
-        # Clip velocities dynamically
+        # --- 7. Anti-Ground Effect Override ---
+        # If attempting to descend, force a minimum downward speed of 0.15 m/s
+        if vz > 0:
+            vz = max(vz, 0.15)
+
+        # --- 8. Safety Clipping ---
         vx = max(min(vx, current_max_vel), -current_max_vel)
         vy = max(min(vy, current_max_vel), -current_max_vel)
         vz = max(min(vz, current_max_vel), -current_max_vel)
 
+        # --- 9. Save State & Execute ---
         self.last_vx = vx
         self.last_vy = vy
 
