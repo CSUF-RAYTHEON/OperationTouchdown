@@ -128,8 +128,8 @@ with dai.Device() as device:
 
             # Check landing conditions
             if (
-                abs(body_x) < 0.10 and
-                abs(body_y) < 0.10 and
+                abs(body_x) < 1.0 and
+                abs(body_y) < 1.0 and
                 body_z < LANDING_THRESHOLD
             ):
                 print("[INFO] Landing conditions reached")
