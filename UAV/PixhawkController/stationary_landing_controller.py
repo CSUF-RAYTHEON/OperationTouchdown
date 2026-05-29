@@ -18,6 +18,7 @@ import time
 # Controls how aggressively we move to the tag
 Kp_xy = 0.4
 Kp_z  = 0.3
+Ki_xy = 0.1
 
 # Safety limit on velocity commands (adjust as we test)
 MAX_VELOCITY = 0.4
@@ -41,6 +42,11 @@ class StationaryLandingController:
         self.prev_x = 0
         self.prev_y = 0
         self.prev_z = 0
+
+        self.integral_x = 0.0
+        self.integral_y = 0.0
+        self.last_vx = 0.0
+        self.last_vy = 0.0
     
     def heartbeat(self):
         print("Waiting for heartbeat from Pixhawk...")
@@ -315,11 +321,18 @@ class StationaryLandingController:
                 
         print("[INFO] Touchdown sequence finished.")
 
-    
+    def coast_on_last_velocity(self):
+        """
+        If the tag is lost, keep moving in the last known direction 
+        instead of slamming on the brakes.
+        """
+        # Coast horizontally, but stop descending to buy time to reacquire
+        self.send_velocity(self.last_vx, self.last_vy, 0.0)
 
     def adjust_velocity_and_send(self, body_x, body_y, body_z):
         """
-        Apply proportional control, gain scheduling, and send velocity command
+        Apply proportional-integral control, gain scheduling, and send velocity command.
+        Includes integral memory for speed-matching a moving target.
         """
         alpha = 0.7
         self.prev_x = alpha*self.prev_x + (1-alpha)*body_x
@@ -332,17 +345,17 @@ class StationaryLandingController:
 
         # --- Gain Scheduling & Dynamic Thresholding ---
         if body_z < 0.5:
-            # Below 1 meter: increase deadband, slash horizontal gain, cap max speed
+            # Below 0.5 meters: increase deadband, slash horizontal gain, cap max speed
             thresh = 0.10  # 10 cm deadband (ignores minor shifts when tag is huge)
             current_kp_xy = Kp_xy * 0.4  # Drastically reduce horizontal aggressiveness
             current_max_vel = MAX_VELOCITY * 0.5 
         elif body_z < 2:
-            # Between 1 and 3 meters: moderate parameters
+            # Between 0.5 and 2 meters: moderate parameters
             thresh = 0.10  # 10 cm deadband
             current_kp_xy = Kp_xy * 0.7
             current_max_vel = MAX_VELOCITY * 0.8
         else:
-            # Above 3 meters: normal parameters
+            # Above 2 meters: normal parameters
             thresh = 0.05  # 5 cm deadband
             current_kp_xy = Kp_xy
             current_max_vel = MAX_VELOCITY
@@ -351,17 +364,39 @@ class StationaryLandingController:
         body_x = 0 if abs(body_x) < thresh else body_x
         body_y = 0 if abs(body_y) < thresh else body_y
 
-        # Keep a continuous downward target so it doesn't hover at 0.3m
+        # --- Speed Matching (Integral Control) ---
+        # Accumulate error over time to match the tag's constant velocity
+        if abs(body_x) > 0:
+            self.integral_x += body_x * 0.01  # 0.01 approximates loop time
+        else:
+            self.integral_x *= 0.9  # Bleed off memory when perfectly centered
+            
+        if abs(body_y) > 0:
+            self.integral_y += body_y * 0.01
+        else:
+            self.integral_y *= 0.9
+
+        # Anti-windup: cap the integral memory so it doesn't build up forever
+        max_integral = 0.2
+        self.integral_x = max(min(self.integral_x, max_integral), -max_integral)
+        self.integral_y = max(min(self.integral_y, max_integral), -max_integral)
+
+        # Keep a continuous downward target
         TARGET_Z = 0.3
         error_z = body_z - TARGET_Z
 
-        vx = current_kp_xy * body_x
-        vy = current_kp_xy * body_y
+        # Calculate final velocities (Proportional + Integral)
+        vx = (current_kp_xy * body_x) + (Ki_xy * self.integral_x)
+        vy = (current_kp_xy * body_y) + (Ki_xy * self.integral_y)
         vz = 0 if abs(error_z) < 0.05 else Kp_z * error_z
 
         # Clip velocities dynamically to ensure it stays within safe limits
         vx = max(min(vx, current_max_vel), -current_max_vel)
         vy = max(min(vy, current_max_vel), -current_max_vel)
         vz = max(min(vz, current_max_vel), -current_max_vel)
+
+        # Save the final velocities so the drone can coast if the tag is lost
+        self.last_vx = vx
+        self.last_vy = vy
 
         self.send_velocity(vx, vy, vz)

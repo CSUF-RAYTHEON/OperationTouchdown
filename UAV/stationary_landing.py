@@ -80,14 +80,14 @@ with dai.Device() as device:
                         f"[WARN] Tag lost for "
                         f"{time_lost:.1f}s. Hovering..."
                     )
-                    controller.send_velocity(0, 0, 0)
+                    controller.coast_on_last_velocity()
 
                 elif time_lost < SEARCH_TIMEOUT:
                     print(
                         f"[WARN] Tag lost for "
                         f"{time_lost:.1f}s. Ascending..."
                     )
-                    controller.send_velocity(0, 0, -1)
+                    controller.send_velocity(controller.last_vx, controller.last_vy, -0.2)
 
                 else:
                     print(
