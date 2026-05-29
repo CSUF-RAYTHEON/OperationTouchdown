@@ -46,3 +46,11 @@
 
 14. On a seperate process have a long expensive loop closure search that takes the current position before calculating its position then calculate psoition based off long expensiev loop closure,
     then based off how much the drone moved since add the offset to the fast loop. 
+
+15. Change to using local varibales instead of global? ask AI
+
+16. broadcaster change maybe if camera frame(s) are not different dont get mutex and dont write
+
+17. increase framerate?
+
+18. increase camera resolution?

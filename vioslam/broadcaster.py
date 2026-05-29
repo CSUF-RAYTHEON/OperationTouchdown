@@ -10,29 +10,25 @@ from controls.attitude import get_attitude
 from controls.nedlocalposition import request_local_nedposition_messages
 from controls.nedlocalposition import get_local_nedposition
 
-def broadcaster(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, local_position_ned_mutex):
+def broadcaster(rgb_frame_mutex, gray_frame_mutex, depth_frame_mutex, attitude_mutex, local_position_ned_mutex):
     W, H = 640, 400
     FPS = 30.0
-    # 1. Connect to the shared memory for RGB, gray, and depth
+    # 1. Connect to the shared memory for RGB, gray, depth, calibration, attitude, and local position NED
     shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
     shm_gray = shared_memory.SharedMemory(name="oak_gray")
     shm_depth = shared_memory.SharedMemory(name="oak_depth")
     shm_calib = shared_memory.SharedMemory(name="oak_calib")
-    # 2. Connect to shared memory for attitude
     shm_attitude = shared_memory.SharedMemory(name="attitude")
-    # 3. Connect to shared memory for local position NED
     shm_local_position_ned = shared_memory.SharedMemory(name="local_position_ned")
-    # 4. Create numpy arrays that use the shared memory buffers for RGB, gray, depth, and camera calibration matrix
+    # 2. Create numpy arrays that use the shared memory buffers for RGB, gray, depth, calibration, attitude, and local position NED
     shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
     shared_gray = np.ndarray((H, W), dtype=np.uint8, buffer=shm_gray.buf)
     shared_depth = np.ndarray((H, W), dtype=np.uint16, buffer=shm_depth.buf)
     shared_calib = np.ndarray((3, 3), dtype=np.float64, buffer=shm_calib.buf)
-    # 5. Create numpy array for the shared memory buffer for attitude
     shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
-    # 6. Create numpy array for the shared memory buffer for local position NED
     shared_local_position_ned = np.ndarray((3,), dtype=np.float64, buffer=shm_local_position_ned.buf)
     print("Broadcaster shared memory connected")
-    # 7. Connect to the Pixhawk via UART2 and request the ATTITUDE message stream at 50ms intervals
+    # 3. Connect to the Pixhawk via UART2 and request ATTITUDE and LOOCAL_POSITION_NED message streams at the specified intervals
     master_uart2 = connect_UART2()
     request_attitude_messages(master_uart2, 25)
     request_local_nedposition_messages(master_uart2, 40)
@@ -40,7 +36,7 @@ def broadcaster(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, lo
     with dai.Device() as device:
         with dai.Pipeline(device) as pipeline:
             print("Starting up camera")
-            # 8. Create the three camera nodes for RGB, left gray, and right gray, and the stereo depth node.
+            # 4. Create the three camera nodes for RGB, left gray, and right gray, and the stereo depth node.
             #    As well as the sync node to synchronize the frames from all three cameras together. Then create
             #    the output queues for the synchronized frames using the camera nodes and the stereo depth node 
             #    as the sources. And lastly start the camera frame pipeline.
@@ -70,46 +66,48 @@ def broadcaster(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, lo
             sync_q = sync.out.createOutputQueue(maxSize=4, blocking=False)
             pipeline.start()
             print("Camera running")
-            # 9. Get the camera calibration data and write it to the shared memory
+            # 5. Get the camera calibration data and write it to the shared memory
             calib = device.getCalibration()
             K = np.array(calib.getCameraIntrinsics(dai.CameraBoardSocket.CAM_B, W, H), dtype=np.float64)
-            with camera_calibration_mutex:
+            with depth_frame_mutex:
                 np.copyto(shared_calib, K)
             print("Camera calibration data written to shared memory.")
             print("Broadcaster entering main loop to get camera frames and attitude data")
             
             while pipeline.isRunning():
                 msg_group = sync_q.get()
-                # 10. Get the attitude data from the Pixhawk and store it in the local attitude variable. 
+                # 6. Get the attitude data from the Pixhawk and store it in the local attitude variable. 
                 attitude = get_attitude(master_uart2)
-                # 11. Get the local position ned data from the Pixhawk and store it in the local local position ned variable.
+                # 7. Get the local position ned data from the Pixhawk and store it in the local local position ned variable.
                 local_position_ned = get_local_nedposition(master_uart2)
                 if msg_group is None:
                     continue
-                # 12. Get the RGB, gray, and depth frames from the camera and store them in the the local frame variables.
+                # 8. Get the RGB, gray, and depth frames from the camera and store them in the the local frame variables.
                 rgb_frame = msg_group["rgb"].getCvFrame()
                 gray_frame = msg_group["left"].getCvFrame()
                 depth_frame = msg_group["depth"].getFrame()
-                # 13. Force RGB to 3 channels just in case it brings an alpha channel (BGRA)
+                # 9. Force RGB to 3 channels just in case it brings an alpha channel (BGRA)
                 if len(rgb_frame.shape) == 3 and rgb_frame.shape[2] == 4:
                     rgb_frame = rgb_frame[:, :, :3]
-                # 14. This section is a critical section as we must aquire the mutex/lock before 
+                # 10. This section is a critical section as we must aquire the mutex/lock before 
                 #     writing to the shared memory, and release it immediately after.
                 with attitude_mutex:
                     if attitude is not None:
                         shared_attitude[:] = attitude
-                # 15. This section is a critical section as we must aquire the mutex/lock before 
+                # 11. This section is a critical section as we must aquire the mutex/lock before 
                 #     writing to the shared memory, and release it immediately after.
                 with local_position_ned_mutex:
                     if local_position_ned is not None:
                         shared_local_position_ned[:] = local_position_ned
                 try:
-                    # 16. This section is a critical section as we must aquire the mutex/lock before 
+                    # 12. This section is a critical section as we must aquire the mutex/lock before 
                     #    copying from the shared memory, and release it immediately after.
-                    with camera_frame_mutex:
-                        np.copyto(shared_rgb, rgb_frame)
+                    with gray_frame_mutex:
                         np.copyto(shared_gray, gray_frame)
+                    with depth_frame_mutex:
                         np.copyto(shared_depth, depth_frame)
+                    with rgb_frame_mutex:
+                        np.copyto(shared_rgb, rgb_frame)
                 except Exception as e:
                     print("\nBroadcaster error, memory write failed")
                     print(f"Error Message: {e}")
@@ -199,12 +197,11 @@ if __name__ == "__main__":
     
     # 3. Initialize the three required locks
     camera_frame_mutex = mp.Lock()
-    camera_calibration_mutex = mp.Lock()
     attitude_mutex = mp.Lock()
     local_position_ned_mutex = mp.Lock()
 
     # 4. Define the processes
-    broadcaster_process = mp.Process(target=broadcaster, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, local_position_ned_mutex))
+    broadcaster_process = mp.Process(target=broadcaster, args=(camera_frame_mutex, attitude_mutex, local_position_ned_mutex))
     viewer_process = mp.Process(target=test_viewer, args=(camera_frame_mutex, attitude_mutex, local_position_ned_mutex))
 
     try:

@@ -24,67 +24,50 @@ DEPTH_MAX_M = 18.0
 REDETECT_EVERY = 10
 
 # Loop closure (SLAM)
-# --- SPATIAL KEYFRAMING SETTINGS ---
-KEYFRAME_MIN_DIST_M = 0.08      # Saves a new map image if drone moves more than 8cm
-KEYFRAME_MIN_YAW_RAD = 0.17   # Saves a new map image if drone rotates more than 0.30 radians
+KEYFRAME_MIN_DIST_M = 0.08     
+KEYFRAME_MIN_YAW_RAD = 0.17  
 
-LOOP_CHECK_INTERVAL = 0.6 # Checks for a loop closure every 0.6 seconds
-MIN_LOOP_SEPARATION = 15 # does not compare the live video against the 15 most recent images it just saved.
+LOOP_CHECK_INTERVAL = 0.6 
+MIN_LOOP_SEPARATION = 15 
 MATCH_THRESHOLD = 45
-MAX_KEYFRAMES = 600 # Remembers 600 unique spatial locations
-MAX_MATCH_CANDIDATES = 325 # Checks the last 325 frames for a match
-ORB_NFEATURES = 200
+MAX_KEYFRAMES = 600 
+MAX_MATCH_CANDIDATES = 325 
+ORB_NFEATURES = 400
 ORB_SCALE = 0.5
 
 # Soft drift correction
-SOFT_CORR_ALPHA = 0.25 # Instead of applying the full correction, it multiplies the distance by SOFT_CORR_ALPHA. It only nudges the VIO coordinates 25% closer to the truth.
-SOFT_CORR_COOLDOWN = 0.75 # Time before another soft correction can be applied, in seconds
-MIN_DRIFT_TO_CORRECT_M = 0.12 # minimum drift required to apply a correction in meters (if the drift is smaller than this, we just let it be to avoid over-correcting and adding noise)
-MAX_CORR_STEP_M = 1.0 # caps the maximum correction distance to 1.0 meter per frame
+SOFT_CORR_ALPHA = 0.25 
+SOFT_CORR_COOLDOWN = 0.75 
+MIN_DRIFT_TO_CORRECT_M = 0.12 
+MAX_CORR_STEP_M = 1.0 
 
 # -----------------------
 # Helper Functions
 # -----------------------
 def wrap_deg180(a: float) -> float:
-    while a > 180:
-        a -= 360
-    while a < -180:
-        a += 360
+    while a > 180: a -= 360
+    while a < -180: a += 360
     return a
 
 def wrap_rad_pi(angle_rad: float) -> float:
-    while angle_rad > math.pi:
-        angle_rad -= 2.0 * math.pi
-    while angle_rad < -math.pi:
-        angle_rad += 2.0 * math.pi
+    while angle_rad > math.pi: angle_rad -= 2.0 * math.pi
+    while angle_rad < -math.pi: angle_rad += 2.0 * math.pi
     return angle_rad
 
 def clamp_norm(vec: np.ndarray, max_norm: float) -> np.ndarray:
     n = float(np.linalg.norm(vec))
-    if n <= 1e-9 or n <= max_norm:
-        return vec
+    if n <= 1e-9 or n <= max_norm: return vec
     return vec * (max_norm / n)
 
 def vo_step_to_ned(cam_x, cam_y, cam_z, roll_rad, pitch_rad, yaw_rad):
-    """
-    Takes the relative camera movement step and rotates it through the 
-    drone's full 3D attitude (Roll, Pitch, Yaw) to calculate the 
-    true absolute step in the global magnetic NED frame.
-    """
-    # 1. Map Camera Optical Frame to Drone Body Frame (Downward Camera)
-    # Moving towards top of image = Forward (North)
-    # Moving towards right of image = Right (East)
-    # Moving straight out of lens = Down
     body_x = -cam_y  
     body_y = cam_x   
     body_z = cam_z   
 
-    # 2. Generate Euler Z-Y-X Rotation Matrix (Body to NED)
     cr, sr = math.cos(roll_rad), math.sin(roll_rad)
     cp, sp = math.cos(pitch_rad), math.sin(pitch_rad)
     cy, sy = math.cos(yaw_rad), math.sin(yaw_rad)
 
-    # Matrix multiplication pre-calculated for extreme execution speed
     R00 = cy * cp
     R01 = cy * sp * sr - sy * cr
     R02 = cy * sp * cr + sy * sr
@@ -97,7 +80,6 @@ def vo_step_to_ned(cam_x, cam_y, cam_z, roll_rad, pitch_rad, yaw_rad):
     R21 = cp * sr
     R22 = cp * cr
 
-    # 3. Apply the 3D rotation to the step vector
     step_n = R00 * body_x + R01 * body_y + R02 * body_z
     step_e = R10 * body_x + R11 * body_y + R12 * body_z
     step_d = R20 * body_x + R21 * body_y + R22 * body_z
@@ -105,7 +87,7 @@ def vo_step_to_ned(cam_x, cam_y, cam_z, roll_rad, pitch_rad, yaw_rad):
     return step_n, step_e, step_d
 
 # -----------------------
-# SLAM (Loop Closure) Class
+# SLAM Tracking Class
 # -----------------------
 class LoopClosureORB:
     def __init__(self):
@@ -292,7 +274,6 @@ class VO_LK:
 
         t_inv = (-R.T @ t).flatten()
 
-        # 3D ABSOLUTE INTEGRATION
         step_n, step_e, step_d = vo_step_to_ned(
             float(t_inv[0]), float(t_inv[1]), float(t_inv[2]), 
             roll_rad, pitch_rad, yaw_rad
@@ -331,183 +312,54 @@ class VO_LK:
         self.global_down += corr[2]
         
         self._last_corr_wall = now
+        print(f"[VIO] Applied Soft Correction of {float(np.linalg.norm(corr)):.2f}m")
         return True
 
     def pose(self):
         return [self.global_north, self.global_east, self.global_down]
 
 # -----------------------
-# Main Process Function
+# PROCESS 1: VIO WORKER (Ultra Fast, Strict 30Hz)
 # -----------------------
-def positioning(camera_frame_mutex, camera_calibration_mutex, attitude_mutex):
+def vio_worker(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex, slam_target_mutex, shutdown_event):
     master_uart3 = connect_UART3()
     W, H = 640, 400
-    # --- 1. MEMORY SETUP ---
-    shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
-    shm_gray = shared_memory.SharedMemory(name="oak_gray")
-    shm_depth = shared_memory.SharedMemory(name="oak_depth")
-    shm_calib = shared_memory.SharedMemory(name="oak_calib")
-    shm_attitude = shared_memory.SharedMemory(name="attitude")
-
-    shared_calib = np.ndarray((3, 3), dtype=np.float64, buffer=shm_calib.buf)
-    shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
-    shared_gray = np.ndarray((H, W), dtype=np.uint8, buffer=shm_gray.buf)
-    shared_depth = np.ndarray((H, W), dtype=np.uint16, buffer=shm_depth.buf)
-    shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
-
-    local_calib = np.zeros((3, 3), dtype=np.float64)
-    local_rgb = np.zeros((H, W, 3), dtype=np.uint8)
-    local_gray = np.zeros((H, W), dtype=np.uint8)
-    local_depth = np.zeros((H, W), dtype=np.uint16)
     
-    last_processed_gray = np.zeros((H, W), dtype=np.uint8)
-
-    print("[VIO] Connected to Shared Memory. Booting Algorithm...")
-
-    with camera_calibration_mutex:
-        np.copyto(local_calib, shared_calib)
-    
-    vo = VO_LK(K=local_calib.copy())
-    loop = LoopClosureORB()
-    
-    t0 = time.time()
-    
-    # --- SPATIAL KEYFRAMING TRACKERS ---
-    last_kf_pos = None
-    last_kf_yaw = None
-    
-    print("[VIO] Algorithm running. Calculating poses...\n")
-
-    while True:
-        # --- GET FRESHEST ATTITUDE ---
-        with attitude_mutex:
-            live_roll = shared_attitude[0]
-            live_pitch = shared_attitude[1]
-            live_yaw = shared_attitude[2]
-
-        # --- GET FRESHEST IMAGES ---
-        with camera_frame_mutex:
-            np.copyto(local_rgb, shared_rgb)
-            np.copyto(local_gray, shared_gray)
-            np.copyto(local_depth, shared_depth)
-
-        if np.array_equal(local_gray, last_processed_gray):
-            delay_busywait(0.001) 
-            continue
-        timestamp_usec = int(time.time() * 1e6)
-        np.copyto(last_processed_gray, local_gray)
-
-        # --- HEAVY MATH ---
-        t_sec = time.time() - t0
-        vo.process(local_gray, local_depth, live_roll, live_pitch, live_yaw)
-
-        # --- SLAM TOGGLE LOGIC ---
-        dynamic_slam_enabled = True 
-
-        if dynamic_slam_enabled and vo.status == "TRACKING":
-            pos_array = np.array(vo.pose())
-            
-            # --- THE NEW SPATIAL CHECK ---
-            save_kf = False
-            
-            # If we don't have a baseline yet, save the very first frame immediately
-            if last_kf_pos is None:
-                save_kf = True
-            else:
-                # Calculate the 3D physical distance we traveled since the last picture
-                dist_moved = float(np.linalg.norm(pos_array - last_kf_pos))
-                
-                # Calculate how far the drone rotated (in radians) since the last picture
-                yaw_changed = abs(wrap_rad_pi(live_yaw - last_kf_yaw))
-                
-                # If we moved far enough, OR rotated far enough, trigger a save
-                if dist_moved >= KEYFRAME_MIN_DIST_M or yaw_changed >= KEYFRAME_MIN_YAW_RAD:
-                    save_kf = True
-
-            if save_kf:
-                loop.add_keyframe(local_rgb, pos_array, vo.frame_idx, t_sec)
-                # Update our baseline to the exact spot we just saved
-                last_kf_pos = pos_array.copy()
-                last_kf_yaw = live_yaw
-
-            # 2. Check for map loops (Still runs every 0.6 seconds based on wall-clock)
-            info = loop.check_loop(local_rgb, pos_array, vo.frame_idx)
-            if info is not None:
-                vo.apply_soft_correction(info["matched_pose"])
-                
-                # Optional: Overwrite our last_kf_pos with the newly corrected coordinates 
-                # so the teleport doesn't instantly trigger a false spatial keyframe
-                last_kf_pos = np.array(vo.pose())
-
-        # --- PUBLISH POSITION ---
-        if vo.status == "TRACKING":
-            pos = vo.pose() # pos[0] = North (X) pos[1] = East (Y) pos[2] = Down (Z)
-            master_uart3.mav.vision_position_estimate_send(timestamp_usec, pos[0], pos[1], pos[2], 0.0, 0.0, 0.0)
-        else:
-            print(f"VIO LOST. Status: {vo.status}")
-# -----------------------
-# Testing & Printing Process
-# -----------------------
-def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex, slam_enabled_mutex):
-    W, H = 640, 400
-    # --- 1. MEMORY SETUP ---
-    shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
     shm_gray = shared_memory.SharedMemory(name="oak_gray")
     shm_depth = shared_memory.SharedMemory(name="oak_depth")
     shm_calib = shared_memory.SharedMemory(name="oak_calib")
     shm_attitude = shared_memory.SharedMemory(name="attitude")
     shm_position = shared_memory.SharedMemory(name="position")
-    shm_slam_enabled = shared_memory.SharedMemory(name="slam_enabled")
+    shm_slam_target = shared_memory.SharedMemory(name="slam_target")
+    shm_slam_trigger = shared_memory.SharedMemory(name="slam_trigger")
 
     shared_calib = np.ndarray((3, 3), dtype=np.float64, buffer=shm_calib.buf)
-    shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
     shared_gray = np.ndarray((H, W), dtype=np.uint8, buffer=shm_gray.buf)
     shared_depth = np.ndarray((H, W), dtype=np.uint16, buffer=shm_depth.buf)
     shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
-    shared_slam_enabled = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_enabled.buf)
+    shared_slam_target = np.ndarray((3,), dtype=np.float64, buffer=shm_slam_target.buf)
+    shared_slam_trigger = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
 
     local_calib = np.zeros((3, 3), dtype=np.float64)
-    local_rgb = np.zeros((H, W, 3), dtype=np.uint8)
     local_gray = np.zeros((H, W), dtype=np.uint8)
     local_depth = np.zeros((H, W), dtype=np.uint16)
-    
+    local_slam_target = np.zeros((3,), dtype=np.float64)
     last_processed_gray = np.zeros((H, W), dtype=np.uint8)
-    vo_average_time = 0.0
-    vo_count = 0
-    slam_count = 0
-    slam_average_time = 0.0
-    slam_enabled = True
-    with slam_enabled_mutex:
-        shared_slam_enabled[0] = slam_enabled
-
-    print("[VIO] Connected to Shared Memory. Booting Algorithm...")
 
     with camera_calibration_mutex:
         np.copyto(local_calib, shared_calib)
     
     vo = VO_LK(K=local_calib.copy())
-    loop = LoopClosureORB()
-    
-    t0 = time.time()
-    
-    # --- SPATIAL KEYFRAMING TRACKERS ---
-    last_kf_pos = None
-    last_kf_yaw = None
-    
-    print("[VIO] Algorithm running. Calculating poses...\n")
+    print("[VIO Worker] Running. Fast Optical Flow active...")
 
-    while True:
-        start_time = time.perf_counter()
-        # --- GET FRESHEST ATTITUDE ---
+    while not shutdown_event.is_set():
         with attitude_mutex:
             live_roll = shared_attitude[0]
             live_pitch = shared_attitude[1]
             live_yaw = shared_attitude[2]
 
-        # --- GET FRESHEST IMAGES ---
         with camera_frame_mutex:
-            np.copyto(local_rgb, shared_rgb)
             np.copyto(local_gray, shared_gray)
             np.copyto(local_depth, shared_depth)
 
@@ -516,98 +368,175 @@ def positioning_test(camera_frame_mutex, camera_calibration_mutex, attitude_mute
             continue
             
         np.copyto(last_processed_gray, local_gray)
+        timestamp_usec = int(time.time() * 1e6)
 
-        # --- HEAVY MATH ---
-        t_sec = time.time() - t0
         vo.process(local_gray, local_depth, live_roll, live_pitch, live_yaw)
-        end_time = time.perf_counter()
-        elapsed_ms = (end_time - start_time) * 1000.0
-        vo_count += 1
-        vo_average_time += elapsed_ms
-        if vo_count >= 128:
-            vo_average_time /= vo_count
-            vo_count = 0
-            print(f"[VIO] Average processing time per frame: {vo_average_time:.2f} ms")
-            vo_average_time = 0.0
 
-        # --- SLAM TOGGLE LOGIC ---
+        if vo.status == "TRACKING":
+            pos = vo.pose()
+            
+            # Write to Mission Control and SLAM
+            with position_mutex:
+                shared_position[:] = pos
+
+            # Send to Pixhawk
+            master_uart3.mav.vision_position_estimate_send(timestamp_usec, pos[0], pos[1], pos[2], 0.0, 0.0, 0.0)
+
+            # Check if Background SLAM has found a loop closure
+            with slam_target_mutex:
+                if shared_slam_trigger[0]:
+                    np.copyto(local_slam_target, shared_slam_target)
+                    vo.apply_soft_correction(local_slam_target)
+                    shared_slam_trigger[0] = False # Acknowledge receipt
+        else:
+            print(f"[VIO] Tracking Lost: {vo.status}")
+
+    # Graceful cleanup
+    shm_gray.close()
+    shm_depth.close()
+    shm_calib.close()
+    shm_attitude.close()
+    shm_position.close()
+    shm_slam_target.close()
+    shm_slam_trigger.close()
+
+# -----------------------
+# PROCESS 2: SLAM WORKER (Background, Asynchronous)
+# -----------------------
+def slam_worker(camera_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_target_mutex, shutdown_event):
+    W, H = 640, 400
+    
+    shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
+    shm_attitude = shared_memory.SharedMemory(name="attitude")
+    shm_position = shared_memory.SharedMemory(name="position")
+    shm_slam_target = shared_memory.SharedMemory(name="slam_target")
+    shm_slam_trigger = shared_memory.SharedMemory(name="slam_trigger")
+    shm_slam_enabled = shared_memory.SharedMemory(name="slam_enabled")
+
+    shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
+    shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
+    shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
+    shared_slam_target = np.ndarray((3,), dtype=np.float64, buffer=shm_slam_target.buf)
+    shared_slam_trigger = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
+    shared_slam_enabled = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_enabled.buf)
+
+    local_rgb = np.zeros((H, W, 3), dtype=np.uint8)
+    local_position = np.zeros((3,), dtype=np.float64)
+    last_processed_rgb = np.zeros((H, W, 3), dtype=np.uint8)
+
+    loop = LoopClosureORB()
+    t0 = time.time()
+    
+    last_kf_pos = None
+    last_kf_yaw = None
+    slam_frame_idx = 0
+    
+    print("[SLAM Worker] Running. Background map building active...")
+
+    while not shutdown_event.is_set():
         with slam_enabled_mutex:
             slam_enabled = bool(shared_slam_enabled[0])
 
-        if slam_enabled and vo.status == "TRACKING":
-            pos_array = np.array(vo.pose())
+        if not slam_enabled:
+            time.sleep(0.1) # Sleep to save CPU if Mission Control disabled it
+            continue
+
+        with camera_frame_mutex:
+            np.copyto(local_rgb, shared_rgb)
             
-            # --- THE NEW SPATIAL CHECK ---
-            save_kf = False
+        if np.array_equal(local_rgb, last_processed_rgb):
+            time.sleep(0.005)
+            continue
             
-            # If we don't have a baseline yet, save the very first frame immediately
-            if last_kf_pos is None:
-                save_kf = True
-            else:
-                # Calculate the 3D physical distance we traveled since the last picture
-                dist_moved = float(np.linalg.norm(pos_array - last_kf_pos))
-                
-                # Calculate how far the drone rotated (in radians) since the last picture
-                yaw_changed = abs(wrap_rad_pi(live_yaw - last_kf_yaw))
-                
-                # If we moved far enough, OR rotated far enough, trigger a save
-                if dist_moved >= KEYFRAME_MIN_DIST_M or yaw_changed >= KEYFRAME_MIN_YAW_RAD:
-                    save_kf = True
+        np.copyto(last_processed_rgb, local_rgb)
+        slam_frame_idx += 1
+        t_sec = time.time() - t0
 
-            if save_kf:
-                loop.add_keyframe(local_rgb, pos_array, vo.frame_idx, t_sec)
-                # Update our baseline to the exact spot we just saved
-                last_kf_pos = pos_array.copy()
-                last_kf_yaw = live_yaw
-
-            # 2. Check for map loops (Still runs every 0.6 seconds based on wall-clock)
-            start_time = time.perf_counter()
-            info = loop.check_loop(local_rgb, pos_array, vo.frame_idx)
-            if info is not None:
-                vo.apply_soft_correction(info["matched_pose"])
-                
-                # Optional: Overwrite our last_kf_pos with the newly corrected coordinates 
-                # so the teleport doesn't instantly trigger a false spatial keyframe
-                last_kf_pos = np.array(vo.pose())
-            end_time = time.perf_counter()
-            elapsed_ms = (end_time - start_time) * 1000.0
-            if elapsed_ms > 2.0:
-                slam_count += 1
-                slam_average_time += elapsed_ms
-            if slam_count >= 16:
-                slam_average_time /= slam_count
-                slam_count = 0
-                print(f"[SLAM] Average loop check time: {slam_average_time:.2f} ms")
-                slam_average_time = 0.0
-        # --- PUBLISH POSITION ---
-        if vo.status == "TRACKING":
-            pos = vo.pose()
-            with position_mutex:
-                shared_position[:] = pos
-        else:
-            print(f"VIO LOST. Status: {vo.status}")
-
-def test_positioning(position_mutex, slam_enabled_mutex):    
-    shm_position = shared_memory.SharedMemory(name="position")
-    shm_slam_enabled = shared_memory.SharedMemory(name="slam_enabled")
-    shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
-    shared_slam_enabled = np.ndarray((1,), dtype=bool, buffer=shm_slam_enabled.buf)
-    local_position = np.zeros((3,), dtype=np.float64)
-
-
-    print("\n[PRINTER] Connected to Shared Memory. Listening for NED coordinates...\n")
-
-    while True:
+        with attitude_mutex:
+            live_yaw = shared_attitude[2]
         with position_mutex:
             np.copyto(local_position, shared_position)
-        print(f"[MISSION CONTROL SIM] Current Position -> North: {local_position[0]:+.2f}m | East: {local_position[1]:+.2f}m | Down: {local_position[2]:+.2f}m")
 
-        if local_position[0] >= 5:
-            print("\n[MISSION CONTROL SIM] Target reached! Disabling SLAM corrections...\n")
+        # 1. SPATIAL KEYFRAMING
+        save_kf = False
+        if last_kf_pos is None:
+            save_kf = True
+        else:
+            dist_moved = float(np.linalg.norm(local_position - last_kf_pos))
+            yaw_changed = abs(wrap_rad_pi(live_yaw - last_kf_yaw))
+            if dist_moved >= KEYFRAME_MIN_DIST_M or yaw_changed >= KEYFRAME_MIN_YAW_RAD:
+                save_kf = True
+
+        if save_kf:
+            loop.add_keyframe(local_rgb, local_position, slam_frame_idx, t_sec)
+            last_kf_pos = local_position.copy()
+            last_kf_yaw = live_yaw
+
+        # 2. LOOP CLOSURE SEARCH
+        start_slam = time.perf_counter()
+        info = loop.check_loop(local_rgb, local_position, slam_frame_idx)
+        
+        if info is not None:
+            # Safely pass the correction to the VIO worker
+            with slam_target_mutex:
+                shared_slam_target[:] = info["matched_pose"]
+                shared_slam_trigger[0] = True
+                
+            # Overwrite baseline so teleport doesn't instantly trigger a false spatial keyframe
+            last_kf_pos = info["matched_pose"].copy()
+            
+        end_slam = time.perf_counter()
+        elapsed_ms = (end_slam - start_slam) * 1000.0
+        
+        if elapsed_ms > 5.0:
+            print(f"[SLAM] Map search completed in {elapsed_ms:.2f} ms")
+
+    # Graceful cleanup
+    shm_rgb.close()
+    shm_attitude.close()
+    shm_position.close()
+    shm_slam_target.close()
+    shm_slam_trigger.close()
+    shm_slam_enabled.close()
+
+# -----------------------
+# PROCESS 3: MISSION CONTROL SIMULATOR
+# -----------------------
+def mission_control_sim(position_mutex, slam_enabled_mutex, shutdown_event):    
+    shm_position = shared_memory.SharedMemory(name="position")
+    shm_slam_enabled = shared_memory.SharedMemory(name="slam_enabled")
+    
+    shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
+    shared_slam_enabled = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_enabled.buf)
+    local_position = np.zeros((3,), dtype=np.float64)
+
+    # Initialize SLAM as True on boot
+    with slam_enabled_mutex:
+        shared_slam_enabled[0] = True
+
+    print("\n[MISSION CONTROL] Listening for Target Coordinates...\n")
+
+    while not shutdown_event.is_set():
+        with position_mutex:
+            np.copyto(local_position, shared_position)
+            
+        print(f"[MISSION CONTROL] North: {local_position[0]:+.2f}m | East: {local_position[1]:+.2f}m | Down: {local_position[2]:+.2f}m")
+
+        if local_position[0] >= 5.0:
             with slam_enabled_mutex:
-                shared_slam_enabled[0] = False
+                if shared_slam_enabled[0]: # Only print and set once
+                    print("\n[MISSION CONTROL] Intercept altitude reached! Disabling SLAM corrections for landing sequence...\n")
+                    shared_slam_enabled[0] = False
+                    
         time.sleep(0.35) 
 
+    # Graceful cleanup
+    shm_position.close()
+    shm_slam_enabled.close()
+
+# -----------------------
+# BOOT SEQUENCE
+# -----------------------
 if __name__ == "__main__":
     mp.set_start_method('spawn', force=True)
     
@@ -619,9 +548,10 @@ if __name__ == "__main__":
     ATTITUDE_BYTES = 3 * 8 
     POSITION_BYTES = 3 * 8 
     LOCAL_POSITION_NED_BYTES = 3 * 8
+    TARGET_BYTES = 3 * 8
     BOOL_BYTES = 1
 
-    print("Positioning tester allocating shared memory...")
+    print("System allocating shared memory...")
     shm_rgb = shared_memory.SharedMemory(create=True, size=RGB_BYTES, name="oak_rgb")
     shm_gray = shared_memory.SharedMemory(create=True, size=GRAY_BYTES, name="oak_gray")
     shm_depth = shared_memory.SharedMemory(create=True, size=DEPTH_BYTES, name="oak_depth")
@@ -629,40 +559,55 @@ if __name__ == "__main__":
     shm_attitude = shared_memory.SharedMemory(create=True, size=ATTITUDE_BYTES, name="attitude")
     shm_position = shared_memory.SharedMemory(create=True, size=POSITION_BYTES, name="position")
     shm_local_position_ned = shared_memory.SharedMemory(create=True, size=LOCAL_POSITION_NED_BYTES, name="local_position_ned")
-    shm_slam_enabled = shared_memory.SharedMemory(create=True, size=BOOL_BYTES, name="slam_enabled")
     
+    # New Asynchronous Memory Bridges
+    shm_slam_enabled = shared_memory.SharedMemory(create=True, size=BOOL_BYTES, name="slam_enabled")
+    shm_slam_target = shared_memory.SharedMemory(create=True, size=TARGET_BYTES, name="slam_target")
+    shm_slam_trigger = shared_memory.SharedMemory(create=True, size=BOOL_BYTES, name="slam_trigger")
+    
+    # Thread Locks
     camera_frame_mutex = mp.Lock()
     camera_calibration_mutex = mp.Lock()
     attitude_mutex = mp.Lock()
     position_mutex = mp.Lock()
     local_position_ned_mutex = mp.Lock()
     slam_enabled_mutex = mp.Lock()
+    slam_target_mutex = mp.Lock()
+    
+    # Graceful Shutdown Event Flag
+    shutdown_event = mp.Event()
 
+    # Define Workers
     broadcaster_process = mp.Process(target=broadcaster, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, local_position_ned_mutex))
-    vio_process = mp.Process(target=positioning_test, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex, slam_enabled_mutex))
-    test_process = mp.Process(target=test_positioning, args=(position_mutex, slam_enabled_mutex))
+    vio_process = mp.Process(target=vio_worker, args=(camera_frame_mutex, camera_calibration_mutex, attitude_mutex, position_mutex, slam_target_mutex, shutdown_event))
+    slam_process = mp.Process(target=slam_worker, args=(camera_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_target_mutex, shutdown_event))
+    mission_process = mp.Process(target=mission_control_sim, args=(position_mutex, slam_enabled_mutex, shutdown_event))
 
     try:
         broadcaster_process.start()
-        time.sleep(3)
+        time.sleep(3) # Let camera initialize
+        
         vio_process.start()
-        time.sleep(3)
-        test_process.start()
-        time.sleep(3)
-        test_process.join()
+        slam_process.start()
+        time.sleep(1) # Let tracking warm up
+        
+        mission_process.start()
+        
+        # Wait until user terminates
+        mission_process.join()
         
     except KeyboardInterrupt:
-        print("\nPositioning tester caught keyboard interrupt. Shutting down...")
-    finally:
-        broadcaster_process.terminate()
-        vio_process.terminate()
-        test_process.terminate()
+        print("\nCaught keyboard interrupt. Signaling graceful shutdown to all processes...")
+        shutdown_event.set() 
         
+    finally:
+        # Wait for processes to safely close their local memory links
         broadcaster_process.join()
         vio_process.join()
-        test_process.join()
+        slam_process.join()
+        mission_process.join()
 
-        print("Positioning tester cleaning up shared memory...")
+        print("Unlinking system shared memory blocks...")
         shm_rgb.close()
         shm_rgb.unlink()
         shm_gray.close()
@@ -679,4 +624,9 @@ if __name__ == "__main__":
         shm_local_position_ned.unlink()
         shm_slam_enabled.close()
         shm_slam_enabled.unlink()
-        print("Positioning tester processes terminated safely.")
+        shm_slam_target.close()
+        shm_slam_target.unlink()
+        shm_slam_trigger.close()
+        shm_slam_trigger.unlink()
+        
+        print("System shutdown complete.")
