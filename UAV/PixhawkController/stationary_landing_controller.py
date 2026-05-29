@@ -323,7 +323,7 @@ class StationaryLandingController:
         body_y = 0 if abs(body_y) < thresh else body_y
 
         # Keep a continuous downward target so it doesn't hover at 0.3m
-        TARGET_Z = 0.0 
+        TARGET_Z = 0.3
         error_z = body_z - TARGET_Z
 
         vx = current_kp_xy * body_x
