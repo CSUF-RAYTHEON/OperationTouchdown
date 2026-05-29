@@ -273,20 +273,49 @@ class StationaryLandingController:
 
         return body_x, body_y, body_z
     
-    def manual_blind_descent(self, descent_time=4.0):
+    def smart_touchdown(self, timeout=8.0):
         """
-        Send a steady downward velocity to manually land without MAVLink NAV_LAND.
-        It pushes the drone into the ground gently.
+        Send a steady downward velocity and monitor Pixhawk telemetry to 
+        detect when physical downward movement stops (touchdown).
         """
-        print("[INFO] Initiating manual descent to touchdown...")
+        print("[INFO] Initiating smart descent to touchdown...")
         start_time = time.time()
+        first_stopped_time = None
         
-        # Command 0.2 m/s straight down for the allotted time
-        while time.time() - start_time < descent_time:
-            self.send_velocity(0.0, 0.0, 0.2)
-            time.sleep(0.1)
+        # Flush the buffer of old VFR_HUD messages so we don't read past telemetry
+        while self.master.recv_match(type='VFR_HUD', blocking=False):
+            pass
             
-        print("[INFO] Touchdown assumed.")
+        # Push down until we detect the floor OR the timeout is reached
+        while time.time() - start_time < timeout:
+            # Command 0.2 m/s straight down
+            self.send_velocity(0.0, 0.0, 0.2) 
+            
+            # Pull the latest HUD telemetry to check actual climb rate
+            msg = self.master.recv_match(type='VFR_HUD', blocking=True, timeout=0.1)
+            
+            if msg:
+                # msg.climb is the vertical speed in m/s.
+                # If it is near 0 (e.g., < 0.1 m/s), the drone is physically blocked by the floor.
+                # We wait 1 second before checking to give the drone time to build downward momentum first.
+                if abs(msg.climb) < 0.1 and (time.time() - start_time > 1.0):
+                    if first_stopped_time is None:
+                        first_stopped_time = time.time()
+                        
+                    # If it has been physically stopped for 0.5 consecutive seconds, it is landed
+                    if time.time() - first_stopped_time >= 0.5:
+                        print(f"[INFO] Touchdown detected! Vertical speed flatlined at {msg.climb:.2f} m/s.")
+                        break
+                else:
+                    # Drone is still moving down, reset the stopped timer
+                    first_stopped_time = None
+            else:
+                # If no message caught, just sleep briefly to stabilize
+                time.sleep(0.05)
+                
+        print("[INFO] Touchdown sequence finished.")
+
+    
 
     def adjust_velocity_and_send(self, body_x, body_y, body_z):
         """

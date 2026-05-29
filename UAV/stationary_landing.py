@@ -13,7 +13,7 @@ LANDING_THRESHOLD = 0.4
 TAKEOFF_ALTITUDE = 3.5  # meters
 
 HOVER_TIMEOUT = 3.0
-SEARCH_TIMEOUT = 10.0
+SEARCH_TIMEOUT = 7.0
 
 # Start the pipeline / camera
 
@@ -133,10 +133,8 @@ with dai.Device() as device:
                 body_z < LANDING_THRESHOLD
             ):
                 print("[INFO] Landing conditions reached")
-                # REPLACED: controller.stationary_landing()
-                # 3.0 seconds at 0.2m/s descent covers 0.6 meters, enough for a 0.4m threshold.
-                # controller.manual_blind_descent(descent_time=3.0) 
-                controller.stationary_landing()
+                controller.smart_touchdown(timeout=8.0)
+                #controller.stationary_landing()
                 time.sleep(5)  # Wait for landing to complete
                 controller.disarm_motors()
                 break
