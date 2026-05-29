@@ -14,7 +14,7 @@ import depthai as dai
 
 # Config / Adjust these as we test
 TARGET_TAG_ID = 67
-TAG_SIZE = 0.20     # 20 cm tag
+TAG_SIZE = 0.14     # 15 cm tag
 
 
 class AprilTagDetector:
