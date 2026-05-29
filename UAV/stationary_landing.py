@@ -15,6 +15,8 @@ TAKEOFF_ALTITUDE = 3.5  # meters
 HOVER_TIMEOUT = 3.0
 SEARCH_TIMEOUT = 7.0
 
+COAST_BOOST = 1.3
+
 # Start the pipeline / camera
 
 with dai.Device() as device:
@@ -80,14 +82,14 @@ with dai.Device() as device:
                         f"[WARN] Tag lost for "
                         f"{time_lost:.1f}s. Hovering..."
                     )
-                    controller.coast_on_last_velocity()
+                    controller.coast_on_last_velocity(boost_multiplier=COAST_BOOST, vertical_velocity=0.0)
 
                 elif time_lost < SEARCH_TIMEOUT:
                     print(
                         f"[WARN] Tag lost for "
                         f"{time_lost:.1f}s. Ascending..."
                     )
-                    controller.send_velocity(controller.last_vx, controller.last_vy, -0.2)
+                    controller.coast_on_last_velocity(boost_multiplier=COAST_BOOST, vertical_velocity=-0.2)
 
                 else:
                     print(

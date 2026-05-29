@@ -321,13 +321,16 @@ class StationaryLandingController:
                 
         print("[INFO] Touchdown sequence finished.")
 
-    def coast_on_last_velocity(self):
+    def coast_on_last_velocity(self, boost_multiplier=1.2, vertical_velocity=0.0):
         """
-        If the tag is lost, keep moving in the last known direction 
-        instead of slamming on the brakes.
+        Keep moving in the last known direction with a boost multiplier 
+        to ensure we don't fall behind a moving target while blind.
         """
-        # Coast horizontally, but stop descending to buy time to reacquire
-        self.send_velocity(self.last_vx, self.last_vy, 0.0)
+        boosted_vx = self.last_vx * boost_multiplier
+        boosted_vy = self.last_vy * boost_multiplier
+        
+        # We can also handle the vertical velocity here for the search phase
+        self.send_velocity(boosted_vx, boosted_vy, vertical_velocity)
 
     def adjust_velocity_and_send(self, body_x, body_y, body_z):
         """
