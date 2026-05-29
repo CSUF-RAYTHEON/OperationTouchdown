@@ -94,7 +94,7 @@ with dai.Device() as device:
                     # Keep climbing until we cross our target altitude threshold
                     if controller.prev_z < escape_target_z:
                         # Ascend firmly (-0.3 m/s) while continuing to match the tag's predicted speed
-                        controller.send_velocity(controller.last_vx * COAST_BOOST, controller.last_vy * COAST_BOOST, -0.3)
+                        controller.send_velocity(controller.last_vx * COAST_BOOST, controller.last_vy * COAST_BOOST, -0.5)
                         continue  # Bypass all other timers; focus entirely on escaping the floor
                     else:
                         print(f"[INFO] Ground escape successful! Reached {controller.prev_z:.2f}m. Resuming search.")
