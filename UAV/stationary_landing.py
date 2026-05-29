@@ -9,7 +9,7 @@ from PixhawkController.stationary_landing_controller import (
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE = 57600
 
-LANDING_THRESHOLD = 0.2
+LANDING_THRESHOLD = 0.4
 TAKEOFF_ALTITUDE = 3.5  # meters
 
 HOVER_TIMEOUT = 3.0
