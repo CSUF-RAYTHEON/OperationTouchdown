@@ -13,7 +13,7 @@ LANDING_THRESHOLD = 0.4
 TAKEOFF_ALTITUDE = 6  # meters
 
 HOVER_TIMEOUT = 3.0
-SEARCH_TIMEOUT = 7.0
+SEARCH_TIMEOUT = 10.0
 
 # Start the pipeline / camera
 
@@ -87,7 +87,7 @@ with dai.Device() as device:
                         f"[WARN] Tag lost for "
                         f"{time_lost:.1f}s. Ascending..."
                     )
-                    controller.send_velocity(0, 0, -0.2)
+                    controller.send_velocity(0, 0, -0.5)
 
                 else:
                     print(
