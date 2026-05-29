@@ -89,7 +89,7 @@ with dai.Device() as device:
                         f"[WARN] Tag lost for "
                         f"{time_lost:.1f}s. Ascending..."
                     )
-                    controller.coast_on_last_velocity(boost_multiplier=COAST_BOOST, vertical_velocity=-0.3)
+                    controller.coast_on_last_velocity(boost_multiplier=COAST_BOOST, vertical_velocity=-0.4)
 
                 else:
                     print(
