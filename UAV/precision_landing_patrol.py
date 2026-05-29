@@ -266,7 +266,14 @@ CLOSE_TAG_BODY_Z_M     = 1.0      # m — last body-frame z below which a lost
 # logs where body-frame offsets persisted around ±1 m through the entire
 # descent).  Mirrors the design in
 # UAV/PixhawkController/stationary_landing_controller.py.
-DESCENT_Kp_XY            = 0.35
+DESCENT_Kp_XY            = 0.55  # was 0.35 — the descent kept drifting off the
+                                 # tag (body-x grew 0.07→2.0 m) because the
+                                 # unsaturated PD output at ~1 m error (0.35
+                                 # m/s) was below the lateral drift rate, so
+                                 # the error grew instead of shrinking.  0.55
+                                 # commands ~0.55 m/s at 1 m error — closer to
+                                 # the 0.70 m/s cap — so it actually outpaces
+                                 # the drift and re-centres promptly.
 DESCENT_Kd_XY            = 0.30  # was 0.25 — extra damping to absorb camera
                                  # pipeline latency (drone keeps moving for a
                                  # frame before the next detection updates).
@@ -287,10 +294,23 @@ DESCENT_MAX_V_XY         = 0.70  # m/s.  Raised from 0.4 m/s after a real
 DESCENT_TARGET_BZ        = 0.3   # m, desired height above tag during PD
 DESCENT_Kp_Z             = 0.3
 DESCENT_MIN_VZ           = 0.10  # m/s minimum descent rate when centred
-DESCENT_MAX_VZ           = 0.40  # m/s vertical clamp
-DESCENT_XY_ERR_HOLD      = 0.10  # m — beyond this, slow vz to 20 % of cmd.
-                                 # Tightened from 0.35 so descent is gated on
-                                 # cm-scale lateral alignment, not dm-scale.
+DESCENT_MAX_VZ           = 0.60  # m/s vertical clamp.  Was 0.40 — raised so
+                                 # the descent is brisk ONCE the tag is inside
+                                 # the centring cone (see DESCENT_XY_ERR_HOLD*);
+                                 # it only bites when we are actually centred.
+DESCENT_XY_ERR_HOLD      = 0.10  # m — near-ground floor of the descent gate.
+                                 # When the lateral error exceeds the gate the
+                                 # vertical command is now PAUSED (vz=0), not
+                                 # merely throttled — recentre first so the tag
+                                 # cannot drift to the FOV edge and drop out
+                                 # while we keep sinking.
+DESCENT_XY_ERR_HOLD_FRAC = 0.15  # — altitude-proportional part of the descent
+                                 # gate: descend only while the lateral error
+                                 # is within max(DESCENT_XY_ERR_HOLD,
+                                 # FRAC*body_z) — i.e. inside a ~15 % cone of
+                                 # the current height.  Generous at altitude
+                                 # (0.66 m at 4.4 m) so the descent stays brisk,
+                                 # tightening to the cm floor near touchdown.
 DESCENT_DEADBAND_XY      = 0.005 # m — ignore offsets below ~5 mm.
                                  # Reduced from 0.03 m (same rationale as
                                  # TRACK_DEADBAND_XY) so the descent PD
@@ -1707,18 +1727,24 @@ class PrecisionLandingController:
         vx = max(min(vx, xy_cap), -xy_cap)
         vy = max(min(vy, xy_cap), -xy_cap)
 
-        # Vertical command: descend toward DESCENT_TARGET_BZ.
+        # Vertical command: descend toward DESCENT_TARGET_BZ, but PAUSE the
+        # descent whenever the lateral error is outside the centring cone so
+        # the tag cannot slide to the FOV edge (and bz inflate via slant
+        # range) while we keep sinking — recentre first, then descend briskly.
         error_z = filt_z - DESCENT_TARGET_BZ
-        if error_z > 0.0:
-            vz_cmd = max(DESCENT_MIN_VZ, DESCENT_Kp_Z * error_z)
-            # Slow vz when XY error is still meaningful — recentre first.
-            if max(abs(filt_x), abs(filt_y)) > DESCENT_XY_ERR_HOLD:
-                vz_cmd *= 0.2
-            vz = min(vz_cmd, DESCENT_MAX_VZ)
-        else:
+        xy_err = max(abs(filt_x), abs(filt_y))
+        xy_gate = max(DESCENT_XY_ERR_HOLD, DESCENT_XY_ERR_HOLD_FRAC * filt_z)
+        if error_z <= 0.0:
             # Below target altitude — let caller commit to LAND.  Never
             # command upward velocity here; we'd just chase noise.
             vz = 0.0
+        elif xy_err > xy_gate:
+            # Off-centre beyond the cone — hold altitude and let the XY PD
+            # pull us in before sinking any further.
+            vz = 0.0
+        else:
+            vz_cmd = max(DESCENT_MIN_VZ, DESCENT_Kp_Z * error_z)
+            vz = min(vz_cmd, DESCENT_MAX_VZ)
 
         self._descent_prev_x = filt_x
         self._descent_prev_y = filt_y
@@ -1870,6 +1896,12 @@ class PrecisionLandingController:
             else:
                 vz_cmd = -RECOVERY_ALT_KP * alt_err
                 vz = max(min(vz_cmd, RECOVERY_MAX_VZ), -RECOVERY_MAX_VZ)
+            # Hard cap (user req): the relocate climb must NEVER exceed
+            # TAKEOFF_ALTITUDE.  Once at/above it, forbid any commanded climb
+            # (NED vz<0) so the ascend-on-loss can only ever bring us back UP
+            # toward the set altitude, not overshoot above it.
+            if rel_alt >= TAKEOFF_ALTITUDE and vz < 0.0:
+                vz = 0.0
 
         # ── Lateral loop selection ──────────────────────────────────────────
         # Primary: closed-loop NED position-PD anchored at loss_anchor.
@@ -3386,8 +3418,8 @@ def precision_land(controller, pump, state):
             #       cannot drive out.
             # If body_z is between the hard floor and TOUCHDOWN_BODY_Z_M
             # with a loose lateral, descent_velocity_command's XY_ERR_HOLD
-            # branch is already throttling vz to 20 % so the drone keeps
-            # nudging in laterally before sinking past the hard floor.
+            # branch has already PAUSED the descent so the drone recentres
+            # laterally before sinking past the hard floor.
             lateral_err = max(abs(filt_x), abs(filt_y))
             if body_z < TOUCHDOWN_HARD_FLOOR_BZ_M:
                 commit_to_land(
