@@ -232,7 +232,7 @@ LANDING_TARGET_RATE_HZ = 10.0     # cap the LANDING_TARGET send rate; the
                                   # serial link.
 LANDING_TARGET_MIN_DT  = 1.0 / LANDING_TARGET_RATE_HZ
 
-TAG_LOSS_TIMEOUT       = 3.0      # s — if tag stays missing this long during
+TAG_LOSS_TIMEOUT       = 6.0      # s — if tag stays missing this long during
                                   # PRECISION_LAND we bail out, climb back,
                                   # and re-fly the box at the last known spot.
 
@@ -418,7 +418,7 @@ TRACK_DURATION_S       = 25.0     # s — upper bound on TRACK; converging
                                   # TRACK_HANDOFF_LATERAL_M we abort to
                                   # LAND in place instead of handing an
                                   # off-centre hover to PRECISION_LAND.
-TRACK_LOSS_TIMEOUT_S   = 3.0      # s — bail to SEARCH after this much loss
+TRACK_LOSS_TIMEOUT_S   = 6.0      # s — bail to SEARCH after this much loss
 TRACK_Kp_XY            = 0.35     # P-gain on body-frame position error.
                                   # Raised from 0.22 back to DESCENT's value
                                   # now that track_velocity_command shares
@@ -595,10 +595,12 @@ TRACK_HANDOFF_LATERAL_M  = 0.15   # m — soft handoff acceptance.  If TRACK
 # still have not re-acquired, the marker is deemed truly gone and we
 # commit to LAND early rather than running out the timer.
 
-RECOVERY_DURATION_S        = 3.0   # s — must match TAG_LOSS_TIMEOUT and
-                                   # TRACK_LOSS_TIMEOUT_S; we are REPLACING
-                                   # the old static-hover loss window, not
-                                   # extending it.
+RECOVERY_DURATION_S        = 6.0   # s — must match TAG_LOSS_TIMEOUT and
+                                   # TRACK_LOSS_TIMEOUT_S.  Extended from 3.0
+                                   # so the ascend-to-re-acquire climb has
+                                   # enough time to widen the FOV and re-find
+                                   # the tag after a low loss before committing
+                                   # to LAND.
 RECOVERY_POS_KP            = 0.8   # P gain on the world-frame position
                                    # error (anchor_xy - current_xy).  Tune
                                    # up for snappier recovery, down if the
@@ -632,12 +634,15 @@ RECOVERY_ALT_KP            = 0.6   # gain on (TAKEOFF_ALTITUDE - rel_alt)
                                    # Independent from TRACK_Kp_Z so the
                                    # recovery climb-back can be tuned
                                    # without changing TRACK behaviour.
-RECOVERY_MAX_VZ            = 0.5   # m/s — per-axis vertical clamp during
-                                   # recovery.  Slightly above TRACK_MAX_VZ
-                                   # so a recovery that starts well below
-                                   # TAKEOFF_ALTITUDE (e.g. mid-descent)
-                                   # can climb back faster than TRACK
-                                   # would.
+RECOVERY_MAX_VZ            = 0.8   # m/s — per-axis vertical clamp during
+                                   # recovery.  Well above TRACK_MAX_VZ so a
+                                   # recovery that starts well below
+                                   # TAKEOFF_ALTITUDE (e.g. a low mid-descent
+                                   # loss) climbs back quickly to widen the
+                                   # FOV and re-acquire the tag.  The hard
+                                   # TAKEOFF_ALTITUDE cap in
+                                   # recover_velocity_command still prevents
+                                   # any climb past the set altitude.
 RECOVERY_ALT_DEADBAND_M    = 0.10  # m — relative-altitude error below this
                                    # is treated as on-target (vz = 0).
 RECOVERY_DRIFT_DEADBAND    = 0.05  # m/s — body-frame drift snapshot below
