@@ -396,6 +396,7 @@ if __name__ == "__main__":
         time.sleep(3)
         main_process.start()
         time.sleep(3)
+        main_process.join()
         
     except KeyboardInterrupt:
         print("VIO tester caught keyboard interrupt. Shutting down...")
