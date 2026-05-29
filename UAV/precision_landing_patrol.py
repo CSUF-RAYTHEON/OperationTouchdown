@@ -128,7 +128,7 @@ from pymavlink import mavutil
 
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE          = 57600
-TAKEOFF_ALTITUDE  = 5           # meters — matches stationary_landing.py
+TAKEOFF_ALTITUDE  = 3.5           # meters — matches stationary_landing.py
 TAKEOFF_ALT_TOLERANCE_M = 0.20  # m — authoritative-altitude band for declaring
                                 # the takeoff target reached (depth-preferred,
                                 # see _altitude_reading / _relative_altitude_m).

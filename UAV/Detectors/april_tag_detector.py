@@ -14,7 +14,7 @@ import depthai as dai
 
 # Config / Adjust these as we test
 TARGET_TAG_ID = 67
-TAG_SIZE = 0.20     # 20 cm tag
+TAG_SIZE = 0.14     # 20 cm tag
 
 # Gamma uses the photographic convention:
 #   output = (pixel / 255) ^ (1 / gamma) × 255
