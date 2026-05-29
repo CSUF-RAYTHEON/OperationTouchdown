@@ -144,9 +144,13 @@ TAKEOFF_TIMEOUT_S       = 30.0  # s — overall climb-monitor budget before we
 
 STABILIZE_ALT_TOLERANCE   = 0.3   # m       — ±0.3 m around TAKEOFF_ALTITUDE
 STABILIZE_DRIFT_TOLERANCE = 0.5   # m       — horizontal drift from origin
+                                  # (informational only — no longer gates)
 STABILIZE_VEL_TOLERANCE   = 0.3   # m/s     — max horizontal velocity
-STABILIZE_HOLD_SECONDS    = 3.0   # how long all three checks must hold true
-STABILIZE_TIMEOUT_SECONDS = 45.0  # total time budget; print warning & proceed
+                                  # (informational only — no longer gates)
+STABILIZE_HOLD_SECONDS    = 0.5   # how long the altitude check must hold true
+                                  # before proceeding — a quick sanity confirm,
+                                  # not a long multi-criteria settle.
+STABILIZE_TIMEOUT_SECONDS = 10.0  # total time budget; print warning & proceed
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Patrol Config
@@ -174,6 +178,12 @@ PATROL_SEGMENTS = [
 # detection we fall back to plain LAND at the current spot (same fallback
 # the patrol path used when it returned None).
 ACQUIRE_TIMEOUT_S = 30.0
+# Quick tag-visibility gate before the combined track-and-descend phase.
+# After the fast altitude confirm we do a SHORT check that the AprilTag is
+# actually in view so the drone never descends blind; if it is not seen
+# within this window we fall back to plain LAND at the current position
+# (same fallback as an ACQUIRE timeout).
+TAG_GATE_TIMEOUT_S = 5.0
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Search Climb-Back Config — hard altitude cap.
@@ -1589,11 +1599,13 @@ class PrecisionLandingController:
         vy = max(min(vy, xy_cap), -xy_cap)
 
         # ── Active altitude hold ─────────────────────────────────────────
-        # Compute from the same anchored-relative altitude as the rest
-        # of the script (_relative_altitude_m).  Bail-out path keeps
-        # vz = 0 if we have no altitude reading, so the airframe is at
+        # _altitude_hold_estimate is depth-authoritative but lifts to the
+        # EKF whenever the EKF reads higher, so a pegged/saturated stereo
+        # depth (which plateaus near ~5 m as the airframe climbs out of
+        # reliable stereo range) cannot mask an over-climb.  Bail-out path
+        # keeps vz = 0 if we have no altitude reading, so the airframe is at
         # worst no worse off than the previous TRACK_VZ_HOLD behaviour.
-        rel_alt = _relative_altitude_m(self)
+        rel_alt, _alt_src = _altitude_hold_estimate(self)
         if rel_alt is None:
             vz = 0.0
         else:
@@ -1844,8 +1856,10 @@ class PrecisionLandingController:
 
         # ── Vertical loop (closed on relative altitude vs TAKEOFF_ALTITUDE) ──
         # Independent of the lateral source so a degenerate position read
-        # never blocks the altitude correction.
-        rel_alt = _relative_altitude_m(self)
+        # never blocks the altitude correction.  Uses _altitude_hold_estimate
+        # (depth-authoritative, but lifted to the EKF when the EKF reads
+        # higher) so a pegged stereo depth cannot hide an over-climb.
+        rel_alt, _alt_src = _altitude_hold_estimate(self)
         alt_err = None
         if rel_alt is None:
             vz = 0.0
@@ -2076,13 +2090,21 @@ class PrecisionLandingController:
     # ── Stabilization (post-takeoff hold verification) ───────────────────────
 
     def wait_stabilized(self, target_alt, pump_fn=None):
-        """Verify altitude + lateral drift + horizontal velocity are stable.
+        """Quick altitude sanity check, then proceed.
+
+        Confirms the depth-authoritative altitude is within
+        STABILIZE_ALT_TOLERANCE of ``target_alt`` for a short
+        STABILIZE_HOLD_SECONDS dwell and returns immediately — a fast
+        confirm rather than a long multi-criteria settle.  Lateral drift and
+        horizontal speed are still measured and logged but no longer gate
+        the exit (the downstream tag gate + precision-land descent actively
+        control position anyway).
 
         Returns the (x_home, y_home) NED position captured at the end of
-        stabilization — this is the "original point" the user wants used as
-        the anchor for the patrol and the post-loss relocate.
+        stabilization — this is the "original point" the rest of the flow
+        uses as the anchor for the post-loss relocate.
         """
-        print("[INFO] Stabilizing — waiting for hold to settle...")
+        print("[INFO] Stabilizing — quick altitude confirm...")
         x_origin, y_origin = None, None
         ok_since = None
         start = time.time()
@@ -2123,10 +2145,9 @@ class PrecisionLandingController:
                                  (cur_y - y_origin) ** 2)
             hspd     = math.sqrt(cur_vx ** 2 + cur_vy ** 2)
 
-            alt_ok    = alt_err  < STABILIZE_ALT_TOLERANCE
-            drift_ok  = drift    < STABILIZE_DRIFT_TOLERANCE
-            vel_ok    = hspd     < STABILIZE_VEL_TOLERANCE
-            all_ok    = alt_ok and drift_ok and vel_ok
+            # Gate on altitude only — a quick sanity confirm.  drift / hspd
+            # are computed for the log but no longer block the exit.
+            all_ok    = alt_err  < STABILIZE_ALT_TOLERANCE
 
             # Active altitude + position hold — resend a POSITION target
             # every 0.5 s so the FCU's own position controller maintains
@@ -2635,7 +2656,8 @@ def commit_to_land(controller, pump, reason):
 # None on timeout so the caller can fall back to plain LAND.
 # ─────────────────────────────────────────────────────────────────────────────
 
-def acquire_tag(controller, pump, state, anchor_x=None, anchor_y=None):
+def acquire_tag(controller, pump, state, anchor_x=None, anchor_y=None,
+                timeout=None):
     """Hover in place and wait for the AprilTag to appear in the FOV.
 
     ``anchor_x`` / ``anchor_y`` are the NED home coordinates from
@@ -2647,11 +2669,16 @@ def acquire_tag(controller, pump, state, anchor_x=None, anchor_y=None):
 
     An altitude P-loop (Issue 1) replaces the plain vz=0 command so
     NAV_TAKEOFF overshoot is actively corrected rather than left to float.
+
+    ``timeout`` (s) bounds the scan; defaults to ACQUIRE_TIMEOUT_S.  The
+    combined track-and-descend flow passes the short TAG_GATE_TIMEOUT_S so
+    this acts as a quick visibility gate rather than a long hover.
     """
-    print(f"[INFO] Phase: ACQUIRE  (waiting up to {ACQUIRE_TIMEOUT_S:.0f}s "
+    acquire_timeout = ACQUIRE_TIMEOUT_S if timeout is None else timeout
+    print(f"[INFO] Phase: ACQUIRE  (waiting up to {acquire_timeout:.0f}s "
           "for AprilTag in FOV)")
     state["phase"]     = "ACQUIRE"
-    state["leg_label"] = f"ACQUIRE 0.0/{ACQUIRE_TIMEOUT_S:.0f}s"
+    state["leg_label"] = f"ACQUIRE 0.0/{acquire_timeout:.0f}s"
 
     start    = time.time()
     last_log = 0.0
@@ -2663,8 +2690,8 @@ def acquire_tag(controller, pump, state, anchor_x=None, anchor_y=None):
             return None
 
         elapsed = time.time() - start
-        if elapsed >= ACQUIRE_TIMEOUT_S:
-            print(f"[WARN] ACQUIRE timeout ({ACQUIRE_TIMEOUT_S:.0f}s) — "
+        if elapsed >= acquire_timeout:
+            print(f"[WARN] ACQUIRE timeout ({acquire_timeout:.0f}s) — "
                   "tag never entered FOV")
             controller.send_velocity(0.0, 0.0, 0.0)
             state["leg_label"] = ""
@@ -2673,7 +2700,9 @@ def acquire_tag(controller, pump, state, anchor_x=None, anchor_y=None):
         # ── Issue 1: active altitude hold ────────────────────────────────
         # Replace the plain (0,0,0) with a P-loop on altitude so any
         # NAV_TAKEOFF overshoot is driven back to TAKEOFF_ALTITUDE.
-        rel_alt_acq = _relative_altitude_m(controller)
+        # _altitude_hold_estimate (depth-authoritative, lifted to EKF when
+        # the EKF reads higher) so a pegged stereo depth can't mask a climb.
+        rel_alt_acq, _alt_src_acq = _altitude_hold_estimate(controller)
         if rel_alt_acq is not None:
             _alt_err_acq = TAKEOFF_ALTITUDE - rel_alt_acq
             if abs(_alt_err_acq) < TRACK_ALT_DEADBAND_M:
@@ -2728,7 +2757,7 @@ def acquire_tag(controller, pump, state, anchor_x=None, anchor_y=None):
             controller.send_velocity(0.0, 0.0, 0.0)
             return last_x, last_y
 
-        state["leg_label"] = f"ACQUIRE {elapsed:.1f}/{ACQUIRE_TIMEOUT_S:.0f}s"
+        state["leg_label"] = f"ACQUIRE {elapsed:.1f}/{acquire_timeout:.0f}s"
 
         now = time.time()
         if now - last_log > 1.0:
@@ -2738,7 +2767,7 @@ def acquire_tag(controller, pump, state, anchor_x=None, anchor_y=None):
                 _dy = anchor_y - controller.last_pos["y"]
                 drift_str = (f"  drift=({_dx:+.2f},{_dy:+.2f}) m "
                              f"|{math.sqrt(_dx**2+_dy**2):.2f}| m")
-            print(f"[INFO] ACQUIRE t={elapsed:.1f}/{ACQUIRE_TIMEOUT_S:.0f}s "
+            print(f"[INFO] ACQUIRE t={elapsed:.1f}/{acquire_timeout:.0f}s "
                   f"— hovering, scanning for tag{drift_str}")
             last_log = now
 
@@ -3055,8 +3084,8 @@ def track_tag(controller, pump, state):
 
             now = time.time()
             if now - last_log > 1.0:
-                rel_alt = _relative_altitude_m(controller)
-                alt_str = (f"{rel_alt:+.2f}/{TRACK_TARGET_ALT_M:.1f}m"
+                rel_alt, alt_src = _altitude_hold_estimate(controller)
+                alt_str = (f"{rel_alt:+.2f}/{TRACK_TARGET_ALT_M:.1f}m [{alt_src}]"
                            if rel_alt is not None else "n/a")
                 print(f"[INFO] TRACK t={elapsed:.1f}/{TRACK_DURATION_S:.0f}s  "
                       f"body=({body_x:+.2f},{body_y:+.2f},{body_z:+.2f})  "
@@ -3645,6 +3674,34 @@ def _altitude_setpoint_z(controller, target_alt_m):
     return cur_z - (target_alt_m - alt)
 
 
+def _altitude_hold_estimate(controller):
+    """Altitude estimate (metres, source) for the TRACK / IMU-RECOVER hold.
+
+    Same depth-authoritative reading as _altitude_reading, but it is never
+    allowed to report LOWER than the EKF-relative altitude.  The OAK-D S2
+    stereo depth loses disparity resolution past ~5 m (low-disparity far
+    pixels) and tends to peg/saturate near the target while the airframe
+    actually climbs higher — a pegged depth would leave the vertical loop
+    reading "at target" and commanding vz≈0 while the drone drifts up
+    unchecked (real flight: alt stuck ~5.0 m while it climbed and the tag
+    left the FOV).  Taking the max means a genuine climb detected by the EKF
+    always wins, so the loop can only ever be MORE eager to descend toward
+    target — never to climb above it.  Returns (None, "EKF") only when no
+    source is available.
+    """
+    depth_alt, depth_src = _altitude_reading(controller)
+    cur_z = controller.last_pos.get("z")
+    z0    = controller.takeoff_z_origin
+    ekf_alt = None
+    if cur_z is not None and z0 is not None:
+        ekf_alt = max(0.0, -(cur_z - z0))
+    if depth_alt is None:
+        return ekf_alt, "EKF"
+    if ekf_alt is not None and ekf_alt > depth_alt:
+        return ekf_alt, "EKF>DEPTH"
+    return depth_alt, depth_src
+
+
 def safe_climb_to_altitude(controller, pump, state, target_relative_alt_m,
                            max_relative_alt_m=MAX_SEARCH_ALTITUDE_M):
     """Climb to ``target_relative_alt_m`` using body-frame velocity control
@@ -3985,21 +4042,20 @@ with dai.Device() as device:
         )
         print(f"[INFO] Home anchor captured: ({x_home:+.2f}, {y_home:+.2f})")
 
-        # ── Acquire the AprilTag in place (no patrol) ─────────────────────
-        # Per user spec: after STABILIZE the drone hovers and waits for
-        # the marker to appear in the FOV, then hands off to TRACK.  The
-        # box patrol is bypassed entirely.
-        # Pass x_home / y_home as the GPS anchor for wind correction
-        # (Issue 3): ACQUIRE will fly back to the stabilized home position
-        # whenever wind drifts the drone away.
+        # ── Quick tag-visibility gate ─────────────────────────────────────
+        # After the fast altitude confirm we briefly check the AprilTag is
+        # actually in view (short TAG_GATE_TIMEOUT_S window) so the drone
+        # never starts descending blind.  This reuses acquire_tag's detector
+        # + GPS wind-correction hold; x_home / y_home anchor it to the
+        # stabilized home position.  If the tag is not seen in the window we
+        # fall back to plain LAND at the current spot (same fallback the
+        # patrol path used when it returned None).
         last_known = acquire_tag(controller, pump, state,
-                                 anchor_x=x_home, anchor_y=y_home)
+                                 anchor_x=x_home, anchor_y=y_home,
+                                 timeout=TAG_GATE_TIMEOUT_S)
 
-        # If ACQUIRE timed out without ever seeing the tag, fall through
-        # to plain LAND at the current spot (same fallback the patrol
-        # path used when it returned None).
         if last_known is None:
-            print("[WARN] ACQUIRE completed without acquiring tag — "
+            print("[WARN] Tag not in view within gate window — "
                   "committing to plain LAND at current position")
             state["phase"] = "TOUCHDOWN"
             controller.change_flight_mode("LAND")
@@ -4011,33 +4067,26 @@ with dai.Device() as device:
                     break
                 time.sleep(0.1)
         else:
-            # ── TRACK → PRECISION_LAND ──────────────────────────────────────
-            # With the IMU tag-loss recovery in place, neither phase returns
-            # "TAG_LOST" anymore — the recovery either re-acquires the
-            # marker (and the phase continues) or its 3-second window
-            # expires and we get "COMMIT_LAND".  In both COMMIT_LAND cases
-            # the user's spec says: skip search_and_relocate (the
-            # box-re-patrol path) entirely and commit straight to LAND.
-            track_result = track_tag(controller, pump, state)
-            if track_result == "TOUCHDOWN":
+            # ── Combined track-and-descend (PRECISION_LAND) ─────────────────
+            # Per user spec the drone now centres over the tag AND descends
+            # toward it in one continuous motion rather than holding at
+            # altitude through a separate TRACK window first.  precision_land
+            # already centres in XY while descending (descent_velocity_command
+            # throttles vz when the lateral error is large), so we hand off to
+            # it directly — track_tag's altitude-holding window is bypassed.
+            # The descent target altitude decreases over the descent inside
+            # precision_land; it does NOT hold a fixed TAKEOFF_ALTITUDE.
+            # All recovery / COMMIT_LAND / touchdown handling lives inside
+            # precision_land and is unchanged.
+            result = precision_land(controller, pump, state)
+            if result == "TOUCHDOWN":
                 state["phase"] = "TOUCHDOWN"
-            elif track_result == "COMMIT_LAND":
+            elif result == "COMMIT_LAND":
                 state["phase"] = "TOUCHDOWN"
                 commit_to_land(
                     controller, pump,
-                    "TRACK IMU recovery exhausted — final commit",
+                    "PRECISION_LAND IMU recovery exhausted — final commit",
                 )
-            else:
-                # track_result == "READY" → descent phase.
-                result = precision_land(controller, pump, state)
-                if result == "TOUCHDOWN":
-                    state["phase"] = "TOUCHDOWN"
-                elif result == "COMMIT_LAND":
-                    state["phase"] = "TOUCHDOWN"
-                    commit_to_land(
-                        controller, pump,
-                        "PRECISION_LAND IMU recovery exhausted — final commit",
-                    )
 
         # Final pump so the very last HUD frame is visible briefly before
         # window teardown.
