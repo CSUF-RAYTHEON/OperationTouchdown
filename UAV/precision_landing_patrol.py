@@ -259,6 +259,18 @@ CLOSE_TAG_BODY_Z_M     = 1.0      # m — last body-frame z below which a lost
                                   # altitude branch fired at alt=-3.37 m,
                                   # technically correct but fragile.
 
+TAG_COAST_S            = 0.8      # s — brief-dropout grace window during
+                                  # PRECISION_LAND.  A tilt/shake/motion-blur
+                                  # dropout is re-acquired in well under a
+                                  # second; for the first TAG_COAST_S of a
+                                  # loss we COAST on the last good centring
+                                  # command (vertical paused) instead of
+                                  # dropping into the heavier IMU recovery.
+                                  # Recovery (and its loss/commit accounting)
+                                  # only starts once a loss outlasts this
+                                  # window, so intermittent quickly-re-acquired
+                                  # dropouts never stack toward a forced LAND.
+
 # ── Descent (manual velocity-PD, GUIDED mode) ──────────────────────────────
 # When precision-landing on the tag we run a PD controller ourselves rather
 # than rely on ArduCopter PrecLand's lateral correction (which on this
@@ -349,25 +361,30 @@ TOUCHDOWN_HARD_FLOOR_BZ_M = 0.30 # m — below this body-Z, altitude-scaled PD
 #      The sign comes from the body-frame convention: body_x > 0 means
 #      tag is forward; commanding vx > 0 moves the drone forward, which
 #      reduces body_x at the same rate.
-CAMERA_STALE_S           = 0.50  # s — older than this, treat the detection
-                                 # as unusable for PD.  Raised from 0.25 s
-                                 # after a flight test showed the normal
-                                 # OAK-D frame cadence sits around
-                                 # 190–240 ms per frame; the old 0.25 s
-                                 # margin was being tripped on nearly every
-                                 # other frame, dropping the controller
-                                 # into the stale-frame branch where it
-                                 # previously commanded zero velocity and
-                                 # let wind drift compound.  At 0.5 s a
-                                 # single genuinely-dropped frame (e.g.
-                                 # garbage-collected DepthAI packet) still
-                                 # trips the branch but normal jitter no
-                                 # longer does.  The stale-frame branch
-                                 # now also runs the EKF-anchored hold
-                                 # (recover_velocity_command) instead of
-                                 # zeroing the command — so even if the
-                                 # gap is large the airframe is no longer
-                                 # free-drifting with the wind.
+CAMERA_STALE_S           = 0.90  # s — older than this, treat the detection
+                                 # as unusable for PD.  Raised from 0.50 s
+                                 # after a tilt/shake flight test: when the
+                                 # tag blurs, the detector's preprocessing
+                                 # cascade runs deep before it finds (or
+                                 # fails to find) the tag, so frame_age — which
+                                 # tracks detection latency, not just camera
+                                 # cadence — climbed to 0.69–0.76 s.  At the
+                                 # old 0.50 s threshold those genuinely-valid
+                                 # late detections were discarded as "stale",
+                                 # so the controller stopped centring/descending
+                                 # exactly when the shake demanded it and drifted
+                                 # into recovery.  0.90 s lets a slow-but-real
+                                 # detection drive the PD (dead-reckon-bounded
+                                 # by DESCENT_DEADRECKON_MAX_S below), while a
+                                 # truly dropped frame still trips the branch.
+DESCENT_DEADRECKON_MAX_S = 0.35  # s — cap on the frame_age used for the
+                                 # descent dead-reckon lead term.  CAMERA_STALE_S
+                                 # now admits detections up to 0.90 s old, but
+                                 # subtracting last_v * 0.90 could over-correct
+                                 # (or sign-flip) the measured offset on a frame
+                                 # where the airframe did NOT actually travel
+                                 # the full commanded distance; clamping the
+                                 # lead to 0.35 s bounds that correction.
 
 # ─────────────────────────────────────────────────────────────────────────────
 # TRACK Phase Config — runs between PATROL and PRECISION_LAND.  After the
@@ -1686,8 +1703,9 @@ class PrecisionLandingController:
         # full derivation.  Applied before the EMA so the filter
         # smooths the *corrected* signal, not the raw one.
         if frame_age > 0.0:
-            body_x -= self.last_cmd.get("vx", 0.0) * frame_age
-            body_y -= self.last_cmd.get("vy", 0.0) * frame_age
+            lead = min(frame_age, DESCENT_DEADRECKON_MAX_S)
+            body_x -= self.last_cmd.get("vx", 0.0) * lead
+            body_y -= self.last_cmd.get("vy", 0.0) * lead
 
         if (self._descent_prev_x is None
                 or self._descent_prev_t is None
@@ -3282,6 +3300,10 @@ def precision_land(controller, pump, state):
     last_tag_time = time.time()
     last_body_z   = None
     last_tag_body = None      # (body_x, body_y) on last frame the tag was seen
+    coast_cmd     = None      # (vx, vy) of the last descent command — re-sent
+                              # during the TAG_COAST_S brief-dropout window so a
+                              # tilt/shake loss keeps centring instead of
+                              # immediately dropping into IMU recovery.
     last_log      = 0.0
 
     # IMU recovery state — see the matching block in track_tag() for
@@ -3408,6 +3430,7 @@ def precision_land(controller, pump, state):
             filt_x, filt_y, vx, vy, vz = controller.descent_velocity_command(
                 body_x, body_y, body_z, frame_age=frame_age,
             )
+            coast_cmd = (vx, vy)
 
             # Final-approach handoff.  We commit to LAND only when either:
             #   (a) body_z < TOUCHDOWN_BODY_Z_M AND lateral alignment is
@@ -3499,6 +3522,31 @@ def precision_land(controller, pump, state):
                     f"Tag too close to track (last bz={last_body_z:.2f} m)"
                 )
                 return "TOUCHDOWN"
+
+            # Brief-dropout COAST: for the first TAG_COAST_S of a loss, keep
+            # flying the last lateral centring command (vertical paused — no
+            # blind descent) instead of dropping into the heavier IMU
+            # recovery.  A tilt/shake/motion-blur dropout is re-acquired in
+            # well under a second, so this keeps the descent tracking the tag
+            # through the dropout.  Crucially we do NOT set loss_start /
+            # drift_snapshot here, so the recovery window and its commit-to-LAND
+            # accounting only ever start once a loss OUTLASTS the coast window —
+            # intermittent quickly-re-acquired losses can no longer stack up
+            # into a forced LAND.
+            if elapsed < TAG_COAST_S and coast_cmd is not None:
+                cvx, cvy = coast_cmd
+                controller.send_velocity(cvx, cvy, 0.0)
+                controller.last_cmd["lt_x"] = None
+                controller.last_cmd["lt_y"] = None
+                controller.last_cmd["lt_z"] = None
+                now = time.time()
+                if now - last_log > 0.5:
+                    print(f"[INFO] DESCENT coast (tag lost {elapsed:.2f}s "
+                          f"< {TAG_COAST_S:.2f}s) — holding last centring "
+                          f"v=({cvx:+.2f},{cvy:+.2f},+0.00)")
+                    last_log = now
+                time.sleep(0.02)
+                continue
 
             # First frame of loss: capture the closed-loop NED anchor and
             # the body-frame drift snapshot.  Same rationale as

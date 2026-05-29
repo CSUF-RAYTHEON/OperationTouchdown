@@ -231,16 +231,24 @@ class AprilTagDetector:
 
         print("[INFO] Detector initialized (intrinsics will be set on first frame)")
 
-        # quad_sigma=0.8 adds a gentle internal blur inside the quad-finder.
-        # This smooths sharp shadow-boundary edges that can look like tag edges
-        # to the detector, reducing false quads without hurting real detections.
+        # quad_sigma is the Gaussian blur applied inside the quad-finder.  It
+        # was 0.8 to smooth sharp shadow-boundary edges that can look like tag
+        # edges; but under TILT/SHAKE the frame is ALREADY motion-blurred, and
+        # adding 0.8 of extra blur on top destroyed the (already soft) tag
+        # edges so the quad-finder missed the tag on shaky frames.  Lowered to
+        # 0.4 — still some smoothing for sensor noise, but it preserves
+        # motion-blurred edges so detection holds through shake.  decode_
+        # sharpening raised 0.25→0.5 to recover marginal (blurred) bit
+        # patterns at decode time.  Both are safe: a candidate quad is only
+        # ever accepted if it decodes to a valid tag36h11 codeword AND matches
+        # TARGET_TAG_ID, so noise-driven false quads are still rejected.
         self.detector = Detector(
             families="tag36h11",
             nthreads=2,
             quad_decimate=1.0,
-            quad_sigma=0.8,
+            quad_sigma=0.4,
             refine_edges=1,
-            decode_sharpening=0.25
+            decode_sharpening=0.5
         )
 
     def _update_intrinsics(self, frame):
