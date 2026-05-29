@@ -98,15 +98,9 @@ class LoopClosureORB:
         if best is None or best_score < MATCH_THRESHOLD: return None
 
         drift_vec = best["pose"] - current_pose_xyz
-        drift_m = float(np.linalg.norm(drift_vec))
+        drift_mag = float(np.linalg.norm(drift_vec))
 
-        return {
-            "matched_kf_id": best["id"],
-            "score": best_score,
-            "drift_m": drift_m,
-            "kf_time": best["t_sec"],
-            "matched_pose": best["pose"].copy(),
-        }
+        return (drift_mag, float(drift_vec[0]), float(drift_vec[1]), float(drift_vec[2]))
 def slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex):
     W, H = 640, 400
     
@@ -120,7 +114,7 @@ def slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, sl
     shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
     shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
-    shared_slam_target = np.ndarray((3,), dtype=np.float64, buffer=shm_slam_target.buf)
+    shared_slam_target = np.ndarray((4,), dtype=np.float64, buffer=shm_slam_target.buf)
     shared_slam_trigger = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
     shared_slam_enabled = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_enabled.buf)
 
@@ -180,7 +174,7 @@ def slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, sl
         info = loop.check_loop(local_rgb, local_position, slam_frame_id)
         if info is not None:
             with slam_trigger_mutex:
-                shared_slam_target[:] = info["matched_pose"]
+                shared_slam_target[:] = info
                 shared_slam_trigger[0] = True
             # Overwrite baseline so teleport doesn't instantly trigger a false spatial keyframe
             last_kf_pos = info["matched_pose"].copy()
@@ -199,7 +193,7 @@ def test_latency_slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enab
     shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
     shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
-    shared_slam_target = np.ndarray((3,), dtype=np.float64, buffer=shm_slam_target.buf)
+    shared_slam_target = np.ndarray((4,), dtype=np.float64, buffer=shm_slam_target.buf)
     shared_slam_trigger = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
     shared_slam_enabled = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_enabled.buf)
 
@@ -260,10 +254,10 @@ def test_latency_slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enab
         info = loop.check_loop(local_rgb, local_position, slam_frame_id)
         if info is not None:
             with slam_trigger_mutex:
-                shared_slam_target[:] = info["matched_pose"]
+                shared_slam_target[:] = info
                 shared_slam_trigger[0] = True
-            # Overwrite baseline so teleport doesn't instantly trigger a false spatial keyframe
-            last_kf_pos = info["matched_pose"].copy()
+            # Update the baseline by adding the drift vector
+            last_kf_pos += np.array([info[1], info[2], info[3]])
             end_time = time.perf_counter()
             time_elapsed_ms = (end_time - start_time) * 1000.0
             if time_elapsed_ms > 5.0:
@@ -297,7 +291,7 @@ if __name__ == "__main__":
     POSITION_BYTES = 3 * 8 
     LOCAL_POSITION_NED_BYTES = 3 * 8
     BOOL_BYTES = 1
-    TARGET_BYTES = 3 * 8
+    TARGET_BYTES = 4 * 8
 
     print("SLAM tester allocating shared memory...")
     shm_rgb = shared_memory.SharedMemory(create=True, size=RGB_BYTES, name="oak_rgb")

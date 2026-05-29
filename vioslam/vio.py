@@ -175,17 +175,12 @@ class VO_LK:
         self.prev_gray = gray.copy()
         self.prev_depth = depth_mm.copy()
 
-    def apply_soft_correction(self, target_pose_xyz: np.ndarray):
+    def apply_soft_correction(self, slam_target_data: np.ndarray):
         now = time.time()
         if now - self._last_corr_wall < SOFT_CORR_COOLDOWN: return None
+        if slam_target_data[0] < MIN_DRIFT_TO_CORRECT_M: return None
 
-        cur = np.array([self.global_north, self.global_east, self.global_down])
-        drift = target_pose_xyz.reshape(3) - cur
-        drift_mag = float(np.linalg.norm(drift))
-
-        if drift_mag < MIN_DRIFT_TO_CORRECT_M: return None
-
-        step = clamp_norm(drift, MAX_CORR_STEP_M)
+        step = clamp_norm(slam_target_data[1:4], MAX_CORR_STEP_M)
         corr = step * SOFT_CORR_ALPHA
 
         self.global_north += corr[0]
@@ -214,13 +209,13 @@ def vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, sla
     shared_depth = np.ndarray((H, W), dtype=np.uint16, buffer=shm_depth.buf)
     shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
-    shared_slam_target = np.ndarray((3,), dtype=np.float64, buffer=shm_slam_target.buf)
+    shared_slam_target = np.ndarray((4,), dtype=np.float64, buffer=shm_slam_target.buf)
     shared_slam_trigger = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
 
     local_calib = np.zeros((3, 3), dtype=np.float64)
     local_gray = np.zeros((H, W), dtype=np.uint8)
     local_depth = np.zeros((H, W), dtype=np.uint16)
-    local_slam_target = np.zeros((3,), dtype=np.float64)
+    local_slam_target = np.zeros((4,), dtype=np.float64)
     last_processed_gray = np.zeros((H, W), dtype=np.uint8)
 
     with depth_frame_mutex:
@@ -279,13 +274,13 @@ def test_latency_vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, positi
     shared_depth = np.ndarray((H, W), dtype=np.uint16, buffer=shm_depth.buf)
     shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
-    shared_slam_target = np.ndarray((3,), dtype=np.float64, buffer=shm_slam_target.buf)
+    shared_slam_target = np.ndarray((4,), dtype=np.float64, buffer=shm_slam_target.buf)
     shared_slam_trigger = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
 
     local_calib = np.zeros((3, 3), dtype=np.float64)
     local_gray = np.zeros((H, W), dtype=np.uint8)
     local_depth = np.zeros((H, W), dtype=np.uint16)
-    local_slam_target = np.zeros((3,), dtype=np.float64)
+    local_slam_target = np.zeros((4,), dtype=np.float64)
     last_processed_gray = np.zeros((H, W), dtype=np.uint8)
 
     with depth_frame_mutex:
@@ -357,7 +352,7 @@ if __name__ == "__main__":
     POSITION_BYTES = 3 * 8 
     LOCAL_POSITION_NED_BYTES = 3 * 8
     BOOL_BYTES = 1
-    TARGET_BYTES = 3 * 8
+    TARGET_BYTES = 4 * 8
 
     print("VIO tester allocating shared memory...")
     shm_rgb = shared_memory.SharedMemory(create=True, size=RGB_BYTES, name="oak_rgb")
