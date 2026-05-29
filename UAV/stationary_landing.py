@@ -87,7 +87,7 @@ with dai.Device() as device:
                         f"[WARN] Tag lost for "
                         f"{time_lost:.1f}s. Ascending..."
                     )
-                    controller.send_velocity(0, 0, -0.5)
+                    controller.send_velocity(0, 0, -1)
 
                 else:
                     print(
