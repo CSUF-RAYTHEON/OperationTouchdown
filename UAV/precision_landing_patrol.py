@@ -141,7 +141,7 @@ STABILIZE_ALT_TOLERANCE   = 0.3   # m       — ±0.3 m around TAKEOFF_ALTITUDE
 STABILIZE_DRIFT_TOLERANCE = 0.5   # m       — horizontal drift from origin
 STABILIZE_VEL_TOLERANCE   = 0.3   # m/s     — max horizontal velocity
 STABILIZE_HOLD_SECONDS    = 3.0   # how long all three checks must hold true
-STABILIZE_TIMEOUT_SECONDS = 10.0  # total time budget; print warning & proceed
+STABILIZE_TIMEOUT_SECONDS = 45.0  # total time budget; print warning & proceed
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Patrol Config
@@ -1386,7 +1386,7 @@ class PrecisionLandingController:
                 if abs(relative_alt) > 0.3:
                     liftoff_seen = True
 
-                if relative_alt >= meters - 0.3:
+                if relative_alt >= meters - 0.15:
                     print(f"[INFO] Target altitude reached "
                           f"({relative_alt:+.2f} m relative)")
                     return
@@ -2046,6 +2046,7 @@ class PrecisionLandingController:
         start = time.time()
         last_print = 0.0
         warned_no_anchor = False
+        _last_pos_cmd = 0.0  # rate-limit position-hold resends to 2 Hz
 
         while time.time() - start < STABILIZE_TIMEOUT_SECONDS:
             cur_x, cur_y, cur_z, cur_vx, cur_vy, _ = self.get_local_position()
@@ -2084,22 +2085,30 @@ class PrecisionLandingController:
             vel_ok    = hspd     < STABILIZE_VEL_TOLERANCE
             all_ok    = alt_ok and drift_ok and vel_ok
 
-            # Active hold — close a P-loop on altitude so that any
-            # NAV_TAKEOFF overshoot is actively driven back to target_alt
-            # rather than left to float at the over-shot value.  Pure
-            # vz=0 body-frame commands only zero the VERTICAL SPEED; they
-            # do NOT pull the drone back down if it has stopped climbing
-            # 0.5–1 m above the requested altitude.
-            # Sign convention: NED vz < 0 = climb, > 0 = descent.
-            signed_alt_err = target_alt - relative_alt  # + = below target
-            if abs(signed_alt_err) < TRACK_ALT_DEADBAND_M:
-                _vz_stab = 0.0
-            else:
-                _vz_stab = max(min(-TRACK_Kp_Z * signed_alt_err,
-                                   TRACK_MAX_VZ), -TRACK_MAX_VZ)
-            self.send_velocity(0, 0, _vz_stab)
-
+            # Active altitude + position hold — resend a POSITION target
+            # every 0.5 s so the FCU's own position controller maintains
+            # altitude and XY.  A velocity P-loop competed with ArduCopter's
+            # internal position controller after NAV_TAKEOFF and caused the
+            # drone to descend despite receiving climb commands; delegating
+            # altitude control to the FCU position PID is more reliable.
             now = time.time()
+            if self.takeoff_z_origin is not None:
+                z_hold = self.takeoff_z_origin - target_alt  # absolute NED z
+                if now - _last_pos_cmd >= 0.5:
+                    self.master.mav.set_position_target_local_ned_send(
+                        0,
+                        self.master.target_system, self.master.target_component,
+                        mavutil.mavlink.MAV_FRAME_LOCAL_NED,
+                        TYPEMASK_POSITION_ONLY,
+                        x_origin, y_origin, z_hold,
+                        0, 0, 0,
+                        0, 0, 0,
+                        0, 0,
+                    )
+                    _last_pos_cmd = now
+            else:
+                # No takeoff anchor yet — safe fallback: zero velocity.
+                self.send_velocity(0, 0, 0)
             if now - last_print > 0.5:
                 print(f"[INFO] STABILIZE alt={relative_alt:+.2f} m "
                       f"(raw -z={-cur_z:.2f})  alt_err={alt_err:+.2f} m  "
@@ -2475,7 +2484,8 @@ def make_pump(q_rgb, q_oak_imu, detector, controller, state, q_depth=None):
                         raw_mm = float(depth_data[dh // 2, dw // 2])
                         raw_m  = raw_mm / 1000.0
                         prev_d = controller.last_depth_alt.get("value")
-                        if (raw_m >= DEPTH_ALT_VALID_MIN_M
+                        if (raw_m > 0.0
+                                and raw_m >= DEPTH_ALT_VALID_MIN_M
                                 and raw_m <= DEPTH_ALT_VALID_MAX_M):
                             # Valid reading — apply EMA
                             if prev_d is None:
@@ -3500,7 +3510,12 @@ def _relative_altitude_m(controller):
     z0    = controller.takeoff_z_origin
     if cur_z is None or z0 is None:
         return None
-    return -(cur_z - z0)
+    alt = -(cur_z - z0)
+    # A negative result means the EKF thinks the drone is below the
+    # takeoff anchor — physically impossible during normal flight and a
+    # sign of EKF divergence.  Clamp to 0 so control loops remain active
+    # and drive a strong climb rather than receiving a nonsense reading.
+    return max(0.0, alt)
 
 
 def safe_climb_to_altitude(controller, pump, state, target_relative_alt_m,
