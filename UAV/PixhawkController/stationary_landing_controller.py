@@ -16,12 +16,13 @@ import time
 
 # These are proportional control gains (adjust as needed for testing) 
 # Controls how aggressively we move to the tag
-Kp_xy = 0.5
+Kp_xy = 0.4
 Kp_z  = 0.3
 Ki_xy = 0.1
+Kd_xy = 0.15
 
 # Safety limit on velocity commands (adjust as we test)
-MAX_VELOCITY = 0.4
+MAX_VELOCITY = 0.3
 
 
 class StationaryLandingController:
@@ -47,6 +48,10 @@ class StationaryLandingController:
         self.integral_y = 0.0
         self.last_vx = 0.0
         self.last_vy = 0.0
+
+        self.last_error_x = 0.0
+        self.last_error_y = 0.0
+        self.last_time = time.time()
     
     def heartbeat(self):
         print("Waiting for heartbeat from Pixhawk...")
@@ -334,9 +339,10 @@ class StationaryLandingController:
 
     def adjust_velocity_and_send(self, body_x, body_y, body_z):
         """
-        Apply proportional-integral control, gain scheduling, and send velocity command.
-        Includes integral memory for speed-matching a moving target.
+        Apply full PID (Proportional-Integral-Derivative) control, 
+        gain scheduling, and send velocity command.
         """
+        # Smooth the camera data to prevent twitching
         alpha = 0.7
         self.prev_x = alpha*self.prev_x + (1-alpha)*body_x
         self.prev_y = alpha*self.prev_y + (1-alpha)*body_y
@@ -346,59 +352,66 @@ class StationaryLandingController:
         body_y = self.prev_y
         body_z = self.prev_z
 
+        # --- PREDICTIVE TRACKING (Derivative Control) ---
+        current_time = time.time()
+        dt = current_time - self.last_time
+        if dt <= 0: 
+            dt = 0.01  # Prevent division by zero
+
+        # Calculate how fast the tag is moving away from (or towards) us
+        derivative_x = (body_x - self.last_error_x) / dt
+        derivative_y = (body_y - self.last_error_y) / dt
+
+        # Save current state for the next loop's prediction
+        self.last_error_x = body_x
+        self.last_error_y = body_y
+        self.last_time = current_time
+
         # --- Gain Scheduling & Dynamic Thresholding ---
         if body_z < 0.5:
-            # Below 0.5 meters: increase deadband, slash horizontal gain, cap max speed
-            thresh = 0.10  # 10 cm deadband (ignores minor shifts when tag is huge)
-            current_kp_xy = Kp_xy * 0.4  # Drastically reduce horizontal aggressiveness
+            thresh = 0.10  
+            current_kp_xy = Kp_xy * 0.4  
             current_max_vel = MAX_VELOCITY * 0.5 
         elif body_z < 2:
-            # Between 0.5 and 2 meters: moderate parameters
-            thresh = 0.10  # 10 cm deadband
+            thresh = 0.10  
             current_kp_xy = Kp_xy * 0.7
             current_max_vel = MAX_VELOCITY * 0.8
         else:
-            # Above 2 meters: normal parameters
-            thresh = 0.05  # 5 cm deadband
+            thresh = 0.05  
             current_kp_xy = Kp_xy
             current_max_vel = MAX_VELOCITY
 
-        # Apply the deadband threshold
         body_x = 0 if abs(body_x) < thresh else body_x
         body_y = 0 if abs(body_y) < thresh else body_y
 
         # --- Speed Matching (Integral Control) ---
-        # Accumulate error over time to match the tag's constant velocity
         if abs(body_x) > 0:
-            self.integral_x += body_x * 0.01  # 0.01 approximates loop time
+            self.integral_x += body_x * dt
         else:
-            self.integral_x *= 0.9  # Bleed off memory when perfectly centered
+            self.integral_x *= 0.9  
             
         if abs(body_y) > 0:
-            self.integral_y += body_y * 0.01
+            self.integral_y += body_y * dt
         else:
             self.integral_y *= 0.9
 
-        # Anti-windup: cap the integral memory so it doesn't build up forever
         max_integral = 0.2
         self.integral_x = max(min(self.integral_x, max_integral), -max_integral)
         self.integral_y = max(min(self.integral_y, max_integral), -max_integral)
 
-        # Keep a continuous downward target
         TARGET_Z = 0.3
         error_z = body_z - TARGET_Z
 
-        # Calculate final velocities (Proportional + Integral)
-        vx = (current_kp_xy * body_x) + (Ki_xy * self.integral_x)
-        vy = (current_kp_xy * body_y) + (Ki_xy * self.integral_y)
+        # --- FINAL VELOCITY MATH (P + I + D) ---
+        vx = (current_kp_xy * body_x) + (Ki_xy * self.integral_x) + (Kd_xy * derivative_x)
+        vy = (current_kp_xy * body_y) + (Ki_xy * self.integral_y) + (Kd_xy * derivative_y)
         vz = 0 if abs(error_z) < 0.05 else Kp_z * error_z
 
-        # Clip velocities dynamically to ensure it stays within safe limits
+        # Clip velocities dynamically
         vx = max(min(vx, current_max_vel), -current_max_vel)
         vy = max(min(vy, current_max_vel), -current_max_vel)
         vz = max(min(vz, current_max_vel), -current_max_vel)
 
-        # Save the final velocities so the drone can coast if the tag is lost
         self.last_vx = vx
         self.last_vy = vy
 
