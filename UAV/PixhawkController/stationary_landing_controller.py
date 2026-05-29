@@ -19,7 +19,7 @@ import time
 Kp_xy = 0.4
 Kp_z  = 0.3
 Ki_xy = 0.1
-Kd_xy = 0.25
+Kd_xy = 0.35
 
 # Safety limit on velocity commands (adjust as we test)
 MAX_VELOCITY = 0.3
