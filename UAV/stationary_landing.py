@@ -9,7 +9,7 @@ from PixhawkController.stationary_landing_controller import (
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE = 57600
 
-LANDING_THRESHOLD = 0.4
+LANDING_THRESHOLD = 0.2
 TAKEOFF_ALTITUDE = 3.5  # meters
 
 HOVER_TIMEOUT = 3.0
@@ -127,7 +127,6 @@ with dai.Device() as device:
             )
 
             # Check landing conditions
-            # Check landing conditions
             if (
                 abs(body_x) < 0.10 and
                 abs(body_y) < 0.10 and
@@ -136,7 +135,9 @@ with dai.Device() as device:
                 print("[INFO] Landing conditions reached")
                 # REPLACED: controller.stationary_landing()
                 # 3.0 seconds at 0.2m/s descent covers 0.6 meters, enough for a 0.4m threshold.
-                controller.manual_blind_descent(descent_time=3.0) 
+                # controller.manual_blind_descent(descent_time=3.0) 
+                controller.stationary_landing()
+                time.sleep(5)  # Wait for landing to complete
                 controller.disarm_motors()
                 break
 

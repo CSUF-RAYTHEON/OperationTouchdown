@@ -20,7 +20,7 @@ Kp_xy = 0.4
 Kp_z  = 0.3
 
 # Safety limit on velocity commands (adjust as we test)
-MAX_VELOCITY = 0.7
+MAX_VELOCITY = 0.3
 
 
 class StationaryLandingController:
@@ -302,12 +302,12 @@ class StationaryLandingController:
         body_z = self.prev_z
 
         # --- Gain Scheduling & Dynamic Thresholding ---
-        if body_z < 1.0:
+        if body_z < 0.5:
             # Below 1 meter: increase deadband, slash horizontal gain, cap max speed
             thresh = 0.10  # 10 cm deadband (ignores minor shifts when tag is huge)
             current_kp_xy = Kp_xy * 0.4  # Drastically reduce horizontal aggressiveness
             current_max_vel = MAX_VELOCITY * 0.5 
-        elif body_z < 3.0:
+        elif body_z < 2:
             # Between 1 and 3 meters: moderate parameters
             thresh = 0.10  # 10 cm deadband
             current_kp_xy = Kp_xy * 0.7
