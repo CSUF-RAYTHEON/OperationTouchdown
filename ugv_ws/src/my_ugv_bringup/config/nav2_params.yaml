@@ -11,6 +11,8 @@ bt_navigator:
     global_frame: map
     robot_base_frame: base_footprint
     odom_topic: /odom
+    default_nav_to_pose_bt_xml: "/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup/behavior_trees/navigate_to_pose_no_backup.xml"
+    default_nav_through_poses_bt_xml: "/opt/ros/jazzy/share/nav2_bt_navigator/behavior_trees/navigate_through_poses_w_replanning_and_recovery.xml"
     bt_loop_duration: 10
     default_server_timeout: 20
     wait_for_service_timeout: 1000
@@ -39,25 +41,26 @@ controller_server:
 
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
-      required_movement_radius: 0.5
-      movement_time_allowance: 10.0
+      required_movement_radius: 0.3
+      movement_time_allowance: 20.0
 
     general_goal_checker:
       stateful: true
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.2
-      yaw_goal_tolerance: 0.3
+      xy_goal_tolerance: 0.3
+      yaw_goal_tolerance: 0.5
 
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: false
-      min_vel_x: -0.1
+      min_vel_x: 0.0
       min_vel_y: 0.0
-      max_vel_x: 0.5
+      max_vel_x: 0.08
+      max_vel_x_backwards: 0.0
       max_vel_y: 0.0
-      max_vel_theta: 1.0
+      max_vel_theta: 0.8
       min_speed_xy: 0.0
-      max_speed_xy: 0.5
+      max_speed_xy: 0.08
       min_speed_theta: 0.0
       acc_lim_x: 1.0
       acc_lim_y: 0.0
@@ -67,10 +70,11 @@ controller_server:
       decel_lim_theta: -1.0
       vx_samples: 20
       vy_samples: 5
-      vtheta_samples: 20
-      sim_time: 1.7
+      vtheta_samples: 40
+      sim_time: 3.0
       linear_granularity: 0.05
-      angular_granularity: 0.025
+      angular_granularity: 0.1
+      forward_prune_distance: 2.0
       transform_tolerance: 0.2
       xy_goal_tolerance: 0.2
       trans_stopped_velocity: 0.25
@@ -78,12 +82,12 @@ controller_server:
       stateful: true
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
       BaseObstacle.scale: 0.02
-      PathAlign.scale: 32.0
+      PathAlign.scale: 16.0
       PathAlign.forward_point_distance: 0.1
-      GoalAlign.scale: 24.0
+      GoalAlign.scale: 12.0
       GoalAlign.forward_point_distance: 0.1
-      PathDist.scale: 32.0
-      GoalDist.scale: 24.0
+      PathDist.scale: 16.0
+      GoalDist.scale: 8.0
       RotateToGoal.scale: 32.0
       RotateToGoal.slowing_factor: 5.0
       RotateToGoal.lookahead_time: -1.0
@@ -97,8 +101,8 @@ local_costmap:
       global_frame: odom
       robot_base_frame: base_footprint
       rolling_window: true
-      width: 5
-      height: 5
+      width: 10
+      height: 10
       resolution: 0.05
       footprint: "[[-0.305, -0.294], [-0.305, 0.294], [0.305, 0.294], [0.305, -0.294]]"
       footprint_padding: 0.05
@@ -106,7 +110,7 @@ local_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.4
+        inflation_radius: 0.8
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: true
@@ -177,8 +181,8 @@ global_costmap:
         map_subscribe_transient_local: true
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0
-        inflation_radius: 0.4
+        cost_scaling_factor: 2.5
+        inflation_radius: 1.2
       always_send_full_costmap: true
 
 map_server:
@@ -201,8 +205,8 @@ planner_server:
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "nav2_navfn_planner::NavfnPlanner"
-      tolerance: 1.0
-      use_astar: false
+      tolerance: 0.5
+      use_astar: true
       allow_unknown: true
 
 smoother_server:
@@ -222,13 +226,13 @@ behavior_server:
     local_footprint_topic: local_costmap/published_footprint
     global_footprint_topic: global_costmap/published_footprint
     cycle_frequency: 10.0
-    behavior_plugins: ["spin", "backup", "drive_on_heading", "assisted_teleop", "wait"]
+    behavior_plugins: ["spin", "backup", "wait", "assisted_teleop"]
     spin:
       plugin: "nav2_behaviors::Spin"
     backup:
       plugin: "nav2_behaviors::BackUp"
-    drive_on_heading:
-      plugin: "nav2_behaviors::DriveOnHeading"
+      backup_dist: 0.001
+      backup_speed: 0.001
     wait:
       plugin: "nav2_behaviors::Wait"
     assisted_teleop:
@@ -239,9 +243,9 @@ behavior_server:
     transform_tolerance: 0.1
     use_sim_time: false
     simulate_ahead_time: 2.0
-    max_rotational_vel: 0.8
-    min_rotational_vel: 0.4
-    rotational_acc_lim: 1.0
+    max_rotational_vel: 0.5
+    min_rotational_vel: 0.2
+    rotational_acc_lim: 1.5
 
 waypoint_follower:
   ros__parameters:
@@ -258,16 +262,16 @@ waypoint_follower:
 velocity_smoother:
   ros__parameters:
     use_sim_time: false
-    smoothing_frequency: 20.0
+    smoothing_frequency: 10.0
     scale_velocities: false
     feedback: "OPEN_LOOP"
-    max_velocity: [0.5, 0.0, 0.8]
-    min_velocity: [-0.5, 0.0, -0.8]
-    max_accel: [0.5, 0.0, 1.0]
-    max_decel: [-0.5, 0.0, -1.0]
+    max_velocity: [0.08, 0.0, 0.8]
+    min_velocity: [0.0, 0.0, -1.0]
+    max_accel: [0.3, 0.0, 0.5]
+    max_decel: [-2.5, 0.0, -2.0]
     odom_topic: "odom"
     odom_duration: 0.1
-    deadband_velocity: [0.0, 0.0, 0.0]
+    deadband_velocity: [0.01, 0.0, 0.01]
     velocity_timeout: 1.0
 
 collision_monitor:
@@ -276,7 +280,7 @@ collision_monitor:
     base_frame_id: base_footprint
     odom_frame_id: odom
     cmd_vel_in_topic: cmd_vel_smoothed
-    cmd_vel_out_topic: cmd_vel
+    cmd_vel_out_topic: cmd_vel_nav_out
     state_topic: collision_monitor_state
     transform_tolerance: 0.3
     source_timeout: 2.0
@@ -285,7 +289,7 @@ collision_monitor:
     polygons: ["PolygonStop"]
     PolygonStop:
       type: polygon
-      points: "[[0.35, 0.29], [0.35, -0.29], [-0.35, -0.29], [-0.35, 0.29]]"
+      points: "[[0.4, 0.2], [0.4, -0.2], [0.1, -0.2], [0.1, 0.2]]"
       action_type: stop
       max_points: 3
       visualize: true

@@ -1,0 +1,44 @@
+[0.000000] (-) TimerEvent: {}
+[0.000170] (-) JobUnselected: {'identifier': 'depthai-ros'}
+[0.000204] (-) JobUnselected: {'identifier': 'depthai_bridge'}
+[0.000225] (-) JobUnselected: {'identifier': 'depthai_descriptions'}
+[0.000242] (-) JobUnselected: {'identifier': 'depthai_examples'}
+[0.000258] (-) JobUnselected: {'identifier': 'depthai_filters'}
+[0.000274] (-) JobUnselected: {'identifier': 'depthai_ros_driver'}
+[0.000288] (-) JobUnselected: {'identifier': 'depthai_ros_msgs'}
+[0.000303] (-) JobUnselected: {'identifier': 'dual_laser_merger'}
+[0.000318] (-) JobUnselected: {'identifier': 'my_ugv_bringup'}
+[0.000332] (-) JobUnselected: {'identifier': 'my_ugv_description'}
+[0.000347] (-) JobUnselected: {'identifier': 'my_ugv_hardware'}
+[0.000362] (-) JobUnselected: {'identifier': 'rplidar_ros'}
+[0.000379] (roboteq_ros2_driver) JobQueued: {'identifier': 'roboteq_ros2_driver', 'dependencies': OrderedDict()}
+[0.000644] (roboteq_ros2_driver) JobStarted: {'identifier': 'roboteq_ros2_driver'}
+[0.007267] (roboteq_ros2_driver) JobProgress: {'identifier': 'roboteq_ros2_driver', 'progress': 'cmake'}
+[0.008141] (roboteq_ros2_driver) JobProgress: {'identifier': 'roboteq_ros2_driver', 'progress': 'build'}
+[0.008975] (roboteq_ros2_driver) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver', '--', '-j4', '-l4'], 'cwd': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver', 'env': OrderedDict({'USER': 'ugv', 'SSH_CLIENT': '100.96.142.123 54557 22', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '1', 'HOME': '/home/ugv', 'OLDPWD': '/home/ugv', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'LOGNAME': 'ugv', '_': '/usr/bin/colcon', 'XDG_SESSION_CLASS': 'user', 'XDG_SESSION_ID': '133', 'PATH': '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'LANG': 'en_US.UTF-8', 'SHELL': '/bin/bash', 'PWD': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '100.96.142.123 54557 100.81.31.74 22', 'COLCON': '1'}), 'shell': False}
+[0.075135] (roboteq_ros2_driver) CommandEnded: {'returncode': 0}
+[0.075970] (roboteq_ros2_driver) JobProgress: {'identifier': 'roboteq_ros2_driver', 'progress': 'install'}
+[0.091469] (roboteq_ros2_driver) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver'], 'cwd': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver', 'env': OrderedDict({'USER': 'ugv', 'SSH_CLIENT': '100.96.142.123 54557 22', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '1', 'HOME': '/home/ugv', 'OLDPWD': '/home/ugv', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'LOGNAME': 'ugv', '_': '/usr/bin/colcon', 'XDG_SESSION_CLASS': 'user', 'XDG_SESSION_ID': '133', 'PATH': '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'LANG': 'en_US.UTF-8', 'SHELL': '/bin/bash', 'PWD': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/roboteq_ros2_driver', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '100.96.142.123 54557 100.81.31.74 22', 'COLCON': '1'}), 'shell': False}
+[0.099626] (-) TimerEvent: {}
+[0.104691] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[0.105448] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Execute custom install script\n'}
+[0.105819] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/lib/roboteq_ros2_driver/roboteq_bridge.py\n'}
+[0.106148] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/ament_index/resource_index/package_run_dependencies/roboteq_ros2_driver\n'}
+[0.106434] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/ament_index/resource_index/parent_prefix_path/roboteq_ros2_driver\n'}
+[0.106702] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/ament_prefix_path.sh\n'}
+[0.107152] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/ament_prefix_path.dsv\n'}
+[0.107417] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/path.sh\n'}
+[0.107667] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/environment/path.dsv\n'}
+[0.107925] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.bash\n'}
+[0.108194] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.sh\n'}
+[0.108443] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.zsh\n'}
+[0.108686] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/local_setup.dsv\n'}
+[0.108867] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Symlinking: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.dsv\n'}
+[0.123633] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/ament_index/resource_index/packages/roboteq_ros2_driver\n'}
+[0.123864] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/cmake/ament_cmake_export_dependencies-extras.cmake\n'}
+[0.124072] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/cmake/roboteq_ros2_driverConfig.cmake\n'}
+[0.124236] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/cmake/roboteq_ros2_driverConfig-version.cmake\n'}
+[0.124458] (roboteq_ros2_driver) StdoutLine: {'line': b'-- Up-to-date symlink: /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.xml\n'}
+[0.127151] (roboteq_ros2_driver) CommandEnded: {'returncode': 0}
+[0.153289] (roboteq_ros2_driver) JobEnded: {'identifier': 'roboteq_ros2_driver', 'rc': 0}
+[0.153960] (-) EventReactorShutdown: {}

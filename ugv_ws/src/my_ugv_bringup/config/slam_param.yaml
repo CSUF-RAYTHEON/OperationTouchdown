@@ -25,7 +25,7 @@ slam_toolbox:
     max_laser_range: 10.0            # RPLidar A1 reliable range (12 m max)
     minimum_time_interval: 0.2       # 5 Hz scan processing (gentle on Pi 4)
     transform_timeout: 0.5           # increased: Pi 5 TF latency under load
-    message_filter_queue_size: 20    # default is 10, increase for Pi 5 TF latency
+    message_filter_queue_size: 100    # default is 10, increase for Pi 5 TF latency
     tf_buffer_duration: 60.0         # increased: retain history across odom gaps
     stack_size_to_use: 40000000      # 40 MB stack for Raspberry Pi
 

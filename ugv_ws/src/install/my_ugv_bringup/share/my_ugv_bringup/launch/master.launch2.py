@@ -1,1 +1,304 @@
-/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup/launch/master.launch2.py
+import os
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, TimerAction
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration
+from launch.launch_description_sources import PythonLaunchDescriptionSource, AnyLaunchDescriptionSource
+from launch_ros.actions import Node
+import xacro
+
+def generate_launch_description():
+    pkg_share = get_package_share_directory('my_ugv_bringup')
+    nav2_bringup_dir = get_package_share_directory('my_ugv_bringup')
+
+    # 1. Process URDF
+    xacro_file = os.path.join(pkg_share, 'urdf', 'my_ugv.urdf.xacro')
+    robot_description_raw = xacro.process_file(xacro_file).toxml()
+
+    # 2. Paths
+    foxglove_path = os.path.join(get_package_share_directory('foxglove_bridge'), 'launch', 'foxglove_bridge_launch.xml')
+    depthai_share = get_package_share_directory('depthai_ros_driver')
+    # Driver only — no oak_state_publisher (camera.launch.py splits TF → Laser 2 errors)
+    oakd_path = os.path.join(pkg_share, 'launch', 'oak_camera.launch.py')
+    oak_params_path = os.path.join(pkg_share, 'config', 'oak_camera.yaml')
+    ekf_path = os.path.join(pkg_share, 'config', 'ekf.yaml')
+    slam_params_path = os.path.join(pkg_share, 'config', 'slam_param.yaml')
+
+    # 3. Core Infrastructure
+    robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        parameters=[{
+            'robot_description': robot_description_raw,
+            'publish_frequency': 30.0,
+        }],
+    )
+
+    # Required: RSP only publishes URDF TF after it receives /joint_states
+    joint_state_publisher = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        name='joint_state_publisher',
+        parameters=[{'robot_description': robot_description_raw}],
+    )
+
+    foxglove_bridge = IncludeLaunchDescription(AnyLaunchDescriptionSource(foxglove_path))
+
+    roboteq_bridge = Node(
+        package='roboteq_ros2_driver', executable='roboteq_bridge.py', name='roboteq_bridge',
+        parameters=[{
+            'publish_tf': False,
+            'odom_frame': 'odom',
+            'base_frame': 'base_footprint',
+            # Motor wiring polarity: inv=-1.0 maps ROS +linear.x → physical forward
+            'drive_invert_linear': False,
+            # Set to -1.0 if /odom twist.linear.x is opposite of real motion
+            'odom_invert_linear': 1.0,
+        }]
+    )
+
+    ekf_node = Node(
+        package='robot_localization', executable='ekf_node', name='ekf_filter_node',
+        parameters=[ekf_path],
+        # Foxglove polls optional imu1/imu2 params → rclcpp WARN; fusion still uses imu0 only
+        arguments=['--ros-args', '--log-level', 'rclcpp:=error'],
+    )
+
+    # 4. Sensors
+    rplidar_node = Node(
+        package='rplidar_ros', executable='rplidar_composition', name='rplidar_node',
+        parameters=[{
+            'serial_port': '/dev/ttyUSB0',
+            'frame_id': 'laser',
+            'scan_mode': 'Standard',
+            'serial_baudrate': 115200,
+            'scan_frequency': 5.0,
+            # Wrong value flips SLAM/map 180° -> Nav2 drives away from goals. Toggle if scan looks mirrored.
+            'inverted': False,
+            # Filter returns closer than 0.4 m — eliminates ground hits on uneven terrain
+            # and close-range reflections from the rover's own chassis.
+            'min_dist': 0.4,
+        }]
+    )
+
+    oakd_camera = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(oakd_path),
+        launch_arguments={
+            'name': 'oak',
+            'parent_frame': 'camera_link',
+            'params_file': oak_params_path,
+            'cam_pos_x': '0.0',
+            'cam_pos_y': '0.0',
+            'cam_pos_z': '0.0',
+            'cam_roll': '0.0',
+            'cam_pitch': '0.0',
+            'cam_yaw': '0.0',
+            'publish_tf_from_calibration': 'true',
+        }.items(),
+    )
+
+    # camera_info frame_id is camera_depth_frame (not in TF); bridge to URDF camera_link
+    camera_depth_tf = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='camera_depth_tf',
+        arguments=['0', '0', '0', '0', '0', '0', 'camera_link', 'camera_depth_frame'],
+    )
+
+    depth_to_scan = Node(
+        package='depthimage_to_laserscan', executable='depthimage_to_laserscan_node',
+        remappings=[('depth', '/oak/stereo/image_raw'), ('depth_camera_info', '/oak/stereo/camera_info'), ('scan', '/camera_scan')],
+        parameters=[{
+            'range_min': 0.35,
+            'range_max': 3.5,
+            'output_frame': 'camera_link',
+            'scan_height': 3,
+            'qos_overrides./depth.subscription.reliability': 'reliable',
+            'qos_overrides./depth_camera_info.subscription.reliability': 'reliable',
+        }]
+    )
+
+    # 5. Dual laser merger — use topic PARAMETERS (not remaps); syncs /scan + /camera_scan in TF
+    laser_merger_node = Node(
+        package='dual_laser_merger',
+        executable='dual_laser_merger_node',
+        name='dual_laser_merger',
+        parameters=[{
+            'laser_1_topic': '/scan',
+            'laser_2_topic': '/camera_scan',
+            'merged_scan_topic': '/scan_merged',
+            'target_frame': 'base_footprint',
+            'tolerance': 0.1,
+            'queue_size': 10,
+            'scan_time': 0.1,
+            'range_min': 0.45,
+            'range_max': 12.0,
+            'angle_min': -3.14159,
+            'angle_max': 3.14159,
+            'angle_increment': 0.0087,
+            'enable_shadow_filter': False,
+            'enable_average_filter': False,
+            'enable_calibration': False,
+        }]
+    )
+
+    joy_node = Node(package='joy_linux', executable='joy_linux_node', name='joy_node', parameters=[{'dev': '/dev/input/js0'}])
+    
+    teleop_node = Node(
+        package='teleop_twist_joy', executable='teleop_node', name='teleop_twist_joy_node',
+        parameters=[{
+            'enable_button': 7,  # RB — hold to drive
+            # Linux /dev/input/js0 Xbox: 0=left X, 1=left Y, 2=right X, 3=right Y
+            'axis_linear': {'x': 1},        # left stick Y (up/down) -> linear.x (forward/back)
+            'axis_angular': {'yaw': 0},     # left stick X (left/right) -> angular.z (turn)
+            'scale_linear': {'x': 0.005},     # forward stick -> +linear.x (REP-103 / Nav2)
+            'scale_angular': {'yaw': 0.9},
+        }]
+    )
+
+    # 6. SLAM — delegate lifecycle entirely to slam_toolbox's own online_async_launch.py.
+    # online_async_launch.py uses EmitEvent/OnStateTransition which can time out on Pi 5
+    # under load, leaving the node stuck in inactive. We start SLAM at t=20s (lidar and
+    # odom are ready within ~5s) and rely on slam_activator below for reliable activation.
+    slam_launch = TimerAction(
+        period=20.0,
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    os.path.join(
+                        get_package_share_directory('slam_toolbox'),
+                        'launch', 'online_async_launch.py',
+                    )
+                ),
+                launch_arguments={
+                    'slam_params_file': slam_params_path,
+                    'use_sim_time': 'false',
+                }.items(),
+            )
+        ],
+    )
+
+    # Robust activator: polls every 5 s for up to 8 attempts (~40 s window).
+    # Uses a case statement to avoid the &&/|| short-circuit bug in the old one-liner.
+    # Fires at t=35s (20s SLAM launch + 15s for configure to complete).
+    slam_activator = TimerAction(
+        period=35.0,
+        actions=[
+            ExecuteProcess(
+                cmd=['bash', '-c',
+                    'source /opt/ros/jazzy/setup.bash && '
+                    'source /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/setup.bash && '
+                    'for i in 1 2 3 4 5 6 7 8; do '
+                    '  STATE=$(ros2 lifecycle get /slam_toolbox 2>/dev/null); '
+                    '  echo "[slam_activator] attempt $i: $STATE"; '
+                    '  case "$STATE" in '
+                    '    *active*) echo "[slam_activator] SLAM is active."; exit 0;; '
+                    '    *inactive*) '
+                    '      ros2 lifecycle set /slam_toolbox activate 2>&1; '
+                    '      sleep 3;; '
+                    '    *) echo "[slam_activator] SLAM not found, waiting..."; sleep 5;; '
+                    '  esac; '
+                    'done; '
+                    'echo "[slam_activator] WARNING: gave up after 8 attempts — check SLAM logs"'
+                ],
+                output='screen',
+                shell=False,
+            )
+        ]
+    )
+
+    # 7. Competition nodes
+    lora_bridge = Node(
+        package='my_ugv_hardware',
+        executable='lora_bridge',
+        name='lora_bridge',
+        output='screen',
+    )
+
+    mission_controller = Node(
+        package='my_ugv_hardware',
+        executable='mission_controller',
+        name='mission_controller',
+        output='screen',
+        parameters=[{'challenge_mode': LaunchConfiguration('challenge_mode')}],
+    )
+
+    kill_switch = Node(
+        package='my_ugv_hardware',
+        executable='kill_switch',
+        name='kill_switch',
+        output='screen',
+    )
+
+    enable_laser_merger = LaunchConfiguration('enable_laser_merger')
+    enable_nav2 = LaunchConfiguration('enable_nav2')
+
+    nav2_params_path = os.path.join(pkg_share, 'config', 'nav2_params.yaml')
+    navigation = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_share, 'launch', 'navigation_launch.py')
+        ),
+        launch_arguments={
+            'params_file': nav2_params_path,
+            'use_composition': 'False',
+        }.items(),
+    )
+
+    # 8. Final Return with Staggered Timers
+    return LaunchDescription([
+        DeclareLaunchArgument(
+            'challenge_mode',
+            default_value='2',
+            description='Competition challenge mode: 1 (straight), 2 (Nav2 goal), or 3 (Nav2 goal + obstacles)',
+        ),
+        DeclareLaunchArgument(
+            'enable_laser_merger',
+            default_value='false',
+            description=(
+                'Fuse /scan + /camera_scan -> /scan_merged. '
+                'Outdoor (default): false — camera depth detects grass/ground as obstacles. '
+                'Indoor: enable_laser_merger:=true for close-range obstacle detection.'
+            ),
+        ),
+        DeclareLaunchArgument(
+            'enable_nav2',
+            default_value='false',
+            description=(
+                'Launch Nav2 autonomy stack alongside slam_toolbox live mapping. '
+                'SLAM starts at t=44s and publishes map→odom TF; Nav2 starts at t=55s. '
+                'Usage: ros2 launch my_ugv_bringup master.launch2.py enable_nav2:=true'
+            ),
+        ),
+        joint_state_publisher,
+        robot_state_publisher,
+        foxglove_bridge,
+        roboteq_bridge,
+        ekf_node,
+        rplidar_node,
+        oakd_camera,
+        camera_depth_tf,
+        depth_to_scan,
+        joy_node,
+        teleop_node,
+        lora_bridge,
+        mission_controller,
+        kill_switch,
+        # Merger after OAK depth + TF are ready (oak ~6s; allow margin for /camera_scan and static TFs)
+        TimerAction(
+            period=42.0,
+            actions=[laser_merger_node],
+            condition=IfCondition(enable_laser_merger),
+        ),
+        slam_launch,
+        slam_activator,
+        # Nav2 starts at t=60s: SLAM starts at t=20s, slam_activator begins at t=35s and
+        # retries for up to 40s. Nav2 waits until t=60s to guarantee map→odom TF is live.
+        # slam_toolbox provides live localization — no pre-saved map required.
+        TimerAction(
+            period=60.0,
+            actions=[navigation],
+            condition=IfCondition(enable_nav2),
+        ),
+    ])

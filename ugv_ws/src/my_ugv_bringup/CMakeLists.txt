@@ -18,6 +18,7 @@ install(DIRECTORY
 
 install(PROGRAMS
   scripts/cmd_vel_nav_relay.py
+  scripts/joy_speed_estop.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -52,11 +52,13 @@ def generate_launch_description():
             'publish_tf': False,
             'odom_frame': 'odom',
             'base_frame': 'base_footprint',
-            # ROS +linear.x = physical forward (same sign as Nav2)
+            # Motor wiring polarity: inv=-1.0 maps ROS +linear.x → physical forward
             'drive_invert_linear': False,
             # Set to -1.0 if /odom twist.linear.x is opposite of real motion
-            'odom_invert_linear': -1.0,
-        }]
+            'odom_invert_linear': 1.0,
+        }],
+        # joy_speed_estop scales /cmd_vel -> /cmd_vel_motor; bridge listens here
+        remappings=[("cmd_vel", "/cmd_vel_motor")],
     )
 
     ekf_node = Node(
@@ -144,28 +146,33 @@ def generate_launch_description():
         }]
     )
 
-    joy_node = Node(package='joy_linux', executable='joy_linux_node', name='joy_node', parameters=[{'dev': '/dev/input/js0'}])
+    joy_node = Node(package='joy_linux', executable='joy_linux_node', name='joy_node', parameters=[{'dev': '/dev/input/js0', 'deadzone': 0.02}])
     
     teleop_node = Node(
         package='teleop_twist_joy', executable='teleop_node', name='teleop_twist_joy_node',
         parameters=[{
             'enable_button': 7,  # RB — hold to drive
             # Linux /dev/input/js0 Xbox: 0=left X, 1=left Y, 2=right X, 3=right Y
-            'axis_linear.x': 0,        # left stick forward/back -> linear.x
-            'axis_angular.yaw': 1,     # right stick left/right -> angular.z
-            'scale_linear.x': 0.6,     # forward stick -> +linear.x (REP-103 / Nav2)
-            'scale_angular.yaw': -0.9,
+            'axis_linear': {'x': 1},        # left stick Y (up/down) -> linear.x (forward/back)
+            'axis_angular': {'yaw': 0},     # left stick X (left/right) -> angular.z (turn)
+            'scale_linear': {'x': 0.15},     # forward stick -> +linear.x (REP-103 / Nav2)
+            'scale_angular': {'yaw': 0.9},
         }]
     )
 
+    joy_speed_estop = Node(
+        package="my_ugv_bringup",
+        executable="joy_speed_estop.py",
+        name="joy_speed_estop",
+        output="screen",
+    )
+
     # 6. SLAM — delegate lifecycle entirely to slam_toolbox's own online_async_launch.py.
-    # The manual EmitEvent/OnStateTransition chain is unreliable on the Pi 5 under load:
-    # the change_state service response times out during configure, leaving the node
-    # stuck in inactive forever. online_async_launch.py handles the same lifecycle
-    # transitions internally with a matched node reference and is the upstream-supported path.
-    # TimerAction gives rplidar + odom time to publish before SLAM tries to subscribe to /scan.
+    # online_async_launch.py uses EmitEvent/OnStateTransition which can time out on Pi 5
+    # under load, leaving the node stuck in inactive. We start SLAM at t=20s (lidar and
+    # odom are ready within ~5s) and rely on slam_activator below for reliable activation.
     slam_launch = TimerAction(
-        period=50.0,
+        period=20.0,
         actions=[
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
@@ -182,21 +189,28 @@ def generate_launch_description():
         ],
     )
 
-    # Fallback: if slam_toolbox is still inactive at t=65s (change_state timeout under Pi 5 load),
-    # force-activate it via the lifecycle CLI. No-op if SLAM is already active or not found.
+    # Robust activator: polls every 5 s for up to 8 attempts (~40 s window).
+    # Uses a case statement to avoid the &&/|| short-circuit bug in the old one-liner.
+    # Fires at t=35s (20s SLAM launch + 15s for configure to complete).
     slam_activator = TimerAction(
-        period=65.0,
+        period=35.0,
         actions=[
             ExecuteProcess(
                 cmd=['bash', '-c',
                     'source /opt/ros/jazzy/setup.bash && '
                     'source /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/setup.bash && '
-                    'STATE=$(ros2 lifecycle get /slam_toolbox 2>/dev/null) && '
-                    'echo "SLAM state: $STATE" && '
-                    'echo "$STATE" | grep -q "inactive" && '
-                    'ros2 lifecycle set /slam_toolbox activate && '
-                    'echo "SLAM activated by fallback" || '
-                    'echo "SLAM already active or not found"'
+                    'for i in 1 2 3 4 5 6 7 8; do '
+                    '  STATE=$(ros2 lifecycle get /slam_toolbox 2>/dev/null); '
+                    '  echo "[slam_activator] attempt $i: $STATE"; '
+                    '  case "$STATE" in '
+                    '    *active*) echo "[slam_activator] SLAM is active."; exit 0;; '
+                    '    *inactive*) '
+                    '      ros2 lifecycle set /slam_toolbox activate 2>&1; '
+                    '      sleep 3;; '
+                    '    *) echo "[slam_activator] SLAM not found, waiting..."; sleep 5;; '
+                    '  esac; '
+                    'done; '
+                    'echo "[slam_activator] WARNING: gave up after 8 attempts — check SLAM logs"'
                 ],
                 output='screen',
                 shell=False,
@@ -277,6 +291,7 @@ def generate_launch_description():
         depth_to_scan,
         joy_node,
         teleop_node,
+        joy_speed_estop,
         lora_bridge,
         mission_controller,
         kill_switch,
@@ -288,11 +303,11 @@ def generate_launch_description():
         ),
         slam_launch,
         slam_activator,
-        # Nav2 starts at t=55s: SLAM starts at t=50s, Nav2 waits 5s for first map→odom TF.
-        # slam_activator at t=65s is a safety net if lifecycle activation timed out under Pi 5 load.
+        # Nav2 starts at t=60s: SLAM starts at t=20s, slam_activator begins at t=35s and
+        # retries for up to 40s. Nav2 waits until t=60s to guarantee map→odom TF is live.
         # slam_toolbox provides live localization — no pre-saved map required.
         TimerAction(
-            period=55.0,
+            period=60.0,
             actions=[navigation],
             condition=IfCondition(enable_nav2),
         ),

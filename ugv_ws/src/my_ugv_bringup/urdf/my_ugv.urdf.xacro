@@ -112,7 +112,7 @@
     <joint name="laser_joint" type="fixed">
         <parent link="top_plate"/>
         <child link="laser"/>
-        <origin xyz="${plate_l/2 - 0.0381} 0 0.0635" rpy="0 0 3.14159"/>
+        <origin xyz="${plate_l/2 - 0.0381} 0 0.0635" rpy="0 0 0"/>
     </joint>
 
     <link name="camera_link">

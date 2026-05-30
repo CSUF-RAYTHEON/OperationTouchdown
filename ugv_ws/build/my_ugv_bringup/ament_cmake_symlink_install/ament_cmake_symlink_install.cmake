@@ -318,8 +318,8 @@ message(STATUS "Execute custom install script")
 # install(DIRECTORY "launch" "config" "urdf" "DESTINATION" "share/my_ugv_bringup")
 ament_cmake_symlink_install_directory("/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup" DIRECTORY "launch" "config" "urdf" "DESTINATION" "share/my_ugv_bringup")
 
-# install(PROGRAMS "scripts/cmd_vel_nav_relay.py" "DESTINATION" "lib/my_ugv_bringup")
-ament_cmake_symlink_install_programs("/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup" PROGRAMS "scripts/cmd_vel_nav_relay.py" "DESTINATION" "lib/my_ugv_bringup")
+# install(PROGRAMS "scripts/cmd_vel_nav_relay.py" "scripts/joy_speed_estop.py" "DESTINATION" "lib/my_ugv_bringup")
+ament_cmake_symlink_install_programs("/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup" PROGRAMS "scripts/cmd_vel_nav_relay.py" "scripts/joy_speed_estop.py" "DESTINATION" "lib/my_ugv_bringup")
 
 # install(FILES "/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/my_ugv_bringup" "DESTINATION" "share/ament_index/resource_index/package_run_dependencies")
 ament_cmake_symlink_install_files("/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup" FILES "/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/my_ugv_bringup" "DESTINATION" "share/ament_index/resource_index/package_run_dependencies")
