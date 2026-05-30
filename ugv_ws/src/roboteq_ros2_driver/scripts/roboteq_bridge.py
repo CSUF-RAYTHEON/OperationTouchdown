@@ -17,7 +17,7 @@ class RoboteqBridge(Node):
         self.TICKS_PER_REV = 8000      
         self.LEFT_TRIM = 1.0
         self.CMD_SCALE = 4000          # converts m/s to Roboteq command units (0.09 m/s -> cmd 135, above MIN_CMD=120)
-        self.ANG_SCALE = 180
+        self.ANG_SCALE = 450
         self.declare_parameter("drive_invert_linear", False)
         self.declare_parameter("odom_invert_linear", 1.0)
         self._drive_invert = (
@@ -89,7 +89,7 @@ class RoboteqBridge(Node):
             angular_cmd = int(self.angular_z * self.ANG_SCALE)
 
             # Apply MIN_CMD to linear BEFORE the motor split (ensures forward motion has torque)
-            MIN_CMD = 55
+            MIN_CMD = 40
             if linear_cmd != 0 and abs(linear_cmd) < MIN_CMD:
                 linear_cmd = MIN_CMD * (1 if linear_cmd > 0 else -1)
 

@@ -55,7 +55,7 @@ controller_server:
       debug_trajectory_details: false
       min_vel_x: 0.0
       min_vel_y: 0.0
-      max_vel_x: 0.08
+      max_vel_x: 0.10
       max_vel_x_backwards: 0.0
       max_vel_y: 0.0
       max_vel_theta: 0.8
@@ -71,7 +71,7 @@ controller_server:
       vx_samples: 20
       vy_samples: 5
       vtheta_samples: 40
-      sim_time: 3.0
+      sim_time: 4.0
       linear_granularity: 0.05
       angular_granularity: 0.1
       forward_prune_distance: 2.0
@@ -101,16 +101,16 @@ local_costmap:
       global_frame: odom
       robot_base_frame: base_footprint
       rolling_window: true
-      width: 10
-      height: 10
+      width: 12
+      height: 12
       resolution: 0.05
       footprint: "[[-0.305, -0.294], [-0.305, 0.294], [0.305, 0.294], [0.305, -0.294]]"
-      footprint_padding: 0.05
+      footprint_padding: 0.20
       plugins: ["voxel_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.8
+        inflation_radius: 1.2
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: true
@@ -149,7 +149,7 @@ global_costmap:
       global_frame: map
       robot_base_frame: base_footprint
       footprint: "[[-0.305, -0.294], [-0.305, 0.294], [0.305, 0.294], [0.305, -0.294]]"
-      footprint_padding: 0.05
+      footprint_padding: 0.20
       resolution: 0.05
       rolling_window: true
       width: 20
@@ -181,8 +181,8 @@ global_costmap:
         map_subscribe_transient_local: true
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 2.5
-        inflation_radius: 1.2
+        cost_scaling_factor: 3.5
+        inflation_radius: 1.5
       always_send_full_costmap: true
 
 map_server:
@@ -265,7 +265,7 @@ velocity_smoother:
     smoothing_frequency: 10.0
     scale_velocities: false
     feedback: "OPEN_LOOP"
-    max_velocity: [0.08, 0.0, 0.8]
+    max_velocity: [0.10, 0.0, 0.8]
     min_velocity: [0.0, 0.0, -1.0]
     max_accel: [0.3, 0.0, 0.5]
     max_decel: [-2.5, 0.0, -2.0]
