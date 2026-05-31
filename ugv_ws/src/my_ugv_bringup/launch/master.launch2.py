@@ -224,6 +224,7 @@ def generate_launch_description():
         executable='lora_bridge',
         name='lora_bridge',
         output='screen',
+        parameters=[{'port': '/dev/ttyUSB1', 'baud': 9600}],
     )
 
     mission_controller = Node(
