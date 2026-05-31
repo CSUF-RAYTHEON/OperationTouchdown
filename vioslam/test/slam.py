@@ -17,6 +17,7 @@ MAX_KEYFRAMES = 600 # Max total images held in RAM. Increasing lets the drone re
 MAX_MATCH_CANDIDATES = 325 # Max images searched per cycle. Increasing finds loops deeper in history but makes SLAM math take much longer (e.g., 400ms+). Decreasing keeps the SLAM delay short but blinds the algorithm to older map areas.
 ORB_NFEATURES = 400 # Visual tracking points per image. Increasing creates incredibly robust map matches but quadratically explodes the Brute Force CPU math. Decreasing makes SLAM lightning fast but risks failing to find matches on smooth or blurry floors.
 ORB_SCALE = 0.5 # Shrinks the image to 50% before processing. Increasing (to 1.0) gets razor-sharp tracking features but slows down detection. Decreasing (e.g., 0.25) makes feature extraction instant but the pixel data becomes too blocky to reliably match.
+MIN_ALTITUTDE_CORRECTION_INTERVAL = 3.0 # Seconds between altitude corrections. Increasing lets altitude drift accumulate longer but saves CPU by checking less often. Decreasing fixes altitude drift more frequently but  hammers the CPU with heavy math.
 
 def wrap_rad_pi(angle_rad: float) -> float:
     while angle_rad > math.pi: angle_rad -= 2.0 * math.pi
@@ -66,9 +67,7 @@ class LoopClosureORB:
                 self.last_valid_kf_index -= 1
 
     def check_loop(self, frame: np.ndarray, current_pose_xyz: np.ndarray, frame_id: int):
-        now = time.time()
-        if now - self.last_check_wall < LOOP_CHECK_INTERVAL: return None
-        self.last_check_wall = now
+        if time.time() - self.last_check_wall < LOOP_CHECK_INTERVAL: return None
 
         if len(self.keyframes) < (MIN_LOOP_SEPARATION + 1): return None
 
@@ -98,12 +97,14 @@ class LoopClosureORB:
         # No match was found
         if best is None or best_score < MATCH_THRESHOLD:
             # set the last valid kf index to the most recent keyframe
-            self.last_valid_kf_index = len(self.keyframes) - 1 
+            self.last_valid_kf_index = len(self.keyframes) - 1
+            self.last_check_wall = time.time()
             return None
         # Match found
         self.cull_keyframes()
         drift_vec = best["pose"] - current_pose_xyz
         drift_mag = float(np.linalg.norm(drift_vec))
+        self.last_check_wall = time.time()
         return (drift_mag, float(drift_vec[0]), float(drift_vec[1]), float(drift_vec[2]))
     
     def cull_keyframes(self):
@@ -186,6 +187,8 @@ def slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, sl
                 shared_slam_trigger[0] = True
             # Overwrite baseline so teleport doesn't instantly trigger a false spatial keyframe
             last_kf_pos = info["matched_pose"].copy()
+        else:
+            pass
 def test_latency_slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex):
     W, H = 640, 400
     count = 0
