@@ -1,0 +1,6 @@
+[console_scripts]
+kill_switch = my_ugv_hardware.kill_switch:main
+lora_bridge = my_ugv_hardware.lora_bridge:main
+mission_controller = my_ugv_hardware.mission_controller:main
+motor_driver = my_ugv_hardware.roboteq_bridge:main
+virtual_odom = my_ugv_hardware.virtual_odom:main

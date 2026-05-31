@@ -114,6 +114,5 @@ colcon_package_source_powershell_script "$env:COLCON_CURRENT_PREFIX/share/my_ugv
 colcon_package_source_powershell_script "$env:COLCON_CURRENT_PREFIX/share/my_ugv_hardware/hook/pythonpath.ps1"
 colcon_package_source_powershell_script "$env:COLCON_CURRENT_PREFIX/share/my_ugv_hardware/hook/pythonscriptspath.ps1"
 colcon_package_source_powershell_script "$env:COLCON_CURRENT_PREFIX/share/my_ugv_hardware/hook/ament_prefix_path.ps1"
-colcon_package_source_powershell_script "$env:COLCON_CURRENT_PREFIX/../../build/my_ugv_hardware/share/my_ugv_hardware/hook/pythonpath_develop.ps1"
 
 Remove-Item Env:\COLCON_CURRENT_PREFIX

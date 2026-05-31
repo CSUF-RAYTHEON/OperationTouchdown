@@ -82,7 +82,6 @@ _colcon_package_sh_source_script "$COLCON_CURRENT_PREFIX/share/my_ugv_hardware/h
 _colcon_package_sh_source_script "$COLCON_CURRENT_PREFIX/share/my_ugv_hardware/hook/pythonpath.sh"
 _colcon_package_sh_source_script "$COLCON_CURRENT_PREFIX/share/my_ugv_hardware/hook/pythonscriptspath.sh"
 _colcon_package_sh_source_script "$COLCON_CURRENT_PREFIX/share/my_ugv_hardware/hook/ament_prefix_path.sh"
-_colcon_package_sh_source_script "$COLCON_CURRENT_PREFIX/../../build/my_ugv_hardware/share/my_ugv_hardware/hook/pythonpath_develop.sh"
 
 unset _colcon_package_sh_source_script
 unset COLCON_CURRENT_PREFIX

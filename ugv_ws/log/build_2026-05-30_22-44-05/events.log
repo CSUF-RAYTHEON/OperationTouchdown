@@ -1,0 +1,99 @@
+[0.000000] (-) TimerEvent: {}
+[0.000146] (-) JobUnselected: {'identifier': 'depthai-ros'}
+[0.000182] (-) JobUnselected: {'identifier': 'depthai_bridge'}
+[0.000202] (-) JobUnselected: {'identifier': 'depthai_descriptions'}
+[0.000219] (-) JobUnselected: {'identifier': 'depthai_examples'}
+[0.000235] (-) JobUnselected: {'identifier': 'depthai_filters'}
+[0.000251] (-) JobUnselected: {'identifier': 'depthai_ros_driver'}
+[0.000266] (-) JobUnselected: {'identifier': 'depthai_ros_msgs'}
+[0.000280] (-) JobUnselected: {'identifier': 'dual_laser_merger'}
+[0.000295] (-) JobUnselected: {'identifier': 'my_ugv_bringup'}
+[0.000309] (-) JobUnselected: {'identifier': 'my_ugv_description'}
+[0.000324] (-) JobUnselected: {'identifier': 'roboteq_ros2_driver'}
+[0.000339] (-) JobUnselected: {'identifier': 'rplidar_ros'}
+[0.000357] (my_ugv_hardware) JobQueued: {'identifier': 'my_ugv_hardware', 'dependencies': OrderedDict()}
+[0.000750] (my_ugv_hardware) JobStarted: {'identifier': 'my_ugv_hardware'}
+[0.099642] (-) TimerEvent: {}
+[0.199808] (-) TimerEvent: {}
+[0.299918] (-) TimerEvent: {}
+[0.400044] (-) TimerEvent: {}
+[0.500233] (-) TimerEvent: {}
+[0.600403] (-) TimerEvent: {}
+[0.700569] (-) TimerEvent: {}
+[0.800722] (-) TimerEvent: {}
+[0.900830] (-) TimerEvent: {}
+[1.000981] (-) TimerEvent: {}
+[1.101160] (-) TimerEvent: {}
+[1.201297] (-) TimerEvent: {}
+[1.301401] (-) TimerEvent: {}
+[1.401503] (-) TimerEvent: {}
+[1.501648] (-) TimerEvent: {}
+[1.601823] (-) TimerEvent: {}
+[1.701984] (-) TimerEvent: {}
+[1.802118] (-) TimerEvent: {}
+[1.902236] (-) TimerEvent: {}
+[2.002412] (-) TimerEvent: {}
+[2.087217] (my_ugv_hardware) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'develop', '--uninstall', '--editable', '--build-directory', '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build'], 'cwd': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware', 'env': {'GZ_SIM_RESOURCE_PATH': '/opt/ros/jazzy/share', 'USER': 'ugv', 'SSH_CLIENT': '100.96.142.123 57225 22', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/ugv', 'OLDPWD': '/home/ugv', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'ugv', 'IGN_GAZEBO_MODEL_PATH': '/opt/ros/jazzy/share', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'XDG_SESSION_ID': '11', 'GAZEBO_MODEL_PATH': '/opt/ros/jazzy/share', 'PATH': '/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'LANG': 'en_US.UTF-8', 'AMENT_PREFIX_PATH': '/opt/ros/jazzy', 'SHELL': '/bin/bash', 'IGN_GAZEBO_RESOURCE_PATH': '/opt/ros/jazzy/share', 'GAZEBO_RESOURCE_PATH': '/opt/ros/jazzy/share', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '100.96.142.123 57225 100.81.31.74 22', 'PYTHONPATH': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor'}, 'shell': False}
+[2.102513] (-) TimerEvent: {}
+[2.202647] (-) TimerEvent: {}
+[2.302755] (-) TimerEvent: {}
+[2.402848] (-) TimerEvent: {}
+[2.502969] (-) TimerEvent: {}
+[2.558412] (my_ugv_hardware) StdoutLine: {'line': b'running develop\n'}
+[2.603048] (-) TimerEvent: {}
+[2.703175] (-) TimerEvent: {}
+[2.803303] (-) TimerEvent: {}
+[2.842235] (my_ugv_hardware) StdoutLine: {'line': b'Removing /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my-ugv-hardware.egg-link (link to .)\n'}
+[2.903445] (-) TimerEvent: {}
+[2.945066] (my_ugv_hardware) CommandEnded: {'returncode': 0}
+[2.946406] (my_ugv_hardware) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/my_ugv_hardware', 'build', '--build-base', '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build', 'install', '--record', '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/install.log', '--single-version-externally-managed', 'install_data', '--force'], 'cwd': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_hardware', 'env': {'GZ_SIM_RESOURCE_PATH': '/opt/ros/jazzy/share', 'USER': 'ugv', 'SSH_CLIENT': '100.96.142.123 57225 22', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/ugv', 'OLDPWD': '/home/ugv', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'ugv', 'IGN_GAZEBO_MODEL_PATH': '/opt/ros/jazzy/share', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'XDG_SESSION_ID': '11', 'GAZEBO_MODEL_PATH': '/opt/ros/jazzy/share', 'PATH': '/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'LANG': 'en_US.UTF-8', 'AMENT_PREFIX_PATH': '/opt/ros/jazzy', 'SHELL': '/bin/bash', 'IGN_GAZEBO_RESOURCE_PATH': '/opt/ros/jazzy/share', 'GAZEBO_RESOURCE_PATH': '/opt/ros/jazzy/share', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '100.96.142.123 57225 100.81.31.74 22', 'PYTHONPATH': '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor'}, 'shell': False}
+[3.003520] (-) TimerEvent: {}
+[3.103678] (-) TimerEvent: {}
+[3.203819] (-) TimerEvent: {}
+[3.303926] (-) TimerEvent: {}
+[3.312236] (my_ugv_hardware) StdoutLine: {'line': b'running egg_info\n'}
+[3.338699] (my_ugv_hardware) StdoutLine: {'line': b'writing ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/PKG-INFO\n'}
+[3.339109] (my_ugv_hardware) StdoutLine: {'line': b'writing dependency_links to ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/dependency_links.txt\n'}
+[3.341744] (my_ugv_hardware) StdoutLine: {'line': b'writing entry points to ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/entry_points.txt\n'}
+[3.342333] (my_ugv_hardware) StdoutLine: {'line': b'writing requirements to ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/requires.txt\n'}
+[3.343022] (my_ugv_hardware) StdoutLine: {'line': b'writing top-level names to ../../build/my_ugv_hardware/my_ugv_hardware.egg-info/top_level.txt\n'}
+[3.400042] (my_ugv_hardware) StdoutLine: {'line': b"reading manifest file '../../build/my_ugv_hardware/my_ugv_hardware.egg-info/SOURCES.txt'\n"}
+[3.401621] (my_ugv_hardware) StdoutLine: {'line': b"writing manifest file '../../build/my_ugv_hardware/my_ugv_hardware.egg-info/SOURCES.txt'\n"}
+[3.401838] (my_ugv_hardware) StdoutLine: {'line': b'running build\n'}
+[3.401970] (my_ugv_hardware) StdoutLine: {'line': b'running build_py\n'}
+[3.403991] (-) TimerEvent: {}
+[3.404145] (my_ugv_hardware) StdoutLine: {'line': b'copying my_ugv_hardware/mission_controller.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware\n'}
+[3.404481] (my_ugv_hardware) StdoutLine: {'line': b'copying my_ugv_hardware/kill_switch.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware\n'}
+[3.404710] (my_ugv_hardware) StdoutLine: {'line': b'copying my_ugv_hardware/lora_bridge.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware\n'}
+[3.405074] (my_ugv_hardware) StdoutLine: {'line': b'running install\n'}
+[3.414676] (my_ugv_hardware) StdoutLine: {'line': b'running install_lib\n'}
+[3.442204] (my_ugv_hardware) StdoutLine: {'line': b'creating /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware\n'}
+[3.442411] (my_ugv_hardware) StdoutLine: {'line': b'copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware/__init__.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware\n'}
+[3.442569] (my_ugv_hardware) StdoutLine: {'line': b'copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware/mission_controller.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware\n'}
+[3.442718] (my_ugv_hardware) StdoutLine: {'line': b'copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware/roboteq_bridge.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware\n'}
+[3.443215] (my_ugv_hardware) StdoutLine: {'line': b'copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware/kill_switch.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware\n'}
+[3.443388] (my_ugv_hardware) StdoutLine: {'line': b'copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/build/lib/my_ugv_hardware/lora_bridge.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware\n'}
+[3.444159] (my_ugv_hardware) StdoutLine: {'line': b'byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware/__init__.py to __init__.cpython-312.pyc\n'}
+[3.444493] (my_ugv_hardware) StdoutLine: {'line': b'byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware/mission_controller.py to mission_controller.cpython-312.pyc\n'}
+[3.448439] (my_ugv_hardware) StdoutLine: {'line': b'byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware/roboteq_bridge.py to roboteq_bridge.cpython-312.pyc\n'}
+[3.450503] (my_ugv_hardware) StdoutLine: {'line': b'byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware/kill_switch.py to kill_switch.cpython-312.pyc\n'}
+[3.452178] (my_ugv_hardware) StdoutLine: {'line': b'byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware/lora_bridge.py to lora_bridge.cpython-312.pyc\n'}
+[3.454624] (my_ugv_hardware) StdoutLine: {'line': b'running install_data\n'}
+[3.454788] (my_ugv_hardware) StdoutLine: {'line': b'copying resource/my_ugv_hardware -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/share/ament_index/resource_index/packages\n'}
+[3.455045] (my_ugv_hardware) StdoutLine: {'line': b'copying package.xml -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/share/my_ugv_hardware\n'}
+[3.455615] (my_ugv_hardware) StdoutLine: {'line': b'running install_egg_info\n'}
+[3.484575] (my_ugv_hardware) StdoutLine: {'line': b'Copying ../../build/my_ugv_hardware/my_ugv_hardware.egg-info to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/python3.12/site-packages/my_ugv_hardware-0.0.0-py3.12.egg-info\n'}
+[3.486230] (my_ugv_hardware) StdoutLine: {'line': b'running install_scripts\n'}
+[3.504062] (-) TimerEvent: {}
+[3.604187] (-) TimerEvent: {}
+[3.673252] (my_ugv_hardware) StdoutLine: {'line': b'Installing kill_switch script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware\n'}
+[3.673564] (my_ugv_hardware) StdoutLine: {'line': b'Installing lora_bridge script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware\n'}
+[3.674269] (my_ugv_hardware) StdoutLine: {'line': b'Installing mission_controller script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware\n'}
+[3.674992] (my_ugv_hardware) StdoutLine: {'line': b'Installing motor_driver script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware\n'}
+[3.675735] (my_ugv_hardware) StdoutLine: {'line': b'Installing virtual_odom script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/lib/my_ugv_hardware\n'}
+[3.676749] (my_ugv_hardware) StdoutLine: {'line': b"writing list of installed files to '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_hardware/install.log'\n"}
+[3.704292] (-) TimerEvent: {}
+[3.764642] (my_ugv_hardware) CommandEnded: {'returncode': 0}
+[3.804357] (-) TimerEvent: {}
+[3.840993] (my_ugv_hardware) JobEnded: {'identifier': 'my_ugv_hardware', 'rc': 0}
+[3.841839] (-) EventReactorShutdown: {}
