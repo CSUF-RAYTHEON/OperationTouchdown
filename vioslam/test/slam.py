@@ -12,7 +12,7 @@ KEYFRAME_MIN_DIST_M = 0.2 # Saves a map image every 10cm. Increasing saves RAM a
 KEYFRAME_MIN_YAW_RAD = 1.0 # Saves a map image if drone rotates 1 radian. Increasing requires sharp turns to trigger a save. Decreasing maps curves better but eats memory if the drone just wobbles.
 LOOP_CHECK_INTERVAL = 0.5 # Seconds between map searches. Increasing saves CPU by checking less often, but lets drift accumulate longer. Decreasing fixes drift instantly but constantly hammers the CPU with heavy math.
 MIN_LOOP_SEPARATION = 30 # Ignores the x most recent frames. Increasing strictly prevents the drone from matching with where it was however many seconds ago. Decreasing causes wasted CPU cycles comparing the live feed against the immediate past.
-MATCH_THRESHOLD = 45 # Minimum perfect ORB matches required to trigger a correction. Increasing guarantees zero false teleports but makes the system overly strict. Decreasing finds loops easily but risks a catastrophic crash if it falsely matches two similar-looking floor tiles.
+MATCH_THRESHOLD = 50 # Minimum perfect ORB matches required to trigger a correction. Increasing guarantees zero false teleports but makes the system overly strict. Decreasing finds loops easily but risks a catastrophic crash if it falsely matches two similar-looking floor tiles.
 MAX_KEYFRAMES = 600 # Max total images held in RAM. Increasing lets the drone remember massive flight paths (e.g., a whole building). Decreasing saves RAM but causes the drone to "forget" its takeoff point on long flights.
 MAX_MATCH_CANDIDATES = 325 # Max images searched per cycle. Increasing finds loops deeper in history but makes SLAM math take much longer (e.g., 400ms+). Decreasing keeps the SLAM delay short but blinds the algorithm to older map areas.
 ORB_NFEATURES = 400 # Visual tracking points per image. Increasing creates incredibly robust map matches but quadratically explodes the Brute Force CPU math. Decreasing makes SLAM lightning fast but risks failing to find matches on smooth or blurry floors.
@@ -28,6 +28,7 @@ class LoopClosureORB:
         self.bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
         self.keyframes = []
         self.last_check_wall = 0.0
+        self.last_valid_kf_index = 0
 
     @staticmethod
     def _to_gray(frame: np.ndarray) -> np.ndarray:
@@ -60,6 +61,9 @@ class LoopClosureORB:
 
         if len(self.keyframes) > MAX_KEYFRAMES:
             self.keyframes.pop(0)
+            if self.last_valid_kf_index > 0:
+            # Shift the checkpoint left to match the array
+                self.last_valid_kf_index -= 1
 
     def check_loop(self, frame: np.ndarray, current_pose_xyz: np.ndarray, frame_id: int):
         now = time.time()
@@ -91,13 +95,20 @@ class LoopClosureORB:
                     best = kf
             except Exception:
                 continue
-
-        if best is None or best_score < MATCH_THRESHOLD: return None
-
+        # No match was found
+        if best is None or best_score < MATCH_THRESHOLD:
+            # set the last valid kf index to the most recent keyframe
+            self.last_valid_kf_index = len(self.keyframes) - 1 
+            return None
+        # Match found
+        self.cull_keyframes()
         drift_vec = best["pose"] - current_pose_xyz
         drift_mag = float(np.linalg.norm(drift_vec))
-
         return (drift_mag, float(drift_vec[0]), float(drift_vec[1]), float(drift_vec[2]))
+    
+    def cull_keyframes(self):
+            if len(self.keyframes) - 1 > self.last_valid_kf_index:
+                del self.keyframes[self.last_valid_kf_index + 1:]
 def slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex):
     W, H = 640, 400
     
@@ -169,9 +180,9 @@ def slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, sl
                     last_kf_yaw = live_yaw
         # 2. LOOP CLOSURE SEARCH
         info = loop.check_loop(local_rgb, local_position, slam_frame_id)
-        if info is not None: #if loop is not none we should get image again to add to key frame ?
+        if info is not None:
             with slam_trigger_mutex:
-                shared_slam_target[:] = info
+                shared_slam_target[:] = info #todo when it finishes a loop closure we if it didnt detect a loop closure we should update the latest kf id
                 shared_slam_trigger[0] = True
             # Overwrite baseline so teleport doesn't instantly trigger a false spatial keyframe
             last_kf_pos = info["matched_pose"].copy()

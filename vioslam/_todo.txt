@@ -54,3 +54,9 @@
 17. increase framerate?
 
 18. increase camera resolution?
+
+19. Pose Graph Optimization for map pollution or map ghosting
+
+20. culling still might miss because loop closure doesnt happen on every frame
+
+21. seperate key frames and loop closre into different proccesses
