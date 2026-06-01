@@ -31,6 +31,7 @@ class LoopClosureORB:
         self.keyframes = []
         self.last_check_wall = 0.0
         self.last_valid_kf_index = 0
+        self.last_altitude_correction_wall = 0.0
 
     @staticmethod
     def _to_gray(frame: np.ndarray) -> np.ndarray:
@@ -111,10 +112,42 @@ class LoopClosureORB:
     def cull_keyframes(self):
             if len(self.keyframes) - 1 > self.last_valid_kf_index:
                 del self.keyframes[self.last_valid_kf_index + 1:]
-def slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex):
+    
+    def altitude_correction(self, live_attitude, local_position, depth_frame_mutex, slam_trigger_mutex, shared_depth, shared_slam_trigger, shared_slam_target):
+        # 1. Limit altitude corrections to at most once every MIN_ALTITUTDE_CORRECTION_INTERVAL seconds
+        if time.time() - self.last_altitude_correction_wall < MIN_ALTITUTDE_CORRECTION_INTERVAL: return None
+        # Avoid getting depth frame until MIN_ALTITUTDE_CORRECTION_INTERVAL has passed to avoid mutex contention with the VIO process which also needs the depth frame
+        with depth_frame_mutex:
+            region_of_interest = shared_depth[180:220, 300:340].copy() 
+            
+        # 2. Filter out stereo blind spots (zeros)
+        valid_depths = region_of_interest[region_of_interest > 0] 
+        
+        if len(valid_depths) > 0:
+            # 3. Calculate median and convert to meters
+            median_mm = np.median(valid_depths)
+            depth_m = median_mm / 1000.0
+            # 4. Calculate true vertical height and convert to NED (negative Z)
+            true_alt_m = depth_m * math.cos(live_attitude[1]) * math.cos(live_attitude[0])
+            true_z_ned = -true_alt_m 
+            # 5. Calculate how far VIO has drifted from reality
+            z_drift = true_z_ned - local_position[2]
+            
+            # 6. Only correct if VIO has drifted more than 5cm
+            if abs(z_drift) > 0.05:
+                with slam_trigger_mutex:
+                    # If the slam is already being corrected by a loop closure, no need to do an attitude correction
+                    if not shared_slam_trigger[0]:
+                    # Send [Magnitude, X, Y, Z]. Zeroing X and Y protects the 2D map.
+                        shared_slam_target[:] = [abs(z_drift), 0.0, 0.0, z_drift]
+                        shared_slam_trigger[0] = True        
+        # Update the timer whether it triggered a correction or not
+        self.last_altitude_correction_wall = time.time()
+def slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex):
     W, H = 640, 400
     
     shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
+    shm_depth = shared_memory.SharedMemory(name="oak_depth")
     shm_attitude = shared_memory.SharedMemory(name="attitude")
     shm_position = shared_memory.SharedMemory(name="position")
     shm_slam_target = shared_memory.SharedMemory(name="slam_target")
@@ -122,6 +155,7 @@ def slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, sl
     shm_slam_enabled = shared_memory.SharedMemory(name="slam_enabled")
 
     shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
+    shared_depth = np.ndarray((H, W), dtype=np.uint16, buffer=shm_depth.buf)
     shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
     shared_slam_target = np.ndarray((4,), dtype=np.float64, buffer=shm_slam_target.buf)
@@ -160,43 +194,44 @@ def slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, sl
         t_sec = time.time() - t0
 
         with attitude_mutex:
-            live_yaw = shared_attitude[2]
+            live_attitude = shared_attitude[:]
         with position_mutex:
             np.copyto(local_position, shared_position)
 
         if last_kf_pos is None or last_kf_yaw is None:
             loop.add_keyframe(local_rgb, local_position, slam_frame_id, t_sec)
             last_kf_pos = local_position.copy()
-            last_kf_yaw = live_yaw
+            last_kf_yaw = live_attitude[2]
         else:
-            yaw_changed = abs(wrap_rad_pi(live_yaw - last_kf_yaw))
+            yaw_changed = abs(wrap_rad_pi(live_attitude[2] - last_kf_yaw))
             if yaw_changed >= KEYFRAME_MIN_YAW_RAD:
                 loop.add_keyframe(local_rgb, local_position, slam_frame_id, t_sec)
                 last_kf_pos = local_position.copy()
-                last_kf_yaw = live_yaw
+                last_kf_yaw = live_attitude[2]
             else:
                 dist_moved = float(np.linalg.norm(local_position - last_kf_pos))
-                dynamic_min_dist = max(KEYFRAME_MIN_DIST_M, last_kf_pos[2] * KEYFRAME_MIN_DIST_RATIO)
+                dynamic_min_dist = max(KEYFRAME_MIN_DIST_M, abs(last_kf_pos[2]) * KEYFRAME_MIN_DIST_RATIO)
                 if dist_moved >= dynamic_min_dist:
                     loop.add_keyframe(local_rgb, local_position, slam_frame_id, t_sec)
                     last_kf_pos = local_position.copy()
-                    last_kf_yaw = live_yaw
+                    last_kf_yaw = live_attitude[2]
         # 2. LOOP CLOSURE SEARCH
         info = loop.check_loop(local_rgb, local_position, slam_frame_id)
         if info is not None:
             with slam_trigger_mutex:
-                shared_slam_target[:] = info #todo when it finishes a loop closure we if it didnt detect a loop closure we should update the latest kf id
+                shared_slam_target[:] = info
                 shared_slam_trigger[0] = True
             # Overwrite baseline so teleport doesn't instantly trigger a false spatial keyframe
             last_kf_pos = info["matched_pose"].copy()
         else:
-            pass
-def test_latency_slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex):
+            loop.altitude_correction(live_attitude, local_position, depth_frame_mutex, slam_trigger_mutex, shared_depth, shared_slam_trigger, shared_slam_target)
+def test_latency_slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex):
     W, H = 640, 400
     count = 0
     average_ms = 0.0
     
     shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
+    shm_depth = shared_memory.SharedMemory(name="oak_depth")
     shm_attitude = shared_memory.SharedMemory(name="attitude")
     shm_position = shared_memory.SharedMemory(name="position")
     shm_slam_target = shared_memory.SharedMemory(name="slam_target")
@@ -204,6 +239,7 @@ def test_latency_slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enab
     shm_slam_enabled = shared_memory.SharedMemory(name="slam_enabled")
 
     shared_rgb = np.ndarray((H, W, 3), dtype=np.uint8, buffer=shm_rgb.buf)
+    shared_depth = np.ndarray((H, W), dtype=np.uint16, buffer=shm_depth.buf)
     shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
     shared_slam_target = np.ndarray((4,), dtype=np.float64, buffer=shm_slam_target.buf)
@@ -243,26 +279,27 @@ def test_latency_slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enab
         t_sec = time.time() - t0
 
         with attitude_mutex:
-            live_yaw = shared_attitude[2]
+            live_attitude = shared_attitude[:]
         with position_mutex:
             np.copyto(local_position, shared_position)
 
         if last_kf_pos is None or last_kf_yaw is None:
             loop.add_keyframe(local_rgb, local_position, slam_frame_id, t_sec)
             last_kf_pos = local_position.copy()
-            last_kf_yaw = live_yaw
+            last_kf_yaw = live_attitude[2]
         else:
-            yaw_changed = abs(wrap_rad_pi(live_yaw - last_kf_yaw))
+            yaw_changed = abs(wrap_rad_pi(live_attitude[2] - last_kf_yaw))
             if yaw_changed >= KEYFRAME_MIN_YAW_RAD:
                 loop.add_keyframe(local_rgb, local_position, slam_frame_id, t_sec)
                 last_kf_pos = local_position.copy()
-                last_kf_yaw = live_yaw
+                last_kf_yaw = live_attitude[2]
             else:
                 dist_moved = float(np.linalg.norm(local_position - last_kf_pos))
-                if dist_moved >= KEYFRAME_MIN_DIST_M:
+                dynamic_min_dist = max(KEYFRAME_MIN_DIST_M, abs(last_kf_pos[2]) * KEYFRAME_MIN_DIST_RATIO)
+                if dist_moved >= dynamic_min_dist:
                     loop.add_keyframe(local_rgb, local_position, slam_frame_id, t_sec)
                     last_kf_pos = local_position.copy()
-                    last_kf_yaw = live_yaw
+                    last_kf_yaw = live_attitude[2]
         # 2. LOOP CLOSURE SEARCH
         info = loop.check_loop(local_rgb, local_position, slam_frame_id)
         if info is not None:
@@ -277,9 +314,11 @@ def test_latency_slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enab
                 average_ms += time_elapsed_ms
                 count += 1
             if count >= 8:
-                print(f"Average SLAM: {average_ms / count:.3f} ms")
+                print(f"Average SLAM: {average_ms / count:.3f} ms, Map size: {len(loop.keyframes)}")
                 count = 0
                 average_ms = 0.0
+        else:
+            loop.altitude_correction(live_attitude, local_position, depth_frame_mutex, slam_trigger_mutex, shared_depth, shared_slam_trigger, shared_slam_target)
 def main(position_mutex):
     shm_position = shared_memory.SharedMemory(name="position")
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
@@ -331,7 +370,7 @@ if __name__ == "__main__":
     from vioslam.vio import vio
     broadcaster_process = mp.Process(target=broadcaster, args=(rgb_frame_mutex, gray_frame_mutex, depth_frame_mutex, attitude_mutex, local_position_ned_mutex,))
     vio_process = mp.Process(target=vio, args=(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_trigger_mutex,))
-    slam_process = mp.Process(target=test_latency_slam, args=(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex,))
+    slam_process = mp.Process(target=test_latency_slam, args=(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex,))
     main_process = mp.Process(target=main, args=(position_mutex,))
 
     try:
