@@ -8,7 +8,8 @@ from vioslam.broadcaster import broadcaster
 from multiprocessing import shared_memory
 from pymavlink import mavutil
 
-KEYFRAME_MIN_DIST_M = 0.2 # Saves a map image every 10cm. Increasing saves RAM and CPU by creating a sparser map, but risks missing loop closures. Decreasing creates a dense, highly accurate map but fills memory rapidly.
+KEYFRAME_MIN_DIST_M = 0.35 # Must move at least 35cm to save a map image. Increasing saves RAM and CPU by creating a sparser map, but risks missing loop closures. Decreasing creates a dense, highly accurate map but fills memory rapidly but more prone to self-matching 
+KEYFRAME_MIN_DIST_RATIO = 0.25 # Saves a map image if the drone moves 25% relative to its current altitude. Decreasing makes a denser map but risks self-matching, increasing makes a sparser map and saves resources and lowers the risk of self-matching bug
 KEYFRAME_MIN_YAW_RAD = 1.0 # Saves a map image if drone rotates 1 radian. Increasing requires sharp turns to trigger a save. Decreasing maps curves better but eats memory if the drone just wobbles.
 LOOP_CHECK_INTERVAL = 0.5 # Seconds between map searches. Increasing saves CPU by checking less often, but lets drift accumulate longer. Decreasing fixes drift instantly but constantly hammers the CPU with heavy math.
 MIN_LOOP_SEPARATION = 30 # Ignores the x most recent frames. Increasing strictly prevents the drone from matching with where it was however many seconds ago. Decreasing causes wasted CPU cycles comparing the live feed against the immediate past.
@@ -175,7 +176,8 @@ def slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, sl
                 last_kf_yaw = live_yaw
             else:
                 dist_moved = float(np.linalg.norm(local_position - last_kf_pos))
-                if dist_moved >= KEYFRAME_MIN_DIST_M:
+                dynamic_min_dist = max(KEYFRAME_MIN_DIST_M, last_kf_pos[2] * KEYFRAME_MIN_DIST_RATIO)
+                if dist_moved >= dynamic_min_dist:
                     loop.add_keyframe(local_rgb, local_position, slam_frame_id, t_sec)
                     last_kf_pos = local_position.copy()
                     last_kf_yaw = live_yaw
@@ -220,7 +222,7 @@ def test_latency_slam(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enab
     slam_frame_id = 0
     with slam_enabled_mutex:
         shared_slam_enabled[0] = True
-    print("SLAM setup complete and running")
+    print("SLAM Latency tester setup complete and running")
 
     while True:
         start_time = time.perf_counter()
