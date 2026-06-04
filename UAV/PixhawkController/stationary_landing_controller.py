@@ -16,13 +16,13 @@ import time
 
 # These are proportional control gains (adjust as needed for testing) 
 # Controls how aggressively we move to the tag
-Kp_xy = 0.5
+Kp_xy = 0.7
 Kp_z  = 0.4
 Ki_xy = 0.1
-Kd_xy = 0.25
+Kd_xy = 0.3
 
 # Safety limit on velocity commands (adjust as we test)
-MAX_VELOCITY = 0.3
+MAX_VELOCITY = 0.7
 
 
 class StationaryLandingController:
@@ -370,7 +370,7 @@ class StationaryLandingController:
             thresh = 0.10  
             current_kp_xy = Kp_xy * 0.4  
             current_max_vel = MAX_VELOCITY * 0.5 
-        elif body_z < 2.0:
+        elif body_z < 1.0:
             thresh = 0.10  
             current_kp_xy = Kp_xy * 0.7
             current_max_vel = MAX_VELOCITY * 0.8
@@ -400,8 +400,7 @@ class StationaryLandingController:
         self.integral_y = max(min(self.integral_y, max_integral), -max_integral)
 
         # --- 5. Vertical Target ---
-        TARGET_Z = 0.0  # Kept at 0.0 so error remains high all the way to the floor
-        error_z = body_z - TARGET_Z
+        error_z = body_z
 
         # --- 6. Final Velocity Math (P + I + D) ---
         vx = (current_kp_xy * body_x) + (Ki_xy * self.integral_x) + (Kd_xy * derivative_x)
