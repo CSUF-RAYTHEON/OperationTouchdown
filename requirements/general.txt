@@ -1,0 +1,20 @@
+# General Python dependencies for the UAV_josh branch.
+#
+# Install from the repo root with:
+#   python3 -m venv .venv
+#   source .venv/bin/activate
+#   pip install -r requirements/general.txt
+
+# Computer vision and AprilTag / ArUco detection.
+opencv-python
+numpy
+pupil-apriltags
+
+# OAK-D / DepthAI camera support.
+depthai
+
+# Pixhawk / MAVLink communication.
+pymavlink
+
+# Serial-port tests and Raspberry Pi UART helpers.
+pyserial

@@ -1,4 +1,1 @@
-opencv-python
-depthai
-pupil-apriltags
-numpy
+-r requirements/general.txt
