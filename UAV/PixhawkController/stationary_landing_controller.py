@@ -16,13 +16,13 @@ import time
 
 # These are proportional control gains (adjust as needed for testing) 
 # Controls how aggressively we move to the tag
-Kp_xy = 0.7
+Kp_xy = 0.5
 Kp_z  = 0.4
 Ki_xy = 0.1
 Kd_xy = 0.3
 
 # Safety limit on velocity commands (adjust as we test)
-MAX_VELOCITY = 0.7
+MAX_VELOCITY = 0.5
 
 
 class StationaryLandingController:
