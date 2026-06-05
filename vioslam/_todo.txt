@@ -63,3 +63,11 @@
 
 22. bug where when saving keyframes if the keyframe canidate is too blury it wont save the frame and so it will have to wait another distance to save a kf, so instead if when saving a kf if its too
     blurry it should save the next very next frame and then apply the distance cooldown
+
+23. move logic for if loop closure detcted else apply altitude correctoin
+
+24. only do altitude correction after no loop closure not at the end
+
+25. altitude correction needs to wait for loop closure correction to be finished, no need for mutex check buffer if magnitude less than whatever amount
+
+26. change name to correction trigger mutex instead of slam trigger mutex etc.

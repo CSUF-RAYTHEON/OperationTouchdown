@@ -53,10 +53,10 @@ class LoopClosureORB:
 
     def evaluate_keyframe(self, frame: np.ndarray, pose_xyz: np.ndarray, frame_id: int, t_sec: float):
         small = self._prep(frame)
-        if small is None: return
+        if small is None: return False
         
         _, des = self.orb.detectAndCompute(small, None)
-        if des is None or len(des) == 0: return
+        if des is None or len(des) == 0: return False
 
         self.keyframes.append({
             "id": frame_id,
@@ -70,6 +70,7 @@ class LoopClosureORB:
             if self.last_valid_kf_index > 0:
             # Shift the checkpoint left to match the array
                 self.last_valid_kf_index -= 1
+        return True
 
     def add_keyframe(self, rgb_frame, current_position, current_attitude, slam_frame_id, t_sec):
             # Create local copy to use LOAD_FAST instruction. Local variable lookups are mapped to a fixed-array index at compile-time, completely bypassing the dictionary search
@@ -80,25 +81,25 @@ class LoopClosureORB:
             last_kf_yaw = self.last_kf_yaw
             # 1. First keyframe check and save
             if last_kf_pos is None or last_kf_yaw is None:
-                self.evaluate_keyframe(rgb_frame, current_position, slam_frame_id, t_sec)
-                self.last_kf_pos = current_position.copy()
-                self.last_kf_yaw = current_attitude[2]
+                if self.evaluate_keyframe(rgb_frame, current_position, slam_frame_id, t_sec):
+                    self.last_kf_pos = current_position.copy()
+                    self.last_kf_yaw = current_attitude[2]
                 return
             # 2. Check for Rotational Movement
             yaw_changed = abs(wrap_rad_pi(current_attitude[2] - last_kf_yaw))
             if yaw_changed >= KEYFRAME_MIN_YAW_RAD:
-                self.evaluate_keyframe(rgb_frame, current_position, slam_frame_id, t_sec)
-                self.last_kf_pos = current_position.copy()
-                self.last_kf_yaw = current_attitude[2]
+                if self.evaluate_keyframe(rgb_frame, current_position, slam_frame_id, t_sec):
+                    self.last_kf_pos = current_position.copy()
+                    self.last_kf_yaw = current_attitude[2]
                 return
             # 3. Check for Spatial Movement (with Dynamic Spacing anchored to the past)
             dist_moved = float(np.linalg.norm(current_position - last_kf_pos))
             dynamic_min_dist = max(KEYFRAME_MIN_DIST_M, abs(last_kf_pos[2]) * KEYFRAME_MIN_DIST_RATIO)
         
             if dist_moved >= dynamic_min_dist:
-                self.evaluate_keyframe(rgb_frame, current_position, slam_frame_id, t_sec)
-                self.last_kf_pos = current_position.copy()
-                self.last_kf_yaw = current_attitude[2]
+                if self.evaluate_keyframe(rgb_frame, current_position, slam_frame_id, t_sec):
+                    self.last_kf_pos = current_position.copy()
+                    self.last_kf_yaw = current_attitude[2]
 
     def check_loop(self, frame: np.ndarray, current_pose_xyz: np.ndarray, frame_id: int):
         if time.time() - self.last_check_wall < LOOP_CHECK_INTERVAL: return None
@@ -171,7 +172,7 @@ class LoopClosureORB:
             if abs(z_drift) > 0.05:
                 with slam_trigger_mutex:
                     # If the slam is already being corrected by a loop closure, no need to do an attitude correction
-                    if not shared_slam_trigger[0]:
+                    if not shared_slam_trigger[1] and not shared_slam_trigger[0]:
                     # Send [Magnitude, X, Y, Z]. Zeroing X and Y protects the 2D map.
                         shared_slam_target[:] = [abs(z_drift), 0.0, 0.0, z_drift]
                         shared_slam_trigger[0] = True        
@@ -193,7 +194,7 @@ def slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, sla
     shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
     shared_slam_target = np.ndarray((4,), dtype=np.float64, buffer=shm_slam_target.buf)
-    shared_slam_trigger = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
+    shared_slam_trigger = np.ndarray((2,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
     shared_slam_enabled = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_enabled.buf)
 
     last_processed_rgb = np.zeros((H, W, 3), dtype=np.uint8)
@@ -258,7 +259,7 @@ def test_latency_slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, positi
     shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
     shared_slam_target = np.ndarray((4,), dtype=np.float64, buffer=shm_slam_target.buf)
-    shared_slam_trigger = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
+    shared_slam_trigger = np.ndarray((2,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
     shared_slam_enabled = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_enabled.buf)
 
     last_processed_rgb = np.zeros((H, W, 3), dtype=np.uint8)
@@ -339,7 +340,7 @@ if __name__ == "__main__":
     ATTITUDE_BYTES = 3 * 8 
     POSITION_BYTES = 3 * 8 
     LOCAL_POSITION_NED_BYTES = 3 * 8
-    BOOL_BYTES = 1
+    BOOL_BYTES = 2
     TARGET_BYTES = 4 * 8
 
     print("SLAM tester allocating shared memory...")
