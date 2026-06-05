@@ -311,7 +311,7 @@ def test_latency_slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, positi
             if time_elapsed_ms > 5.0:
                 average_ms += time_elapsed_ms
                 count += 1
-            if count >= 8:
+            if count >= 4:
                 print(f"Average SLAM: {average_ms / count:.3f} ms, Map size: {len(loop.keyframes)}")
                 count = 0
                 average_ms = 0.0
