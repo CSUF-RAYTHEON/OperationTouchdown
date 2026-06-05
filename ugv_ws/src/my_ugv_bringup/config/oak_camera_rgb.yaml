@@ -1,0 +1,24 @@
+# RGBD + RGB stream enabled — used by the Akida perception launches.
+# Identical to oak_camera.yaml but publishes /oak/rgb/image_raw (the input the
+# akida_yolo_node subscribes to). Kept separate so the non-Akida launches
+# (master.launch2.py / master_nav2.launch.py) stay light with RGB off.
+/oak:
+  ros__parameters:
+    camera:
+      i_enable_imu: true
+      i_enable_ir: false
+      i_nn_type: none
+      i_pipeline_type: RGBD
+    rgb:
+      i_publish_topic: true
+      i_fps: 5.0
+      # 720p keeps the Pi 5 + AKD1000 pipeline light; node letterboxes to 224.
+      i_resolution: '720p'
+    stereo:
+      i_publish_topic: true
+      i_fps: 5.0
+      i_subpixel: true
+    left:
+      i_fps: 5.0
+    right:
+      i_fps: 5.0

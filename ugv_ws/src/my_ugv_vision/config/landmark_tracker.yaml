@@ -1,0 +1,10 @@
+landmark_tracker_node:
+  ros__parameters:
+    raw_topic: /akida/landmarks_raw
+    markers_topic: /akida/markers
+    array_topic: /akida/landmark_array
+    map_frame: map
+    dedup_radius_m: 0.5
+    max_landmarks: 200
+    republish_hz: 5.0
+    min_score: 0.35

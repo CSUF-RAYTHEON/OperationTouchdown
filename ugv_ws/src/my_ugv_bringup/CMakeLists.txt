@@ -7,6 +7,10 @@ endif()
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+
+# Install the importable python package (shared master launch builder)
+ament_python_install_package(${PROJECT_NAME})
 
 # Install directories to the share folder
 install(DIRECTORY 

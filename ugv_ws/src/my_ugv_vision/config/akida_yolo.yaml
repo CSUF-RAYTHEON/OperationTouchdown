@@ -1,0 +1,14 @@
+akida_yolo_node:
+  ros__parameters:
+    image_topic: /oak/rgb/image_raw
+    detections_topic: /akida/detections
+    annotated_topic: /akida/image_annotated
+    latency_topic: /akida/inference_latency_ms
+    score_threshold: 0.35
+    iou_threshold: 0.45
+    publish_annotated: true
+    diagnostics_period_s: 1.0
+    # labels and anchors come from models/model_metadata.json by default.
+    # Override only if running an experimental model.
+    labels_override: [""]
+    anchors_flat_override: [0.0]

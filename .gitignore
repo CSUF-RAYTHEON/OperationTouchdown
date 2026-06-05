@@ -1,0 +1,12 @@
+# Local SSH/rsync helpers (contain credentials — never commit)
+.ssh_pi.py
+.sync_pi.py
+
+# Python bytecode caches
+__pycache__/
+*.pyc
+
+# Akida scratch / training artifacts (large .h5 weights, conversion scratch).
+# The deployable v1 model + metadata live in
+# ugv_ws/src/my_ugv_vision/models/ and ARE tracked.
+akida/

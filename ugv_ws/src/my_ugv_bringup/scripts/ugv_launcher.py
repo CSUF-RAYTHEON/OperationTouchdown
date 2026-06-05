@@ -4,8 +4,8 @@ UGV Boot Launcher — reads Xbox controller without ROS.
 Runs as a systemd service at boot.
 
 Controls (D-pad, hold 2s):
-  D-pad UP    → ros2 launch ... enable_nav2:=true
-  D-pad DOWN  → ros2 launch ... (no Nav2)
+  D-pad UP    → ros2 launch master_nav2_akida.launch.py (Nav2 + Akida)
+  D-pad DOWN  → ros2 launch master_akida.launch.py     (controller + Akida)
   D-pad LEFT or RIGHT → kill running launch
 """
 import time
@@ -26,12 +26,12 @@ WORKSPACE = "/home/ugv/Desktop/OperationTouchdown/ugv_ws"
 LAUNCH_CMD_NAV2 = [
     "bash", "-c",
     f"source /opt/ros/jazzy/setup.bash && source {WORKSPACE}/install/setup.bash && "
-    f"ros2 launch my_ugv_bringup master.launch2.py enable_nav2:=true"
+    f"ros2 launch my_ugv_bringup master_nav2_akida.launch.py"
 ]
 LAUNCH_CMD_BASE = [
     "bash", "-c",
     f"source /opt/ros/jazzy/setup.bash && source {WORKSPACE}/install/setup.bash && "
-    f"ros2 launch my_ugv_bringup master.launch2.py"
+    f"ros2 launch my_ugv_bringup master_akida.launch.py"
 ]
 
 HOLD_DURATION = 2.0  # seconds to hold before triggering
@@ -74,8 +74,8 @@ def run_with_evdev():
         joy = evdev.InputDevice("/dev/input/js0")
 
     print(f"[launcher] Monitoring: {joy.name} at {joy.path}")
-    print("[launcher] Hold D-pad UP   (2s) = launch with Nav2")
-    print("[launcher] Hold D-pad DOWN (2s) = launch without Nav2")
+    print("[launcher] Hold D-pad UP   (2s) = launch Nav2 + Akida")
+    print("[launcher] Hold D-pad DOWN (2s) = launch controller + Akida")
     print("[launcher] Hold D-pad LEFT/RIGHT (2s) = stop launch")
 
     dpad_down_time = {}
