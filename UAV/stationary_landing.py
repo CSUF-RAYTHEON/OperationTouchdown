@@ -108,7 +108,8 @@ with dai.Device() as device:
                         f"[CRITICAL] Tag lost at low altitude ({controller.prev_z:.2f}m). "
                         "Aborting and forcing immediate touchdown!"
                     )
-                    controller.smart_touchdown(timeout=3.0)
+                    controller.stationary_landing()
+                    time.sleep(5)
                     controller.disarm_motors()
                     break
 
@@ -125,14 +126,15 @@ with dai.Device() as device:
                         f"[WARN] Tag lost for "
                         f"{time_lost:.1f}s. Ascending to widen FOV..."
                     )
-                    controller.coast_on_last_velocity(boost_multiplier=COAST_BOOST, vertical_velocity=-0.5)
+                    controller.coast_on_last_velocity(boost_multiplier=COAST_BOOST, vertical_velocity=-0.2)
 
                 else:
                     print(
                         "[CRITICAL] Tag lost too long high up. "
                         "Emergency blind landing..."
                     )
-                    controller.smart_touchdown(timeout=6.0)
+                    controller.stationary_landing()
+                    time.sleep(5)
                     controller.disarm_motors()
                     break
 
