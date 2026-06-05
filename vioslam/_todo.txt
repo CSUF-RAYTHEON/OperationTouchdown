@@ -60,3 +60,6 @@
 20. culling still might miss because loop closure doesnt happen on every frame
 
 21. seperate key frames and loop closre into different proccesses
+
+22. bug where when saving keyframes if the keyframe canidate is too blury it wont save the frame and so it will have to wait another distance to save a kf, so instead if when saving a kf if its too
+    blurry it should save the next very next frame and then apply the distance cooldown

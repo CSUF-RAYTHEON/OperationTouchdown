@@ -12,6 +12,7 @@ KEYFRAME_MIN_DIST_M = 0.35 # Must move at least 35cm to save a map image. Increa
 KEYFRAME_MIN_DIST_RATIO = 0.25 # Saves a map image if the drone moves 25% relative to its current altitude. Decreasing makes a denser map but risks self-matching, increasing makes a sparser map and saves resources and lowers the risk of self-matching bug
 KEYFRAME_MIN_YAW_RAD = 1.0 # Saves a map image if drone rotates 1 radian. Increasing requires sharp turns to trigger a save. Decreasing maps curves better but eats memory if the drone just wobbles.
 LOOP_CHECK_INTERVAL = 0.5 # Seconds between map searches. Increasing saves CPU by checking less often, but lets drift accumulate longer. Decreasing fixes drift instantly but constantly hammers the CPU with heavy math.
+KEYFRAME_CHECK_AFTER_SUCCESSFUL_LOOP_INTERVAL = 1.0 # Seconds after a successful loop closure before we allow another keyframe to be saved. This prevents the drone from immediately saving a keyframe on top of the loop closure correction, which would cause it to "teleport" back to the same incorrect position on the next loop closure check. Increasing this gives more time for the drone to move away from the corrected position before allowing a new keyframe, but risks missing valid keyframes if the drone is moving slowly. Decreasing this allows new keyframes to be saved sooner after a correction.
 MIN_LOOP_SEPARATION = 30 # Ignores the x most recent frames. Increasing strictly prevents the drone from matching with where it was however many seconds ago. Decreasing causes wasted CPU cycles comparing the live feed against the immediate past.
 MATCH_THRESHOLD = 50 # Minimum perfect ORB matches required to trigger a correction. Increasing guarantees zero false teleports but makes the system overly strict. Decreasing finds loops easily but risks a catastrophic crash if it falsely matches two similar-looking floor tiles.
 MAX_KEYFRAMES = 600 # Max total images held in RAM. Increasing lets the drone remember massive flight paths (e.g., a whole building). Decreasing saves RAM but causes the drone to "forget" its takeoff point on long flights.
@@ -30,9 +31,11 @@ class LoopClosureORB:
         self.bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
         self.keyframes = []
         self.last_check_wall = 0.0
+        self.last_successful_loop_check_wall = 0.0
         self.last_valid_kf_index = 0
         self.last_altitude_correction_wall = 0.0
-
+        self.last_kf_pos = None
+        self.last_kf_yaw = None
     @staticmethod
     def _to_gray(frame: np.ndarray) -> np.ndarray:
         if frame is None: return None
@@ -48,7 +51,7 @@ class LoopClosureORB:
             return cv2.resize(gray, (new_w, new_h), interpolation=cv2.INTER_AREA)
         return gray
 
-    def add_keyframe(self, frame: np.ndarray, pose_xyz: np.ndarray, frame_id: int, t_sec: float):
+    def evaluate_keyframe(self, frame: np.ndarray, pose_xyz: np.ndarray, frame_id: int, t_sec: float):
         small = self._prep(frame)
         if small is None: return
         
@@ -67,6 +70,35 @@ class LoopClosureORB:
             if self.last_valid_kf_index > 0:
             # Shift the checkpoint left to match the array
                 self.last_valid_kf_index -= 1
+
+    def add_keyframe(self, rgb_frame, current_position, current_attitude, slam_frame_id, t_sec):
+            # Create local copy to use LOAD_FAST instruction. Local variable lookups are mapped to a fixed-array index at compile-time, completely bypassing the dictionary search
+            # self.variable uses attribute lookup using the LOAD_ATTR bytecode instruction. This process requires searching through the instance's internal dictionary (self.__dict__).
+            # Thus, since we will be using the last keyframe position and yaw multiple times, we store them in local variables to speed up access.
+            if time.time() - self.last_successful_loop_check_wall < KEYFRAME_CHECK_AFTER_SUCCESSFUL_LOOP_INTERVAL: return
+            last_kf_pos = self.last_kf_pos
+            last_kf_yaw = self.last_kf_yaw
+            # 1. First keyframe check and save
+            if last_kf_pos is None or last_kf_yaw is None:
+                self.evaluate_keyframe(rgb_frame, current_position, slam_frame_id, t_sec)
+                self.last_kf_pos = current_position.copy()
+                self.last_kf_yaw = current_attitude[2]
+                return
+            # 2. Check for Rotational Movement
+            yaw_changed = abs(wrap_rad_pi(current_attitude[2] - last_kf_yaw))
+            if yaw_changed >= KEYFRAME_MIN_YAW_RAD:
+                self.evaluate_keyframe(rgb_frame, current_position, slam_frame_id, t_sec)
+                self.last_kf_pos = current_position.copy()
+                self.last_kf_yaw = current_attitude[2]
+                return
+            # 3. Check for Spatial Movement (with Dynamic Spacing anchored to the past)
+            dist_moved = float(np.linalg.norm(current_position - last_kf_pos))
+            dynamic_min_dist = max(KEYFRAME_MIN_DIST_M, abs(last_kf_pos[2]) * KEYFRAME_MIN_DIST_RATIO)
+        
+            if dist_moved >= dynamic_min_dist:
+                self.evaluate_keyframe(rgb_frame, current_position, slam_frame_id, t_sec)
+                self.last_kf_pos = current_position.copy()
+                self.last_kf_yaw = current_attitude[2]
 
     def check_loop(self, frame: np.ndarray, current_pose_xyz: np.ndarray, frame_id: int):
         if time.time() - self.last_check_wall < LOOP_CHECK_INTERVAL: return None
@@ -106,7 +138,9 @@ class LoopClosureORB:
         self.cull_keyframes()
         drift_vec = best["pose"] - current_pose_xyz
         drift_mag = float(np.linalg.norm(drift_vec))
+        self.last_kf_pos = best["pose"].copy()
         self.last_check_wall = time.time()
+        self.last_successful_loop_check_wall = time.time()
         return (drift_mag, float(drift_vec[0]), float(drift_vec[1]), float(drift_vec[2]))
     
     def cull_keyframes(self):
@@ -169,8 +203,6 @@ def slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, sla
     loop = LoopClosureORB()
     t0 = time.time()
     
-    last_kf_pos = None
-    last_kf_yaw = None
     slam_frame_id = 0
     with slam_enabled_mutex:
         shared_slam_enabled[0] = True
@@ -198,31 +230,14 @@ def slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, sla
         with position_mutex:
             np.copyto(local_position, shared_position)
 
-        if last_kf_pos is None or last_kf_yaw is None:
-            loop.add_keyframe(local_rgb, local_position, slam_frame_id, t_sec)
-            last_kf_pos = local_position.copy()
-            last_kf_yaw = live_attitude[2]
-        else:
-            yaw_changed = abs(wrap_rad_pi(live_attitude[2] - last_kf_yaw))
-            if yaw_changed >= KEYFRAME_MIN_YAW_RAD:
-                loop.add_keyframe(local_rgb, local_position, slam_frame_id, t_sec)
-                last_kf_pos = local_position.copy()
-                last_kf_yaw = live_attitude[2]
-            else:
-                dist_moved = float(np.linalg.norm(local_position - last_kf_pos))
-                dynamic_min_dist = max(KEYFRAME_MIN_DIST_M, abs(last_kf_pos[2]) * KEYFRAME_MIN_DIST_RATIO)
-                if dist_moved >= dynamic_min_dist:
-                    loop.add_keyframe(local_rgb, local_position, slam_frame_id, t_sec)
-                    last_kf_pos = local_position.copy()
-                    last_kf_yaw = live_attitude[2]
+        loop.add_keyframe(local_rgb, local_position, live_attitude, slam_frame_id, t_sec)
+
         # 2. LOOP CLOSURE SEARCH
         info = loop.check_loop(local_rgb, local_position, slam_frame_id)
         if info is not None:
             with slam_trigger_mutex:
                 shared_slam_target[:] = info
                 shared_slam_trigger[0] = True
-            # Overwrite baseline so teleport doesn't instantly trigger a false spatial keyframe
-            last_kf_pos = info["matched_pose"].copy()
         else:
             loop.altitude_correction(live_attitude, local_position, depth_frame_mutex, slam_trigger_mutex, shared_depth, shared_slam_trigger, shared_slam_target)
 def test_latency_slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex):
@@ -253,8 +268,6 @@ def test_latency_slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, positi
     loop = LoopClosureORB()
     t0 = time.time()
     
-    last_kf_pos = None
-    last_kf_yaw = None
     slam_frame_id = 0
     with slam_enabled_mutex:
         shared_slam_enabled[0] = True
@@ -283,23 +296,8 @@ def test_latency_slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, positi
         with position_mutex:
             np.copyto(local_position, shared_position)
 
-        if last_kf_pos is None or last_kf_yaw is None:
-            loop.add_keyframe(local_rgb, local_position, slam_frame_id, t_sec)
-            last_kf_pos = local_position.copy()
-            last_kf_yaw = live_attitude[2]
-        else:
-            yaw_changed = abs(wrap_rad_pi(live_attitude[2] - last_kf_yaw))
-            if yaw_changed >= KEYFRAME_MIN_YAW_RAD:
-                loop.add_keyframe(local_rgb, local_position, slam_frame_id, t_sec)
-                last_kf_pos = local_position.copy()
-                last_kf_yaw = live_attitude[2]
-            else:
-                dist_moved = float(np.linalg.norm(local_position - last_kf_pos))
-                dynamic_min_dist = max(KEYFRAME_MIN_DIST_M, abs(last_kf_pos[2]) * KEYFRAME_MIN_DIST_RATIO)
-                if dist_moved >= dynamic_min_dist:
-                    loop.add_keyframe(local_rgb, local_position, slam_frame_id, t_sec)
-                    last_kf_pos = local_position.copy()
-                    last_kf_yaw = live_attitude[2]
+        loop.add_keyframe(local_rgb, local_position, live_attitude, slam_frame_id, t_sec)
+        
         # 2. LOOP CLOSURE SEARCH
         info = loop.check_loop(local_rgb, local_position, slam_frame_id)
         if info is not None:
@@ -307,7 +305,6 @@ def test_latency_slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, positi
                 shared_slam_target[:] = info
                 shared_slam_trigger[0] = True
             # Update the baseline by adding the drift vector
-            last_kf_pos += np.array([info[1], info[2], info[3]])
             end_time = time.perf_counter()
             time_elapsed_ms = (end_time - start_time) * 1000.0
             if time_elapsed_ms > 5.0:
