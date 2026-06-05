@@ -393,7 +393,7 @@ if __name__ == "__main__":
     slam_trigger_mutex = mp.Lock()
     slam_enabled_mutex = mp.Lock()
 
-    from vioslam.slam import slam
+    from vioslam.test.slam import slam
     broadcaster_process = mp.Process(target=broadcaster, args=(rgb_frame_mutex, gray_frame_mutex, depth_frame_mutex, attitude_mutex, local_position_ned_mutex,))
     vio_process = mp.Process(target=test_latency_vio, args=(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_trigger_mutex,))
     slam_process = mp.Process(target=slam, args=(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex,))
