@@ -32,7 +32,7 @@ def broadcaster(rgb_frame_mutex, gray_frame_mutex, depth_frame_mutex, attitude_m
     # 3. Connect to the Pixhawk via UART2 and request ATTITUDE and LOOCAL_POSITION_NED message streams at the specified intervals
     master_uart2 = connect_UART2()
     request_attitude_messages(master_uart2, 25)
-    request_local_nedposition_messages(master_uart2, 40)
+    request_local_nedposition_messages(master_uart2, 25)
 
     with dai.Device() as device:
         with dai.Pipeline(device) as pipeline:

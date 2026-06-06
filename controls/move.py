@@ -63,3 +63,113 @@ def set_speed(master, speed_m_s):
         -1,         # Param 3: Throttle (-1 to ignore)
         0, 0, 0, 0  # Params 4-7: Not used
     )
+
+def main(shared_local_position_ned, local_position_ned_mutex):
+    from controls.connect import connect_UART0
+    from controls.externalnav import externalnav
+    from flightmode import change_flight_mode
+    from controls.affinitypriority import set_core_and_priority 
+
+    set_core_and_priority(3, None) # Core 4, Normal Priority
+    shared_local_position_ned = np.ndarray((3,), dtype=np.float64, buffer=shm_local_position_ned.buf)
+
+    master = connect_UART0()
+    change_flight_mode(master, "GUIDED")
+    set_speed(master, 0.5) # Set speed limit to 0.5 m/s
+    externalnav(master) # Set External Navigation parameters to use VIO SLAM as main navigation source
+
+    takeoff(master, 4.0) # Takeoff to 4 meter altitude
+    move(master, 2.0, 0.0, 3.0, shared_local_position_ned, local_position_ned_mutex)
+    land_current_position(master) # Land at current position
+    time.sleep(3) # Wait for 3 seconds to allow the drone to land and stabilize before ending the program
+
+if __name__ == "__main__":
+    mp.set_start_method('spawn', force=True)
+    
+    W, H = 640, 400
+    RGB_BYTES = W * H * 3
+    GRAY_BYTES = W * H
+    DEPTH_BYTES = W * H * 2 
+    CALIB_BYTES = 3 * 3 * 8 
+    ATTITUDE_BYTES = 3 * 8 
+    POSITION_BYTES = 3 * 8 
+    LOCAL_POSITION_NED_BYTES = 3 * 8
+    BOOL_BYTES = 2
+    TARGET_BYTES = 4 * 8
+
+    print("Movement tester allocating shared memory...")
+    shm_rgb = shared_memory.SharedMemory(create=True, size=RGB_BYTES, name="oak_rgb")
+    shm_gray = shared_memory.SharedMemory(create=True, size=GRAY_BYTES, name="oak_gray")
+    shm_depth = shared_memory.SharedMemory(create=True, size=DEPTH_BYTES, name="oak_depth")
+    shm_calib = shared_memory.SharedMemory(create=True, size=CALIB_BYTES, name="oak_calib")
+    shm_attitude = shared_memory.SharedMemory(create=True, size=ATTITUDE_BYTES, name="attitude")
+    shm_position = shared_memory.SharedMemory(create=True, size=POSITION_BYTES, name="position")
+    shm_local_position_ned = shared_memory.SharedMemory(create=True, size=LOCAL_POSITION_NED_BYTES, name="local_position_ned")
+    shm_slam_enabled = shared_memory.SharedMemory(create=True, size=BOOL_BYTES, name="slam_enabled")
+    shm_slam_target = shared_memory.SharedMemory(create=True, size=TARGET_BYTES, name="slam_target")
+    shm_slam_trigger = shared_memory.SharedMemory(create=True, size=BOOL_BYTES, name="slam_trigger")
+    print("Movement tester finished allocating shared memory...")
+
+    rgb_frame_mutex = mp.Lock()
+    gray_frame_mutex = mp.Lock()
+    depth_frame_mutex = mp.Lock()
+    attitude_mutex = mp.Lock()
+    position_mutex = mp.Lock()
+    local_position_ned_mutex = mp.Lock()
+    slam_trigger_mutex = mp.Lock()
+    slam_enabled_mutex = mp.Lock()
+
+    from vioslam.slam import slam
+    from vioslam.broadcaster import broadcaster
+    from vioslam.vio import vio
+    broadcaster_process = mp.Process(target=broadcaster, args=(rgb_frame_mutex, gray_frame_mutex, depth_frame_mutex, attitude_mutex, local_position_ned_mutex,))
+    vio_process = mp.Process(target=vio, args=(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_trigger_mutex,))
+    slam_process = mp.Process(target=slam, args=(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex,))
+    main_process = mp.Process(target=main, args=(shm_local_position_ned, local_position_ned_mutex))
+
+    try:
+        broadcaster_process.start()
+        time.sleep(3)
+        vio_process.start()
+        time.sleep(3)
+        slam_process.start()
+        time.sleep(5)
+        main_process.start()
+        time.sleep(1)
+        main_process.join()
+        
+    except KeyboardInterrupt:
+        print("Movement tester caught keyboard interrupt. Shutting down...")
+    finally:
+        broadcaster_process.terminate()
+        vio_process.terminate()
+        slam_process.terminate()
+        main_process.terminate()
+
+        broadcaster_process.join()
+        vio_process.join()
+        slam_process.join()
+        main_process.join()
+
+        print("Movement tester cleaning up shared memory...")
+        shm_rgb.close()
+        shm_rgb.unlink()
+        shm_gray.close()
+        shm_gray.unlink()
+        shm_depth.close()
+        shm_depth.unlink()
+        shm_calib.close()
+        shm_calib.unlink()
+        shm_attitude.close()
+        shm_attitude.unlink()
+        shm_position.close()
+        shm_position.unlink()
+        shm_local_position_ned.close()
+        shm_local_position_ned.unlink()
+        shm_slam_enabled.close()
+        shm_slam_enabled.unlink()
+        shm_slam_target.close()
+        shm_slam_target.unlink()
+        shm_slam_trigger.close()
+        shm_slam_trigger.unlink()
+        print("Movement tester processes terminated safely.")
