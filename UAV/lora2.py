@@ -23,7 +23,7 @@ def run_auto_test():
 
         # 2. Wait exactly 12 seconds
         print("Driving forward... waiting 90 seconds.")
-        for i in range(3, 0, -1):
+        for i in range(90, 0, -1):
             print(f"{i}...")
             time.sleep(1)
 
