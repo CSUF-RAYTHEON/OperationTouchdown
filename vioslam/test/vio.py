@@ -5,6 +5,7 @@ import math
 import multiprocessing as mp
 from controls.busywait import delay_busywait
 from controls.connect import connect_UART3
+from controls.affinitypriority import set_core_and_priority
 from vioslam.broadcaster import broadcaster
 from multiprocessing import shared_memory
 from pymavlink import mavutil
@@ -204,6 +205,7 @@ class VO_LK:
     def pose(self):
         return [self.global_north, self.global_east, self.global_down]
 def vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_trigger_mutex):
+    set_core_and_priority(0, -20) # Core 1, Max Priority
     master_uart3 = connect_UART3()
     W, H = 640, 400
     
@@ -271,6 +273,7 @@ def vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, sla
         else:
             print(f"VIO Tracking Lost: {vo.status}")
 def test_latency_vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_trigger_mutex):
+    set_core_and_priority(0, -20) # Core 1, Max Priority
     master_uart3 = connect_UART3()
     W, H = 640, 400
     count = 0
@@ -347,6 +350,7 @@ def test_latency_vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, positi
         else:
             print(f"VIO Tracking Lost: {vo.status}")
 def main(position_mutex):
+    set_core_and_priority(3, None) # Core 4, Normal Priority
     shm_position = shared_memory.SharedMemory(name="position")
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
     local_position = np.zeros((3,), dtype=np.float64)

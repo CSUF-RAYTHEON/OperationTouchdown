@@ -4,7 +4,8 @@ import time
 import math
 import multiprocessing as mp
 from controls.busywait import delay_busywait
-from vioslam.broadcaster import broadcaster 
+from vioslam.broadcaster import broadcaster
+from controls.affinitypriority import set_core_and_priority 
 from multiprocessing import shared_memory
 from pymavlink import mavutil
 
@@ -19,7 +20,7 @@ MAX_KEYFRAMES = 600 # Max total images held in RAM. Increasing lets the drone re
 MAX_MATCH_CANDIDATES = 325 # Max images searched per cycle. Increasing finds loops deeper in history but makes SLAM math take much longer (e.g., 400ms+). Decreasing keeps the SLAM delay short but blinds the algorithm to older map areas.
 ORB_NFEATURES = 400 # Visual tracking points per image. Increasing creates incredibly robust map matches but quadratically explodes the Brute Force CPU math. Decreasing makes SLAM lightning fast but risks failing to find matches on smooth or blurry floors.
 ORB_SCALE = 0.5 # Shrinks the image to 50% before processing. Increasing (to 1.0) gets razor-sharp tracking features but slows down detection. Decreasing (e.g., 0.25) makes feature extraction instant but the pixel data becomes too blocky to reliably match.
-MIN_ALTITUTDE_CORRECTION_INTERVAL = 3.0 # Seconds between altitude corrections. Increasing lets altitude drift accumulate longer but saves CPU by checking less often. Decreasing fixes altitude drift more frequently but  hammers the CPU with heavy math.
+MIN_ALTITUTDE_CORRECTION_INTERVAL = 2.0 # Seconds between altitude corrections. Increasing lets altitude drift accumulate longer but saves CPU by checking less often. Decreasing fixes altitude drift more frequently but  hammers the CPU with heavy math.
 
 def wrap_rad_pi(angle_rad: float) -> float:
     while angle_rad > math.pi: angle_rad -= 2.0 * math.pi
@@ -182,6 +183,7 @@ class LoopClosureORB:
         # Update the timer whether it triggered a correction or not
         self.last_altitude_correction_wall = time.time()
 def slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex):
+    set_core_and_priority(1, -20) # Core 2, Max Priority
     W, H = 640, 400
     
     shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
@@ -247,6 +249,7 @@ def slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, sla
         else:
             loop.altitude_correction(live_attitude, local_position, depth_frame_mutex, slam_trigger_mutex, shared_depth, shared_slam_trigger, shared_slam_target)
 def test_latency_slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex):
+    set_core_and_priority(1, -20) # Core 2, Max Priority
     W, H = 640, 400
     count = 0
     average_ms = 0.0
@@ -324,6 +327,7 @@ def test_latency_slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, positi
         else:
             loop.altitude_correction(live_attitude, local_position, depth_frame_mutex, slam_trigger_mutex, shared_depth, shared_slam_trigger, shared_slam_target)
 def main(position_mutex):
+    set_core_and_priority(3, None) # Core 4, Normal Priority
     shm_position = shared_memory.SharedMemory(name="position")
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
     local_position = np.zeros((3,), dtype=np.float64)
