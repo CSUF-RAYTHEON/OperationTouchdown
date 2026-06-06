@@ -71,3 +71,5 @@
 25. altitude correction needs to wait for loop closure correction to be finished, no need for mutex check buffer if magnitude less than whatever amount
 
 26. change name to correction trigger mutex instead of slam trigger mutex etc.
+
+27. broadcaster should not write if same image

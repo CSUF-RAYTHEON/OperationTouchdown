@@ -6,6 +6,7 @@ import multiprocessing as mp
 from multiprocessing import shared_memory
 from controls.connect import connect_UART2
 from controls.attitude import request_attitude_messages
+from controls.getmessages import get_messages
 from controls.attitude import get_attitude
 from controls.affinitypriority import set_core_and_priority 
 from controls.nedlocalposition import request_local_nedposition_messages
@@ -78,12 +79,22 @@ def broadcaster(rgb_frame_mutex, gray_frame_mutex, depth_frame_mutex, attitude_m
             
             while pipeline.isRunning():
                 msg_group = sync_q.get()
-                # 6. Get the attitude data from the Pixhawk and store it in the local attitude variable. 
-                attitude = get_attitude(master_uart2)
-                # 7. Get the local position ned data from the Pixhawk and store it in the local local position ned variable.
-                local_position_ned = get_local_nedposition(master_uart2)
                 if msg_group is None:
                     continue
+
+                msgs = get_messages(master_uart2, ['ATTITUDE', 'LOCAL_POSITION_NED'])
+                attitude_msg = msgs.get('ATTITUDE')
+                ned_msg = msgs.get('LOCAL_POSITION_NED')
+
+                if attitude_msg is not None:
+                    attitude = np.array([attitude_msg.roll, attitude_msg.pitch, attitude_msg.yaw], dtype=np.float64)
+                else:
+                    attitude = None
+                if ned_msg is not None:
+                    local_position_ned = np.array([ned_msg.x, ned_msg.y, ned_msg.z], dtype=np.float64)
+                else:
+                    local_position_ned = None
+                
                 # 8. Get the RGB, gray, and depth frames from the camera and store them in the the local frame variables.
                 rgb_frame = msg_group["rgb"].getCvFrame()
                 gray_frame = msg_group["left"].getCvFrame()
@@ -93,13 +104,13 @@ def broadcaster(rgb_frame_mutex, gray_frame_mutex, depth_frame_mutex, attitude_m
                     rgb_frame = rgb_frame[:, :, :3]
                 # 10. This section is a critical section as we must aquire the mutex/lock before 
                 #     writing to the shared memory, and release it immediately after.
-                with attitude_mutex:
-                    if attitude is not None:
+                if attitude is not None:
+                    with attitude_mutex:
                         shared_attitude[:] = attitude
                 # 11. This section is a critical section as we must aquire the mutex/lock before 
                 #     writing to the shared memory, and release it immediately after.
-                with local_position_ned_mutex:
-                    if local_position_ned is not None:
+                if local_position_ned is not None:
+                    with local_position_ned_mutex:
                         shared_local_position_ned[:] = local_position_ned
                 try:
                     # 12. This section is a critical section as we must aquire the mutex/lock before 
@@ -119,7 +130,7 @@ def broadcaster(rgb_frame_mutex, gray_frame_mutex, depth_frame_mutex, attitude_m
                     print("Shutting down broadcaster...\n")
                     break
 
-def test_viewer(camera_frame_mutex, attitude_mutex, local_position_ned_mutex):
+def test_viewer(rgb_frame_mutex, gray_frame_mutex, attitude_mutex, local_position_ned_mutex):
     W, H = 640, 400
     time.sleep(4) # Give the broadcaster a moment to allocate memory and boot the camera
 
@@ -145,10 +156,10 @@ def test_viewer(camera_frame_mutex, attitude_mutex, local_position_ned_mutex):
 
     while True:
         # 4. Acquire the mutex/lock before copying from the shared memory, and release it immediately after. This is a critical section.
-        with camera_frame_mutex:
+        with rgb_frame_mutex:
             np.copyto(local_rgb, shared_rgb)
+        with gray_frame_mutex:
             np.copyto(local_gray, shared_gray)
-            
         # 5. Acquire the mutex/lock before copying the attitude data from shared memory, and release it immediately after. This is a critical section.
         with attitude_mutex:
             np.copyto(local_attitude, shared_attitude)
@@ -198,13 +209,16 @@ if __name__ == "__main__":
     shm_local_position_ned = shared_memory.SharedMemory(create=True, size=LOCAL_POSITION_NED_BYTES, name="local_position_ned")
     
     # 3. Initialize the three required locks
-    camera_frame_mutex = mp.Lock()
+    rgb_frame_mutex = mp.Lock()
+    gray_frame_mutex = mp.Lock()
+    depth_frame_mutex = mp.Lock()
     attitude_mutex = mp.Lock()
     local_position_ned_mutex = mp.Lock()
 
     # 4. Define the processes
-    broadcaster_process = mp.Process(target=broadcaster, args=(camera_frame_mutex, attitude_mutex, local_position_ned_mutex))
-    viewer_process = mp.Process(target=test_viewer, args=(camera_frame_mutex, attitude_mutex, local_position_ned_mutex))
+    broadcaster_process = mp.Process(target=broadcaster, args=(rgb_frame_mutex, gray_frame_mutex, depth_frame_mutex, attitude_mutex, local_position_ned_mutex))
+    
+    viewer_process = mp.Process(target=test_viewer, args=(rgb_frame_mutex, gray_frame_mutex, attitude_mutex, local_position_ned_mutex))
 
     try:
         # 5. Start the broadcaster and viewer processes
