@@ -5,6 +5,7 @@ from Detectors.april_tag_detector import AprilTagDetector
 from PixhawkController.stationary_landing_controller import (
     StationaryLandingController
 )
+from lora2 import run_auto_test
 
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE = 57600
@@ -58,6 +59,7 @@ with dai.Device() as device:
         controller.change_flight_mode("GUIDED")
         controller.arm_motors()
         controller.takeoff_to_altitude(TAKEOFF_ALTITUDE)
+        run_auto_test()
 
         last_tag_time = time.time()
         is_escaping_ground = False
