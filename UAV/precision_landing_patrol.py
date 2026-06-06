@@ -283,31 +283,30 @@ TAG_COAST_S            = 0.8      # s — brief-dropout grace window during
 # logs where body-frame offsets persisted around ±1 m through the entire
 # descent).  Mirrors the design in
 # UAV/PixhawkController/stationary_landing_controller.py.
-DESCENT_Kp_XY            = 0.55  # was 0.35 — the descent kept drifting off the
-                                 # tag (body-x grew 0.07→2.0 m) because the
-                                 # unsaturated PD output at ~1 m error (0.35
-                                 # m/s) was below the lateral drift rate, so
-                                 # the error grew instead of shrinking.  0.55
-                                 # commands ~0.55 m/s at 1 m error — closer to
-                                 # the 0.70 m/s cap — so it actually outpaces
-                                 # the drift and re-centres promptly.
-DESCENT_Kd_XY            = 0.30  # was 0.25 — extra damping to absorb camera
-                                 # pipeline latency (drone keeps moving for a
-                                 # frame before the next detection updates).
-DESCENT_MAX_V_XY         = 0.70  # m/s.  Raised from 0.4 m/s after a real
-                                 # outdoor flight test of TRACK / DESCENT
-                                 # showed sustained wind drift saturating
-                                 # the previous 0.35–0.40 m/s caps while
-                                 # body-frame offset GROWED rather than
-                                 # shrank (controller permanently fighting
-                                 # wind it could not outpace).  At
-                                 # DESCENT_Kp_XY = 0.35 the unsaturated PD
-                                 # output at 1 m error is ~0.35 m/s, so
-                                 # 0.70 m/s only bites at err > ~2 m — a
-                                 # single noisy detection at small error
-                                 # cannot snap to the cap.  Retune in
-                                 # flight if a more aggressive descent
-                                 # is required.
+DESCENT_Kp_XY            = 0.32  # GENTLE retune (was 0.55).  The 0.55 value
+                                 # was set to outpace sustained OUTDOOR wind
+                                 # drift, but in calm / indoor conditions it
+                                 # overshot: with camera latency the drone kept
+                                 # moving at ~0.55 m/s for a frame after it was
+                                 # already centred, sailed past the tag, then
+                                 # reversed hard — walking the marker toward the
+                                 # FOV edge.  0.32 commands ~0.32 m/s at 1 m
+                                 # error, gentle enough to settle without
+                                 # overshoot.  Raise back toward 0.5 only if a
+                                 # steady wind is pushing harder than the loop
+                                 # can correct.
+DESCENT_Kd_XY            = 0.30  # extra damping to absorb camera pipeline
+                                 # latency (drone keeps moving for a frame
+                                 # before the next detection updates).
+DESCENT_MAX_V_XY         = 0.40  # m/s — GENTLE retune (was 0.70).  Caps the
+                                 # lateral command so a large transient error or
+                                 # a noisy detection cannot snap the airframe to
+                                 # a 0.7 m/s lunge that overshoots the tag.  At
+                                 # DESCENT_Kp_XY = 0.32 the unsaturated PD output
+                                 # only reaches this cap past ~1.25 m error, so
+                                 # normal small-error centring stays well below
+                                 # it.  Raise toward 0.6–0.7 for windy outdoor
+                                 # flights where the drift exceeds this cap.
 DESCENT_TARGET_BZ        = 0.3   # m, desired height above tag during PD
 DESCENT_Kp_Z             = 0.3
 DESCENT_MIN_VZ           = 0.10  # m/s minimum descent rate when centred
@@ -797,21 +796,14 @@ LORA_CMD_GO        = "STRAIGHT"   # UGV: start / continue driving straight
 LORA_CMD_STOP      = "STOP"       # UGV: halt and end mission
 
 # Mission timing.
-AIRBORNE_HOLD_S    = 6.0    # s — after takeoff the drone flies forward (NOT up)
-                            # for this long before starting its landing phase.
-                            # The UGV started its slow straight-line drive at
-                            # takeoff, so the drone creeps forward to stay over
-                            # the marker rather than hovering in place.
+# NOTE: the post-takeoff forward creep (AIRBORNE_HOLD_S / FORWARD_TRACK_SPEED)
+# was removed — after STABILIZE the drone now holds station at the home anchor
+# and scans for the tag (see acquire_tag) instead of flying blindly forward,
+# so it stays over the marker it took off above.
 UGV_DRIVE_SECONDS  = 30.0   # s — after the drone touches down, keep the UGV
                             # driving slowly for this long, then STOP and end.
-
-# Forward-tracking creep during AIRBORNE_HOLD.  Body-frame +x = forward (the
-# drone's heading at takeoff), so this is "fly a little bit forward, not up".
-# The UGV crawls at ~0.10 m/s (its straight_speed param); we creep slightly
-# faster so the drone catches up to / stays over the marker that pulled ahead
-# of us during the climb, then precision_land's PD takes over the fine chase.
 UGV_FORWARD_SPEED   = 0.10  # m/s — the UGV's known straight-line speed
-FORWARD_TRACK_SPEED = 0.15  # m/s — drone forward body-frame creep (vz held 0)
+                            # (informational; set on the UGV side)
 
 _GAMMA_MODERATE       = 2.2
 _GAMMA_DEEP           = 4.0
@@ -4500,30 +4492,14 @@ with dai.Device() as device:
             print(f"[INFO] Home anchor captured: "
                   f"({x_home:+.2f}, {y_home:+.2f})")
 
-            # ── Forward tracking creep ──────────────────────────────────────
-            # The UGV started its slow straight-line drive at takeoff, so
-            # instead of hovering in place the drone flies FORWARD (body-frame
-            # +x, vz held at 0 — "a little bit forward, not up") for
-            # AIRBORNE_HOLD_S so it stays over / catches up to the marker that
-            # pulled ahead during the climb.  We pump the detector each tick so
-            # the nested marker shows up on the HUD as it comes into view, then
-            # hand off to precision_land whose PD takes over the fine chase.
-            print(f"[INFO] Phase: FORWARD_TRACK ({AIRBORNE_HOLD_S:.0f}s @ "
-                  f"{FORWARD_TRACK_SPEED:.2f} m/s forward)")
-            state["phase"] = "FORWARD_TRACK"
-            hold_start = time.time()
-            while time.time() - hold_start < AIRBORNE_HOLD_S:
-                controller.send_velocity(FORWARD_TRACK_SPEED, 0.0, 0.0)
-                remaining = AIRBORNE_HOLD_S - (time.time() - hold_start)
-                state["leg_label"] = f"FWD {remaining:.1f}s"
-                pump(detect=True)
-                time.sleep(0.05)
-
             # ── Acquire nested marker before descending ─────────────────────
-            # FORWARD_TRACK creeps over the UGV but does not gate on detection.
-            # Hover at the home anchor with wind correction until the nested
-            # board (#12 inner / #77 outer) is visible — same as the old
-            # ACQUIRE → TRACK handoff, but we go straight into precision_land.
+            # The forward creep was removed: the drone now holds station at the
+            # home anchor (with GPS wind correction) and scans for the nested
+            # board (#12 inner / #77 outer) instead of flying blindly forward.
+            # This keeps the drone over the marker it took off above rather than
+            # walking a fixed open-loop distance off it before closed-loop
+            # control even starts.  Once the tag is visible we go
+            # straight into precision_land, whose PD does the fine centring.
             acq = acquire_tag(
                 controller, pump, state,
                 anchor_x=x_home, anchor_y=y_home,
@@ -4535,7 +4511,7 @@ with dai.Device() as device:
                 state["phase"] = "TOUCHDOWN"
                 commit_to_land(
                     controller, pump,
-                    "AprilTag never acquired after forward track",
+                    "AprilTag never acquired during hover scan",
                 )
             else:
                 # ── Combined track-and-descend (PRECISION_LAND) ─────────────
