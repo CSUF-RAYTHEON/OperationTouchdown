@@ -13,7 +13,7 @@ KEYFRAME_MIN_DIST_RATIO = 0.25 # Saves a map image if the drone moves 25% relati
 KEYFRAME_MIN_YAW_RAD = 1.0 # Saves a map image if drone rotates 1 radian. Increasing requires sharp turns to trigger a save. Decreasing maps curves better but eats memory if the drone just wobbles.
 LOOP_CHECK_INTERVAL = 0.5 # Seconds between map searches. Increasing saves CPU by checking less often, but lets drift accumulate longer. Decreasing fixes drift instantly but constantly hammers the CPU with heavy math.
 KEYFRAME_CHECK_AFTER_SUCCESSFUL_LOOP_INTERVAL = 1.0 # Seconds after a successful loop closure before we allow another keyframe to be saved. This prevents the drone from immediately saving a keyframe on top of the loop closure correction, which would cause it to "teleport" back to the same incorrect position on the next loop closure check. Increasing this gives more time for the drone to move away from the corrected position before allowing a new keyframe, but risks missing valid keyframes if the drone is moving slowly. Decreasing this allows new keyframes to be saved sooner after a correction.
-MIN_LOOP_SEPARATION = 30 # Ignores the x most recent frames. Increasing strictly prevents the drone from matching with where it was however many seconds ago. Decreasing causes wasted CPU cycles comparing the live feed against the immediate past.
+MIN_LOOP_SEPARATION = 20 # Ignores the x most recent frames. Increasing strictly prevents the drone from matching with where it was however many seconds ago. Decreasing causes wasted CPU cycles comparing the live feed against the immediate past.
 MATCH_THRESHOLD = 50 # Minimum perfect ORB matches required to trigger a correction. Increasing guarantees zero false teleports but makes the system overly strict. Decreasing finds loops easily but risks a catastrophic crash if it falsely matches two similar-looking floor tiles.
 MAX_KEYFRAMES = 600 # Max total images held in RAM. Increasing lets the drone remember massive flight paths (e.g., a whole building). Decreasing saves RAM but causes the drone to "forget" its takeoff point on long flights.
 MAX_MATCH_CANDIDATES = 325 # Max images searched per cycle. Increasing finds loops deeper in history but makes SLAM math take much longer (e.g., 400ms+). Decreasing keeps the SLAM delay short but blinds the algorithm to older map areas.
@@ -31,7 +31,6 @@ class LoopClosureORB:
         self.bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
         self.keyframes = []
         self.last_check_wall = 0.0
-        self.last_successful_loop_check_wall = 0.0
         self.last_valid_kf_index = 0
         self.last_altitude_correction_wall = 0.0
         self.last_kf_pos = None
@@ -76,7 +75,6 @@ class LoopClosureORB:
             # Create local copy to use LOAD_FAST instruction. Local variable lookups are mapped to a fixed-array index at compile-time, completely bypassing the dictionary search
             # self.variable uses attribute lookup using the LOAD_ATTR bytecode instruction. This process requires searching through the instance's internal dictionary (self.__dict__).
             # Thus, since we will be using the last keyframe position and yaw multiple times, we store them in local variables to speed up access.
-            if time.time() - self.last_successful_loop_check_wall < KEYFRAME_CHECK_AFTER_SUCCESSFUL_LOOP_INTERVAL: return
             last_kf_pos = self.last_kf_pos
             last_kf_yaw = self.last_kf_yaw
             # 1. First keyframe check and save
@@ -141,7 +139,6 @@ class LoopClosureORB:
         drift_mag = float(np.linalg.norm(drift_vec))
         self.last_kf_pos = best["pose"].copy()
         self.last_check_wall = time.time()
-        self.last_successful_loop_check_wall = time.time()
         return (drift_mag, float(drift_vec[0]), float(drift_vec[1]), float(drift_vec[2]))
     
     def cull_keyframes(self):
@@ -151,6 +148,11 @@ class LoopClosureORB:
     def altitude_correction(self, live_attitude, local_position, depth_frame_mutex, slam_trigger_mutex, shared_depth, shared_slam_trigger, shared_slam_target):
         # 1. Limit altitude corrections to at most once every MIN_ALTITUTDE_CORRECTION_INTERVAL seconds
         if time.time() - self.last_altitude_correction_wall < MIN_ALTITUTDE_CORRECTION_INTERVAL: return None
+        # If we are currently applying a loop closure correction, skip altitude correction to avoid conflicting corrections
+        with slam_trigger_mutex:
+            if shared_slam_trigger[0] or shared_slam_trigger[1]:
+                self.last_altitude_correction_wall = time.time()
+                return
         # Avoid getting depth frame until MIN_ALTITUTDE_CORRECTION_INTERVAL has passed to avoid mutex contention with the VIO process which also needs the depth frame
         with depth_frame_mutex:
             region_of_interest = shared_depth[180:220, 300:340].copy() 
@@ -164,18 +166,19 @@ class LoopClosureORB:
             depth_m = median_mm / 1000.0
             # 4. Calculate true vertical height and convert to NED (negative Z)
             true_alt_m = depth_m * math.cos(live_attitude[1]) * math.cos(live_attitude[0])
+            # Depth camera accuracy is poor if closer than 1.5m so we ignore it if its less than that
+            if true_alt_m <= 1.5:
+                self.last_altitude_correction_wall = time.time()
+                return
             true_z_ned = -true_alt_m 
             # 5. Calculate how far VIO has drifted from reality
             z_drift = true_z_ned - local_position[2]
             
             # 6. Only correct if VIO has drifted more than 5cm
             if abs(z_drift) > 0.05:
-                with slam_trigger_mutex:
-                    # If the slam is already being corrected by a loop closure, no need to do an attitude correction
-                    if not shared_slam_trigger[1] and not shared_slam_trigger[0]:
-                    # Send [Magnitude, X, Y, Z]. Zeroing X and Y protects the 2D map.
-                        shared_slam_target[:] = [abs(z_drift), 0.0, 0.0, z_drift]
-                        shared_slam_trigger[0] = True        
+                # Send [Magnitude, X, Y, Z]. Zeroing X and Y protects the 2D map.
+                shared_slam_target[:] = [abs(z_drift), 0.0, 0.0, z_drift]
+                shared_slam_trigger[0] = True        
         # Update the timer whether it triggered a correction or not
         self.last_altitude_correction_wall = time.time()
 def slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex):
@@ -230,8 +233,10 @@ def slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, sla
             live_attitude = shared_attitude[:]
         with position_mutex:
             np.copyto(local_position, shared_position)
-
-        loop.add_keyframe(local_rgb, local_position, live_attitude, slam_frame_id, t_sec)
+        with slam_trigger_mutex:
+            if not shared_slam_trigger[1]:
+                # If we are currently applying a correction, skip adding new keyframes to avoid the "teleporting keyframe" bug where the SLAM algorithm matches the current view to the same place in the map over and over again because the drone hasn't had a chance to move after the correction
+                loop.add_keyframe(local_rgb, local_position, live_attitude, slam_frame_id, t_sec)
 
         # 2. LOOP CLOSURE SEARCH
         info = loop.check_loop(local_rgb, local_position, slam_frame_id)
@@ -296,8 +301,9 @@ def test_latency_slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, positi
             live_attitude = shared_attitude[:]
         with position_mutex:
             np.copyto(local_position, shared_position)
-
-        loop.add_keyframe(local_rgb, local_position, live_attitude, slam_frame_id, t_sec)
+        with slam_trigger_mutex:
+            if not shared_slam_trigger[1]:
+                loop.add_keyframe(local_rgb, local_position, live_attitude, slam_frame_id, t_sec)
         
         # 2. LOOP CLOSURE SEARCH
         info = loop.check_loop(local_rgb, local_position, slam_frame_id)
