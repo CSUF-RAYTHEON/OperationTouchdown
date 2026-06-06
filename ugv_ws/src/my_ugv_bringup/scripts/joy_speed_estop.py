@@ -8,16 +8,16 @@ Button mapping (Xbox on Linux /dev/input/js0):
   Button 10 = R3 (right stick click) — toggle EMERGENCY STOP
 
 Speed steps (max_linear_m_s, max_angular_rad_s):
-  0: (0.012, 0.32)  minimum — confirmed working minimum
-  1: (0.015, 0.35)
-  2: (0.020, 0.40)
-  3: (0.030, 0.45)
-  4: (0.040, 0.50)
-  5: (0.060, 0.60)
-  6: (0.080, 0.70)
-  7: (0.100, 0.80)
-  8: (0.120, 0.90)
-  9: (0.150, 1.00)  max
+  0: (0.012, 0.25)  minimum
+  1: (0.015, 0.28)
+  2: (0.025, 0.32)  low-speed test point
+  3: (0.030, 0.36)
+  4: (0.040, 0.40)
+  5: (0.060, 0.50)
+  6: (0.080, 0.60)
+  7: (0.100, 0.70)
+  8: (0.120, 0.80)
+  9: (0.150, 0.90)  max
 
 Pipeline:
   teleop + Nav2 both publish to /cmd_vel
@@ -41,7 +41,7 @@ class JoySpeedEstop(Node):
     SPEED_STEPS = [
         (0.012, 0.25),  # step 0 — enough torque to turn at min speed
         (0.015, 0.28),
-        (0.020, 0.32),
+        (0.025, 0.32),  # step 2 — low-speed torque test point
         (0.030, 0.36),
         (0.040, 0.40),
         (0.060, 0.50),
