@@ -7,7 +7,7 @@ import time
 # Update this to match the port where your sending LoRa module is plugged in.
 # For Mac it might be '/dev/cu.usbserial-140'
 # For Raspberry Pi it might be '/dev/ttyUSB0' or '/dev/serial0'
-PORT = '/dev/cu.usbserial-140' 
+PORT = '/dev/ttyUSB0'
 BAUD = 9600
 
 def run_auto_test():
