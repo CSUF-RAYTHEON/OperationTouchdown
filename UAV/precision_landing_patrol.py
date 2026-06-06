@@ -137,7 +137,7 @@ except ImportError:
 
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE          = 57600
-TAKEOFF_ALTITUDE  = 4.0           # meters
+TAKEOFF_ALTITUDE  = 3.0           # meters
 TAKEOFF_ALT_TOLERANCE_M = 0.20  # m — authoritative-altitude band for declaring
                                 # the takeoff target reached (depth-preferred,
                                 # see _altitude_reading / _relative_altitude_m).
@@ -193,6 +193,11 @@ ACQUIRE_TIMEOUT_S = 30.0
 # within this window we fall back to plain LAND at the current position
 # (same fallback as an ACQUIRE timeout).
 TAG_GATE_TIMEOUT_S = 5.0
+# Hover-and-scan window at the start of PRECISION_LAND when the marker has
+# never been seen yet.  Without this the IMU-recovery timer starts on the
+# first missed frame (last_tag_time is initialised at entry) and force-lands
+# after ~RECOVERY_DURATION_S even though the detector was still warming up.
+PRECISION_LAND_ACQUIRE_S = 20.0
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Search Climb-Back Config — hard altitude cap.
@@ -1036,6 +1041,27 @@ class NestedArucoDetector:
     def _has_all_targets(self, found: dict) -> bool:
         return self.outer_id in found and self.inner_id in found
 
+    def _landing_target_ready(self, found: dict) -> bool:
+        """True once we have corners for either landing layer (inner wins)."""
+        return self.inner_id in found or self.outer_id in found
+
+    def _select_landing_corners(self, found: dict):
+        """Return (tag_id, corners) for the best available landing layer."""
+        if self.inner_id in found:
+            return self.inner_id, found[self.inner_id]
+        if self.outer_id in found:
+            return self.outer_id, found[self.outer_id]
+        return None, None
+
+    def _detection_from_corners(self, tag_id: int, corners: np.ndarray):
+        """Build a NestedTagDetection with pose, or None if pose fails."""
+        layer = "outer" if tag_id == self.outer_id else "inner"
+        pose = self._estimate_pose(tag_id, corners)
+        if pose is None:
+            return None
+        pose_t, pose_R = pose
+        return NestedTagDetection(tag_id, corners, pose_t, pose_R, layer)
+
     def _detect_two_pass(self, image: np.ndarray, found: dict):
         """Pass 1 detects markers directly (usually the inner tag); pass 2
         paints over every found quad with the local background colour and
@@ -1106,6 +1132,11 @@ class NestedArucoDetector:
         found = {}
         for variant in self._preprocess_variants(gray):
             self._detect_two_pass(variant, found)
+            # Inner alone is enough for landing; stop early instead of running
+            # all 27 variants hunting for the second layer (was ~seconds/frame
+            # at 640×640 and blocked the control loop).
+            if self.inner_id in found:
+                break
             if self._has_all_targets(found):
                 break
 
@@ -1114,21 +1145,48 @@ class NestedArucoDetector:
 
         results = []
         for tag_id, corners in found.items():
-            layer = "outer" if tag_id == self.outer_id else "inner"
-            pose = self._estimate_pose(tag_id, corners)
-            pose_t, pose_R = pose if pose is not None else (None, None)
-            results.append(
-                NestedTagDetection(tag_id, corners, pose_t, pose_R, layer)
-            )
+            det = self._detection_from_corners(tag_id, corners)
+            if det is not None:
+                results.append(det)
         return results
 
     def get_tag_detection(self, frame):
         """Single landing target, INNER tag prioritised over OUTER.  Returns a
-        NestedTagDetection (drop-in for the old AprilTag detection) or None."""
+        NestedTagDetection (drop-in for the old AprilTag detection) or None.
+
+        Uses a fast path (undistorted gray first, then preprocessing variants
+        with early exit) so the mission loop can run detection every tick without
+        blocking for multiple seconds per frame."""
         if frame is None:
             return None
-        detections = {d.layer: d for d in self.detect(frame)}
-        return detections.get("inner") or detections.get("outer")
+
+        gray = self._prepare_gray(frame)
+        found = {}
+
+        def _try_landing_target():
+            merged = self._cache.update(dict(found)) if self._cache else found
+            tag_id, corners = self._select_landing_corners(merged)
+            if tag_id is None:
+                return None
+            return self._detection_from_corners(tag_id, corners)
+
+        # Fast path — often enough at mid range without preprocessing.
+        self._detect_two_pass(gray, found)
+        det = _try_landing_target()
+        if det is not None:
+            return det
+
+        for variant in self._preprocess_variants(gray):
+            self._detect_two_pass(variant, found)
+            det = _try_landing_target()
+            if det is not None:
+                return det
+            if self.inner_id in found:
+                break
+            if self._landing_target_ready(found):
+                break
+
+        return None
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -3534,7 +3592,7 @@ def track_tag(controller, pump, state):
 #                    acquisition; caller commits to ArduCopter LAND mode
 # ─────────────────────────────────────────────────────────────────────────────
 
-def precision_land(controller, pump, state):
+def precision_land(controller, pump, state, tag_previously_acquired=False):
     """Velocity-PD descent in GUIDED mode, mirroring stationary_landing.py.
 
     The previous version of this function streamed LANDING_TARGET to the
@@ -3577,7 +3635,9 @@ def precision_land(controller, pump, state):
     """
     print("[INFO] Phase: PRECISION_LAND")
     state["phase"] = "PRECISION_LAND"
-    last_tag_time = time.time()
+    last_tag_time = state.get("last_tag_time") or time.time()
+    tag_ever_seen = tag_previously_acquired
+    pl_acquire_start = time.time()
     last_body_z   = None
     last_tag_body = None      # (body_x, body_y) on last frame the tag was seen
     coast_cmd     = None      # (vx, vy) of the last descent command — re-sent
@@ -3623,6 +3683,7 @@ def precision_land(controller, pump, state):
         tag = pump(detect=True)
 
         if tag is not None:
+            tag_ever_seen = True
             # Re-acquisition — clear recovery state so the next loss
             # snapshots fresh drift instead of reusing a stale one.
             if drift_snapshot is not None:
@@ -3788,6 +3849,39 @@ def precision_land(controller, pump, state):
 
         else:
             # Tag not visible this frame.
+            if not tag_ever_seen:
+                acquire_elapsed = time.time() - pl_acquire_start
+                if acquire_elapsed < PRECISION_LAND_ACQUIRE_S:
+                    rel_alt_acq, _ = _altitude_hold_estimate(controller)
+                    if rel_alt_acq is not None:
+                        alt_err = TAKEOFF_ALTITUDE - rel_alt_acq
+                        if abs(alt_err) < TRACK_ALT_DEADBAND_M:
+                            vz_hold = 0.0
+                        else:
+                            vz_hold = max(
+                                min(-TRACK_Kp_Z * alt_err, TRACK_MAX_VZ),
+                                -TRACK_MAX_VZ,
+                            )
+                    else:
+                        vz_hold = 0.0
+                    controller.send_velocity(0.0, 0.0, vz_hold)
+                    state["leg_label"] = (
+                        f"PL ACQUIRE {acquire_elapsed:.1f}/"
+                        f"{PRECISION_LAND_ACQUIRE_S:.0f}s"
+                    )
+                    now = time.time()
+                    if now - last_log > 1.0:
+                        print(f"[INFO] PRECISION_LAND waiting for first tag "
+                              f"({acquire_elapsed:.1f}/"
+                              f"{PRECISION_LAND_ACQUIRE_S:.0f}s)")
+                        last_log = now
+                    time.sleep(0.05)
+                    continue
+                print(f"[WARN] PRECISION_LAND never acquired tag within "
+                      f"{PRECISION_LAND_ACQUIRE_S:.0f}s — committing to LAND")
+                controller.send_velocity(0.0, 0.0, 0.0)
+                return "COMMIT_LAND"
+
             elapsed = time.time() - last_tag_time
 
             # (The old PRIMARY close-tag check that committed to LAND when the
@@ -4416,21 +4510,43 @@ with dai.Device() as device:
                 pump(detect=True)
                 time.sleep(0.05)
 
-            # ── Combined track-and-descend (PRECISION_LAND) ─────────────────
-            # The drone centres over the nested marker (inner tag #12 is
-            # prioritised, so it stays locked on as the outer tag overflows the
-            # FOV at close range) AND descends toward it in one continuous
-            # motion.  All recovery / COMMIT_LAND / touchdown handling lives
-            # inside precision_land.
-            result = precision_land(controller, pump, state)
-            if result == "COMMIT_LAND":
+            # ── Acquire nested marker before descending ─────────────────────
+            # FORWARD_TRACK creeps over the UGV but does not gate on detection.
+            # Hover at the home anchor with wind correction until the nested
+            # board (#12 inner / #77 outer) is visible — same as the old
+            # ACQUIRE → TRACK handoff, but we go straight into precision_land.
+            acq = acquire_tag(
+                controller, pump, state,
+                anchor_x=x_home, anchor_y=y_home,
+                timeout=ACQUIRE_TIMEOUT_S,
+            )
+            if acq is None:
+                print("[WARN] AprilTag not acquired — falling back to LAND "
+                      "at current position")
                 state["phase"] = "TOUCHDOWN"
                 commit_to_land(
                     controller, pump,
-                    "PRECISION_LAND IMU recovery exhausted — final commit",
+                    "AprilTag never acquired after forward track",
                 )
             else:
-                state["phase"] = "TOUCHDOWN"
+                # ── Combined track-and-descend (PRECISION_LAND) ─────────────
+                # The drone centres over the nested marker (inner tag #12 is
+                # prioritised, so it stays locked on as the outer tag overflows
+                # the FOV at close range) AND descends toward it in one
+                # continuous motion.  All recovery / COMMIT_LAND / touchdown
+                # handling lives inside precision_land.
+                result = precision_land(
+                    controller, pump, state,
+                    tag_previously_acquired=True,
+                )
+                if result == "COMMIT_LAND":
+                    state["phase"] = "TOUCHDOWN"
+                    commit_to_land(
+                        controller, pump,
+                        "PRECISION_LAND IMU recovery exhausted — final commit",
+                    )
+                else:
+                    state["phase"] = "TOUCHDOWN"
 
             # ── Post-landing UGV drive ──────────────────────────────────────
             # The drone is down on the (moving) vehicle.  Tell the UGV to keep

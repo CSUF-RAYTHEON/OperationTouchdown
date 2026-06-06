@@ -415,6 +415,24 @@ class NestedArucoDetector:
     def _has_all_targets(self, found: dict) -> bool:
         return self.outer_id in found and self.inner_id in found
 
+    def _landing_target_ready(self, found: dict) -> bool:
+        return self.inner_id in found or self.outer_id in found
+
+    def _select_landing_corners(self, found: dict):
+        if self.inner_id in found:
+            return self.inner_id, found[self.inner_id]
+        if self.outer_id in found:
+            return self.outer_id, found[self.outer_id]
+        return None, None
+
+    def _detection_from_corners(self, tag_id: int, corners: np.ndarray):
+        layer = "outer" if tag_id == self.outer_id else "inner"
+        pose = self._estimate_pose(tag_id, corners)
+        if pose is None:
+            return None
+        pose_t, pose_R = pose
+        return NestedTagDetection(tag_id, corners, pose_t, pose_R, layer)
+
     def _estimate_pose(self, tag_id: int, corners: np.ndarray):
         """Per-layer pose via IPPE_SQUARE.  Returns (pose_t, pose_R) or None.
         Returns None when no intrinsics are configured."""
@@ -455,6 +473,8 @@ class NestedArucoDetector:
         found = {}
         for variant in self._preprocess_variants(gray):
             self._detect_two_pass(variant, found)
+            if self.inner_id in found:
+                break
             if self._has_all_targets(found):
                 break
 
@@ -463,12 +483,9 @@ class NestedArucoDetector:
 
         results = []
         for tag_id, corners in found.items():
-            layer = "outer" if tag_id == self.outer_id else "inner"
-            pose = self._estimate_pose(tag_id, corners)
-            pose_t, pose_R = pose if pose is not None else (None, None)
-            results.append(
-                NestedTagDetection(tag_id, corners, pose_t, pose_R, layer)
-            )
+            det = self._detection_from_corners(tag_id, corners)
+            if det is not None:
+                results.append(det)
         return results
 
     def get_layer(self, frame, layer: str):
@@ -486,8 +503,35 @@ class NestedArucoDetector:
 
         Returns a single NestedTagDetection or None.
         """
-        detections = {d.layer: d for d in self.detect(frame)}
-        return detections.get("inner") or detections.get("outer")
+        if frame is None:
+            return None
+
+        gray = self._prepare_gray(frame)
+        found = {}
+
+        def _try_landing_target():
+            merged = self._cache.update(dict(found)) if self._cache else found
+            tag_id, corners = self._select_landing_corners(merged)
+            if tag_id is None:
+                return None
+            return self._detection_from_corners(tag_id, corners)
+
+        self._detect_two_pass(gray, found)
+        det = _try_landing_target()
+        if det is not None:
+            return det
+
+        for variant in self._preprocess_variants(gray):
+            self._detect_two_pass(variant, found)
+            det = _try_landing_target()
+            if det is not None:
+                return det
+            if self.inner_id in found:
+                break
+            if self._landing_target_ready(found):
+                break
+
+        return None
 
     def get_tag_pose(self, frame):
         """
