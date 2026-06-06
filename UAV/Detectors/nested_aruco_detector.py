@@ -53,8 +53,8 @@ INNER_TAG_ID = 12      # inner tag ID — fixed by generate_board_nest.py
 # If you measured them independently with a ruler, just type both in directly.
 #
 # !!! EDIT THESE TWO NUMBERS to match your physical printout !!!
-OUTER_TAG_SIZE = 0.20            # meters — outer black square side length
-INNER_TAG_SIZE = OUTER_TAG_SIZE / 4.0   # meters — inner black square side length
+OUTER_TAG_SIZE = 0.34            # meters — outer black square side length (measured)
+INNER_TAG_SIZE = 0.09            # meters — inner black square side length (measured)
 
 # Both tags are AprilTag 36h11 — the same family the generator uses.
 ARUCO_DICT = aruco.DICT_APRILTAG_36h11
@@ -291,69 +291,70 @@ class NestedArucoDetector:
 
     # ── preprocessing ─────────────────────────────────────────────────────────
 
-    def _preprocess_variants(self, gray: np.ndarray) -> list:
-        """27 lighting-normalized variants, least to most aggressive.  See
-        april_tag_detector.py for per-pass documentation."""
+    def _preprocess_variants(self, gray: np.ndarray):
+        """Lazy generator of the 27 lighting-normalized variants, least to most
+        aggressive.  See april_tag_detector.py for per-pass documentation.
+
+        This is a GENERATOR (not a list) on purpose: callers break out the
+        instant a target is found, so the expensive later transforms (bilateral
+        filters, big-kernel blurs, division / local-std normalisation) are only
+        computed when the earlier passes fail.  The old list form computed all
+        27 up front on every frame, which dominated detection latency at large
+        resolutions.  Pass order / contents are unchanged."""
         p1 = self._clahe.apply(gray)
-        p2 = _unsharp_mask(p1)
-        p3 = self._clahe.apply(cv2.LUT(gray, self._gamma_lut))
-        p4 = self._clahe.apply(
+        yield p1
+        yield _unsharp_mask(p1)
+        yield self._clahe.apply(cv2.LUT(gray, self._gamma_lut))
+        yield self._clahe.apply(
             cv2.bilateralFilter(gray, d=9, sigmaColor=75, sigmaSpace=75)
         )
 
         div_norm = _division_normalize(gray)
-        p5 = self._clahe_deep.apply(div_norm)
-        p6 = self._clahe_deep.apply(_unsharp_mask(div_norm))
+        yield self._clahe_deep.apply(div_norm)
+        yield self._clahe_deep.apply(_unsharp_mask(div_norm))
 
         lsdn = _local_std_normalize(gray)
-        p7 = self._clahe_deep.apply(lsdn)
-        p8 = self._clahe_deep.apply(_unsharp_mask(lsdn))
+        yield self._clahe_deep.apply(lsdn)
+        yield self._clahe_deep.apply(_unsharp_mask(lsdn))
 
         gamma_strong = cv2.LUT(gray, self._gamma_lut_strong)
-        p9 = self._clahe_deep.apply(gamma_strong)
-        p10 = self._clahe_deep.apply(
+        yield self._clahe_deep.apply(gamma_strong)
+        yield self._clahe_deep.apply(
             cv2.bilateralFilter(gamma_strong, d=9, sigmaColor=75, sigmaSpace=75)
         )
 
         gamma_mid_dark = cv2.LUT(gray, self._gamma_lut_mid_dark)
-        p11 = self._clahe_deep.apply(gamma_mid_dark)
-        p12 = self._clahe_deep.apply(_division_normalize(gamma_mid_dark))
+        yield self._clahe_deep.apply(gamma_mid_dark)
+        yield self._clahe_deep.apply(_division_normalize(gamma_mid_dark))
 
-        p13 = self._clahe_deep.apply(cv2.LUT(gray, self._gamma_lut_extreme))
-        p14 = self._clahe_deep.apply(_percentile_stretch(gray))
+        yield self._clahe_deep.apply(cv2.LUT(gray, self._gamma_lut_extreme))
+        yield self._clahe_deep.apply(_percentile_stretch(gray))
 
         denoised = cv2.GaussianBlur(gray, (5, 5), 0)
-        p15 = self._clahe_deep.apply(_percentile_stretch(denoised))
+        yield self._clahe_deep.apply(_percentile_stretch(denoised))
 
-        p16 = _adaptive_thresh(gray, block_size=31)
-        p17 = _adaptive_thresh(gray, block_size=71)
+        yield _adaptive_thresh(gray, block_size=31)
+        yield _adaptive_thresh(gray, block_size=71)
 
-        p18 = self._clahe_deep.apply(_local_std_normalize(denoised))
+        yield self._clahe_deep.apply(_local_std_normalize(denoised))
 
-        p19 = self._clahe.apply(div_norm)
+        yield self._clahe.apply(div_norm)
 
         white_mild = cv2.LUT(gray, self._gamma_lut_white_mild)
-        p20 = self._clahe.apply(white_mild)
-        p21 = self._clahe.apply(_unsharp_mask(white_mild))
-        p22 = self._clahe_deep.apply(_division_normalize(white_mild))
-        p23 = self._clahe_deep.apply(_local_std_normalize(white_mild))
+        yield self._clahe.apply(white_mild)
+        yield self._clahe.apply(_unsharp_mask(white_mild))
+        yield self._clahe_deep.apply(_division_normalize(white_mild))
+        yield self._clahe_deep.apply(_local_std_normalize(white_mild))
 
         white_moderate = cv2.LUT(gray, self._gamma_lut_white_moderate)
-        p24 = self._clahe_deep.apply(white_moderate)
-        p25 = self._clahe_deep.apply(cv2.LUT(gray, self._gamma_lut_white_strong))
+        yield self._clahe_deep.apply(white_moderate)
+        yield self._clahe_deep.apply(cv2.LUT(gray, self._gamma_lut_white_strong))
 
         bright_denoised = cv2.GaussianBlur(gray, (5, 5), 0)
-        p26 = self._clahe_deep.apply(
+        yield self._clahe_deep.apply(
             cv2.LUT(bright_denoised, self._gamma_lut_white_moderate)
         )
-        p27 = _adaptive_thresh(white_moderate, block_size=31)
-
-        return [
-            p1,  p2,  p3,  p4,  p5,  p6,  p7,  p8,  p9,
-            p10, p11, p12, p13, p14, p15, p16, p17,
-            p18,
-            p19, p20, p21, p22, p23, p24, p25, p26, p27,
-        ]
+        yield _adaptive_thresh(white_moderate, block_size=31)
 
     # ── two-pass nested detection ─────────────────────────────────────────────
 
