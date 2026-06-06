@@ -121,6 +121,7 @@ import cv2.aruco as aruco
 import numpy as np
 import depthai as dai
 from pymavlink import mavutil
+from communications.lora2 import run_auto_test
 
 # pyserial — used both by pymavlink (Pixhawk link) and by the LoRa UGV link
 # below.  Guarded so a missing module degrades to "no UGV link" rather than

@@ -22,8 +22,8 @@ def run_auto_test():
         ser.write(b'STRAIGHT\n')
 
         # 2. Wait exactly 5 seconds
-        print("Driving forward... waiting 5 seconds.")
-        for i in range(5, 0, -1):
+        print("Driving forward... waiting 12 seconds.")
+        for i in range(12, 0, -1):
             print(f"{i}...")
             time.sleep(1)
 
