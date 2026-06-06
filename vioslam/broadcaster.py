@@ -7,10 +7,8 @@ from multiprocessing import shared_memory
 from controls.connect import connect_UART2
 from controls.attitude import request_attitude_messages
 from controls.getmessages import get_messages
-from controls.attitude import get_attitude
 from controls.affinitypriority import set_core_and_priority 
 from controls.nedlocalposition import request_local_nedposition_messages
-from controls.nedlocalposition import get_local_nedposition
 
 def broadcaster(rgb_frame_mutex, gray_frame_mutex, depth_frame_mutex, attitude_mutex, local_position_ned_mutex):
     set_core_and_priority(2, -20) # Core 3, Max Priority
