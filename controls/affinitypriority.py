@@ -1,3 +1,4 @@
+# This code includes a utility function that allows usre to set the CPU core affinity and priority of the current process.
 import os
 
 def set_core_and_priority(core_index: int, nice_value: int = None):
