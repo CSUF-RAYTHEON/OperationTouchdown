@@ -10,6 +10,18 @@ import time
 PORT = '/dev/ttyUSB0'
 BAUD = 9600
 
+def stop():
+    ser = serial.Serial(PORT, BAUD, timeout=1)
+    time.sleep(1)
+    ser.write(b'STOP\n')
+    ser.close()
+
+def start():
+    ser = serial.Serial(PORT, BAUD, timeout=1)
+    time.sleep(1)
+    ser.write(b'BACKWARDS\n')
+    ser.close()
+
 def run_auto_test():
     try:
         print(f"Connecting to LoRa on {PORT} at {BAUD} baud...")
