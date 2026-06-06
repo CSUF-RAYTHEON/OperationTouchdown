@@ -21,9 +21,9 @@ def run_auto_test():
         # Ensure we add the newline (\n) so the UGV bridge knows the message is complete
         ser.write(b'STRAIGHT\n')
 
-        # 2. Wait exactly 5 seconds
-        print("Driving forward... waiting 12 seconds.")
-        for i in range(12, 0, -1):
+        # 2. Wait exactly 12 seconds
+        print("Driving forward... waiting 30 seconds.")
+        for i in range(30, 0, -1):
             print(f"{i}...")
             time.sleep(1)
 

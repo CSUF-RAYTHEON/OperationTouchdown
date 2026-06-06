@@ -138,7 +138,7 @@ except ImportError:
 
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE          = 57600
-TAKEOFF_ALTITUDE  = 4.0           # meters
+TAKEOFF_ALTITUDE  = 3.0           # meters
 TAKEOFF_ALT_TOLERANCE_M = 0.20  # m — authoritative-altitude band for declaring
                                 # the takeoff target reached (depth-preferred,
                                 # see _altitude_reading / _relative_altitude_m).
@@ -4220,24 +4220,24 @@ def search_and_relocate(controller, pump, state, last_known_xy):
 # ─────────────────────────────────────────────────────────────────────────────
 # Main — single top-level block (no __main__ guard, matching existing files)
 # ─────────────────────────────────────────────────────────────────────────────
+def main():
+    with dai.Device() as device:
+        print("[INFO] OAK-D started")
+        calibration = device.getCalibration()
 
-with dai.Device() as device:
-    print("[INFO] OAK-D started")
-    calibration = device.getCalibration()
+        detector = NestedArucoDetector(calibration)
 
-    detector = NestedArucoDetector(calibration)
+        with dai.Pipeline(device) as pipeline:
 
-    with dai.Pipeline(device) as pipeline:
+            cam_rgb = pipeline.create(dai.node.Camera)
+            cam_rgb.build(dai.CameraBoardSocket.CAM_A)
 
-        cam_rgb = pipeline.create(dai.node.Camera)
-        cam_rgb.build(dai.CameraBoardSocket.CAM_A)
-
-        rgb_out = cam_rgb.requestOutput(
-            size=CAMERA_RESOLUTION,
-            type=dai.ImgFrame.Type.NV12,
-            fps=30,
-        )
-        q_rgb = rgb_out.createOutputQueue(maxSize=4, blocking=False)
+            rgb_out = cam_rgb.requestOutput(
+                size=CAMERA_RESOLUTION,
+                type=dai.ImgFrame.Type.NV12,
+                fps=30,
+            )
+            q_rgb = rgb_out.createOutputQueue(maxSize=4, blocking=False)
 
         # OAK-D S2 onboard BNO086 IMU — added for the new tag-loss
         # recovery (see RECOVERY_* config above).  We enable only the
@@ -4245,11 +4245,11 @@ with dai.Device() as device:
         # time but is cheap to add later if attitude rate-of-change
         # becomes useful.  Sample rate matches RECOVERY_OAK_IMU_HZ so
         # the EMA filter in make_pump can settle within a few frames.
-        oak_imu = pipeline.create(dai.node.IMU)
-        oak_imu.enableIMUSensor(dai.IMUSensor.ACCELEROMETER_RAW, RECOVERY_OAK_IMU_HZ)
-        oak_imu.setBatchReportThreshold(1)
-        oak_imu.setMaxBatchReports(10)
-        q_oak_imu = oak_imu.out.createOutputQueue(maxSize=20, blocking=False)
+            oak_imu = pipeline.create(dai.node.IMU)
+            oak_imu.enableIMUSensor(dai.IMUSensor.ACCELEROMETER_RAW, RECOVERY_OAK_IMU_HZ)
+            oak_imu.setBatchReportThreshold(1)
+            oak_imu.setMaxBatchReports(10)
+            q_oak_imu = oak_imu.out.createOutputQueue(maxSize=20, blocking=False)
 
         # ── OAK-D S2 stereo depth for altitude (Issue 4) ──────────────────
         # The OAK-D S2 has two grayscale stereo cameras (CAM_B = left,
@@ -4267,136 +4267,137 @@ with dai.Device() as device:
         # on a non-S2 OAK-D variant that lacks one socket), we catch the
         # exception and set q_depth=None so the rest of the mission can
         # continue using EKF altitude exclusively.
-        q_depth = None
-        try:
-            left_cam = pipeline.create(dai.node.Camera)
-            left_cam.build(dai.CameraBoardSocket.CAM_B)
-            right_cam = pipeline.create(dai.node.Camera)
-            right_cam.build(dai.CameraBoardSocket.CAM_C)
+            q_depth = None
+            try:
+                left_cam = pipeline.create(dai.node.Camera)
+                left_cam.build(dai.CameraBoardSocket.CAM_B)
+                right_cam = pipeline.create(dai.node.Camera)
+                right_cam.build(dai.CameraBoardSocket.CAM_C)
 
-            stereo = pipeline.create(dai.node.StereoDepth)
+                stereo = pipeline.create(dai.node.StereoDepth)
             # PresetType was removed/renamed in some depthai builds; fall back
             # to manual config so the node is always fully initialised.
-            if hasattr(dai.node.StereoDepth, 'PresetType'):
-                stereo.setDefaultProfilePreset(
-                    dai.node.StereoDepth.PresetType.HIGH_ACCURACY)
-            else:
-                stereo.initialConfig.setConfidenceThreshold(200)
-                stereo.setRectifyEdgeFillColor(0)
-            stereo.setLeftRightCheck(True)
-            stereo.setSubpixel(False)
+                if hasattr(dai.node.StereoDepth, 'PresetType'):
+                    stereo.setDefaultProfilePreset(
+                        dai.node.StereoDepth.PresetType.HIGH_ACCURACY)
+                else:
+                    stereo.initialConfig.setConfidenceThreshold(200)
+                    stereo.setRectifyEdgeFillColor(0)
+                stereo.setLeftRightCheck(True)
+                stereo.setSubpixel(False)
 
-            left_out  = left_cam.requestOutput(
-                size=DEPTH_STEREO_RES,
-                type=dai.ImgFrame.Type.GRAY8,
-                fps=30,
-            )
-            right_out = right_cam.requestOutput(
-                size=DEPTH_STEREO_RES,
-                type=dai.ImgFrame.Type.GRAY8,
-                fps=30,
-            )
-            left_out.link(stereo.left)
-            right_out.link(stereo.right)
+                left_out  = left_cam.requestOutput(
+                    size=DEPTH_STEREO_RES,
+                    type=dai.ImgFrame.Type.GRAY8,
+                    fps=30,
+                )
+                right_out = right_cam.requestOutput(
+                    size=DEPTH_STEREO_RES,
+                    type=dai.ImgFrame.Type.GRAY8,
+                    fps=30,
+                )
+                left_out.link(stereo.left)
+                right_out.link(stereo.right)
 
-            q_depth = stereo.depth.createOutputQueue(maxSize=4, blocking=False)
-            print("[INFO] OAK-D S2 stereo depth pipeline ready "
-                  f"(resolution {DEPTH_STEREO_RES}, tilt guard "
-                  f"±{DEPTH_ALT_TILT_THRESHOLD_DEG}°)")
-        except Exception as _depth_ex:
-            print(f"[WARN] Could not set up stereo depth pipeline: {_depth_ex} "
-                  "— altitude will use Pixhawk EKF only")
-            q_depth = None
+                q_depth = stereo.depth.createOutputQueue(maxSize=4, blocking=False)
+                print("[INFO] OAK-D S2 stereo depth pipeline ready "
+                    f"(resolution {DEPTH_STEREO_RES}, tilt guard "
+                    f"±{DEPTH_ALT_TILT_THRESHOLD_DEG}°)")
+            except Exception as _depth_ex:
+                print(f"[WARN] Could not set up stereo depth pipeline: {_depth_ex} "
+                    "— altitude will use Pixhawk EKF only")
+                q_depth = None
 
-        pipeline.start()
-        print("[INFO] Pipeline started — opening preview window...")
+            pipeline.start()
+            print("[INFO] Pipeline started — opening preview window...")
 
         # Build the controller AFTER the camera is live so the OpenCV window
         # appears the moment the program runs (the user explicitly required
         # the window to be visible during pre-arm and arming, not just once
         # the drone is at altitude).
-        controller = PrecisionLandingController(CONNECTION_STRING, BAUDRATE)
-        controller.request_telemetry_streams()
+            controller = PrecisionLandingController(CONNECTION_STRING, BAUDRATE)
+            controller.request_telemetry_streams()
 
         # Shared state dict.  Everything writes here, draw_overlay reads it.
-        state = {
-            "phase":          "INIT",
-            "flightmode":     controller.master.flightmode,
-            "armed":          False,
-            "altitude":       None,
-            "depth_alt":      None,   # OAK-D stereo depth altitude (Issue 4)
-            "alt_source":     "EKF",  # "DEPTH" when depth is in use
-            "leg_label":      "",
-            "tag_visible":    False,
-            "last_tag_time":  0.0,
-            "time_lost":      0.0,
-            "frame":          None,
-            "last_tag":       None,
-            "cmd":            controller.last_cmd,
-        }
-        pump = make_pump(q_rgb, q_oak_imu, detector, controller, state,
-                         q_depth=q_depth)
+            state = {
+                "phase":          "INIT",
+                "flightmode":     controller.master.flightmode,
+                "armed":          False,
+                "altitude":       None,
+                "depth_alt":      None,   # OAK-D stereo depth altitude (Issue 4)
+                "alt_source":     "EKF",  # "DEPTH" when depth is in use
+                "leg_label":      "",
+                "tag_visible":    False,
+                "last_tag_time":  0.0,
+                "time_lost":      0.0,
+                "frame":          None,
+                "last_tag":       None,
+                "cmd":            controller.last_cmd,
+            }
+            pump = make_pump(q_rgb, q_oak_imu, detector, controller, state,
+                            q_depth=q_depth)
 
         # Pump for ~0.5 s so the OpenCV window is on-screen with a phase
         # label BEFORE we touch the FCU.
-        for _ in range(10):
-            pump()
-            time.sleep(0.05)
+            for _ in range(10):
+                pump()
+                time.sleep(0.05)
 
         # Open the UGV LoRa link now (before arming) so a missing dongle is
         # surfaced on the ground rather than mid-flight.  Offline mode is
         # non-fatal — the flight still runs, the UGV just won't be commanded.
-        ugv = UGVLoraLink()
+            ugv = UGVLoraLink()
 
         # ── Pre-flight: enable PrecLand, set GUIDED, arm, takeoff ──────────
-        state["phase"] = "PRECLAND_SETUP"
-        controller.enable_precland_params()
-        for _ in range(5):
-            pump()
-            time.sleep(0.05)
+            state["phase"] = "PRECLAND_SETUP"
+            controller.enable_precland_params()
+            for _ in range(5):
+                pump()
+                time.sleep(0.05)
 
-        state["phase"] = "GUIDED"
-        controller.change_flight_mode("GUIDED")
-        for _ in range(5):
-            pump()
-            time.sleep(0.05)
+            state["phase"] = "GUIDED"
+            controller.change_flight_mode("GUIDED")
+            for _ in range(5):
+                pump()
+                time.sleep(0.05)
 
-        state["phase"] = "ARMING"
-        controller.arm_motors()
-        for _ in range(5):
-            pump()
-            time.sleep(0.05)
+            state["phase"] = "ARMING"
+            controller.arm_motors()
+            for _ in range(5):
+                pump()
+                time.sleep(0.05)
 
-        state["phase"] = "TAKEOFF"
-        try:
-            controller.takeoff_to_altitude(TAKEOFF_ALTITUDE, pump_fn=pump)
-        except RuntimeError as e:
-            print(f"[CRITICAL] Takeoff failed: {e}")
-            print("[CRITICAL] Aborting mission — switching to LAND for safety")
+            state["phase"] = "TAKEOFF"
+            try:
+                controller.takeoff_to_altitude(TAKEOFF_ALTITUDE, pump_fn=pump)
+            except RuntimeError as e:
+                print(f"[CRITICAL] Takeoff failed: {e}")
+                print("[CRITICAL] Aborting mission — switching to LAND for safety")
             # Defensive: make sure the UGV is told to STOP even though we never
             # got far enough to start it driving.
-            ugv.send(LORA_CMD_STOP)
-            ugv.close()
-            controller.change_flight_mode("LAND")
-            for _ in range(20):
-                pump()
-                time.sleep(0.1)
-            raise SystemExit(1)
+                ugv.send(LORA_CMD_STOP)
+                ugv.close()
+                controller.change_flight_mode("LAND")
+                for _ in range(20):
+                    pump()
+                    time.sleep(0.1)
+                raise SystemExit(1)
 
         # ── UGV GO ─────────────────────────────────────────────────────────
         # The drone is now airborne — start the ground vehicle moving (slowly;
         # the crawl speed is set on the UGV side via its straight_speed param).
-        ugv.send(LORA_CMD_GO)
+            ugv.send(LORA_CMD_GO)
+            run_auto_test()
 
-        try:
+            try:
             # ── Stabilization (quick altitude confirm + home anchor) ────────
-            print("[INFO] Phase: STABILIZE")
-            state["phase"] = "STABILIZE"
-            x_home, y_home = controller.wait_stabilized(
-                TAKEOFF_ALTITUDE, pump_fn=pump,
-            )
-            print(f"[INFO] Home anchor captured: "
-                  f"({x_home:+.2f}, {y_home:+.2f})")
+                print("[INFO] Phase: STABILIZE")
+                state["phase"] = "STABILIZE"
+                x_home, y_home = controller.wait_stabilized(
+                    TAKEOFF_ALTITUDE, pump_fn=pump,
+                )
+                print(f"[INFO] Home anchor captured: "
+                    f"({x_home:+.2f}, {y_home:+.2f})")
 
             # ── Forward tracking creep ──────────────────────────────────────
             # The UGV started its slow straight-line drive at takeoff, so
@@ -4406,16 +4407,16 @@ with dai.Device() as device:
             # pulled ahead during the climb.  We pump the detector each tick so
             # the nested marker shows up on the HUD as it comes into view, then
             # hand off to precision_land whose PD takes over the fine chase.
-            print(f"[INFO] Phase: FORWARD_TRACK ({AIRBORNE_HOLD_S:.0f}s @ "
-                  f"{FORWARD_TRACK_SPEED:.2f} m/s forward)")
-            state["phase"] = "FORWARD_TRACK"
-            hold_start = time.time()
-            while time.time() - hold_start < AIRBORNE_HOLD_S:
-                controller.send_velocity(FORWARD_TRACK_SPEED, 0.0, 0.0)
-                remaining = AIRBORNE_HOLD_S - (time.time() - hold_start)
-                state["leg_label"] = f"FWD {remaining:.1f}s"
-                pump(detect=True)
-                time.sleep(0.05)
+                print(f"[INFO] Phase: FORWARD_TRACK ({AIRBORNE_HOLD_S:.0f}s @ "
+                    f"{FORWARD_TRACK_SPEED:.2f} m/s forward)")
+                state["phase"] = "FORWARD_TRACK"
+                hold_start = time.time()
+                while time.time() - hold_start < AIRBORNE_HOLD_S:
+                    controller.send_velocity(FORWARD_TRACK_SPEED, 0.0, 0.0)
+                    remaining = AIRBORNE_HOLD_S - (time.time() - hold_start)
+                    state["leg_label"] = f"FWD {remaining:.1f}s"
+                    pump(detect=True)
+                    time.sleep(0.05)
 
             # ── Combined track-and-descend (PRECISION_LAND) ─────────────────
             # The drone centres over the nested marker (inner tag #12 is
@@ -4423,45 +4424,45 @@ with dai.Device() as device:
             # FOV at close range) AND descends toward it in one continuous
             # motion.  All recovery / COMMIT_LAND / touchdown handling lives
             # inside precision_land.
-            result = precision_land(controller, pump, state)
-            if result == "COMMIT_LAND":
-                state["phase"] = "TOUCHDOWN"
-                commit_to_land(
-                    controller, pump,
-                    "PRECISION_LAND IMU recovery exhausted — final commit",
-                )
-            else:
-                state["phase"] = "TOUCHDOWN"
+                result = precision_land(controller, pump, state)
+                if result == "COMMIT_LAND":
+                    state["phase"] = "TOUCHDOWN"
+                    commit_to_land(
+                        controller, pump,
+                        "PRECISION_LAND IMU recovery exhausted — final commit",
+                    )
+                else:
+                    state["phase"] = "TOUCHDOWN"
 
             # ── Post-landing UGV drive ──────────────────────────────────────
             # The drone is down on the (moving) vehicle.  Tell the UGV to keep
             # driving slowly for UGV_DRIVE_SECONDS, then STOP and end the
             # mission for both vehicles.  Re-sending STRAIGHT re-arms a fresh
             # drive window from this instant.
-            print(f"[INFO] Touchdown — commanding UGV to continue for "
-                  f"{UGV_DRIVE_SECONDS:.0f}s")
-            state["phase"] = "UGV_DRIVE"
-            ugv.send(LORA_CMD_GO)
-            drive_start = time.time()
-            while time.time() - drive_start < UGV_DRIVE_SECONDS:
-                remaining = UGV_DRIVE_SECONDS - (time.time() - drive_start)
-                state["leg_label"] = f"UGV DRIVE {remaining:.1f}s"
-                pump()
-                time.sleep(0.1)
+                print(f"[INFO] Touchdown — commanding UGV to continue for "
+                    f"{UGV_DRIVE_SECONDS:.0f}s")
+                state["phase"] = "UGV_DRIVE"
+                ugv.send(LORA_CMD_GO)
+                drive_start = time.time()
+                while time.time() - drive_start < UGV_DRIVE_SECONDS:
+                    remaining = UGV_DRIVE_SECONDS - (time.time() - drive_start)
+                    state["leg_label"] = f"UGV DRIVE {remaining:.1f}s"
+                    pump()
+                    time.sleep(0.1)
 
-            print("[INFO] UGV drive window complete — commanding STOP")
-            state["phase"] = "MISSION_COMPLETE"
-            ugv.send(LORA_CMD_STOP)
-        finally:
+                print("[INFO] UGV drive window complete — commanding STOP")
+                state["phase"] = "MISSION_COMPLETE"
+                ugv.send(LORA_CMD_STOP)
+            finally:
             # Whatever happened above (clean finish OR an exception), make sure
             # the UGV is halted and the serial link is released.
-            ugv.send(LORA_CMD_STOP)
-            ugv.close()
+                ugv.send(LORA_CMD_STOP)
+                ugv.close()
 
         # Final pump so the very last HUD frame is visible briefly before
         # window teardown.
-        for _ in range(20):
-            pump()
-            time.sleep(0.05)
+            for _ in range(20):
+                pump()
+                time.sleep(0.05)
 
-cv2.destroyAllWindows()
+    cv2.destroyAllWindows()
