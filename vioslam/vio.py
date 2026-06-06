@@ -5,6 +5,7 @@ import math
 import multiprocessing as mp
 from controls.busywait import delay_busywait
 from controls.connect import connect_UART3
+from controls.affinitypriority import set_core_and_priority
 from vioslam.broadcaster import broadcaster
 from multiprocessing import shared_memory
 from pymavlink import mavutil
@@ -18,10 +19,10 @@ MIN_PNP_POINTS = 10 # Minimum points required to calculate 3D movement. Increasi
 DEPTH_MIN_M = 0.08 # Ignores points closer than 8cm. Increasing ensures you don't accidentally track your own landing gear or dust. Decreasing allows tracking right until touchdown but risks catching drone body parts.
 DEPTH_MAX_M = 8.0 # Ignores points further than 8m. Increasing allows high-altitude tracking but stereo depth math gets extremely inaccurate far away. Decreasing forces safe, low-altitude tracking only.
 REDETECT_EVERY = 5 # Redetect features every N frames. Lowering improves probability of not using stale or blurry floor data during a rapid movement.
-SOFT_CORR_ALPHA = 0.25 # Percentage of SLAM vector applied at once. Increasing snaps the drone to the map instantly (causes violent flight controller jerks). Decreasing smooths out the flight path but takes longer to eliminate drift.
+SOFT_CORR_ALPHA = 0.10 # Percentage of SLAM vector applied at once. Increasing snaps the drone to the map instantly (causes violent flight controller jerks). Decreasing smooths out the flight path but takes longer to eliminate drift.
 SOFT_CORR_COOLDOWN = 0.75 # Seconds to wait before applying another correction. Increasing prevents rapid oscillatory teleporting. Decreasing fixes map drift faster but can cause the drone to stutter.
-MIN_DRIFT_TO_CORRECT_M = 0.2 # Ignores map drift smaller than 20cm. Increasing stops the system from fighting tiny micro-errors (prevents injected noise). Decreasing forces strict map adherence but causes continuous micro-jitters.
-MAX_CORR_STEP_M = 1.0 # Absolute max meters the drone can teleport in one frame. Increasing allows instant recovery from huge map errors. Decreasing protects the flight controller from violent, physically impossible jumps.
+MIN_DRIFT_TO_CORRECT_M = 0.01 # Ignores map drift smaller than 5cm. Increasing stops the system from fighting tiny micro-errors (prevents injected noise). Decreasing forces strict map adherence but causes continuous micro-jitters.
+MAX_CORR_STEP_M = 0.5 # Absolute max meters the drone can teleport in one frame. Increasing allows instant recovery from huge map errors. Decreasing protects the flight controller from violent, physically impossible jumps.
 
 def clamp_norm(vec: np.ndarray, max_norm: float) -> np.ndarray:
     n = float(np.linalg.norm(vec))
@@ -70,6 +71,8 @@ class VO_LK:
         self.num_tracked = 0
         self.frame_idx = 0
         self._last_corr_wall = 0.0
+        self.correction_buffer = np.zeros(3, dtype=np.float64)
+        self.correction_completed = True
 
     def _detect(self, gray):
         return cv2.goodFeaturesToTrack(
@@ -173,23 +176,36 @@ class VO_LK:
         self.prev_depth = depth_mm.copy()
 
     def apply_soft_correction(self, slam_target_data: np.ndarray):
-        now = time.time()
-        if now - self._last_corr_wall < SOFT_CORR_COOLDOWN: return None
         if slam_target_data[0] < MIN_DRIFT_TO_CORRECT_M: return None
 
-        step = clamp_norm(slam_target_data[1:4], MAX_CORR_STEP_M)
-        corr = step * SOFT_CORR_ALPHA
-
-        self.global_north += corr[0]
-        self.global_east += corr[1]
-        self.global_down += corr[2]
-        
-        self._last_corr_wall = now
+        self.correction_buffer = slam_target_data[1:4].copy()
         return True
+    
+    def drain_correction_buffer(self, correction_trigger_mutex, shared_slam_trigger):
+        buffer_mag = float(np.linalg.norm(self.correction_buffer))
+        # If the bucket is less than the minimum drift to correct, do nothing
+        if buffer_mag < MIN_DRIFT_TO_CORRECT_M: 
+            if not self.correction_completed:
+                self.correction_completed = True
+                with correction_trigger_mutex:
+                    self.correction_buffer[:] = 0.0
+                    shared_slam_trigger[1] = False # Acknowledge that we've fully applied the correction
+            return
+
+        north_correction = np.clip(self.correction_buffer[0] * SOFT_CORR_ALPHA, -MAX_CORR_STEP_M, MAX_CORR_STEP_M)
+        east_correction = np.clip(self.correction_buffer[1] * SOFT_CORR_ALPHA, -MAX_CORR_STEP_M, MAX_CORR_STEP_M)
+        down_correction = np.clip(self.correction_buffer[2] * SOFT_CORR_ALPHA, -MAX_CORR_STEP_M, MAX_CORR_STEP_M)
+
+        self.global_north += north_correction
+        self.global_east += east_correction
+        self.global_down += down_correction
+
+        self.correction_buffer -= np.array([north_correction, east_correction, down_correction])
 
     def pose(self):
         return [self.global_north, self.global_east, self.global_down]
 def vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_trigger_mutex):
+    set_core_and_priority(0, -20) # Core 1, Max Priority
     master_uart3 = connect_UART3()
     W, H = 640, 400
     
@@ -207,7 +223,7 @@ def vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, sla
     shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
     shared_slam_target = np.ndarray((4,), dtype=np.float64, buffer=shm_slam_target.buf)
-    shared_slam_trigger = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
+    shared_slam_trigger = np.ndarray((2,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
 
     local_calib = np.zeros((3, 3), dtype=np.float64)
     local_gray = np.zeros((H, W), dtype=np.uint8)
@@ -245,7 +261,11 @@ def vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, sla
                     np.copyto(local_slam_target, shared_slam_target)
                     vo.apply_soft_correction(local_slam_target)
                     shared_slam_trigger[0] = False # Acknowledge receipt
+                    shared_slam_trigger[1] = True # Signal to SLAM that we are busy applying correction.
+                    vo.correction_completed = False
+
             # Send to Pixhawk
+            vo.drain_correction_buffer(slam_trigger_mutex, shared_slam_trigger)
             pos = vo.pose()
             with position_mutex:
                 shared_position[:] = pos
@@ -253,6 +273,7 @@ def vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, sla
         else:
             print(f"VIO Tracking Lost: {vo.status}")
 def test_latency_vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_trigger_mutex):
+    set_core_and_priority(0, -20) # Core 1, Max Priority
     master_uart3 = connect_UART3()
     W, H = 640, 400
     count = 0
@@ -272,7 +293,7 @@ def test_latency_vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, positi
     shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
     shared_slam_target = np.ndarray((4,), dtype=np.float64, buffer=shm_slam_target.buf)
-    shared_slam_trigger = np.ndarray((1,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
+    shared_slam_trigger = np.ndarray((2,), dtype=np.bool_, buffer=shm_slam_trigger.buf)
 
     local_calib = np.zeros((3, 3), dtype=np.float64)
     local_gray = np.zeros((H, W), dtype=np.uint8)
@@ -312,7 +333,10 @@ def test_latency_vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, positi
                     np.copyto(local_slam_target, shared_slam_target)
                     vo.apply_soft_correction(local_slam_target)
                     shared_slam_trigger[0] = False # Acknowledge receipt
+                    shared_slam_trigger[1] = True # Signal to SLAM that we are busy applying correction.
+                    vo.correction_completed = False
             # Send to Pixhawk
+            vo.drain_correction_buffer(slam_trigger_mutex, shared_slam_trigger)
             pos = vo.pose()
             with position_mutex:
                 shared_position[:] = pos
@@ -326,6 +350,7 @@ def test_latency_vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, positi
         else:
             print(f"VIO Tracking Lost: {vo.status}")
 def main(position_mutex):
+    set_core_and_priority(3, None) # Core 4, Normal Priority
     shm_position = shared_memory.SharedMemory(name="position")
     shared_position = np.ndarray((3,), dtype=np.float64, buffer=shm_position.buf)
     local_position = np.zeros((3,), dtype=np.float64)
@@ -348,7 +373,7 @@ if __name__ == "__main__":
     ATTITUDE_BYTES = 3 * 8 
     POSITION_BYTES = 3 * 8 
     LOCAL_POSITION_NED_BYTES = 3 * 8
-    BOOL_BYTES = 1
+    BOOL_BYTES = 2
     TARGET_BYTES = 4 * 8
 
     print("VIO tester allocating shared memory...")
@@ -376,7 +401,7 @@ if __name__ == "__main__":
     from vioslam.slam import slam
     broadcaster_process = mp.Process(target=broadcaster, args=(rgb_frame_mutex, gray_frame_mutex, depth_frame_mutex, attitude_mutex, local_position_ned_mutex,))
     vio_process = mp.Process(target=test_latency_vio, args=(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_trigger_mutex,))
-    slam_process = mp.Process(target=slam, args=(rgb_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex,))
+    slam_process = mp.Process(target=slam, args=(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex,))
     main_process = mp.Process(target=main, args=(position_mutex,))
 
     try:
