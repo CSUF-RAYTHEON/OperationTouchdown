@@ -19,11 +19,11 @@ def run_auto_test():
         # 1. Send STRAIGHT
         print("Sending command: STRAIGHT")
         # Ensure we add the newline (\n) so the UGV bridge knows the message is complete
-        ser.write(b'STRAIGHT\n')
+        ser.write(b'BACKWARDS\n')
 
         # 2. Wait exactly 12 seconds
         print("Driving forward... waiting 90 seconds.")
-        for i in range(90, 0, -1):
+        for i in range(5, 0, -1):
             print(f"{i}...")
             time.sleep(1)
 
