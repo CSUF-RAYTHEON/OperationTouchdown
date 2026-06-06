@@ -102,6 +102,18 @@ def generate_launch_description():
         ],
     )
 
+    # ── LoRa bridge ──────────────────────────────────────────────────────────
+    lora_bridge_node = Node(
+        package='my_ugv_hardware',
+        executable='lora_bridge',
+        name='lora_bridge',
+        output='screen',
+        parameters=[{
+            'lora_port': '/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0',
+            'lora_baud': 9600,
+        }],
+    )
+
     # ── Foxglove Bridge ──────────────────────────────────────────────────────
     foxglove_bridge = IncludeLaunchDescription(
         AnyLaunchDescriptionSource(
@@ -122,5 +134,6 @@ def generate_launch_description():
         rplidar_node,
         motor_driver_node,
         slam_node,
+        lora_bridge_node,
         foxglove_bridge,
     ])

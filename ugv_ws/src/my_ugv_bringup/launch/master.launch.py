@@ -142,6 +142,19 @@ def generate_launch_description():
         condition=IfCondition(PythonExpression(["'", mode, "' == 'manual'"])),
     )
 
+    # LoRa bridge — manual mode only (slam/nav sub-launches include it themselves)
+    lora_bridge_manual = Node(
+        package='my_ugv_hardware',
+        executable='lora_bridge',
+        name='lora_bridge',
+        output='screen',
+        parameters=[{
+            'lora_port': '/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0',
+            'lora_baud': 9600,
+        }],
+        condition=IfCondition(PythonExpression(["'", mode, "' == 'manual'"])),
+    )
+
     return LaunchDescription([
         mode_arg,
         map_arg,
@@ -154,4 +167,5 @@ def generate_launch_description():
         nav_launch,
         motor_driver_manual,
         virtual_odom_manual,
+        lora_bridge_manual,
     ])

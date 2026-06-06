@@ -102,11 +102,15 @@ def build_master(akida: bool = False, nav2: bool = False) -> LaunchDescription:
     )
 
     # 4. Sensors
+    # Use the stable by-id symlink: the RPLidar A1's interface board is a
+    # Silicon Labs CP210x. Addressing it by /dev/ttyUSB* is fragile because USB
+    # enumeration order swaps it with the CH340-based LoRa module (which then
+    # makes rplidar_node time out on the wrong device and die — no scan/no spin).
     rplidar_node = Node(
         package='rplidar_ros', executable='rplidar_composition',
         name='rplidar_node',
         parameters=[{
-            'serial_port': '/dev/ttyUSB0',
+            'serial_port': '/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0',
             'frame_id': 'laser',
             'scan_mode': 'Standard',
             'serial_baudrate': 115200,
@@ -253,7 +257,8 @@ def build_master(akida: bool = False, nav2: bool = False) -> LaunchDescription:
         executable='lora_bridge',
         name='lora_bridge',
         output='screen',
-        parameters=[{'port': '/dev/ttyUSB1', 'baud': 9600}],
+        # CH340-based LoRa module, addressed by stable by-id symlink (see rplidar note).
+        parameters=[{'lora_port': '/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0', 'lora_baud': 9600}],
     )
 
     mission_controller = Node(
