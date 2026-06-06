@@ -10,6 +10,11 @@ import time
 PORT = '/dev/ttyUSB0'
 BAUD = 9600
 
+def send_coordinate():
+    ser = serial.Serial(PORT, BAUD, timeout=1)
+    time.sleep(1)
+    ser.write(b'{ "x": 5, "y": 5 }\n')
+    ser.close()
 def stop():
     ser = serial.Serial(PORT, BAUD, timeout=1)
     time.sleep(1)
@@ -56,4 +61,4 @@ def run_auto_test():
             print("Serial port closed.")
 
 if __name__ == '__main__':
-    stop()
+    send_coordinate()
