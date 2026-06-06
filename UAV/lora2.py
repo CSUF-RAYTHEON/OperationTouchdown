@@ -56,4 +56,4 @@ def run_auto_test():
             print("Serial port closed.")
 
 if __name__ == '__main__':
-    run_auto_test()
+    stop()
