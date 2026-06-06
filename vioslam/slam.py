@@ -20,7 +20,7 @@ MAX_KEYFRAMES = 600 # Max total images held in RAM. Increasing lets the drone re
 MAX_MATCH_CANDIDATES = 325 # Max images searched per cycle. Increasing finds loops deeper in history but makes SLAM math take much longer (e.g., 400ms+). Decreasing keeps the SLAM delay short but blinds the algorithm to older map areas.
 ORB_NFEATURES = 400 # Visual tracking points per image. Increasing creates incredibly robust map matches but quadratically explodes the Brute Force CPU math. Decreasing makes SLAM lightning fast but risks failing to find matches on smooth or blurry floors.
 ORB_SCALE = 0.5 # Shrinks the image to 50% before processing. Increasing (to 1.0) gets razor-sharp tracking features but slows down detection. Decreasing (e.g., 0.25) makes feature extraction instant but the pixel data becomes too blocky to reliably match.
-MIN_ALTITUTDE_CORRECTION_INTERVAL = 2.0 # Seconds between altitude corrections. Increasing lets altitude drift accumulate longer but saves CPU by checking less often. Decreasing fixes altitude drift more frequently but  hammers the CPU with heavy math.
+MIN_ALTITUTDE_CORRECTION_INTERVAL = 1.0 # Seconds between altitude corrections. Increasing lets altitude drift accumulate longer but saves CPU by checking less often. Decreasing fixes altitude drift more frequently but  hammers the CPU with heavy math.
 
 def wrap_rad_pi(angle_rad: float) -> float:
     while angle_rad > math.pi: angle_rad -= 2.0 * math.pi
