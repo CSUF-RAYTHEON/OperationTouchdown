@@ -136,7 +136,7 @@ def generate_launch_description():
         output='screen',
         parameters=[{
             'challenge_mode':   challenge_mode,
-            'straight_speed':   0.3,
+            'straight_speed':   0.1,
             'goal_tolerance':   1.52,
             'mission_log_path': '/home/ugv/mission_log.txt',
             'use_sim_time':     use_sim_time,

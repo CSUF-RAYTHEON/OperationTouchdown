@@ -39,7 +39,7 @@ class MissionController(Node):
 
         # ── parameters ──────────────────────────────────────────────────────
         self.declare_parameter('challenge_mode',   2)
-        self.declare_parameter('straight_speed',   0.3)   # m/s
+        self.declare_parameter('straight_speed',   0.1)   # m/s
         self.declare_parameter('goal_tolerance',   1.52)  # m (5 feet)
         self.declare_parameter('mission_log_path', '/home/ugv/mission_log.txt')
         self.declare_parameter('c1_travel_time',   30.0)  # seconds
