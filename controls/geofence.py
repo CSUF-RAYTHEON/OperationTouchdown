@@ -1,6 +1,5 @@
 # This code includes a utility function that changes parameters such that the drone uses a geofence
 from pymavlink import mavutil
-from controls.connect import connect_UART0
 
 def geofence(master):
     print(f"Entered geofence() & Setting Geofence Parameters for Target System: {master.target_system} & Target Component: {master.target_component}")
@@ -25,5 +24,6 @@ def geofence(master):
     print("\nParameters set. You may need to reboot FCU for sensors to reinit.")
 
 if __name__ == "__main__":
+    from controls.connect import connect_UART0
     master = connect_UART0()
     geofence(master)
