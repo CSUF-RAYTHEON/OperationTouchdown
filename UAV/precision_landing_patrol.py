@@ -117,10 +117,19 @@
 import math
 import time
 import cv2
+import cv2.aruco as aruco
 import numpy as np
 import depthai as dai
-from pupil_apriltags import Detector
 from pymavlink import mavutil
+
+# pyserial — used both by pymavlink (Pixhawk link) and by the LoRa UGV link
+# below.  Guarded so a missing module degrades to "no UGV link" rather than
+# aborting the whole flight script.
+try:
+    import serial
+    SERIAL_AVAILABLE = True
+except ImportError:
+    SERIAL_AVAILABLE = False
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Flight Config
@@ -128,7 +137,7 @@ from pymavlink import mavutil
 
 CONNECTION_STRING = "/dev/serial0"
 BAUDRATE          = 57600
-TAKEOFF_ALTITUDE  = 3.5           # meters — matches stationary_landing.py
+TAKEOFF_ALTITUDE  = 4.0           # meters
 TAKEOFF_ALT_TOLERANCE_M = 0.20  # m — authoritative-altitude band for declaring
                                 # the takeoff target reached (depth-preferred,
                                 # see _altitude_reading / _relative_altitude_m).
@@ -241,23 +250,14 @@ MAX_RESEARCH_ATTEMPTS  = 3        # exhaust then fall back to plain LAND mode
 GOTO_TOLERANCE         = 0.5      # m — goto_ned() accept radius
 GOTO_TIMEOUT           = 20.0     # s — goto_ned() blocking upper bound
 
-TAG_TOO_CLOSE_ALT_M    = 1.5      # if tag is lost below this RELATIVE altitude
-                                  # during PRECISION_LAND, commit to plain LAND
-                                  # descent rather than re-searching.  Kept as
-                                  # a SECONDARY fallback only for the case
-                                  # where we have no body_z reading at all
-                                  # (tag never seen during precision_land);
-                                  # the primary close-tag handoff uses
-                                  # CLOSE_TAG_BODY_Z_M because EKF z drifts.
-
-CLOSE_TAG_BODY_Z_M     = 1.0      # m — last body-frame z below which a lost
-                                  # tag is assumed to be out-of-FOV (we're
-                                  # nearly on top of it), not drifted away.
-                                  # Preferred over EKF relative altitude for
-                                  # the close-tag handoff: real-flight log
-                                  # showed EKF z drifting ~3 m so the
-                                  # altitude branch fired at alt=-3.37 m,
-                                  # technically correct but fragile.
+# NOTE: the former CLOSE_TAG_BODY_Z_M / TAG_TOO_CLOSE_ALT_M "tag too close →
+# commit to LAND" handoffs were REMOVED.  They existed because the single
+# large AprilTag overflowed the FOV at close range, so a tag-loss below ~1 m
+# was assumed to be "we're on top of it" rather than drift.  The nested board's
+# INNER tag (#12) stays resolvable through the close-range approach, so a loss
+# now genuinely means drift (handled by IMU recovery) or true touchdown
+# (handled by the TOUCHDOWN_BODY_Z_M / TOUCHDOWN_HARD_FLOOR_BZ_M commit while
+# the tag is still visible).
 
 TAG_COAST_S            = 0.8      # s — brief-dropout grace window during
                                   # PRECISION_LAND.  A tilt/shake/motion-blur
@@ -742,8 +742,67 @@ WINDOW_TITLE      = "Precision Landing Patrol"
 # Kept verbatim per the user's "inlined everything" / single-file requirement.
 # ─────────────────────────────────────────────────────────────────────────────
 
-TARGET_TAG_ID = 67
-TAG_SIZE      = 0.20    # 20 cm tag
+# ── Nested 36h11 marker (two layers) ───────────────────────────────────────
+# The landing target is a NESTED AprilTag board: a large OUTER tag with a
+# small INNER tag printed inside its white centre (see
+# UAV/Detectors/nested_aruco_detector.py and the Nested_AprilTags generator).
+#   * OUTER id 77  — acquired from far away / at altitude.
+#   * INNER id 12  — fixed by the board generator; stays resolvable at very
+#                    close range when the OUTER tag overflows the FOV.
+# Detection ALWAYS prioritises the inner tag: whenever #12 is visible it is
+# used for tracking / landing, falling back to #77 only when #12 is not yet
+# resolvable.  Because the inner tag survives the close-range approach there
+# is no longer a "tag left the FOV because we got too close" case to special-
+# case — the old CLOSE_TAG_BODY_Z_M / TAG_TOO_CLOSE_ALT_M handoffs are gone.
+OUTER_TAG_ID   = 77            # outer tag id of the printed board
+INNER_TAG_ID   = 12            # inner tag id — fixed by generate_board_nest.py
+OUTER_TAG_SIZE = 0.20          # m — outer black-square side length
+INNER_TAG_SIZE = OUTER_TAG_SIZE / 4.0   # m — inner black-square side length
+ARUCO_DICT     = aruco.DICT_APRILTAG_36h11
+NESTED_MAX_MISSING_FRAMES = 4  # temporal cache: bridge brief dropouts
+
+# Representative tag size for the (informational) LANDING_TARGET payload —
+# the outer tag is the larger, more conservative bound for size_x/size_y.
+TAG_SIZE       = OUTER_TAG_SIZE
+
+# ─────────────────────────────────────────────────────────────────────────────
+# UGV LoRa link Config
+# ─────────────────────────────────────────────────────────────────────────────
+# The companion computer drives the ground vehicle (UGV) over a 915 MHz USB
+# LoRa dongle (SB Components), mirroring lora2.py.  The UGV's lora_bridge
+# node accepts newline-terminated ASCII mission commands; the ones we use:
+#   * "STRAIGHT" — UGV drives straight at its configured straight_speed for
+#                  its c1_travel_time (~30 s) then auto-stops.  Re-sending
+#                  STRAIGHT re-arms a fresh 30 s drive from that instant.
+#   * "STOP"     — UGV halts immediately and ends its mission.
+# NOTE: the UGV's forward speed ("very slowly") is set entirely on the UGV
+# side via the mission_controller `straight_speed` ROS parameter — it is not
+# encoded in the LoRa command, so adjust it there if a slower crawl is wanted.
+LORA_BAUD          = 9600
+# Primary port + fallbacks scanned in order (the LoRa USB adapter enumerates
+# as a ttyUSB on the companion Pi; the Pixhawk is on /dev/serial0 and is never
+# probed here).  Adjust LORA_PORT if the adapter lands on a different node.
+LORA_PORT          = "/dev/ttyUSB0"
+LORA_FALLBACK_PORTS = ["/dev/ttyUSB0", "/dev/ttyUSB1", "/dev/ttyUSB2"]
+LORA_CMD_GO        = "STRAIGHT"   # UGV: start / continue driving straight
+LORA_CMD_STOP      = "STOP"       # UGV: halt and end mission
+
+# Mission timing.
+AIRBORNE_HOLD_S    = 6.0    # s — after takeoff the drone flies forward (NOT up)
+                            # for this long before starting its landing phase.
+                            # The UGV started its slow straight-line drive at
+                            # takeoff, so the drone creeps forward to stay over
+                            # the marker rather than hovering in place.
+UGV_DRIVE_SECONDS  = 30.0   # s — after the drone touches down, keep the UGV
+                            # driving slowly for this long, then STOP and end.
+
+# Forward-tracking creep during AIRBORNE_HOLD.  Body-frame +x = forward (the
+# drone's heading at takeoff), so this is "fly a little bit forward, not up".
+# The UGV crawls at ~0.10 m/s (its straight_speed param); we creep slightly
+# faster so the drone catches up to / stays over the marker that pulled ahead
+# of us during the climb, then precision_land's PD takes over the fine chase.
+UGV_FORWARD_SPEED   = 0.10  # m/s — the UGV's known straight-line speed
+FORWARD_TRACK_SPEED = 0.15  # m/s — drone forward body-frame creep (vz held 0)
 
 _GAMMA_MODERATE       = 2.2
 _GAMMA_DEEP           = 4.0
@@ -807,19 +866,80 @@ def _adaptive_thresh(img: np.ndarray, block_size: int, c: int = 5) -> np.ndarray
     )
 
 
-class AprilTagDetector:
-    """Inlined copy of UAV/Detectors/april_tag_detector.py.
+class NestedTagDetection:
+    """One detected tag layer.  Field names match pupil_apriltags so the rest
+    of this script (which reads ``tag.pose_t``, ``tag.center``, ``tag.corners``)
+    is unchanged when it gets one of these instead of an AprilTag detection.
 
-    The duplication is deliberate — the user wants a single, self-contained
-    script that matches the style of patrol_landing.py.  Modifying the shared
-    Detectors/ module is explicitly out-of-scope for this file.
+      .tag_id   — int tag ID
+      .corners  — (4, 2) float32 pixel coordinates (TL, TR, BR, BL)
+      .center   — (2,) float32 center pixel coordinate
+      .pose_t   — (3, 1) translation vector in meters, or None if no intrinsics
+      .pose_R   — (3, 3) rotation matrix, or None if no intrinsics
+      .layer    — "outer" or "inner"
+    """
+
+    def __init__(self, tag_id, corners, pose_t, pose_R, layer):
+        self.tag_id  = int(tag_id)
+        self.corners = corners.astype(np.float32)
+        self.center  = corners.mean(axis=0).astype(np.float32)
+        self.pose_t  = pose_t
+        self.pose_R  = pose_R
+        self.layer   = layer
+
+
+class _TagTrackerCache:
+    """Frame-to-frame memory that briefly retains a tag after it is lost so the
+    overlay does not flicker.  Ported from
+    UAV/Detectors/nested_aruco_detector.py."""
+
+    def __init__(self, max_missing_frames=4):
+        self.cached = {}   # id -> (corners, missing_counter)
+        self.max_missing = max_missing_frames
+
+    def update(self, current):
+        result = dict(current)
+        for tid in current:
+            self.cached[tid] = (current[tid], 0)
+        for tid in list(self.cached.keys()):
+            if tid not in current:
+                corners, missing = self.cached[tid]
+                if missing < self.max_missing:
+                    self.cached[tid] = (corners, missing + 1)
+                    result[tid] = corners
+                else:
+                    del self.cached[tid]
+        return result
+
+
+class NestedArucoDetector:
+    """Inlined copy of UAV/Detectors/nested_aruco_detector.py (cv2.aruco
+    backend) — kept in-file per the single, self-contained script style of
+    this mission.
+
+    Detects BOTH layers of the nested 36h11 board (OUTER id 77, INNER id 12)
+    with a two-pass mask-and-redetect, then exposes ``get_tag_detection`` which
+    ALWAYS prioritises the inner tag: whenever #12 is visible it is returned for
+    tracking / landing, falling back to the outer tag only when the inner is
+    not yet resolvable.  This is the close-range survivability that lets us
+    drop the old "tag left the FOV because we got too close" fallbacks.
+
+    Intrinsics are pulled lazily from the OAK-D calibration on the first frame
+    (matching the previous AprilTagDetector), so the per-layer pose is in
+    metres.
     """
 
     def __init__(self, calibration_handler):
         self.calibration_handler = calibration_handler
         self.camera_matrix = None
         self.dist_coeffs   = None
-        self.FX = self.FY = self.CX = self.CY = None
+
+        self.outer_id = OUTER_TAG_ID
+        self.inner_id = INNER_TAG_ID
+        self._obj_points = {
+            self.outer_id: self._make_obj_points(OUTER_TAG_SIZE),
+            self.inner_id: self._make_obj_points(INNER_TAG_SIZE),
+        }
 
         self._clahe      = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
         self._clahe_deep = cv2.createCLAHE(clipLimit=5.0, tileGridSize=(4, 4))
@@ -832,28 +952,41 @@ class AprilTagDetector:
         self._gamma_lut_white_moderate = _build_gamma_lut(_GAMMA_WHITE_MODERATE)
         self._gamma_lut_white_strong   = _build_gamma_lut(_GAMMA_WHITE_STRONG)
 
-        self.detector = Detector(
-            families="tag36h11",
-            nthreads=2,
-            quad_decimate=1.0,
-            quad_sigma=0.8,
-            refine_edges=1,
-            decode_sharpening=0.25,
+        self._dictionary = aruco.getPredefinedDictionary(ARUCO_DICT)
+        self._params     = aruco.DetectorParameters()
+        self._params.cornerRefinementMethod = aruco.CORNER_REFINE_SUBPIX
+        self._detector   = aruco.ArucoDetector(self._dictionary, self._params)
+
+        self._cache = (
+            _TagTrackerCache(NESTED_MAX_MISSING_FRAMES)
+            if NESTED_MAX_MISSING_FRAMES > 0 else None
         )
-        print("[INFO] AprilTag detector initialized")
+
+        print(f"[INFO] Nested ArUco detector initialized "
+              f"(outer={self.outer_id}, inner={self.inner_id})")
+
+    @staticmethod
+    def _make_obj_points(size: float) -> np.ndarray:
+        """3-D corners of a tag's black square in its own frame, matching the
+        ArUco corner order TL, TR, BR, BL."""
+        half = size / 2.0
+        return np.array([
+            [-half,  half, 0.0],
+            [ half,  half, 0.0],
+            [ half, -half, 0.0],
+            [-half, -half, 0.0],
+        ], dtype=np.float32)
 
     def _update_intrinsics(self, frame):
         h, w = frame.shape[:2]
         intrinsics = self.calibration_handler.getCameraIntrinsics(
             dai.CameraBoardSocket.CAM_A, w, h
         )
-        self.camera_matrix = np.array(intrinsics)
-        self.FX = self.camera_matrix[0][0]
-        self.FY = self.camera_matrix[1][1]
-        self.CX = self.camera_matrix[0][2]
-        self.CY = self.camera_matrix[1][2]
+        self.camera_matrix = np.array(intrinsics, dtype=np.float64)
         self.dist_coeffs = np.array(
-            self.calibration_handler.getDistortionCoefficients(dai.CameraBoardSocket.CAM_A)
+            self.calibration_handler.getDistortionCoefficients(
+                dai.CameraBoardSocket.CAM_A),
+            dtype=np.float64,
         )
         print(f"[INFO] Intrinsics updated for {w}x{h}")
 
@@ -900,24 +1033,61 @@ class AprilTagDetector:
             p19, p20, p21, p22, p23, p24, p25, p26, p27,
         ]
 
-    def _detect_raw(self, image: np.ndarray):
-        detections = self.detector.detect(
-            image,
-            estimate_tag_pose=True,
-            camera_params=(self.FX, self.FY, self.CX, self.CY),
-            tag_size=TAG_SIZE,
-        )
-        for tag in detections:
-            if tag.tag_id == TARGET_TAG_ID:
-                return tag
-        return None
+    def _has_all_targets(self, found: dict) -> bool:
+        return self.outer_id in found and self.inner_id in found
 
-    def _preprocess_and_find(self, gray: np.ndarray):
-        for variant in self._preprocess_variants(gray):
-            tag = self._detect_raw(variant)
-            if tag is not None:
-                return tag
-        return None
+    def _detect_two_pass(self, image: np.ndarray, found: dict):
+        """Pass 1 detects markers directly (usually the inner tag); pass 2
+        paints over every found quad with the local background colour and
+        re-detects so the outer payload decodes once the inner tag is masked
+        out.  Newly found target corners are added into ``found`` keyed by id."""
+        corners1, ids1, _ = self._detector.detectMarkers(image)
+
+        if ids1 is not None:
+            for i, tid in enumerate(ids1.flatten()):
+                tid = int(tid)
+                if tid in self._obj_points and tid not in found:
+                    found[tid] = corners1[i].reshape(4, 2)
+
+        if ids1 is None or self._has_all_targets(found):
+            return
+
+        h, w = image.shape[:2]
+        masked = image.copy()
+        for c in corners1:
+            pts = c.reshape((-1, 2)).astype(np.float32)
+            center = pts.mean(axis=0)
+            ring_outer = (center + 1.35 * (pts - center)).astype(np.int32)
+            ring_inner = (center + 1.10 * (pts - center)).astype(np.int32)
+            ring_mask = np.zeros((h, w), dtype=np.uint8)
+            cv2.fillPoly(ring_mask, [ring_outer], 255)
+            cv2.fillPoly(ring_mask, [ring_inner], 0)
+            ring_vals = image[ring_mask == 255]
+            fill_val = int(np.median(ring_vals)) if ring_vals.size else 255
+            fill_poly = (center + 1.25 * (pts - center)).astype(np.int32)
+            cv2.fillPoly(masked, [fill_poly], color=fill_val)
+
+        corners2, ids2, _ = self._detector.detectMarkers(masked)
+        if ids2 is not None:
+            for i, tid in enumerate(ids2.flatten()):
+                tid = int(tid)
+                if tid in self._obj_points and tid not in found:
+                    found[tid] = corners2[i].reshape(4, 2)
+
+    def _estimate_pose(self, tag_id: int, corners: np.ndarray):
+        """Per-layer pose via IPPE_SQUARE.  The gray frame is already
+        undistorted in _prepare_gray, so zero distortion is passed here."""
+        success, rvec, tvec = cv2.solvePnP(
+            self._obj_points[tag_id],
+            corners.astype(np.float32),
+            self.camera_matrix,
+            np.zeros(5, dtype=np.float64),
+            flags=cv2.SOLVEPNP_IPPE_SQUARE,
+        )
+        if not success:
+            return None
+        pose_R, _ = cv2.Rodrigues(rvec)
+        return tvec.reshape(3, 1), pose_R
 
     def _prepare_gray(self, frame):
         if self.camera_matrix is None:
@@ -925,10 +1095,40 @@ class AprilTagDetector:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         return cv2.undistort(gray, self.camera_matrix, self.dist_coeffs)
 
+    def detect(self, frame):
+        """Return a list of NestedTagDetection (0, 1 or 2 items) — whichever of
+        the outer / inner layers is currently visible."""
+        if frame is None:
+            return []
+
+        gray = self._prepare_gray(frame)
+
+        found = {}
+        for variant in self._preprocess_variants(gray):
+            self._detect_two_pass(variant, found)
+            if self._has_all_targets(found):
+                break
+
+        if self._cache is not None:
+            found = self._cache.update(found)
+
+        results = []
+        for tag_id, corners in found.items():
+            layer = "outer" if tag_id == self.outer_id else "inner"
+            pose = self._estimate_pose(tag_id, corners)
+            pose_t, pose_R = pose if pose is not None else (None, None)
+            results.append(
+                NestedTagDetection(tag_id, corners, pose_t, pose_R, layer)
+            )
+        return results
+
     def get_tag_detection(self, frame):
+        """Single landing target, INNER tag prioritised over OUTER.  Returns a
+        NestedTagDetection (drop-in for the old AprilTag detection) or None."""
         if frame is None:
             return None
-        return self._preprocess_and_find(self._prepare_gray(frame))
+        detections = {d.layer: d for d in self.detect(frame)}
+        return detections.get("inner") or detections.get("outer")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -2390,12 +2590,19 @@ class PrecisionLandingController:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def draw_tag(frame, tag):
-    """Outline the tag (green) and mark its center (red dot)."""
+    """Outline the tracked layer and mark its center.  The inner tag (#12,
+    prioritised for landing) is drawn orange; the outer tag (#77) green, so the
+    operator can see which layer the controller is currently locked onto."""
+    layer = getattr(tag, "layer", "outer")
+    color = (0, 165, 255) if layer == "inner" else (0, 255, 0)
     corners = tag.corners.astype(int)
     for i in range(4):
         cv2.line(frame, tuple(corners[i]), tuple(corners[(i + 1) % 4]),
-                 (0, 255, 0), 2)
+                 color, 2)
     cv2.circle(frame, tuple(tag.center.astype(int)), 5, (0, 0, 255), -1)
+    cv2.putText(frame, f"{layer.upper()} id{tag.tag_id}",
+                (corners[0][0], corners[0][1] - 8),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
 
 def draw_overlay(frame, state):
@@ -2677,10 +2884,76 @@ def make_pump(q_rgb, q_oak_imu, detector, controller, state, q_depth=None):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Commit-to-LAND helper — used by both the close-tag handoff in
-# precision_land() AND the new IMU-recovery timeout in track_tag() /
-# precision_land().  Lifted to module scope so callers in either phase can
-# share it; previously it was a closure inside precision_land().
+# UGV LoRa link — sends mission commands to the ground vehicle over the
+# 915 MHz USB LoRa dongle (ported from lora2.py).  The UGV's lora_bridge node
+# reads newline-terminated ASCII; we send "STRAIGHT" to start/continue the
+# slow drive and "STOP" to halt.  Opening is best-effort: if no serial module
+# or no LoRa adapter is present the link runs in offline mode (every send is a
+# logged no-op) so a missing dongle never aborts the flight.
+# ─────────────────────────────────────────────────────────────────────────────
+
+class UGVLoraLink:
+    """Thin serial sender for UGV mission commands.  Mirrors lora2.py but is
+    non-fatal on failure and scans a few candidate ports."""
+
+    def __init__(self, port=LORA_PORT, baud=LORA_BAUD,
+                 fallback_ports=None):
+        self.ser = None
+        self.port = None
+        if not SERIAL_AVAILABLE:
+            print("[WARN] pyserial unavailable — UGV LoRa link OFFLINE "
+                  "(commands will be logged no-ops)")
+            return
+        candidates = []
+        for p in [port] + list(fallback_ports or LORA_FALLBACK_PORTS):
+            if p not in candidates:
+                candidates.append(p)
+        for p in candidates:
+            try:
+                ser = serial.Serial(p, baud, timeout=1)
+                time.sleep(1.0)   # let the adapter settle (matches lora2.py)
+                self.ser = ser
+                self.port = p
+                print(f"[INFO] UGV LoRa link open on {p} @ {baud} baud")
+                return
+            except Exception as e:
+                print(f"[INFO] LoRa port {p} not available: {e}")
+        print("[WARN] No LoRa adapter found on any candidate port — UGV link "
+              "OFFLINE (commands will be logged no-ops)")
+
+    @property
+    def connected(self):
+        return self.ser is not None and self.ser.is_open
+
+    def send(self, command):
+        """Send a newline-terminated mission command to the UGV.  Returns True
+        if it was actually written to the serial link."""
+        line = command if command.endswith("\n") else command + "\n"
+        if not self.connected:
+            print(f"[WARN] UGV LoRa OFFLINE — would have sent: {command!r}")
+            return False
+        try:
+            self.ser.write(line.encode("ascii"))
+            print(f"[INFO] UGV LoRa TX: {command}")
+            return True
+        except Exception as e:
+            print(f"[WARN] UGV LoRa TX failed ({command!r}): {e}")
+            return False
+
+    def close(self):
+        if self.connected:
+            try:
+                self.ser.close()
+                print("[INFO] UGV LoRa link closed")
+            except Exception:
+                pass
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Commit-to-LAND helper — used by the IMU-recovery timeout in track_tag() /
+# precision_land() and the final touchdown commit.  Lifted to module scope so
+# callers in either phase can share it; previously it was a closure inside
+# precision_land().
 # ─────────────────────────────────────────────────────────────────────────────
 
 def commit_to_land(controller, pump, reason):
@@ -3256,7 +3529,7 @@ def track_tag(controller, pump, state):
 # ─────────────────────────────────────────────────────────────────────────────
 # Precision-landing phase.  Returns one of:
 #   "TOUCHDOWN"    — motors auto-disarmed; mission complete (also returned
-#                    after a close-tag or EKF-altitude commit-to-LAND)
+#                    after a final TOUCHDOWN_BODY_Z_M commit-to-LAND)
 #   "COMMIT_LAND"  — IMU tag-loss recovery window expired without re-
 #                    acquisition; caller commits to ArduCopter LAND mode
 # ─────────────────────────────────────────────────────────────────────────────
@@ -3278,23 +3551,25 @@ def precision_land(controller, pump, state):
     informational, so any PrecLand-aware setup downstream gets the data,
     but it is no longer the descent driver on this airframe.
 
-    Tag-loss handling has two layers:
+    Tag-loss handling (the old CLOSE-TAG "too close → LAND" handoff is gone —
+    the nested board's INNER tag #12 stays resolvable at close range, so a
+    loss is no longer assumed to mean "we're on top of it"):
 
-      1. CLOSE-TAG handoff: if the marker was last seen at body_z <
-         CLOSE_TAG_BODY_Z_M (we're essentially on top of it), commit
-         directly to LAND.  body_z is preferred over EKF altitude
-         because flight logs showed EKF z drifting ~3 m mid-mission.
+      * BRIEF COAST: for the first TAG_COAST_S of a loss, keep flying the last
+        lateral centring command (vertical paused) — a tilt/shake/blur dropout
+        re-acquires in well under a second.
 
-      2. IMU RECOVERY: for all other losses, capture the EKF NED
-         position at the moment of loss and run a closed-loop
-         position-PD back to that anchor for up to
-         RECOVERY_DURATION_S, with a separate altitude P-loop pulling
-         the airframe back to TAKEOFF_ALTITUDE.  The OAK-D S2 BNO086
-         accelerometer is used as a sanity cross-check on the EKF
-         velocity reading.  If the marker reappears we resume
-         descent; if the window expires (or we've already returned to
-         within RECOVERY_ANCHOR_RADIUS_M of the anchor without re-
-         acquiring) we commit to LAND.
+      * IMU RECOVERY: for losses outlasting the coast window, capture the EKF
+        NED position at the moment of loss and run a closed-loop position-PD
+        back to that anchor for up to RECOVERY_DURATION_S, with a separate
+        altitude P-loop pulling the airframe back to TAKEOFF_ALTITUDE.  The
+        OAK-D S2 BNO086 accelerometer is a sanity cross-check on the EKF
+        velocity.  If the marker reappears we resume descent; if the window
+        expires (or we've returned to within RECOVERY_ANCHOR_RADIUS_M of the
+        anchor without re-acquiring) we commit to LAND.
+
+    True touchdown is still committed while the tag IS visible, via the
+    TOUCHDOWN_BODY_Z_M / TOUCHDOWN_HARD_FLOOR_BZ_M gate below.
 
     Returns one of:
       * "TOUCHDOWN"   — motors auto-disarmed; mission complete
@@ -3515,18 +3790,11 @@ def precision_land(controller, pump, state):
             # Tag not visible this frame.
             elapsed = time.time() - last_tag_time
 
-            # PRIMARY close-tag check: did we recently see the tag at
-            # very low body_z?  Then we're nearly on top of it and it
-            # is simply outside the FOV — commit to LAND, do NOT recover.
-            # body_z is the camera-to-tag distance from AprilTag pose
-            # estimation, which does not suffer the EKF drift.
-            if (last_body_z is not None
-                    and last_body_z < CLOSE_TAG_BODY_Z_M):
-                commit_to_land(
-                    controller, pump,
-                    f"Tag too close to track (last bz={last_body_z:.2f} m)"
-                )
-                return "TOUCHDOWN"
+            # (The old PRIMARY close-tag check that committed to LAND when the
+            # tag was last seen below CLOSE_TAG_BODY_Z_M has been removed: with
+            # the nested board the INNER tag #12 stays resolvable at close
+            # range, so a loss here is treated like any other — coast briefly,
+            # then IMU-recover — rather than assuming we are on top of it.)
 
             # Brief-dropout COAST: for the first TAG_COAST_S of a loss, keep
             # flying the last lateral centring command (vertical paused — no
@@ -3578,26 +3846,12 @@ def precision_land(controller, pump, state):
 
             recovery_elapsed = time.time() - loss_start
             if recovery_elapsed > RECOVERY_DURATION_S:
-                # SECONDARY fallback (no body_z reading at all): use the
-                # EKF-relative altitude.  Real flight logs showed EKF z
-                # can drift several metres so this branch is fragile —
-                # we only get here if the tag was never seen during
-                # PRECISION_LAND in the first place (so no last_body_z).
-                relative_alt = None
-                if (controller.last_pos["z"] is not None and
-                        controller.takeoff_z_origin is not None):
-                    relative_alt = -(controller.last_pos["z"]
-                                     - controller.takeoff_z_origin)
-                if (last_body_z is None
-                        and relative_alt is not None
-                        and relative_alt < TAG_TOO_CLOSE_ALT_M):
-                    commit_to_land(
-                        controller, pump,
-                        f"Tag never seen and EKF rel-alt "
-                        f"{relative_alt:.2f} m below "
-                        f"TAG_TOO_CLOSE_ALT_M={TAG_TOO_CLOSE_ALT_M:.2f} m"
-                    )
-                    return "TOUCHDOWN"
+                # IMU recovery window expired without re-acquiring the marker.
+                # (The old TAG_TOO_CLOSE_ALT_M EKF-altitude shortcut to LAND was
+                # removed along with the close-tag handoff — with the nested
+                # board the inner tag #12 keeps the marker visible at close
+                # range, so a recovery that genuinely times out here means the
+                # marker is gone, not that we are simply on top of it.)
                 print(f"[WARN] PRECISION_LAND IMU recovery exhausted "
                       f"({recovery_elapsed:.1f}s without re-acquisition) "
                       f"— total tag-loss {elapsed:.1f}s — committing to LAND")
@@ -3970,7 +4224,7 @@ with dai.Device() as device:
     print("[INFO] OAK-D started")
     calibration = device.getCalibration()
 
-    detector = AprilTagDetector(calibration)
+    detector = NestedArucoDetector(calibration)
 
     with dai.Pipeline(device) as pipeline:
 
@@ -4088,6 +4342,11 @@ with dai.Device() as device:
             pump()
             time.sleep(0.05)
 
+        # Open the UGV LoRa link now (before arming) so a missing dongle is
+        # surfaced on the ground rather than mid-flight.  Offline mode is
+        # non-fatal — the flight still runs, the UGV just won't be commanded.
+        ugv = UGVLoraLink()
+
         # ── Pre-flight: enable PrecLand, set GUIDED, arm, takeoff ──────────
         state["phase"] = "PRECLAND_SETUP"
         controller.enable_precland_params()
@@ -4113,65 +4372,90 @@ with dai.Device() as device:
         except RuntimeError as e:
             print(f"[CRITICAL] Takeoff failed: {e}")
             print("[CRITICAL] Aborting mission — switching to LAND for safety")
+            # Defensive: make sure the UGV is told to STOP even though we never
+            # got far enough to start it driving.
+            ugv.send(LORA_CMD_STOP)
+            ugv.close()
             controller.change_flight_mode("LAND")
             for _ in range(20):
                 pump()
                 time.sleep(0.1)
             raise SystemExit(1)
 
-        # ── Stabilization ─────────────────────────────────────────────────
-        print("[INFO] Phase: STABILIZE")
-        state["phase"] = "STABILIZE"
-        x_home, y_home = controller.wait_stabilized(
-            TAKEOFF_ALTITUDE, pump_fn=pump,
-        )
-        print(f"[INFO] Home anchor captured: ({x_home:+.2f}, {y_home:+.2f})")
+        # ── UGV GO ─────────────────────────────────────────────────────────
+        # The drone is now airborne — start the ground vehicle moving (slowly;
+        # the crawl speed is set on the UGV side via its straight_speed param).
+        ugv.send(LORA_CMD_GO)
 
-        # ── Quick tag-visibility gate ─────────────────────────────────────
-        # After the fast altitude confirm we briefly check the AprilTag is
-        # actually in view (short TAG_GATE_TIMEOUT_S window) so the drone
-        # never starts descending blind.  This reuses acquire_tag's detector
-        # + GPS wind-correction hold; x_home / y_home anchor it to the
-        # stabilized home position.  If the tag is not seen in the window we
-        # fall back to plain LAND at the current spot (same fallback the
-        # patrol path used when it returned None).
-        last_known = acquire_tag(controller, pump, state,
-                                 anchor_x=x_home, anchor_y=y_home,
-                                 timeout=TAG_GATE_TIMEOUT_S)
+        try:
+            # ── Stabilization (quick altitude confirm + home anchor) ────────
+            print("[INFO] Phase: STABILIZE")
+            state["phase"] = "STABILIZE"
+            x_home, y_home = controller.wait_stabilized(
+                TAKEOFF_ALTITUDE, pump_fn=pump,
+            )
+            print(f"[INFO] Home anchor captured: "
+                  f"({x_home:+.2f}, {y_home:+.2f})")
 
-        if last_known is None:
-            print("[WARN] Tag not in view within gate window — "
-                  "committing to plain LAND at current position")
-            state["phase"] = "TOUCHDOWN"
-            controller.change_flight_mode("LAND")
-            start = time.time()
-            while time.time() - start < 30:
-                pump()
-                if not controller.master.motors_armed():
-                    print("[INFO] Motors disarmed — touchdown.")
-                    break
-                time.sleep(0.1)
-        else:
+            # ── Forward tracking creep ──────────────────────────────────────
+            # The UGV started its slow straight-line drive at takeoff, so
+            # instead of hovering in place the drone flies FORWARD (body-frame
+            # +x, vz held at 0 — "a little bit forward, not up") for
+            # AIRBORNE_HOLD_S so it stays over / catches up to the marker that
+            # pulled ahead during the climb.  We pump the detector each tick so
+            # the nested marker shows up on the HUD as it comes into view, then
+            # hand off to precision_land whose PD takes over the fine chase.
+            print(f"[INFO] Phase: FORWARD_TRACK ({AIRBORNE_HOLD_S:.0f}s @ "
+                  f"{FORWARD_TRACK_SPEED:.2f} m/s forward)")
+            state["phase"] = "FORWARD_TRACK"
+            hold_start = time.time()
+            while time.time() - hold_start < AIRBORNE_HOLD_S:
+                controller.send_velocity(FORWARD_TRACK_SPEED, 0.0, 0.0)
+                remaining = AIRBORNE_HOLD_S - (time.time() - hold_start)
+                state["leg_label"] = f"FWD {remaining:.1f}s"
+                pump(detect=True)
+                time.sleep(0.05)
+
             # ── Combined track-and-descend (PRECISION_LAND) ─────────────────
-            # Per user spec the drone now centres over the tag AND descends
-            # toward it in one continuous motion rather than holding at
-            # altitude through a separate TRACK window first.  precision_land
-            # already centres in XY while descending (descent_velocity_command
-            # throttles vz when the lateral error is large), so we hand off to
-            # it directly — track_tag's altitude-holding window is bypassed.
-            # The descent target altitude decreases over the descent inside
-            # precision_land; it does NOT hold a fixed TAKEOFF_ALTITUDE.
-            # All recovery / COMMIT_LAND / touchdown handling lives inside
-            # precision_land and is unchanged.
+            # The drone centres over the nested marker (inner tag #12 is
+            # prioritised, so it stays locked on as the outer tag overflows the
+            # FOV at close range) AND descends toward it in one continuous
+            # motion.  All recovery / COMMIT_LAND / touchdown handling lives
+            # inside precision_land.
             result = precision_land(controller, pump, state)
-            if result == "TOUCHDOWN":
-                state["phase"] = "TOUCHDOWN"
-            elif result == "COMMIT_LAND":
+            if result == "COMMIT_LAND":
                 state["phase"] = "TOUCHDOWN"
                 commit_to_land(
                     controller, pump,
                     "PRECISION_LAND IMU recovery exhausted — final commit",
                 )
+            else:
+                state["phase"] = "TOUCHDOWN"
+
+            # ── Post-landing UGV drive ──────────────────────────────────────
+            # The drone is down on the (moving) vehicle.  Tell the UGV to keep
+            # driving slowly for UGV_DRIVE_SECONDS, then STOP and end the
+            # mission for both vehicles.  Re-sending STRAIGHT re-arms a fresh
+            # drive window from this instant.
+            print(f"[INFO] Touchdown — commanding UGV to continue for "
+                  f"{UGV_DRIVE_SECONDS:.0f}s")
+            state["phase"] = "UGV_DRIVE"
+            ugv.send(LORA_CMD_GO)
+            drive_start = time.time()
+            while time.time() - drive_start < UGV_DRIVE_SECONDS:
+                remaining = UGV_DRIVE_SECONDS - (time.time() - drive_start)
+                state["leg_label"] = f"UGV DRIVE {remaining:.1f}s"
+                pump()
+                time.sleep(0.1)
+
+            print("[INFO] UGV drive window complete — commanding STOP")
+            state["phase"] = "MISSION_COMPLETE"
+            ugv.send(LORA_CMD_STOP)
+        finally:
+            # Whatever happened above (clean finish OR an exception), make sure
+            # the UGV is halted and the serial link is released.
+            ugv.send(LORA_CMD_STOP)
+            ugv.close()
 
         # Final pump so the very last HUD frame is visible briefly before
         # window teardown.
