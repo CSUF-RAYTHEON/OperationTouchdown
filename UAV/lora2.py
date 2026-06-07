@@ -3,18 +3,43 @@
 
 import serial
 import time
+import json
 
 # Update this to match the port where your sending LoRa module is plugged in.
 # For Mac it might be '/dev/cu.usbserial-140'
 # For Raspberry Pi it might be '/dev/ttyUSB0' or '/dev/serial0'
-PORT = '/dev/ttyUSB0'
+PORT = '/dev/cu.usbserial-10'
 BAUD = 9600
 
-def send_coordinate():
-    ser = serial.Serial(PORT, BAUD, timeout=1)
-    time.sleep(1)
-    ser.write(b'{ "x": 5, "y": 5 }\n')
-    ser.close()
+def send_coordinate(x, y, theta=0.0):
+    try:
+        ser = serial.Serial(PORT, BAUD, timeout=1)
+        time.sleep(1) # Give the serial port a second to initialize
+        
+        # 1. Create a standard Python dictionary with your coordinates
+        payload = {
+            "x": x,
+            "y": y,
+            "theta": theta
+        }
+        
+        # 2. Convert the dictionary into a perfectly formatted JSON string
+        json_string = json.dumps(payload)
+        
+        # 3. Add the newline so the receiver knows the message is done, then encode to bytes
+        message_bytes = f"{json_string}\n".encode('utf-8')
+        
+        print(f"Broadcasting to UGV: {message_bytes}")
+        ser.write(message_bytes)
+        
+        # Give the hardware a fraction of a second to finish the RF transmission
+        time.sleep(0.1)
+
+    except Exception as e:
+        print(f"Hardware Error: {e}")
+    finally:
+        if 'ser' in locals() and ser.is_open:
+            ser.close()
 def stop():
     ser = serial.Serial(PORT, BAUD, timeout=1)
     time.sleep(1)
@@ -61,4 +86,4 @@ def run_auto_test():
             print("Serial port closed.")
 
 if __name__ == '__main__':
-    send_coordinate()
+    send_coordinate(10,10)
