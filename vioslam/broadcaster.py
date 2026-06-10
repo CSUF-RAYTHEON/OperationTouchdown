@@ -11,7 +11,7 @@ from controls.affinitypriority import set_core_and_priority
 from controls.nedlocalposition import request_local_nedposition_messages
 
 def broadcaster(rgb_frame_mutex, gray_frame_mutex, depth_frame_mutex, attitude_mutex, local_position_ned_mutex):
-    set_core_and_priority(2, -20) # Core 3, Max Priority
+    set_core_and_priority(6, -20) # Core 6, Max Priority
     W, H = 640, 400
     FPS = 30.0
     # 1. Connect to the shared memory for RGB, gray, depth, calibration, attitude, and local position NED

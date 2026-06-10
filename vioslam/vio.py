@@ -21,7 +21,7 @@ DEPTH_MAX_M = 8.0 # Ignores points further than 8m. Increasing allows high-altit
 REDETECT_EVERY = 5 # Redetect features every N frames. Lowering improves probability of not using stale or blurry floor data during a rapid movement.
 SOFT_CORR_ALPHA = 0.01 # Percentage of SLAM vector applied at once. Increasing snaps the drone to the map instantly (causes violent flight controller jerks). Decreasing smooths out the flight path but takes longer to eliminate drift.
 SOFT_CORR_COOLDOWN = 0.75 # Seconds to wait before applying another correction. Increasing prevents rapid oscillatory teleporting. Decreasing fixes map drift faster but can cause the drone to stutter.
-MIN_DRIFT_TO_CORRECT_M = 0.01 # Ignores map drift smaller than 5cm. Increasing stops the system from fighting tiny micro-errors (prevents injected noise). Decreasing forces strict map adherence but causes continuous micro-jitters.
+MIN_DRIFT_TO_CORRECT_M = 0.05 # Ignores map drift smaller than 5cm. Increasing stops the system from fighting tiny micro-errors (prevents injected noise). Decreasing forces strict map adherence but causes continuous micro-jitters.
 MAX_CORR_STEP_M = 0.5 # Absolute max meters the drone can teleport in one frame. Increasing allows instant recovery from huge map errors. Decreasing protects the flight controller from violent, physically impossible jumps.
 
 def clamp_norm(vec: np.ndarray, max_norm: float) -> np.ndarray:
@@ -205,7 +205,7 @@ class VO_LK:
     def pose(self):
         return [self.global_north, self.global_east, self.global_down]
 def vio(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_trigger_mutex):
-    set_core_and_priority(0, -20) # Core 1, Max Priority
+    set_core_and_priority(4, -20) # Core 4, Max Priority
     master_uart3 = connect_UART3()
     W, H = 640, 400
     

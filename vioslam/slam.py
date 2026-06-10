@@ -183,7 +183,7 @@ class LoopClosureORB:
         # Update the timer whether it triggered a correction or not
         self.last_altitude_correction_wall = time.time()
 def slam(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex):
-    set_core_and_priority(1, -20) # Core 2, Max Priority
+    set_core_and_priority(5, -20) # Core 5, Max Priority
     W, H = 640, 400
     
     shm_rgb = shared_memory.SharedMemory(name="oak_rgb")
