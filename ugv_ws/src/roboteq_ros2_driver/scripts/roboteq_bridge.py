@@ -12,7 +12,7 @@ class RoboteqBridge(Node):
         super().__init__("roboteq_bridge")
         
         # --- PHYSICAL CONSTANTS ---
-        self.WHEEL_RADIUS = 0.1524        # measured: 12in diameter rear wheel      
+        self.WHEEL_RADIUS = 0.15875       # measured: 12.5in diameter front driven wheels
         self.WHEEL_BASE = 0.6096        # measured: 12in each side from center = 24in total
         self.TICKS_PER_REV = 8000      
         self.LEFT_TRIM = 1.0
