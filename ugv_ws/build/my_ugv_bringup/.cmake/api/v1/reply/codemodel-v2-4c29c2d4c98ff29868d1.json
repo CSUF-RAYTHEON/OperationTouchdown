@@ -7,7 +7,7 @@
 				{
 					"build" : ".",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-.-aec4ea4049fd87215c4b.json",
+					"jsonFile" : "directory-.-fb13adb05e1a7ae33098.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.20"
@@ -17,7 +17,10 @@
 					"targetIndexes" : 
 					[
 						0,
-						1
+						1,
+						2,
+						3,
+						4
 					]
 				}
 			],
@@ -33,12 +36,36 @@
 					"targetIndexes" : 
 					[
 						0,
-						1
+						1,
+						2,
+						3,
+						4
 					]
 				}
 			],
 			"targets" : 
 			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_build_my_ugv_bringup_egg::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_build_my_ugv_bringup_egg-e8f8c8ac62b76efb32a4.json",
+					"name" : "ament_cmake_python_build_my_ugv_bringup_egg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_symlink_my_ugv_bringup::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_symlink_my_ugv_bringup-a3d35ac0133ac049232a.json",
+					"name" : "ament_cmake_python_symlink_my_ugv_bringup",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_symlink_my_ugv_bringup_setup::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_symlink_my_ugv_bringup_setup-6a28c2740979e0f1d5fa.json",
+					"name" : "ament_cmake_python_symlink_my_ugv_bringup_setup",
+					"projectIndex" : 0
+				},
 				{
 					"directoryIndex" : 0,
 					"id" : "my_ugv_bringup_uninstall::@6890427a1f51a3e7e1df",

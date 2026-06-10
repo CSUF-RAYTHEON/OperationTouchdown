@@ -315,6 +315,18 @@ message(STATUS "Execute custom install script")
 
 # begin of custom install code
 
+# install(FILES "/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/ament_cmake_environment_hooks/pythonpath.sh" "DESTINATION" "share/my_ugv_bringup/environment")
+ament_cmake_symlink_install_files("/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup" FILES "/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/ament_cmake_environment_hooks/pythonpath.sh" "DESTINATION" "share/my_ugv_bringup/environment")
+
+# install(FILES "/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/ament_cmake_environment_hooks/pythonpath.dsv" "DESTINATION" "share/my_ugv_bringup/environment")
+ament_cmake_symlink_install_files("/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup" FILES "/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/ament_cmake_environment_hooks/pythonpath.dsv" "DESTINATION" "share/my_ugv_bringup/environment")
+
+# install(DIRECTORY "/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/ament_cmake_python/my_ugv_bringup/my_ugv_bringup.egg-info/" "DESTINATION" "lib/python3.12/site-packages/my_ugv_bringup-0.0.0-py3.12.egg-info")
+ament_cmake_symlink_install_directory("/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup" DIRECTORY "/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/ament_cmake_python/my_ugv_bringup/my_ugv_bringup.egg-info/" "DESTINATION" "lib/python3.12/site-packages/my_ugv_bringup-0.0.0-py3.12.egg-info")
+
+# install(DIRECTORY "/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup/my_ugv_bringup/" "DESTINATION" "lib/python3.12/site-packages/my_ugv_bringup" "PATTERN_EXCLUDE" "*.pyc" "PATTERN_EXCLUDE" "__pycache__")
+ament_cmake_symlink_install_directory("/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup" DIRECTORY "/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup/my_ugv_bringup/" "DESTINATION" "lib/python3.12/site-packages/my_ugv_bringup" "PATTERN_EXCLUDE" "*.pyc" "PATTERN_EXCLUDE" "__pycache__")
+
 # install(DIRECTORY "launch" "config" "urdf" "DESTINATION" "share/my_ugv_bringup")
 ament_cmake_symlink_install_directory("/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup" DIRECTORY "launch" "config" "urdf" "DESTINATION" "share/my_ugv_bringup")
 

@@ -1,0 +1,1 @@
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup/launch/master_akida.launch.py

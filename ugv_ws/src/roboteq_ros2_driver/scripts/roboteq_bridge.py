@@ -155,6 +155,11 @@ class RoboteqBridge(Node):
         odom.twist.twist.linear.x = d_center / dt
         odom.twist.twist.angular.z = d_th / dt
 
+        odom.pose.covariance[0] = 0.05   # x
+        odom.pose.covariance[7] = 0.05   # y
+        odom.pose.covariance[35] = 0.1   # yaw
+        odom.twist.covariance[0] = 0.05  # vx
+        odom.twist.covariance[35] = 0.1  # vyaw
         self.odom_pub.publish(odom)
 
         self.last_left_ticks = left_ticks

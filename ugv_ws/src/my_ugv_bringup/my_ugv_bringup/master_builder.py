@@ -136,6 +136,13 @@ def build_master(akida: bool = False, nav2: bool = False) -> LaunchDescription:
         }.items(),
     )
 
+    camera_link_to_oak_tf = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='camera_link_to_oak_tf',
+        arguments=['0', '0', '0', '0', '0', '0', 'camera_link', 'oak'],
+    )
+
     camera_depth_tf = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
@@ -330,6 +337,7 @@ def build_master(akida: bool = False, nav2: bool = False) -> LaunchDescription:
         ekf_node,
         rplidar_node,
         oakd_camera,
+        camera_link_to_oak_tf,
         camera_depth_tf,
         depth_to_scan,
         joy_node,

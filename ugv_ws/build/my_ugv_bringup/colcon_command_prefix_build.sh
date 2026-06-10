@@ -4,6 +4,7 @@
 . "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/dual_laser_merger/share/dual_laser_merger/package.sh"
 . "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_description/share/my_ugv_description/package.sh"
 . "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_hardware/share/my_ugv_hardware/package.sh"
+. "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/share/my_ugv_vision/package.sh"
 . "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/roboteq_ros2_driver/share/roboteq_ros2_driver/package.sh"
 . "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/rplidar_ros/share/rplidar_ros/package.sh"
 . "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_bridge/share/depthai_bridge/package.sh"

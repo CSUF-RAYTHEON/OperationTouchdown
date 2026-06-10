@@ -1,0 +1,57 @@
+running develop
+Removing /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my-ugv-vision.egg-link (link to .)
+running egg_info
+writing ../../build/my_ugv_vision/my_ugv_vision.egg-info/PKG-INFO
+writing dependency_links to ../../build/my_ugv_vision/my_ugv_vision.egg-info/dependency_links.txt
+writing entry points to ../../build/my_ugv_vision/my_ugv_vision.egg-info/entry_points.txt
+writing requirements to ../../build/my_ugv_vision/my_ugv_vision.egg-info/requires.txt
+writing top-level names to ../../build/my_ugv_vision/my_ugv_vision.egg-info/top_level.txt
+reading manifest file '../../build/my_ugv_vision/my_ugv_vision.egg-info/SOURCES.txt'
+writing manifest file '../../build/my_ugv_vision/my_ugv_vision.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build
+creating /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib
+creating /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision
+copying my_ugv_vision/obstacle_publisher_node.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision
+copying my_ugv_vision/geometry_utils.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision
+copying my_ugv_vision/__init__.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision
+copying my_ugv_vision/akida_yolo_node.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision
+copying my_ugv_vision/landmark_tracker_node.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision
+copying my_ugv_vision/yolo_decode.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision
+copying my_ugv_vision/object_localizer_node.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision
+running install
+running install_lib
+creating /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision
+copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision/obstacle_publisher_node.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision
+copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision/geometry_utils.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision
+copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision/__init__.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision
+copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision/akida_yolo_node.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision
+copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision/landmark_tracker_node.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision
+copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision/yolo_decode.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision
+copying /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/build/lib/my_ugv_vision/object_localizer_node.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision
+byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision/obstacle_publisher_node.py to obstacle_publisher_node.cpython-312.pyc
+byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision/geometry_utils.py to geometry_utils.cpython-312.pyc
+byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision/__init__.py to __init__.cpython-312.pyc
+byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision/akida_yolo_node.py to akida_yolo_node.cpython-312.pyc
+byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision/landmark_tracker_node.py to landmark_tracker_node.cpython-312.pyc
+byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision/yolo_decode.py to yolo_decode.cpython-312.pyc
+byte-compiling /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision/object_localizer_node.py to object_localizer_node.cpython-312.pyc
+running install_data
+copying resource/my_ugv_vision -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/share/ament_index/resource_index/packages
+copying package.xml -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/share/my_ugv_vision
+copying launch/perception.launch.py -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/share/my_ugv_vision/launch
+copying config/landmark_tracker.yaml -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/share/my_ugv_vision/config
+copying config/akida_yolo.yaml -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/share/my_ugv_vision/config
+copying config/object_localizer.yaml -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/share/my_ugv_vision/config
+copying config/obstacle_publisher.yaml -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/share/my_ugv_vision/config
+copying models/ugv_yolo_akida.fbz -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/share/my_ugv_vision/models
+copying models/model_metadata.json -> /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/share/my_ugv_vision/models
+running install_egg_info
+Copying ../../build/my_ugv_vision/my_ugv_vision.egg-info to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/python3.12/site-packages/my_ugv_vision-0.1.0-py3.12.egg-info
+running install_scripts
+Installing akida_yolo_node script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/my_ugv_vision
+Installing landmark_tracker_node script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/my_ugv_vision
+Installing object_localizer_node script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/my_ugv_vision
+Installing obstacle_publisher_node script to /home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_vision/lib/my_ugv_vision
+writing list of installed files to '/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_vision/install.log'

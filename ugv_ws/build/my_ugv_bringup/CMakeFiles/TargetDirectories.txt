@@ -1,5 +1,8 @@
 /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/CMakeFiles/uninstall.dir
 /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/CMakeFiles/my_ugv_bringup_uninstall.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/CMakeFiles/ament_cmake_python_symlink_my_ugv_bringup.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/CMakeFiles/ament_cmake_python_symlink_my_ugv_bringup_setup.dir
+/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/CMakeFiles/ament_cmake_python_build_my_ugv_bringup_egg.dir
 /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/CMakeFiles/test.dir
 /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/CMakeFiles/edit_cache.dir
 /home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/CMakeFiles/rebuild_cache.dir

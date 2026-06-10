@@ -10,7 +10,7 @@ bt_navigator:
     use_sim_time: false
     global_frame: map
     robot_base_frame: base_footprint
-    odom_topic: /odom
+    odom_topic: /odometry/filtered
     default_nav_to_pose_bt_xml: "/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup/behavior_trees/navigate_to_pose_no_backup.xml"
     default_nav_through_poses_bt_xml: "/opt/ros/jazzy/share/nav2_bt_navigator/behavior_trees/navigate_through_poses_w_replanning_and_recovery.xml"
     bt_loop_duration: 10
@@ -29,9 +29,9 @@ bt_navigator:
 controller_server:
   ros__parameters:
     use_sim_time: false
-    controller_frequency: 5.0
+    controller_frequency: 10.0
     min_x_velocity_threshold: 0.001
-    min_y_velocity_threshold: 0.5
+    min_y_velocity_threshold: 0.001
     min_theta_velocity_threshold: 0.001
     failure_tolerance: 0.3
     progress_checker_plugins: ["progress_checker"]
@@ -55,7 +55,7 @@ controller_server:
       debug_trajectory_details: false
       min_vel_x: 0.0
       min_vel_y: 0.0
-      max_vel_x: 0.10
+      max_vel_x: 0.15
       max_vel_x_backwards: 0.0
       max_vel_y: 0.0
       max_vel_theta: 0.8
@@ -105,12 +105,12 @@ local_costmap:
       height: 12
       resolution: 0.05
       footprint: "[[-0.305, -0.294], [-0.305, 0.294], [0.305, 0.294], [0.305, -0.294]]"
-      footprint_padding: 0.20
+      footprint_padding: 0.05
       plugins: ["voxel_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 1.2
+        inflation_radius: 0.55
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: true
@@ -149,7 +149,7 @@ global_costmap:
       global_frame: map
       robot_base_frame: base_footprint
       footprint: "[[-0.305, -0.294], [-0.305, 0.294], [0.305, 0.294], [0.305, -0.294]]"
-      footprint_padding: 0.20
+      footprint_padding: 0.05
       resolution: 0.05
       rolling_window: true
       width: 20
@@ -182,7 +182,7 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.5
-        inflation_radius: 1.5
+        inflation_radius: 0.55
       always_send_full_costmap: true
 
 map_server:
@@ -269,7 +269,7 @@ velocity_smoother:
     min_velocity: [0.0, 0.0, -1.0]
     max_accel: [0.3, 0.0, 0.5]
     max_decel: [-2.5, 0.0, -2.0]
-    odom_topic: "odom"
+    odom_topic: "/odometry/filtered"
     odom_duration: 0.1
     deadband_velocity: [0.01, 0.0, 0.01]
     velocity_timeout: 1.0

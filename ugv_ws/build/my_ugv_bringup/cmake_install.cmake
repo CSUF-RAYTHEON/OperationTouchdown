@@ -46,6 +46,14 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
   include("/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/ament_cmake_symlink_install/ament_cmake_symlink_install.cmake")
 endif()
 
+if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
+  execute_process(
+        COMMAND
+        "/usr/bin/python3" "-m" "compileall"
+        "/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/my_ugv_bringup/lib/python3.12/site-packages/my_ugv_bringup"
+      )
+endif()
+
 if(CMAKE_INSTALL_COMPONENT)
   set(CMAKE_INSTALL_MANIFEST "install_manifest_${CMAKE_INSTALL_COMPONENT}.txt")
 else()
