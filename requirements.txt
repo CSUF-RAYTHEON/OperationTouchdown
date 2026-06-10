@@ -6,7 +6,7 @@ lxml==6.0.2
 markdown-it-py==4.2.0
 mavsdk==3.15.3
 mdurl==0.1.2
-numpy==2.4.2
+numpy==2.2.6
 opencv-python==4.13.0.92
 pip==25.1.1
 protobuf==6.33.5
