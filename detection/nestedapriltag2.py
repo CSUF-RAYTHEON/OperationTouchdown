@@ -113,4 +113,158 @@ class FastLandingTargetTracker:
                         if pose: return {"layer": "outer", "north": pose[0], "east": pose[1], "down": pose[2]}
 
         return None
+
+def main(gray_frame_mutex, depth_frame_mutex, attitude_mutex):
+    from controls.affinitypriority import set_core_and_priority
+    from controls.busywait import delay_busywait
+    set_core_and_priority(3, None) # Core 3, Normal Priority
+    W, H = 640, 400
+
+    # 1. Connect to shared memory blocks
+    shm_gray = shared_memory.SharedMemory(name="oak_gray")
+    shm_calib = shared_memory.SharedMemory(name="oak_calib")
+    shm_attitude = shared_memory.SharedMemory(name="attitude")
+
+    # 2. Create NumPy arrays backed by shared memory
+    shared_gray = np.ndarray((H, W), dtype=np.uint8, buffer=shm_gray.buf)
+    shared_calib = np.ndarray((3, 3), dtype=np.float64, buffer=shm_calib.buf)
+    shared_attitude = np.ndarray((3,), dtype=np.float64, buffer=shm_attitude.buf)
+
+    # 3. Create local copies to prevent holding the mutex during heavy processing
+    local_calib = np.zeros((3, 3), dtype=np.float64)
+    local_gray = np.zeros((H, W), dtype=np.uint8)
+    local_attitude = np.zeros((3,), dtype=np.float64)
+    last_processed_gray = np.zeros((H, W), dtype=np.uint8)
+
+    # 4. Grab the camera matrix once (Broadcaster writes it using depth_frame_mutex)
+    with depth_frame_mutex:
+        np.copyto(local_calib, shared_calib)
+
+    # 5. Initialize the tracker
+    tracker = FastLandingTargetTracker(local_calib)
+    print("Landing Target Detector setup complete and running")
+
+    while True:
+        # Fetch the latest gray frame
+        with gray_frame_mutex:
+            np.copyto(local_gray, shared_gray)
+            
+        # Prevent wasting CPU running detection on the exact same frame twice
+        if np.array_equal(local_gray, last_processed_gray):
+            delay_busywait(0.005)
+            continue
+            
+        np.copyto(last_processed_gray, local_gray)
+
+        # Fetch the latest attitude data
+        with attitude_mutex:
+            np.copyto(local_attitude, shared_attitude)
+
+        # Extract yaw (Index 2 is Yaw in the [Roll, Pitch, Yaw] array)
+        yaw_rad = local_attitude[2]
+
+        # Run the detection
+        target_pose = tracker.get_target_ned(local_gray, yaw_rad)
+
+        # Only print if a target is actually detected
+        if target_pose is not None:
+            layer = target_pose["layer"].upper()
+            n = target_pose["north"]
+            e = target_pose["east"]
+            d = target_pose["down"]
+            
+            print(f"TARGET LOCK [{layer}] | North: {n:+.2f}m | East: {e:+.2f}m | Down: {d:+.2f}m")
+  
+if __name__ == "__main__":
+    import multiprocessing as mp
+    from multiprocessing import shared_memory
+    import time
+    mp.set_start_method('spawn', force=True)
     
+    W, H = 640, 400
+    RGB_BYTES = W * H * 3
+    GRAY_BYTES = W * H
+    DEPTH_BYTES = W * H * 2 
+    CALIB_BYTES = 3 * 3 * 8 
+    ATTITUDE_BYTES = 3 * 8 
+    POSITION_BYTES = 3 * 8 
+    LOCAL_POSITION_NED_BYTES = 3 * 8
+    BOOL_BYTES = 2
+    TARGET_BYTES = 4 * 8
+
+    print("VIO tester allocating shared memory...")
+    shm_rgb = shared_memory.SharedMemory(create=True, size=RGB_BYTES, name="oak_rgb")
+    shm_gray = shared_memory.SharedMemory(create=True, size=GRAY_BYTES, name="oak_gray")
+    shm_depth = shared_memory.SharedMemory(create=True, size=DEPTH_BYTES, name="oak_depth")
+    shm_calib = shared_memory.SharedMemory(create=True, size=CALIB_BYTES, name="oak_calib")
+    shm_attitude = shared_memory.SharedMemory(create=True, size=ATTITUDE_BYTES, name="attitude")
+    shm_position = shared_memory.SharedMemory(create=True, size=POSITION_BYTES, name="position")
+    shm_local_position_ned = shared_memory.SharedMemory(create=True, size=LOCAL_POSITION_NED_BYTES, name="local_position_ned")
+    shm_slam_enabled = shared_memory.SharedMemory(create=True, size=BOOL_BYTES, name="slam_enabled")
+    shm_slam_target = shared_memory.SharedMemory(create=True, size=TARGET_BYTES, name="slam_target")
+    shm_slam_trigger = shared_memory.SharedMemory(create=True, size=BOOL_BYTES, name="slam_trigger")
+    print("VIO tester finished allocating shared memory...")
+
+    rgb_frame_mutex = mp.Lock()
+    gray_frame_mutex = mp.Lock()
+    depth_frame_mutex = mp.Lock()
+    attitude_mutex = mp.Lock()
+    position_mutex = mp.Lock()
+    local_position_ned_mutex = mp.Lock()
+    slam_trigger_mutex = mp.Lock()
+    slam_enabled_mutex = mp.Lock()
+
+    from vioslam.slam import slam
+    from vioslam.vio import vio
+    from vioslam.broadcaster import broadcaster
+    broadcaster_process = mp.Process(target=broadcaster, args=(rgb_frame_mutex, gray_frame_mutex, depth_frame_mutex, attitude_mutex, local_position_ned_mutex,))
+    vio_process = mp.Process(target=vio, args=(gray_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_trigger_mutex,))
+    slam_process = mp.Process(target=slam, args=(rgb_frame_mutex, depth_frame_mutex, attitude_mutex, position_mutex, slam_enabled_mutex, slam_trigger_mutex,))
+    main_process = mp.Process(target=main, args=(position_mutex,))
+
+    try:
+        broadcaster_process.start()
+        time.sleep(3)
+        vio_process.start()
+        time.sleep(3)
+        slam_process.start()
+        time.sleep(5)
+        main_process.start()
+        time.sleep(3)
+        main_process.join()
+        
+    except KeyboardInterrupt:
+        print("VIO tester caught keyboard interrupt. Shutting down...")
+    finally:
+        broadcaster_process.terminate()
+        vio_process.terminate()
+        slam_process.terminate()
+        main_process.terminate()
+
+        broadcaster_process.join()
+        vio_process.join()
+        slam_process.join()
+        main_process.join()
+
+        print("VIO tester cleaning up shared memory...")
+        shm_rgb.close()
+        shm_rgb.unlink()
+        shm_gray.close()
+        shm_gray.unlink()
+        shm_depth.close()
+        shm_depth.unlink()
+        shm_calib.close()
+        shm_calib.unlink()
+        shm_attitude.close()
+        shm_attitude.unlink()
+        shm_position.close()
+        shm_position.unlink()
+        shm_local_position_ned.close()
+        shm_local_position_ned.unlink()
+        shm_slam_enabled.close()
+        shm_slam_enabled.unlink()
+        shm_slam_target.close()
+        shm_slam_target.unlink()
+        shm_slam_trigger.close()
+        shm_slam_trigger.unlink()
+        print("VIO tester processes terminated safely.")
