@@ -13,7 +13,7 @@ class RoboteqBridge(Node):
         
         # --- PHYSICAL CONSTANTS ---
         self.WHEEL_RADIUS = 0.165      
-        self.WHEEL_BASE = 0.45         # UGV physical wheelbase ~0.45 m (corrected from 0.635)
+        self.WHEEL_BASE = 0.6096        # measured: 12in each side from center = 24in total
         self.TICKS_PER_REV = 8000      
         self.LEFT_TRIM = 1.0
         self.CMD_SCALE = 4000          # converts m/s to Roboteq command units (0.09 m/s -> cmd 135, above MIN_CMD=120)
