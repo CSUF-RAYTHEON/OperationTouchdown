@@ -279,6 +279,10 @@ class AkidaYoloNode(Node):
         finally:
             self._lock.release()
 
+        t = threading.Thread(target=self._run_inference, args=(msg,), daemon=True)
+        t.start()
+
+    def _run_inference(self, msg: Image) -> None:
         try:
             self._process(msg)
         except Exception as exc:
@@ -366,7 +370,7 @@ class AkidaYoloNode(Node):
         obj_msg.data = summary
         self.pub_objects.publish(obj_msg)
 
-        if self.publish_annotated and self.pub_annot.get_subscription_count() >= 0:
+        if self.publish_annotated and self.pub_annot.get_subscription_count() > 0:
             self._publish_annotated(bgr, remapped, msg)
 
         del scale, pad_x, pad_y
