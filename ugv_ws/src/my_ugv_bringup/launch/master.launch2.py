@@ -72,7 +72,7 @@ def generate_launch_description():
     rplidar_node = Node(
         package='rplidar_ros', executable='rplidar_composition', name='rplidar_node',
         parameters=[{
-            'serial_port': '/dev/ttyUSB0',
+            'serial_port': '/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0',
             'frame_id': 'laser',
             'scan_mode': 'Standard',
             'serial_baudrate': 115200,
@@ -224,7 +224,10 @@ def generate_launch_description():
         executable='lora_bridge',
         name='lora_bridge',
         output='screen',
-        parameters=[{'lora_port': '/dev/ttyUSB1', 'lora_baud': 9600}],
+        parameters=[{
+            'lora_port': '/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0',
+            'lora_baud': 9600,
+        }],
     )
 
     mission_controller = Node(
