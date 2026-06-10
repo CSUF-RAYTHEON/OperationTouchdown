@@ -117,6 +117,8 @@ class FastLandingTargetTracker:
 def main(gray_frame_mutex, depth_frame_mutex, attitude_mutex):
     from controls.affinitypriority import set_core_and_priority
     from controls.busywait import delay_busywait
+    import multiprocessing as mp
+    from multiprocessing import shared_memory
     set_core_and_priority(3, None) # Core 3, Normal Priority
     W, H = 640, 400
 
