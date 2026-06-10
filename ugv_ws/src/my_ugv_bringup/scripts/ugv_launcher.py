@@ -40,12 +40,21 @@ launch_proc = None
 
 def kill_launch():
     global launch_proc
-    if launch_proc and launch_proc.poll() is None:
-        print("[launcher] Killing ROS launch...")
-        os.killpg(os.getpgid(launch_proc.pid), signal.SIGTERM)
+    # Always kill any ros2 launch processes system-wide, regardless of how
+    # they were started (SSH, launcher, etc.)
+    print("[launcher] Stopping all ROS2 processes...")
+    subprocess.run(["pkill", "-SIGTERM", "-f", "ros2 launch"], check=False)
+    time.sleep(3)
+    # Force-kill anything still alive
+    subprocess.run(["pkill", "-SIGKILL", "-f", "ros2 launch"], check=False)
+    subprocess.run(["pkill", "-SIGKILL", "-f", "ros2_launch"], check=False)
+    if launch_proc:
+        try:
+            os.killpg(os.getpgid(launch_proc.pid), signal.SIGKILL)
+        except Exception:
+            pass
         launch_proc = None
-    else:
-        print("[launcher] No launch running.")
+    print("[launcher] ROS2 stopped.")
 
 def start_launch(with_nav2: bool):
     global launch_proc
