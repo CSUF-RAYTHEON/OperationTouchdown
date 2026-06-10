@@ -13,8 +13,7 @@ sudo rm -f /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock
 # 2. Update package repositories and install system requirements
 echo "--> Installing Ubuntu system dependencies (Python venv and Pip)..."
 sudo apt update
-sudo apt install python3.10-venv python3-pip python3-dev build-essential -y
-
+sudo apt install python3.10-venv python3-pip python3-dev build-essential cmake -y
 # 3. Clean up older virtual environment if it exists
 if [ -d "venv" ]; then
     echo "--> Found existing venv folder. Removing to ensure clean setup..."
