@@ -20,7 +20,7 @@ slam_toolbox:
     debug_logging: false
     throttle_scans: 1
     transform_publish_period: 0.02   # 50 Hz TF
-    map_update_interval: 5.0         # seconds between map publishes
+    map_update_interval: 0.3         # seconds between map publishes — more frequent in open field
     resolution: 0.05                 # 5 cm — good for 15×15 yard outdoor field
     max_laser_range: 10.0            # RPLidar A1 reliable range (12 m max)
     minimum_time_interval: 0.2       # 5 Hz scan processing (gentle on Pi 4)
@@ -34,7 +34,7 @@ slam_toolbox:
     use_scan_matching: true
     use_scan_barycenter: true
     minimum_travel_distance: 0.3     # outdoor: only match after real movement to avoid featureless snap-backs
-    minimum_travel_heading: 0.174    # ~10 deg; skip scans with no meaningful heading change
+    minimum_travel_heading: 0.3      # ~17 deg; update on small turns in open field
     scan_buffer_size: 10
     scan_buffer_maximum_scan_distance: 10.0
     link_match_minimum_response_fine: 0.8    # raised from 0.45 — reject poor outdoor matches
