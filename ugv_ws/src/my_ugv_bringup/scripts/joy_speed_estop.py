@@ -8,16 +8,16 @@ Button mapping (Xbox on Linux /dev/input/js0):
   Button 10 = R3 (right stick click) — toggle EMERGENCY STOP
 
 Speed steps (max_linear_m_s, max_angular_rad_s):
-  0: (0.012, 0.25)  minimum
-  1: (0.015, 0.28)
-  2: (0.025, 0.32)  low-speed test point
-  3: (0.030, 0.36)
-  4: (0.040, 0.40)
-  5: (0.060, 0.50)
-  6: (0.080, 0.60)
-  7: (0.100, 0.70)
-  8: (0.120, 0.80)
-  9: (0.150, 0.90)  max
+  0: (0.012, 0.55)  minimum
+  1: (0.015, 0.60)
+  2: (0.025, 0.65)  low-speed test point
+  3: (0.030, 0.70)
+  4: (0.040, 0.75)
+  5: (0.060, 0.85)
+  6: (0.080, 0.95)
+  7: (0.100, 1.05)
+  8: (0.120, 1.15)
+  9: (0.150, 1.20)  max
 
 Pipeline:
   teleop + Nav2 both publish to /cmd_vel
@@ -39,16 +39,16 @@ from sensor_msgs.msg import Joy
 class JoySpeedEstop(Node):
     # Each entry is (max_linear_m_s, max_angular_rad_s)
     SPEED_STEPS = [
-        (0.012, 0.38),  # step 0 — just enough angular to break static friction
-        (0.015, 0.38),
-        (0.025, 0.40),
-        (0.030, 0.42),
-        (0.040, 0.45),
-        (0.060, 0.55),
-        (0.080, 0.65),
-        (0.100, 0.75),
-        (0.120, 0.82),
-        (0.150, 0.90),
+        (0.012, 0.55),  # step 0 — increased angular to reliably break static friction
+        (0.015, 0.60),
+        (0.025, 0.65),
+        (0.030, 0.70),
+        (0.040, 0.75),
+        (0.060, 0.85),
+        (0.080, 0.95),
+        (0.100, 1.05),
+        (0.120, 1.15),
+        (0.150, 1.20),
     ]
     DEFAULT_STEP = 0  # start at minimum
 
