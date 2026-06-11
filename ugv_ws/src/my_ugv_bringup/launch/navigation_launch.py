@@ -142,7 +142,7 @@ def generate_launch_description():
         parameters=[{
             'invert_linear_x': ParameterValue(nav_invert_linear, value_type=bool),
             'input_topic': 'cmd_vel_nav_out',
-            'output_topic': 'cmd_vel_nav',
+            'output_topic': 'cmd_vel',
         }],
     )
 
