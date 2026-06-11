@@ -267,6 +267,25 @@ def generate_launch_description():
                 arguments=['--ros-args', '--log-level', log_level],
                 parameters=[configured_params, {'autostart': autostart}, {'node_names': lifecycle_nodes}],
             ),
+            # Convert OAK-D stereo depth image → virtual LaserScan at camera height
+            # Detects low obstacles (below LiDAR scan plane) and feeds them into costmap
+            Node(
+                package='depthimage_to_laserscan',
+                executable='depthimage_to_laserscan_node',
+                name='depth_to_scan',
+                output='screen',
+                parameters=[{
+                    'scan_height': 10,       # rows to average for the scan line
+                    'range_min': 0.2,
+                    'range_max': 4.0,
+                    'scan_time': 0.2,        # 5 Hz matches stereo fps
+                }],
+                remappings=[
+                    ('image',       '/oak/stereo/image_raw'),
+                    ('camera_info', '/oak/stereo/camera_info'),
+                    ('scan',        '/scan_depth'),
+                ],
+            ),
         ],
     )
 

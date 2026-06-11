@@ -16,9 +16,9 @@
       i_resolution: '720p'
     stereo:
       i_publish_topic: true
-      i_fps: 1.0
+      i_fps: 5.0            # increased from 1.0 — 5Hz for responsive low-obstacle detection
       i_subpixel: true
     left:
-      i_fps: 1.0
+      i_fps: 5.0
     right:
-      i_fps: 1.0
+      i_fps: 5.0

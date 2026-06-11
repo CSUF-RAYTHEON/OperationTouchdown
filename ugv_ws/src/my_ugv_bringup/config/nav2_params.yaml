@@ -122,7 +122,7 @@ local_costmap:
         z_voxels: 16
         max_obstacle_height: 2.0
         mark_threshold: 0
-        observation_sources: scan
+        observation_sources: scan scan_depth
         scan:
           topic: /scan
           sensor_frame: laser
@@ -137,6 +137,18 @@ local_costmap:
           obstacle_min_range: 0.25
           raytrace_max_range: 10.0
           raytrace_min_range: 0.10
+        scan_depth:
+          topic: /scan_depth
+          data_type: "LaserScan"
+          clearing: true
+          marking: true
+          max_obstacle_height: 0.40   # only mark obstacles below LiDAR plane
+          min_obstacle_height: 0.0
+          obstacle_max_range: 3.5
+          obstacle_min_range: 0.20
+          raytrace_max_range: 4.0
+          raytrace_min_range: 0.20
+          inf_is_valid: false
       always_send_full_costmap: true
 
 global_costmap:
@@ -161,7 +173,7 @@ global_costmap:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: true
         combination_method: 1
-        observation_sources: scan
+        observation_sources: scan scan_depth
         scan:
           topic: /scan
           sensor_frame: laser
@@ -172,6 +184,18 @@ global_costmap:
           marking: true
           max_obstacle_height: 2.0
           min_obstacle_height: 0.0
+        scan_depth:
+          topic: /scan_depth
+          data_type: "LaserScan"
+          clearing: true
+          marking: true
+          max_obstacle_height: 0.40   # only mark obstacles below LiDAR plane
+          min_obstacle_height: 0.0
+          obstacle_max_range: 3.5
+          obstacle_min_range: 0.20
+          raytrace_max_range: 4.0
+          raytrace_min_range: 0.20
+          inf_is_valid: false
           obstacle_max_range: 8.0
           obstacle_min_range: 0.25
           raytrace_max_range: 10.0
