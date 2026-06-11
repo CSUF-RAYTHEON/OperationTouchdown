@@ -98,20 +98,21 @@ class RoboteqBridge(Node):
             angular_cmd = int(self.angular_z * self.ANG_SCALE)
 
             # Apply MIN_CMD to linear BEFORE the motor split (ensures forward motion has torque)
-            MIN_CMD = 60           # increased from 40 — higher floor ensures turns break static friction
-            if linear_cmd != 0 and abs(linear_cmd) < MIN_CMD:
-                linear_cmd = MIN_CMD * (1 if linear_cmd > 0 else -1)
+            LINEAR_MIN_CMD = 40   # unchanged — preserves original linear speed scale
+            TURN_MIN_CMD   = 60   # higher floor for pure turns to break static friction
+            if linear_cmd != 0 and abs(linear_cmd) < LINEAR_MIN_CMD:
+                linear_cmd = LINEAR_MIN_CMD * (1 if linear_cmd > 0 else -1)
 
             left_motor_cmd  = -linear_cmd + angular_cmd   # Ch1 = LEFT motor (inverted polarity)
             right_motor_cmd =  linear_cmd + angular_cmd   # Ch2 = RIGHT motor
 
-            # Apply MIN_CMD to individual motors ONLY during pure turns (linear_cmd == 0)
+            # Apply TURN_MIN_CMD to individual motors ONLY during pure turns (linear_cmd == 0)
             # This avoids canceling the angular differential when moving forward
             if linear_cmd == 0:
-                if left_motor_cmd != 0 and abs(left_motor_cmd) < MIN_CMD:
-                    left_motor_cmd = MIN_CMD * (1 if left_motor_cmd > 0 else -1)
-                if right_motor_cmd != 0 and abs(right_motor_cmd) < MIN_CMD:
-                    right_motor_cmd = MIN_CMD * (1 if right_motor_cmd > 0 else -1)
+                if left_motor_cmd != 0 and abs(left_motor_cmd) < TURN_MIN_CMD:
+                    left_motor_cmd = TURN_MIN_CMD * (1 if left_motor_cmd > 0 else -1)
+                if right_motor_cmd != 0 and abs(right_motor_cmd) < TURN_MIN_CMD:
+                    right_motor_cmd = TURN_MIN_CMD * (1 if right_motor_cmd > 0 else -1)
 
             command = f"!G 1 {left_motor_cmd}\r!G 2 {right_motor_cmd}\r"
             self.ser.write(command.encode())
