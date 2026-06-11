@@ -81,7 +81,7 @@ def build_master(akida: bool = False, nav2: bool = False) -> LaunchDescription:
     foxglove_bridge = IncludeLaunchDescription(
         AnyLaunchDescriptionSource(foxglove_path),
         launch_arguments={
-            "topic_whitelist": "[\"/tf\", \"/tf_static\", \"/scan\", \"/odom\", \"/odometry/filtered\", \"/map\", \"/mission/state\", \"/local_costmap/costmap\", \"/global_costmap/costmap\", \"/akida/detected_objects\", \"/akida/inference_latency_ms\", \"/akida/image_annotated\", \"/diagnostics\", \"/lora/raw\"]",
+            "topic_whitelist": "[\"/tf\", \"/tf_static\", \"/scan\", \"/odom\", \"/odometry/filtered\", \"/map\", \"/mission/state\", \"/local_costmap/costmap\", \"/global_costmap/costmap\", \"/akida/detected_objects\", \"/akida/inference_latency_ms\", \"/akida/image_annotated\", \"/diagnostics\", \"/lora/raw\", \"/robot_description\", \"/joint_states\", \"/clock\"]",
             "send_buffer_limit": "10000000",
         }.items())
 
