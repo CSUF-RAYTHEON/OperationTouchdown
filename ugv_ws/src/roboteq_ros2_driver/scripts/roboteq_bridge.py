@@ -54,10 +54,19 @@ class RoboteqBridge(Node):
         self.last_time = self.get_clock().now()
 
         self.timer = self.create_timer(0.1, self.update_loop)
+        self._last_cmd_time = self.get_clock().now()
+        self.create_timer(0.1, self._watchdog_cb)
 
     def velocity_callback(self, msg):
+        self._last_cmd_time = self.get_clock().now()
         self.linear_x = msg.linear.x
         self.angular_z = msg.angular.z
+
+    def _watchdog_cb(self):
+        elapsed = (self.get_clock().now() - self._last_cmd_time).nanoseconds / 1e9
+        if elapsed > 1.0:
+            self.linear_x = 0.0
+            self.angular_z = 0.0
 
     def update_loop(self):
         if self.ser is None:
