@@ -5,7 +5,7 @@ import test_move
 import test_local_position
 
 if __name__ == "__main__":
-    serial_port = '/dev/serial0'
+    serial_port = '/dev/ttyS3'
     baudrate =  57600
     source_system = 1
     source_component = 191
