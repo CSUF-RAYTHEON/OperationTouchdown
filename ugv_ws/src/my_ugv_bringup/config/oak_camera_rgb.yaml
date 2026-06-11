@@ -15,8 +15,8 @@
       # 720p keeps the Pi 5 + AKD1000 pipeline light; node letterboxes to 224.
       i_resolution: '720p'
     stereo:
-      i_publish_topic: false
-      i_fps: 5.0
+      i_publish_topic: true
+      i_fps: 1.0
       i_subpixel: true
     left:
       i_fps: 1.0
