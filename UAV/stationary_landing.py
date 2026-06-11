@@ -5,7 +5,6 @@ from Detectors.april_tag_detector import AprilTagDetector
 from PixhawkController.stationary_landing_controller import (
     StationaryLandingController
 )
-from lora2 import start, stop
 
 CONNECTION_STRING = "/dev/ttyS3"  # UART0 on Orange Pi 5
 BAUDRATE = 57600
@@ -59,7 +58,6 @@ with dai.Device() as device:
         controller.change_flight_mode("GUIDED")
         controller.arm_motors()
         controller.takeoff_to_altitude(TAKEOFF_ALTITUDE)
-        start()
 
         last_tag_time = time.time()
         is_escaping_ground = False
@@ -114,7 +112,6 @@ with dai.Device() as device:
                     time.sleep(5)
                     controller.disarm_motors()
                     time.sleep(30)
-                    stop()
                     break
 
                 # --- 3. Standard Search Tiers (Only runs if safely above 0.6m) ---
@@ -181,7 +178,6 @@ with dai.Device() as device:
                 time.sleep(5)  # Wait for landing to complete
                 controller.disarm_motors()
                 time.sleep(30)
-                stop()
                 break
 
             # track the tag by sending velocity commands
