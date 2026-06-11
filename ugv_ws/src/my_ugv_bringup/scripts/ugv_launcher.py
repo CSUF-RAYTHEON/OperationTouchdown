@@ -63,57 +63,68 @@ def start_launch(with_nav2: bool):
     print(f"[launcher] Starting ROS launch (nav2={with_nav2})...")
     launch_proc = subprocess.Popen(cmd, preexec_fn=os.setsid)
 
-def run_with_evdev():
+def _find_xbox_device():
     import evdev
-    from evdev import ecodes
 
-    # Wait for joystick to appear
     while not Path("/dev/input/js0").exists():
         print("[launcher] Waiting for /dev/input/js0...")
         time.sleep(1)
 
-    # Find the Xbox controller event device
-    devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
-    joy = None
-    for d in devices:
-        if "Xbox" in d.name or "Microsoft" in d.name or "js0" in d.path:
-            joy = d
-            break
-    if not joy:
-        joy = evdev.InputDevice("/dev/input/js0")
+    for path in evdev.list_devices():
+        dev = evdev.InputDevice(path)
+        if "Xbox" in dev.name or "Microsoft" in dev.name:
+            return dev
+    return evdev.InputDevice("/dev/input/js0")
 
-    print(f"[launcher] Monitoring: {joy.name} at {joy.path}")
+
+def _handle_dpad_event(event, dpad_down_time):
+    from evdev import ecodes
+
+    if event.type != ecodes.EV_ABS:
+        return
+
+    if event.code == ecodes.ABS_HAT0Y:
+        if event.value == -1:
+            dpad_down_time['up'] = time.monotonic()
+        elif event.value == 1:
+            dpad_down_time['down'] = time.monotonic()
+        elif event.value == 0:
+            for direction in ['up', 'down']:
+                if direction in dpad_down_time:
+                    held = time.monotonic() - dpad_down_time.pop(direction)
+                    if held >= HOLD_DURATION:
+                        if direction == 'up':
+                            start_launch(with_nav2=True)
+                        elif direction == 'down':
+                            start_launch(with_nav2=False)
+
+    elif event.code == ecodes.ABS_HAT0X:
+        if event.value != 0:
+            dpad_down_time['lr'] = time.monotonic()
+        elif 'lr' in dpad_down_time:
+            held = time.monotonic() - dpad_down_time.pop('lr')
+            if held >= HOLD_DURATION:
+                kill_launch()
+
+
+def run_with_evdev():
+    import evdev
+
     print("[launcher] Hold D-pad UP   (2s) = launch Nav2 + Akida")
     print("[launcher] Hold D-pad DOWN (2s) = launch controller + Akida")
     print("[launcher] Hold D-pad LEFT/RIGHT (2s) = stop launch")
 
-    dpad_down_time = {}
-
-    for event in joy.read_loop():
-        if event.type == ecodes.EV_ABS:
-            if event.code == ecodes.ABS_HAT0Y:  # up/down axis
-                if event.value == -1:  # D-pad UP pressed
-                    dpad_down_time['up'] = time.monotonic()
-                elif event.value == 1:  # D-pad DOWN pressed
-                    dpad_down_time['down'] = time.monotonic()
-                elif event.value == 0:  # released
-                    for direction in ['up', 'down']:
-                        if direction in dpad_down_time:
-                            held = time.monotonic() - dpad_down_time.pop(direction)
-                            if held >= HOLD_DURATION:
-                                if direction == 'up':
-                                    start_launch(with_nav2=True)
-                                elif direction == 'down':
-                                    start_launch(with_nav2=False)
-
-            elif event.code == ecodes.ABS_HAT0X:  # left/right axis
-                if event.value != 0:  # D-pad LEFT or RIGHT pressed
-                    dpad_down_time['lr'] = time.monotonic()
-                else:  # released
-                    if 'lr' in dpad_down_time:
-                        held = time.monotonic() - dpad_down_time.pop('lr')
-                        if held >= HOLD_DURATION:
-                            kill_launch()
+    while True:
+        try:
+            joy = _find_xbox_device()
+            print(f"[launcher] Monitoring: {joy.name} at {joy.path}")
+            dpad_down_time = {}
+            for event in joy.read_loop():
+                _handle_dpad_event(event, dpad_down_time)
+        except (OSError, IOError) as exc:
+            # BT drop must not kill ROS — reconnect and keep launch running.
+            print(f"[launcher] Controller disconnected ({exc}). Reconnecting in 2s...")
+            time.sleep(2)
 
 def run_raw_js():
     """Fallback: read raw /dev/input/js0 binary events."""
@@ -164,7 +175,12 @@ def run_raw_js():
 
 if __name__ == "__main__":
     print("[launcher] UGV Boot Launcher started")
-    if USE_EVDEV:
-        run_with_evdev()
-    else:
-        run_raw_js()
+    while True:
+        try:
+            if USE_EVDEV:
+                run_with_evdev()
+            else:
+                run_raw_js()
+        except (OSError, IOError) as exc:
+            print(f"[launcher] Input error ({exc}). Retrying in 2s...")
+            time.sleep(2)
