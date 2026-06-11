@@ -133,13 +133,10 @@ local_costmap:
           marking: true
           max_obstacle_height: 2.0
           min_obstacle_height: 0.0
-          obstacle_max_range: 10.0
-          obstacle_min_range: 0.0
-          raytrace_max_range: 12.0
-          raytrace_min_range: 0.0
-      static_layer:
-        plugin: "nav2_costmap_2d::StaticLayer"
-        map_subscribe_transient_local: true
+          obstacle_max_range: 8.0
+          obstacle_min_range: 0.25
+          raytrace_max_range: 10.0
+          raytrace_min_range: 0.10
       always_send_full_costmap: true
 
 global_costmap:
@@ -158,8 +155,8 @@ global_costmap:
       height: 50
       origin_x: -10.0
       origin_y: -10.0
-      track_unknown_space: true
-      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+      track_unknown_space: false
+      plugins: ["obstacle_layer", "inflation_layer"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: true
@@ -175,15 +172,10 @@ global_costmap:
           marking: true
           max_obstacle_height: 2.0
           min_obstacle_height: 0.0
-          obstacle_max_range: 10.0
-          obstacle_min_range: 0.0
-          raytrace_max_range: 12.0
-          raytrace_min_range: 0.0
-      static_layer:
-        plugin: "nav2_costmap_2d::StaticLayer"
-        map_subscribe_transient_local: true
-        unknown_cost_value: -1
-        lethal_cost_threshold: 100
+          obstacle_max_range: 8.0
+          obstacle_min_range: 0.25
+          raytrace_max_range: 10.0
+          raytrace_min_range: 0.10
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.5
