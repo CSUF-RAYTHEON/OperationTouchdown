@@ -1,8 +1,0 @@
-setup.cfg
-setup.py
-my_ugv_bringup/__init__.py
-my_ugv_bringup/master_builder.py
-my_ugv_bringup.egg-info/PKG-INFO
-my_ugv_bringup.egg-info/SOURCES.txt
-my_ugv_bringup.egg-info/dependency_links.txt
-my_ugv_bringup.egg-info/top_level.txt

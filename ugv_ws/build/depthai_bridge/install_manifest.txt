@@ -1,5 +1,0 @@
-/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_bridge/lib/libdepthai_bridge.so
-/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/depthai_bridgeTargets.cmake
-/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/depthai_bridgeTargets-noconfig.cmake
-/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/depthai_bridgeTargetsExport.cmake
-/home/ugv/Desktop/OperationTouchdown/ugv_ws/install/depthai_bridge/share/depthai_bridge/cmake/depthai_bridgeTargetsExport-noconfig.cmake

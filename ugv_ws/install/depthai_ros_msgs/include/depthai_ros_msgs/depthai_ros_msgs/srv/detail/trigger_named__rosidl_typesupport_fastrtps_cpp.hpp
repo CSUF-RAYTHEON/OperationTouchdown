@@ -1,1 +1,0 @@
-/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/rosidl_typesupport_fastrtps_cpp/depthai_ros_msgs/srv/detail/trigger_named__rosidl_typesupport_fastrtps_cpp.hpp

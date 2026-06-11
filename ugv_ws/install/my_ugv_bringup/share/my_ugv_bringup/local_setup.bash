@@ -1,1 +1,0 @@
-/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/my_ugv_bringup/ament_cmake_environment_hooks/local_setup.bash

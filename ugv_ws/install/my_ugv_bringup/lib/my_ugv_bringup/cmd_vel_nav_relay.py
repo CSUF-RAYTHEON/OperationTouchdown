@@ -1,1 +1,0 @@
-/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/my_ugv_bringup/scripts/cmd_vel_nav_relay.py

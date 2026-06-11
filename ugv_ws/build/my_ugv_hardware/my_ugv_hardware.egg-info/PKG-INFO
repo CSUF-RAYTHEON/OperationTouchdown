@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: my-ugv-hardware
-Version: 0.0.0
-Summary: UGV hardware drivers (Roboteq, LoRa, mission controller, kill switch)
-Maintainer: ground
-Maintainer-email: ground@todo.todo
-License: Apache-2.0
-Provides-Extra: test

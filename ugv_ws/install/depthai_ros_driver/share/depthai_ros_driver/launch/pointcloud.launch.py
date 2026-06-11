@@ -1,1 +1,0 @@
-/home/ugv/Desktop/OperationTouchdown/ugv_ws/src/depthai-ros/depthai_ros_driver/launch/pointcloud.launch.py

@@ -1,1 +1,0 @@
-/home/ugv/Desktop/OperationTouchdown/ugv_ws/build/depthai_ros_msgs/rosidl_generator_c/depthai_ros_msgs/msg/spatial_detection_array.h
