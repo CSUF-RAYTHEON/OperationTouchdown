@@ -7,7 +7,7 @@ from PixhawkController.stationary_landing_controller import (
 )
 from lora2 import start, stop
 
-CONNECTION_STRING = "/dev/serial0"
+CONNECTION_STRING = "/dev/ttyS3"  # UART0 on Orange Pi 5
 BAUDRATE = 57600
 
 LANDING_THRESHOLD = 0.4
