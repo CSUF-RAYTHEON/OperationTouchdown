@@ -39,15 +39,15 @@ from sensor_msgs.msg import Joy
 class JoySpeedEstop(Node):
     # Each entry is (max_linear_m_s, max_angular_rad_s)
     SPEED_STEPS = [
-        (0.012, 0.25),  # step 0 — enough torque to turn at min speed
-        (0.015, 0.28),
-        (0.025, 0.32),  # step 2 — low-speed torque test point
-        (0.030, 0.36),
-        (0.040, 0.40),
-        (0.060, 0.50),
-        (0.080, 0.60),
-        (0.100, 0.70),
-        (0.120, 0.80),
+        (0.012, 0.55),  # step 0 — slow linear, high angular so it can still turn
+        (0.015, 0.55),
+        (0.025, 0.55),  # step 2 — low-speed torque test point
+        (0.030, 0.55),
+        (0.040, 0.55),
+        (0.060, 0.60),
+        (0.080, 0.70),
+        (0.100, 0.80),
+        (0.120, 0.85),
         (0.150, 0.90),
     ]
     DEFAULT_STEP = 0  # start at minimum
