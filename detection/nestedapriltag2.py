@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import cv2.aruco as aruco
 
-class FastLandingTargetTracker:
+class NestedAprilTagDetector:
     def __init__(self, camera_matrix_3x3):
         # Physical tag sizes in meters
         self.OUTER_ID = 77      
@@ -143,7 +143,7 @@ def main(gray_frame_mutex, depth_frame_mutex, attitude_mutex):
         np.copyto(local_calib, shared_calib)
 
     # 5. Initialize the tracker
-    tracker = FastLandingTargetTracker(local_calib)
+    tracker = NestedAprilTagDetector(local_calib)
     print("Landing Target Detector setup complete and running")
 
     while True:
