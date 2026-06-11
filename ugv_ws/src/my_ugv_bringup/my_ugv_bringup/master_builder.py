@@ -196,18 +196,23 @@ def build_master(akida: bool = False, nav2: bool = False) -> LaunchDescription:
 
     joy_node = Node(
         package='joy_linux', executable='joy_linux_node', name='joy_node',
-        parameters=[{'dev': '/dev/input/js0', 'deadzone': 0.02}])
+        parameters=[{
+            'dev': '/dev/input/js0',
+            'deadzone': 0.02,
+            'autorepeat_rate': 20.0,
+        }])
 
     teleop_node = Node(
         package='teleop_twist_joy', executable='teleop_node',
         name='teleop_twist_joy_node',
         parameters=[{
-            'enable_button': 7,
+            'enable_button': 5,   # RB — hold to drive (button 7 is Start, not RB)
             'axis_linear': {'x': 1},
             'axis_angular': {'yaw': 0},
             'scale_linear': {'x': 0.15},
             'scale_angular': {'yaw': 0.9},
-        }]
+        }],
+        remappings=[('cmd_vel', '/cmd_vel_teleop')],
     )
 
     joy_speed_estop = Node(
